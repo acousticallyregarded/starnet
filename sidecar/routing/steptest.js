@@ -315,7 +315,7 @@ function makeStepTest(o) {
       if (daySpend && usd) { try { daySpend.note(s.lineId, usd); } catch (e) { failNote('steptest.dayLedger', e); } }
       const output = typeof r.text === 'string' ? r.text : '';
       // (wave 2 repair) the station's own process-fault containment marks the run faulted before killing it: said as that fault
-      const stoppedBy = rec.halted ? (rec.faulted ? 'the station hit an internal fault — the test stopped mid-run' : 'E-STOP was pressed — the test stopped mid-run')
+      const stoppedBy = rec.halted ? (rec.faulted ? 'the farm hit an internal fault — the test stopped mid-run' : 'E-STOP was pressed — the test stopped mid-run')
         : (s._stop ? 'stopped by you mid-run' : null);
       const err = stoppedBy || (r.error ? who(job.agentId) + ' failed: ' + r.error : (!output.trim() ? who(job.agentId) + ' returned nothing' : null));
       s.hops.push({
@@ -364,7 +364,7 @@ function makeStepTest(o) {
   function otherActive(s) { const a = active(); return a && a !== s ? a : null; }
   // a stopped step whose run is still unwinding (the abort is in flight) owns the session until it lands
   const unwinding = s => inflight.has(s.id) ? refuse('the stopped step is still winding down — try again in a moment.') : null;
-  const busy = a => 'a step-through test is already ' + (a.state === 'paused' ? 'paused' : 'running') + ' on this station — continue or stop it first.';
+  const busy = a => 'a step-through test is already ' + (a.state === 'paused' ? 'paused' : 'running') + ' on this farm — continue or stop it first.';
 
   function start(body) {
     const b = body && typeof body === 'object' ? body : {};

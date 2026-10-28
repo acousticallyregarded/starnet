@@ -182,27 +182,27 @@
   function buildRecipeDirective(ctx) {
     ctx = ctx || {};
     const lines = [];
-    lines.push('You are the station\'s recipe author, drafting ONE new one-tap mission recipe tailored to what the Commander ACTUALLY keeps doing.');
+    lines.push('You are the farm\'s recipe author, drafting ONE new one-tap mission recipe tailored to what the Farmer ACTUALLY keeps doing.');
     lines.push('');
-    lines.push('WHAT THE STATION HAS LEARNED (real observed interests, with evidence):');
+    lines.push('WHAT THE FARM HAS LEARNED (real observed interests, with evidence):');
     lines.push(str(ctx.interestsBlock).trim() || '(nothing yet)');
-    if (ctx.dossierBlock) { lines.push(''); lines.push('COMMANDER DOSSIER:'); lines.push(str(ctx.dossierBlock).trim()); }
+    if (ctx.dossierBlock) { lines.push(''); lines.push('FARMER DOSSIER:'); lines.push(str(ctx.dossierBlock).trim()); }
     if (ctx.activityBlock) { lines.push(''); lines.push('RECENT ACTIVITY:'); lines.push(str(ctx.activityBlock).trim()); }
     // FLAGSHIP CROSS-WIRE: the Commander's live quest slate + north star, so a draft SERVES their current direction
     // instead of ignoring it. Part of "the evidence above" — a WHY may cite it (the caller folds it into grounding).
-    if (str(ctx.directionBlock).trim()) { lines.push(''); lines.push('THE COMMANDER\'S CURRENT DIRECTION (their open quests + north star — a recipe that ADVANCES one of these is especially valuable):'); lines.push(str(ctx.directionBlock).trim()); }
+    if (str(ctx.directionBlock).trim()) { lines.push(''); lines.push('THE FARMER\'S CURRENT DIRECTION (their open quests + north star — a recipe that ADVANCES one of these is especially valuable):'); lines.push(str(ctx.directionBlock).trim()); }
     const existing = (ctx.existingRecipes || []).map(r => '• ' + str(r.name) + ' — ' + str(r.tagline)).join('\n');
     lines.push('');
     lines.push('EXISTING RECIPE LIBRARY (do NOT propose anything an entry here already serves):');
     lines.push(existing || '(none)');
     if (Array.isArray(ctx.launchedOften) && ctx.launchedOften.length) {
-      lines.push('RECIPES THE COMMANDER LAUNCHES MOST: ' + ctx.launchedOften.join(', ') + ' (adjacent, deeper takes on these lanes are welcome — restatements are not).');
+      lines.push('RECIPES THE FARMER LAUNCHES MOST: ' + ctx.launchedOften.join(', ') + ' (adjacent, deeper takes on these lanes are welcome — restatements are not).');
     }
     lines.push('');
     lines.push('HARD CONSTRAINTS:');
     lines.push('- Propose EXACTLY ONE recipe, serving a SPECIFIC observed interest above — never a generic productivity template.');
-    lines.push('- The recipe must EARN ITS TAP: the TASK encodes method and judgment (steps, quality criteria, output shape) the Commander would never bother typing. A one-line paraphrase of the recipe\'s own name is worthless — do not propose it.');
-    lines.push('- Prefer a recipe that DRIVES THE STATION — reads the web or files, checks connected channels, or runs on a cadence — over one that asks the Commander to paste text in.');
+    lines.push('- The recipe must EARN ITS TAP: the TASK encodes method and judgment (steps, quality criteria, output shape) the Farmer would never bother typing. A one-line paraphrase of the recipe\'s own name is worthless — do not propose it.');
+    lines.push('- Prefer a recipe that DRIVES THE FARM — reads the web or files, checks connected channels, or runs on a cadence — over one that asks the Farmer to paste text in.');
     lines.push('- The TASK must LAND somewhere: it ends in a deliverable or a decision (a draft, a ranked call, a delta report), and if the use case naturally recurs it should keep notes in memory and report what CHANGED since last run, not restate the world.');
     lines.push('- TASK is one imperative directive line the agent will execute, containing a {token} for every PARAM you declare.');
     lines.push('- 1-' + MAX_PARAMS + ' PARAM lines; each is: key | Label | placeholder example. Keys are short lowercase identifiers.');
@@ -371,7 +371,7 @@
     }
     if (!best) return null;
     const top = best.hits.slice().sort((x, y) => ((Number(y.weight) || 0) - (Number(x.weight) || 0)))[0];
-    const why = ('your station keeps working on ' + str(top.label) + ' (seen ' + (Number(top.count) || 0) + '×) — the ' +
+    const why = ('your farm keeps working on ' + str(top.label) + ' (seen ' + (Number(top.count) || 0) + '×) — the ' +
       str(best.archetype.name) + ' archetype covers exactly that').slice(0, WHY_MAX);
     return { archetype: best.archetype, why: why, fingerprint: best.fp, topic: top };
   }

@@ -227,12 +227,12 @@ async function spawnSidecar(ws, env, onLine) {
   client.setToken(token);
   const deadline = Date.now() + 45000;
   while (Date.now() < deadline) {
-    if (exited) throw new Error('the station exited during boot (code ' + exited.code + ')\n' + tail.join('\n'));
+    if (exited) throw new Error('the farm exited during boot (code ' + exited.code + ')\n' + tail.join('\n'));
     if (await client.health(1000)) return { child, client, port, tail: () => tail.slice() };
     await sleep(200);
   }
   try { child.kill(); } catch (_) {}
-  throw new Error('the station did not become healthy within 45s\n' + tail.join('\n'));
+  throw new Error('the farm did not become healthy within 45s\n' + tail.join('\n'));
 }
 /* The sidecar's gracefulShutdown has a HARD 3s deadline (sidecar/index.js). Every wait here outlasts it by 0.5s, so
    the graceful path is never cut off by our own escalation. */
@@ -287,8 +287,8 @@ function priorStationEvidence(ws, env) {
    workspace that already holds a station, and (unless the operator named the workspace) one where the app would offer
    to recover a prior station. Returns { wrote, refused?, provider, model, reason }. */
 function bootstrapWorkspace(ws, opts, env) {
-  if (hasStation(ws)) return { wrote: false, reason: 'workspace already holds a station' };
-  if (!opts.workspace && priorStationEvidence(ws, env)) return { wrote: false, refused: true, reason: 'this computer has a station from an earlier StarNet install — open the StarNet app to recover it before setting up a new one' };
+  if (hasStation(ws)) return { wrote: false, reason: 'workspace already holds a farm' };
+  if (!opts.workspace && priorStationEvidence(ws, env)) return { wrote: false, refused: true, reason: 'this computer has a farm from an earlier Homestead install — open the Homestead app to recover it before setting up a new one' };
   const reg = loadRegistry();
   const profiles = reg ? reg.listProviderProfiles() : [];
   const inferred = core.inferProvider({
@@ -332,7 +332,7 @@ async function answerConsent(client, runId, p, opts) {
   }
   const r = await client.request('POST', '/api/consent', { runId, promptId: p.promptId, decision });
   const okd = r.ok && r.json && r.json.ok;
-  log((decision === 'deny' ? '✗ denied ' : '✓ allowed ') + label + (okd ? '' : ' (the station did not acknowledge the decision)') + (decision === 'deny' && !opts.yes && !process.stdin.isTTY ? '  [non-interactive: pass --yes to approve]' : ''));
+  log((decision === 'deny' ? '✗ denied ' : '✓ allowed ') + label + (okd ? '' : ' (the farm did not acknowledge the decision)') + (decision === 'deny' && !opts.yes && !process.stdin.isTTY ? '  [non-interactive: pass --yes to approve]' : ''));
   return decision;
 }
 
@@ -351,7 +351,7 @@ function streamRun(client, body, handlers) {
         if (res.statusCode !== 200) {
           const chunks = [];
           res.on('data', d => chunks.push(d));
-          res.on('end', () => finish(reject, new Error('the station refused the run (HTTP ' + res.statusCode + '): ' + Buffer.concat(chunks).toString('utf8').slice(0, 300))));
+          res.on('end', () => finish(reject, new Error('the farm refused the run (HTTP ' + res.statusCode + '): ' + Buffer.concat(chunks).toString('utf8').slice(0, 300))));
           return;
         }
         res.setEncoding('utf8');
@@ -378,7 +378,7 @@ function streamRun(client, body, handlers) {
 async function runCommand(opts, station) {
   const { client, mode } = station;
   const rt = await client.request('GET', '/api/runtime/agent');
-  if (!rt.ok || rt.status !== 200 || !rt.json) throw stationError('could not read the station roster (' + (rt.error || 'HTTP ' + rt.status) + ')');
+  if (!rt.ok || rt.status !== 200 || !rt.json) throw stationError('could not read the farm roster (' + (rt.error || 'HTTP ' + rt.status) + ')');
   const sel = core.pickAgent(rt.json, { agent: opts.agent, model: opts.model, provider: opts.provider });
   if (!sel.ok) throw stationError(sel.error);
   // the folder the run works in: the trusted project this folder (or --cwd) sits in; a named --cwd that is not trusted
@@ -394,7 +394,7 @@ async function runCommand(opts, station) {
   const tracker = core.makeRunTracker();
   const startedAt = Date.now();
   if (!opts.json) log('▸ ' + sel.name + ' (' + sel.agentId + ') · ' + sel.provider + '/' + sel.model + ' · ' + mode + ' ' + client.base + (cwd ? ' · in ' + cwd : ''));
-  if (untrusted) log('· ' + untrusted + ' is not a trusted project, so ' + sel.name + ' works in its own workspace — run `starnet` there once and press y to trust it, or pass --cwd');
+  if (untrusted) log('· ' + untrusted + ' is not a trusted project, so ' + sel.name + ' works in its own workspace — run `homestead` there once and press y to trust it, or pass --cwd');
 
   let abortSocket = null, cancelSent = false, graceTimer = null, timeoutTimer = null;
   async function cancel(why) {
@@ -472,9 +472,9 @@ async function statusCommand(opts, station) {
   };
   if (opts.json) { process.stdout.write(JSON.stringify(out) + '\n'); return 0; }
   process.stdout.write([
-    'station    ' + out.baseUrl + ' (' + mode + ')',
+    'farm    ' + out.baseUrl + ' (' + mode + ')',
     'version    harness ' + (out.version.harness || '?') + (out.version.app ? ' · app ' + out.version.app : '') + ' · node ' + out.version.node,
-    'workspace  ' + (out.workspace || 'not disclosed by the station'),
+    'workspace  ' + (out.workspace || 'not disclosed by the farm'),
     'providers  ' + (out.providers.length ? out.providers.join(', ') : 'none configured') + (out.keychain ? ' (keys in the OS keychain)' : ''),
     'agents     ' + (out.agents.length ? out.agents.map(a => a.agentId + '=' + a.name + ' [' + (a.provider || '?') + '/' + (a.model || 'no model') + ']').join('\n           ') : 'none')
   ].join('\n') + '\n');
@@ -497,9 +497,9 @@ function stationDirs(station) { return [station && station.workspace, desktopWor
 async function attachClient(client, opts) {
   if (opts.token) client.setToken(opts.token);
   else await client.discoverToken();
-  if (!client.token()) throw stationError('a station answers at ' + client.base + ' but its API token could not be read — pass --token');
+  if (!client.token()) throw stationError('a farm answers at ' + client.base + ' but its API token could not be read — pass --token');
   const probe = await client.request('GET', '/api/version', null, { timeoutMs: 5000 });
-  if (probe.ok && (probe.status === 401 || probe.status === 403)) throw stationError('the station at ' + client.base + ' rejected the API token');
+  if (probe.ok && (probe.status === 401 || probe.status === 403)) throw stationError('the farm at ' + client.base + ' rejected the API token');
   return client;
 }
 
@@ -545,13 +545,13 @@ async function awaitJoinOutcome(desktopWs, offset, ms) {
    A launch that hands off to a StarNet on its way out is told so (`closing`) and starts again once it has gone. */
 async function startAppStation(exe, desktopWs, host, said, avoidOwner) {
   const logFile = startupLogFile(desktopWs);
-  log(said || '· StarNet isn\'t running — starting it in the background (your keys stay in the app; no window opens)');
+  log(said || '· Homestead isn\'t running — starting it in the background (your keys stay in the app; no window opens)');
   const t0 = Date.now();
   let slow = false, avoid = avoidOwner || 0;
   for (let tries = 0; tries < 30 && Date.now() - t0 < APP_START_MS; tries++) {
     const at = startupLogSize(desktopWs);
     let gone = null, child, again = false;
-    try { child = launchApp(exe); } catch (e) { throw stationError('StarNet could not be started (' + exe + '): ' + ((e && e.message) || e)); }
+    try { child = launchApp(exe); } catch (e) { throw stationError('Homestead could not be started (' + exe + '): ' + ((e && e.message) || e)); }
     child.on('error', e => { gone = { error: e }; });
     child.on('exit', (code, signal) => { gone = gone || { code, signal }; });
     while (Date.now() - t0 < APP_START_MS) {
@@ -560,9 +560,9 @@ async function startAppStation(exe, desktopWs, host, said, avoidOwner) {
         const client = makeClient(host, d.port);
         if (await client.health(1500)) return client;
       }
-      if (gone && gone.error) throw stationError('StarNet could not be started (' + exe + '): ' + ((gone.error && gone.error.message) || gone.error));
-      if (gone && gone.code === core.APP_EXIT_START_CANCELLED) throw stationError('StarNet\'s engine didn\'t start, and its startup dialog was cancelled — ' + logFile + ' says why');
-      if (gone && (gone.code || gone.signal)) throw stationError('StarNet stopped while starting (' + (gone.signal || 'exit ' + gone.code) + ') — ' + logFile + ' says why');
+      if (gone && gone.error) throw stationError('Homestead could not be started (' + exe + '): ' + ((gone.error && gone.error.message) || gone.error));
+      if (gone && gone.code === core.APP_EXIT_START_CANCELLED) throw stationError('Homestead\'s engine didn\'t start, and its startup dialog was cancelled — ' + logFile + ' says why');
+      if (gone && (gone.code || gone.signal)) throw stationError('Homestead stopped while starting (' + (gone.signal || 'exit ' + gone.code) + ') — ' + logFile + ' says why');
       // exit 0 is a hand-off to a StarNet already running or starting: one on its way out says `closing` (start again
       // once it has gone); one that stayed in the tray after all says this terminal is not tracked (its station is fine)
       if (gone) {
@@ -570,13 +570,13 @@ async function startAppStation(exe, desktopWs, host, said, avoidOwner) {
         if (told === 'closing') { again = true; break; }
         if (told === 'not-tracked') avoid = 0;
       }
-      if (!slow && Date.now() - t0 > 20000) { slow = true; log('· still starting StarNet…'); }
+      if (!slow && Date.now() - t0 > 20000) { slow = true; log('· still starting Homestead…'); }
       await sleep(400);
     }
     if (!again) break;
     await sleep(1000);
   }
-  throw stationError('StarNet was started in the background, but its station did not answer within ' + (APP_START_MS / 1000) + 's — if a StarNet dialog is open, answer it; ' + logFile + ' says why');
+  throw stationError('Homestead was started in the background, but its farm did not answer within ' + (APP_START_MS / 1000) + 's — if a Homestead dialog is open, answer it; ' + logFile + ' says why');
 }
 // the app's own record of the sidecar it spawned last (startup.log), so a station some OTHER terminal booted on the
 // desktop's workspace is never mistaken for the app's
@@ -627,7 +627,7 @@ async function resolveStation(opts, env) {
     const told = joining ? await awaitJoinOutcome(desktopWs, joinAt, JOIN_CONFIRM_MS) : null;
     const attached = await attaching;
     if (told === 'closing') {
-      const fresh = await startAppStation(desktop.appExe, desktopWs, host, '· StarNet is closing (its last starnet session just ended) — starting it again', desktop.ownerPid);
+      const fresh = await startAppStation(desktop.appExe, desktopWs, host, '· Homestead is closing (its last homestead session just ended) — starting it again', desktop.ownerPid);
       return { mode: 'attached', client: await attachClient(fresh, opts), workspace: desktopWs, child: null };
     }
     if (attached.err) throw attached.err;
@@ -635,12 +635,12 @@ async function resolveStation(opts, env) {
   }
   // spawn
   const ws = defaultWorkspace(opts);
-  if (path.resolve(ws) === path.resolve(desktopWs) && desktop.ownerAlive) throw stationError('the desktop app owns ' + ws + ' (pid ' + desktop.ownerPid + '); refusing to boot a second station on it');
+  if (path.resolve(ws) === path.resolve(desktopWs) && desktop.ownerAlive) throw stationError('the desktop app owns ' + ws + ' (pid ' + desktop.ownerPid + '); refusing to boot a second farm on it');
   // the dashboard sets a new station up itself (the awakening); a headless run gets the one-agent station it needs
   const boot = opts.cmd === 'dash' ? { wrote: false } : bootstrapWorkspace(ws, opts, env);
   if (boot.refused) throw stationError(boot.reason);
   if (boot.wrote) log('· bootstrapped ' + ws + ' — agent ' + opts.name + ' (full power)' + (boot.provider ? ' · provider ' + boot.provider + ' from ' + boot.providerSource : ' · no provider credential found in the environment') + (boot.model ? ' · model ' + boot.model : ' · no model (pass --model or set STARNET_DEFAULT_MODEL)'));
-  log('· booting a station on ' + ws);
+  log('· booting a farm on ' + ws);
   const sp = await spawnSidecar(ws, env, null);
   return { mode: 'spawned', client: sp.client, workspace: ws, child: sp.child };
 }
@@ -649,27 +649,27 @@ async function resolveStation(opts, env) {
 async function main() {
   let opts;
   try { opts = core.parseArgs(process.argv.slice(2), process.env, { tty: !!(process.stdin.isTTY && process.stdout.isTTY) }); }
-  catch (e) { log('starnet: ' + e.message + '\n'); log(core.USAGE); return core.EXIT.USAGE; }
-  if (opts.version) { process.stdout.write('starnet ' + require('./lib/version.js').cliVersion(REPO) + '\n'); return 0; }
+  catch (e) { log('homestead: ' + e.message + '\n'); log(core.USAGE); return core.EXIT.USAGE; }
+  if (opts.version) { process.stdout.write('homestead ' + require('./lib/version.js').cliVersion(REPO) + '\n'); return 0; }
   if (opts.help) { process.stdout.write(core.USAGE + '\n'); return 0; }
   if (opts.promptFromStdin) {
     opts.prompt = await new Promise(r => { let s = ''; process.stdin.setEncoding('utf8'); process.stdin.on('data', d => { s += d; }); process.stdin.on('end', () => r(s)); });
     opts.prompt = opts.prompt.replace(/\s+$/, '');
-    if (!opts.prompt) { log('starnet: stdin carried no prompt'); return core.EXIT.USAGE; }
+    if (!opts.prompt) { log('homestead: stdin carried no prompt'); return core.EXIT.USAGE; }
   }
 
   if (opts.cmd === 'init') {
     const ws = defaultWorkspace(opts);
     const desktop = discoverDesktop(desktopWorkspaces(process.env));
-    if (path.resolve(ws) === path.resolve(desktop.workspace) && desktop.ownerAlive) { log('starnet: the desktop app is running on ' + ws + ' — nothing to bootstrap'); return 0; }
+    if (path.resolve(ws) === path.resolve(desktop.workspace) && desktop.ownerAlive) { log('homestead: the desktop app is running on ' + ws + ' — nothing to bootstrap'); return 0; }
     const r = bootstrapWorkspace(ws, opts, process.env);
-    if (!r.wrote) { log('starnet: ' + ws + ' — ' + r.reason); return r.refused ? core.EXIT.STATION : 0; }
-    log('starnet: bootstrapped ' + ws + '\n  agent    ' + opts.name + ' (approvalMode full)\n  provider ' + (r.provider || 'openrouter (no credential found in the environment yet)') + (r.providerSource ? ' — from ' + r.providerSource : '') + '\n  model    ' + (r.model || '(none — pass --model or set STARNET_DEFAULT_MODEL)'));
+    if (!r.wrote) { log('homestead: ' + ws + ' — ' + r.reason); return r.refused ? core.EXIT.STATION : 0; }
+    log('homestead: bootstrapped ' + ws + '\n  agent    ' + opts.name + ' (approvalMode full)\n  provider ' + (r.provider || 'openrouter (no credential found in the environment yet)') + (r.providerSource ? ' — from ' + r.providerSource : '') + '\n  model    ' + (r.model || '(none — pass --model or set STARNET_DEFAULT_MODEL)'));
     return 0;
   }
 
   if (opts.cmd === 'dash' && !(process.stdin.isTTY && process.stdout.isTTY)) {
-    log('starnet: the dashboard needs an interactive terminal — for a pipe or a script use `starnet ls`, `starnet watch` or `starnet approve`');
+    log('homestead: the dashboard needs an interactive terminal — for a pipe or a script use `homestead ls`, `homestead watch` or `homestead approve`');
     return core.EXIT.USAGE;
   }
   let station = null;
@@ -691,8 +691,8 @@ async function main() {
   } catch (e) {
     const code = (e && e.exitCode) || core.EXIT.RUN_FAILED;
     if (opts.json) process.stdout.write(JSON.stringify({ ok: false, reason: 'error', proven: false, exitCode: code, error: String((e && e.message) || e) }) + '\n');
-    log('starnet: ' + String((e && e.message) || e));
-    if (opts.cmd === 'status' && code === core.EXIT.STATION && !opts.json && String(e && e.message) !== core.DESKTOP_CLOSED) log('(no station reachable — run `starnet -p "…"` to boot one, or start the desktop app)');
+    log('homestead: ' + String((e && e.message) || e));
+    if (opts.cmd === 'status' && code === core.EXIT.STATION && !opts.json && String(e && e.message) !== core.DESKTOP_CLOSED) log('(no farm reachable — run `homestead -p "…"` to boot one, or start the desktop app)');
     return code;
   } finally {
     if (station && station.child) await stopChild(station.child, station.workspace);
@@ -701,7 +701,7 @@ async function main() {
 
 if (require.main === module) {
   main().then(code => { process.exitCode = code; setTimeout(() => process.exit(code), 50).unref(); },
-    e => { log('starnet: ' + ((e && e.stack) || e)); process.exit(core.EXIT.RUN_FAILED); });
+    e => { log('homestead: ' + ((e && e.stack) || e)); process.exit(core.EXIT.RUN_FAILED); });
 }
 
 module.exports = { desktopWorkspaces, bareWorkspaces, defaultWorkspace, discoverDesktop, findAppExe, readTail, makeClient, bootstrapWorkspace, resolveStation, stopChild, STOP_GRACE_MS, SIDECAR_SHUTDOWN_DEADLINE_MS, _core: core };

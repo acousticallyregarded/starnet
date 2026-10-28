@@ -1146,8 +1146,8 @@ const WorldModel = (() => {
       for (const r of rects) {
         const w = rectW(r), h = rectH(r);
         if (isCor) {
-          if (Math.min(w, h) < 1) return fail('TOO_SMALL', 'hallway needs width');
-          if (Math.max(w, h) < MIN_HALL) return fail('TOO_SHORT', 'hallway too short');
+          if (Math.min(w, h) < 1) return fail('TOO_SMALL', 'path needs width');
+          if (Math.max(w, h) < MIN_HALL) return fail('TOO_SHORT', 'path too short');
         } else {
           if (w < MIN_ROOM || h < MIN_ROOM) return fail('TOO_SMALL', 'room min ' + MIN_ROOM + '×' + MIN_ROOM);
         }
@@ -1161,7 +1161,7 @@ const WorldModel = (() => {
       const acc = r => { if (r.x1 < mnx) mnx = r.x1; if (r.y1 < mny) mny = r.y1; if (r.x2 > mxx) mxx = r.x2; if (r.y2 > mxy) mxy = r.y2; };
       eachRectWorld(ignoreId, (id, rm, r) => acc(r));
       for (const r of rects) acc(r);
-      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the station');
+      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the farm');
       let hitName = null;
       eachRectWorld(ignoreId, (id, rm, r) => {
         if (hitName) return;
@@ -1464,7 +1464,7 @@ const WorldModel = (() => {
       // the span of the station as it will stand
       let mnx = Infinity, mny = Infinity, mxx = -Infinity, mxy = -Infinity;
       for (const z of all) for (const r of z.rects) { mnx = Math.min(mnx, r.x1); mny = Math.min(mny, r.y1); mxx = Math.max(mxx, r.x2); mxy = Math.max(mxy, r.y2); }
-      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the station');
+      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the farm');
       // no moved room lands on another room (moved or not)
       for (const pl of plans) for (const z of all) if (z.id !== pl.rm.id && pl.rects.some(r => z.rects.some(q => hits(r, q)))) return fail('OVERLAP', (pl.rm.name || pl.rm.id) + ' would overlap ' + (z.rm.name || z.id));
       // nothing that stays (a piece or a belt riding no moved room) is left inside a moved room's new floor
@@ -2513,7 +2513,7 @@ const WorldModel = (() => {
     const machineWord = p => (p && LABEL_OF[p.t]) || 'MACHINE';
     function circleFail(here, there, fromId, toId) {
       return Object.assign(fail('CIRCLE', 'That belt would close a circle: ' + there.toLowerCase() + ' already hands its work on, round to ' + here.toLowerCase()
-        + ', so a job would go round for ever and routing would stop for the whole station. A LOOP gate is the one way to send work back — belt it upstream from a LOOP.'),
+        + ', so a job would go round for ever and routing would stop for the whole farm. A LOOP gate is the one way to send work back — belt it upstream from a LOOP.'),
       { short: 'A CIRCLE — ' + there + ' ALREADY HANDS WORK BACK TO ' + here + ' · USE A LOOP TO SEND WORK BACK', circle: { from: fromId, back: toId } });
     }
     /* null = a new lane out of machine A, whose work goes on to machine `toId`, closes no circle — else the refusal. o.skip = a
@@ -3288,7 +3288,7 @@ const WorldModel = (() => {
         const r = planBelt(A, standIn('merger', x, y), linked, o);
         return r.ok ? { ok: true, mode: 'merge', path: pathOut(r) } : { ok: false, mode: 'merge', error: r.error, msg: r.msg };
       }
-      if (!roomAt(x, y)) return { ok: false, mode: 'floor', error: 'OFF_DECK', msg: 'that is not station floor', short: 'NOT STATION FLOOR' };
+      if (!roomAt(x, y)) return { ok: false, mode: 'floor', error: 'OFF_DECK', msg: 'that is not farm floor', short: 'NOT FARM FLOOR' };
       if (propAt(x, y)) return { ok: false, mode: 'floor', error: 'OVERLAP', msg: 'something stands there', short: 'SOMETHING STANDS HERE' };
       const no = beltEndRefusal(A, null);
       if (no) return { ok: false, mode: 'floor', error: no.error, msg: no.msg, short: no.short };
@@ -3325,7 +3325,7 @@ const WorldModel = (() => {
         const r = planBelt(S, standIn('merger', tx, ty), linked, o);
         return r.ok ? { ok: true, mode: 'branchmerge', path: pathOut(r) } : { ok: false, mode: 'branchmerge', error: r.error, msg: r.msg };
       }
-      if (!roomAt(tx, ty)) return { ok: false, mode: 'branchfloor', error: 'OFF_DECK', msg: 'that is not station floor', short: 'NOT STATION FLOOR' };
+      if (!roomAt(tx, ty)) return { ok: false, mode: 'branchfloor', error: 'OFF_DECK', msg: 'that is not farm floor', short: 'NOT FARM FLOOR' };
       if (propAt(tx, ty)) return { ok: false, mode: 'branchfloor', error: 'OVERLAP', msg: 'something stands there', short: 'SOMETHING STANDS HERE' };
       const r = planBelt(S, standIn('__tile', tx, ty), linked, o);
       return r.ok ? { ok: true, mode: 'branchfloor', path: pathOut(r) } : { ok: false, mode: 'branchfloor', error: r.error, msg: r.msg };
@@ -3638,7 +3638,7 @@ const WorldModel = (() => {
         if (!v.ok) {
           badNodes.push(i);
           if (v.error === 'OVERLAP') why('OVERLAP', v.msg, 'SOMETHING ALREADY STANDS WHERE A PIECE GOES');
-          else if (v.error === 'OFF_DECK') why('OFF_DECK', v.msg, 'PART OF IT IS OFF THE STATION FLOOR');
+          else if (v.error === 'OFF_DECK') why('OFF_DECK', v.msg, 'PART OF IT IS OFF THE FARM FLOOR');
           else why(v.error, v.msg, String(v.msg || v.error).toUpperCase());
           return;
         }
@@ -3651,7 +3651,7 @@ const WorldModel = (() => {
       for (const b of (clip.belts || [])) {
         const x = ax + b.x, y = ay + b.y, k = beltKey(x, y);
         let bad = null;
-        if (!roomAt(x, y)) bad = ['OFF_DECK', 'belts must sit on a deck', 'PART OF IT IS OFF THE STATION FLOOR'];
+        if (!roomAt(x, y)) bad = ['OFF_DECK', 'belts must sit on a deck', 'PART OF IT IS OFF THE FARM FLOOR'];
         else if (doc.belts[k]) bad = ['ON_BELT', 'a belt is already here', 'A BELT IS ALREADY HERE'];
         else {
           const pid = propAt(x, y), p = pid && propById(pid);
@@ -4027,7 +4027,7 @@ const WorldModel = (() => {
       const ROOM_PART = { name: 'ROOM NAME', floorStyle: 'FLOOR', floorMat: 'FLOOR', floorPaint: 'FLOOR', wallStyle: 'WALLS', wallMat: 'WALLS', hullStyle: 'WALLS', hullMat: 'WALLS' };
       const partOf = ([x, y]) => { const w = new Set(); for (const k of new Set(Object.keys(x).concat(Object.keys(y)))) if (JSON.stringify(x[k]) !== JSON.stringify(y[k])) w.add(ROOM_PART[k] || 'ROOM'); return w.size === 1 ? [...w][0] : 'ROOM'; };
       const roomWord = roomCame.length + roomChanged.length > 1 ? (roomCame.length + roomChanged.length) + ' ROOMS'
-        : roomCame.length ? (roomCame[0].kind === 'corridor' ? 'HALLWAY' : 'ROOM')
+        : roomCame.length ? (roomCame[0].kind === 'corridor' ? 'PATH' : 'ROOM')
         : roomChanged.length ? partOf(roomChanged[0]) : '';
       const one = came.length + went.length === 1 ? (came[0] || went[0]) : null;
       const word = roomCame.length ? roomWord
@@ -5074,7 +5074,7 @@ const WorldModel = (() => {
     else { const clean = {}; for (const k in doc.belts) { const d = doc.belts[k]; if (/^-?\d+,-?\d+$/.test(k) && (d === 'E' || d === 'W' || d === 'N' || d === 'S')) clean[k] = d; } doc.belts = clean; }
     if (!Array.isArray(doc.edges)) doc.edges = [];
     doc.edges = doc.edges.map(cleanPipelineEdge).filter(Boolean);
-    if (!doc.meta || typeof doc.meta !== 'object') doc.meta = { name: 'STARNET STATION', createdAt: 0, tier: 0, spawnRoomId: null };
+    if (!doc.meta || typeof doc.meta !== 'object') doc.meta = { name: 'HOMESTEAD FARM', createdAt: 0, tier: 0, spawnRoomId: null };
     /* ONE-TIME, NON-DESTRUCTIVE BACKFILL of the station id (see freshDoc's note). A doc saved before
        station identity existed carries createdAt 0/absent; give it one now so its per-station latches
        stop colliding with every other station's. It must be SAVED on the same load that stamps it —

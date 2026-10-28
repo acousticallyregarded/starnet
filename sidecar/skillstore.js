@@ -581,7 +581,7 @@
            write; while a run could unpin (pin/unpin are never staged), the lock lasted one tool call and the next patch
            went through. Pinning stays open to any writer: it only adds the lock. */
         if (existing.pinned && !pinNext && str(e.createdBy) !== 'user') {
-          return { ok: false, error: '"' + existing.name + '" is pinned by the Commander - only the Commander can unpin it, in ABILITIES > SKILLS' };
+          return { ok: false, error: '"' + existing.name + '" is pinned by the Farmer - only the Farmer can unpin it, in ABILITIES > SKILLS' };
         }
         entry = clone(existing); entry.pinned = pinNext; entry.updatedAt = now();
         entry = persist(entry);
@@ -660,7 +660,7 @@
         const i = seeds.findIndex(s => keyOf(s.agentId, s.name) === keyOf(row.agentId, row.name));
         if (i >= 0) seeds[i] = clone(row.skill); else seeds.push(clone(row.skill));
       }
-      const awaiting = name => ({ ok: false, error: '"' + name + '" already has a proposal awaiting evaluation in ABILITIES > SKILLS - the Commander must approve or reject it before this skill can be changed again' });
+      const awaiting = name => ({ ok: false, error: '"' + name + '" already has a proposal awaiting evaluation in ABILITIES > SKILLS - the Farmer must approve or reject it before this skill can be changed again' });
       const draft = makeSkillStore(Object.assign({}, opts, { stageReviews: false, packageStore: null, packages: null,
         io: { readAll: () => seeds, append() {} } }));
       const r = legacyWrite ? draft.write(e) : draft.manage(e);
@@ -779,7 +779,7 @@
     }
     function approveCandidate(e) {
       e = e || {};
-      if (e.approvedBy !== 'user') return { ok: false, error: 'only the Commander may promote a candidate' };
+      if (e.approvedBy !== 'user') return { ok: false, error: 'only the Farmer may promote a candidate' };
       const found = candidateDecision(e);
       if (found.error) return { ok: false, error: found.error };
       const { row, active } = found;
@@ -884,10 +884,10 @@
     }
     function share(e) {
       e = e || {};
-      if (e.actor !== 'user') return { ok: false, error: 'only the Commander may change skill sharing' };
+      if (e.actor !== 'user') return { ok: false, error: 'only the Farmer may change skill sharing' };
       const existing = find(e.agentId, e.target, { includeArchived: true });
       if (!existing) return { ok: false, error: 'no such owned skill' };
-      if (!['agent', 'project', 'station'].includes(e.scope)) return { ok: false, error: 'choose agent, project, or station scope' };
+      if (!['agent', 'project', 'station'].includes(e.scope)) return { ok: false, error: 'choose agent, project, or farm scope' };
       const root = str(e.projectRoot).trim();
       if (e.scope === 'project' && (!/^(?:[A-Za-z]:[\\/]|\/)/.test(root) || root.split(/[\\/]/).includes('..') || /[\x00-\x1f]/.test(root)))
         return { ok: false, error: 'project sharing requires an absolute project root' };

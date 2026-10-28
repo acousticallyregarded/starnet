@@ -31,9 +31,9 @@
   const POINTER_ACTIONS = ['click', 'double_click', 'drag'];
   const SELF_PROCESS_RE = /^skynet-desktop(.exe)?$/i;
   const SELF_TITLE_RE = /^starnet(?![w.])/i;
-  const SELF_DRIVE_HELP = 'never operate StarNet through the screen: its own tools change it in the background while the Commander keeps working. '
-    + 'Read assembly lines with station.layout; tool_search "station builder" for station.map, station.plan, station.build, station.test_line and station.start_line; '
-    + 'tool_search "station settings" for settings. If those tools are not in your list, tell the Commander which change you need instead.';
+  const SELF_DRIVE_HELP = 'never operate Homestead through the screen: its own tools change it in the background while the Farmer keeps working. '
+    + 'Read assembly lines with station.layout; tool_search "farm builder" for station.map, station.plan, station.build, station.test_line and station.start_line; '
+    + 'tool_search "farm settings" for settings. If those tools are not in your list, tell the Farmer which change you need instead.';
   const DESTRUCTIVE_HOTKEYS = [
     'ctrl+alt+delete',
     'ctrl+shift+esc',
@@ -94,7 +94,7 @@
     const fg = (await driver.foreground()) || {};
     const title = String(fg.title || ''), proc = String(fg.process || '');
     if (SELF_WINDOW_RE.test(title) || SELF_WINDOW_RE.test(proc)) {
-      throw new Error('refused: the foreground window is StarNet itself ("' + (title || proc) + '") — the target app lost focus, so input was NOT sent; re-focus the target app (click it) before typing');
+      throw new Error('refused: the foreground window is Homestead itself ("' + (title || proc) + '") — the target app lost focus, so input was NOT sent; re-focus the target app (click it) before typing');
     }
     if (action.expectApp) {
       const want = action.expectApp.toLowerCase();
@@ -123,8 +123,8 @@
     for (const p of probes) {
       let win;
       try { win = await p.read(); }
-      catch (e) { throw new Error('refused: could not confirm ' + p.where + ' is not StarNet (' + String((e && e.message) || e).slice(0, 160) + ') — input was NOT sent'); }
-      if (isSelfWindow(win, selfPids)) throw new Error('refused: ' + p.where + ' is StarNet itself ("' + String((win && (win.title || win.process)) || 'StarNet') + '"), so input was NOT sent — ' + SELF_DRIVE_HELP);
+      catch (e) { throw new Error('refused: could not confirm ' + p.where + ' is not Homestead (' + String((e && e.message) || e).slice(0, 160) + ') — input was NOT sent'); }
+      if (isSelfWindow(win, selfPids)) throw new Error('refused: ' + p.where + ' is Homestead itself ("' + String((win && (win.title || win.process)) || 'StarNet') + '"), so input was NOT sent — ' + SELF_DRIVE_HELP);
     }
   }
   function win32DriverRequested(env) {

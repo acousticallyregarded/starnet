@@ -218,7 +218,7 @@
         // #92: no Codex CLI needed — StarNet's own device-code sign-in mints fresh tokens. A copied station
         // folder carries the single-use refresh token too, so name that cause alongside the CLI/editor.
         message = 'Codex refresh token was already consumed by another client (the Codex CLI, the VS Code extension, '
-          + 'or a copy of this station on another computer). Sign in with ChatGPT again: ⏼ RECONNECT on the ChatGPT card '
+          + 'or a copy of this farm on another computer). Sign in with ChatGPT again: ⏼ RECONNECT on the ChatGPT card '
           + 'in SETTINGS › AI & MODELS.';
         relogin = true;
       }

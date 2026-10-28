@@ -72,8 +72,8 @@ function findOp({ env, platform, exists, join }) {
 
 const MSG = {
   'not-installed': 'the 1Password CLI (op) is not installed. Install it, then in the 1Password app turn on Settings → Developer → Integrate with 1Password CLI',
-  locked: '1Password is locked or signed out: unlock the 1Password app and approve StarNet when it asks',
-  timeout: '1Password did not answer in time: open and unlock the 1Password app, then approve StarNet when it asks',
+  locked: '1Password is locked or signed out: unlock the 1Password app and approve Homestead when it asks',
+  timeout: '1Password did not answer in time: open and unlock the 1Password app, then approve Homestead when it asks',
   'bad-value': 'that 1Password field is not a single-line key (it is empty, has spaces or line breaks, or is too long). Point the reference at the field that holds the API key',
 };
 // `op` prints "[ERROR] 2026/10/18 12:00:00 <message>". Keep the message, one line, bounded.
@@ -192,9 +192,9 @@ function makeRefCache(deps) {
       const s = slots.get(r.id);
       const fresh = s && s.ref === r.ref ? s : null;
       const value = fresh ? fresh.value : '';
-      const error = !fresh ? 'not read yet: StarNet reads it from 1Password when an agent needs it'
+      const error = !fresh ? 'not read yet: Homestead reads it from 1Password when an agent needs it'
         : (value ? (fresh.error ? 'the latest re-read failed: ' + fresh.error : '')
-          : (fresh.error || (fresh.inflight ? 'reading from 1Password…' : 'not read yet: StarNet reads it from 1Password when an agent needs it')));
+          : (fresh.error || (fresh.inflight ? 'reading from 1Password…' : 'not read yet: Homestead reads it from 1Password when an agent needs it')));
       return Object.assign({}, r, { key: value, refReadAt: fresh ? fresh.readAt : 0, refError: error });
     });
   }

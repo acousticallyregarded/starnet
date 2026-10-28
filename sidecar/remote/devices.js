@@ -85,7 +85,7 @@ function makeDevices(deps) {
     const kp = C.generateKeyPair();
     const station = { id: 'stn_' + newId().replace(/-/g, '').slice(0, 20), privateKey: C.exportPrivate(kp.privateKey), publicKey: kp.publicRaw, createdAt: now() };
     const res = persist(Object.assign({}, s, { station }));
-    if (!res.ok) throw new Error('could not save the station key: ' + res.error);
+    if (!res.ok) throw new Error('could not save the farm key: ' + res.error);
     stationCache = { id: station.id, privateKey: kp.privateKey, publicRaw: kp.publicRaw };
     return stationCache;
   }

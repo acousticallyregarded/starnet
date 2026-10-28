@@ -37,7 +37,7 @@
   function todayLine(now) {
     const t = Number(now);
     if (!Number.isFinite(t) || t <= 0) return '';
-    try { return 'Today is ' + new Date(t).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' (station clock; trust it over your own sense of the date).'; } catch (_) { return ''; }
+    try { return 'Today is ' + new Date(t).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' (farm clock; trust it over your own sense of the date).'; } catch (_) { return ''; }
   }
 
   /* SHELL (#128, 2026-10-17): which shell shell.exec ACTUALLY runs for this agent. The tool description is one static
@@ -72,8 +72,8 @@
     const fallbacks = listLine(o.fallbackModels, 6).filter(x => x !== model);
     const lines = [
       '[RUNTIME]',
-      'StarNet app version at run start: ' + app,
-      'StarNet harness build at run start: ' + harness,
+      'Homestead app version at run start: ' + app,
+      'Homestead harness build at run start: ' + harness,
       'Provider: ' + provider,
       'Requested model at run start: ' + model,
       'Agent id: ' + agentId,
@@ -88,7 +88,7 @@
     // year-old month. The station's clock is the truth; `now` is injected by the caller (this file never reads a clock).
     const today = todayLine(o.now);
     if (today) lines.push(today);
-    lines.push('If the Commander asks what StarNet build, model, provider, run, surface, or session you are using, answer from this block. For mutable harness state such as scheduler health, routines, connectors, or errors, call station.inspect. Do not guess or invent a CLI command.');
+    lines.push('If the Farmer asks what Homestead build, model, provider, run, surface, or session you are using, answer from this block. For mutable harness state such as scheduler health, routines, connectors, or errors, call station.inspect. Do not guess or invent a CLI command.');
     return '\n\n' + lines.join('\n');
   }
 

@@ -125,12 +125,12 @@
       if (found.length > 1 && !crowded) crowded = found;
     }
     if (crowded) {
-      return { error: 'the Commander\'s message holds ' + crowded.length + ' key-like strings (starting '
+      return { error: 'the Farmer\'s message holds ' + crowded.length + ' key-like strings (starting '
         + crowded.slice(0, 5).map(k => '"' + k.slice(0, 4) + '…"').join(', ') + '). Call keys.save again with starts_with set to the first few characters of the key for this service.' };
     }
     return { error: want
-      ? 'no key starting "' + want + '" is in the Commander\'s recent messages. Check the characters, or leave starts_with out.'
-      : 'no API key is in the Commander\'s recent messages (a key-shaped one may already show as [redacted-…] there). Ask the Commander to paste the key into this chat again, then call keys.save.' };
+      ? 'no key starting "' + want + '" is in the Farmer\'s recent messages. Check the characters, or leave starts_with out.'
+      : 'no API key is in the Farmer\'s recent messages (a key-shaped one may already show as [redacted-…] there). Ask the Farmer to paste the key into this chat again, then call keys.save.' };
   }
 
   function makeKeyTools(deps) {
@@ -138,14 +138,14 @@
 
     const saveTool = {
       name: 'keys.save', capability: 'web', scope: 'write', requiresConsent: false, network: false, timeoutMs: 15000,
-      description: 'The Commander pasted an API key into this chat: save it to API KEYS so you can use it. Name the service; '
-        + 'the station finds the key in the Commander\'s own recent message, stores it, and replaces it in the chat with '
+      description: 'The Farmer pasted an API key into this chat: save it to API KEYS so you can use it. Name the service; '
+        + 'the farm finds the key in the Farmer\'s own recent message, stores it, and replaces it in the chat with '
         + 'a placeholder. Then call the API with web_request using the key\'s NAME in a header, e.g. '
         + '{"x-api-key": "${SALESHANDY_API_KEY}"}. Never write the raw key in a tool call.',
       schema: {
         type: 'object', required: ['service'],
         properties: {
-          service: { type: 'string', description: 'The service the key is for, as the Commander would name it, e.g. "Saleshandy". It becomes the env var name (SALESHANDY_API_KEY).' },
+          service: { type: 'string', description: 'The service the key is for, as the Farmer would name it, e.g. "Saleshandy". It becomes the env var name (SALESHANDY_API_KEY).' },
           starts_with: { type: 'string', description: 'Only when the message holds more than one key: the first few characters of the one for this service.' },
           docs_url: { type: 'string', description: 'Optional: the service\'s API reference URL, kept with the key.' }
         }
@@ -158,8 +158,8 @@
         let texts = null;
         try { texts = typeof d.ownerTexts === 'function' ? d.ownerTexts() : null; } catch (_) { texts = null; }
         if (!Array.isArray(texts)) {
-          throw new Error('keys.save only takes a key the Commander typed into this conversation, and this run was not started by them '
-            + '(a routine, a group member, a forwarded message or a delegated worker). Ask the Commander to paste it in their own chat with you, or add it in CONNECT › ABILITIES › CONNECTED › API KEYS.');
+          throw new Error('keys.save only takes a key the Farmer typed into this conversation, and this run was not started by them '
+            + '(a routine, a group member, a forwarded message or a delegated worker). Ask the Farmer to paste it in their own chat with you, or add it in CONNECT › ABILITIES › CONNECTED › API KEYS.');
         }
         const hint = str(args.starts_with);
         if (hint && hint.length < HINT_MIN) throw new Error('starts_with needs at least ' + HINT_MIN + ' characters.');
@@ -175,11 +175,11 @@
         if (typeof d.onSaved === 'function') d.onSaved(envVar);   // the run's transcript hold lets go (the host flips a flag)
         const lines = [
           (r.sameValue ? 'This key was already saved in API KEYS as ' : (r.existed ? 'Replaced the saved key for ' + rec.name + ' — it is now in API KEYS as ' : 'Saved ' + rec.name + '\'s key in API KEYS as ')) + envVar + '.'
-            + (r.saved === false ? ' WARNING: it works for this session but could not be verified on disk — tell the Commander it may not survive a restart.' : ''),
+            + (r.saved === false ? ' WARNING: it works for this session but could not be verified on disk — tell the Farmer it may not survive a restart.' : ''),
           'Use it with web_request by its NAME in a header, never the value: e.g. {"Authorization": "Bearer ${' + envVar + '}"} or {"x-api-key": "${' + envVar + '}"} — check the service\'s API docs for the header it wants. In the shell it is the env var ' + envVar + '.',
           rec.unattendedSupported === false
-            ? 'It works only while the Commander is watching or messaging you directly; this service does not support unattended use.'
-            : (rec.autonomous === true ? '' : 'It works while the Commander is watching or messaging you directly. For routines and Night Shift, the Commander turns on its unattended switch in CONNECT › ABILITIES › CONNECTED › API KEYS.'),
+            ? 'It works only while the Farmer is watching or messaging you directly; this service does not support unattended use.'
+            : (rec.autonomous === true ? '' : 'It works while the Farmer is watching or messaging you directly. For routines and Night Shift, the Farmer turns on its unattended switch in CONNECT › ABILITIES › CONNECTED › API KEYS.'),
           'Do not repeat the key.'
         ].filter(Boolean);
         return { content: lines.join('\n'), summary: 'saved ' + envVar };

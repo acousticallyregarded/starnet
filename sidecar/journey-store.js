@@ -198,7 +198,7 @@ function adaptationText(m, outcome) {
     : m.tier === 'practiced' ? 'prefer relevant repeated patterns while stating uncertainty'
       : 'consider the early pattern but verify it before relying on it';
   return 'Because ' + m.agentId + ' completed ' + m.count + ' verified ' + m.domain + ' outcome' + (m.count === 1 ? '' : 's')
-    + ' (latest: ' + title + '), StarNet will ' + posture + ' for this agent and surface uncertainty outside that track.';
+    + ' (latest: ' + title + '), Homestead will ' + posture + ' for this agent and surface uncertainty outside that track.';
 }
 
 // Mutates a normalized record inside the durable store update. sourceId is the idempotency authority.
@@ -386,7 +386,7 @@ function makeJourneyStore(deps) {
 
   async function confirmGoal(d, now) {
     d = d || {}; const id = clip(d.id, 64), evidence = clip(d.evidence, 1000);
-    if (typeof d.id !== 'string' || typeof d.evidence !== 'string' || !id || d.id.length > 64 || !evidence) return { ok: false, error: 'goal id and Commander evidence are required' };
+    if (typeof d.id !== 'string' || typeof d.evidence !== 'string' || !id || d.id.length > 64 || !evidence) return { ok: false, error: 'goal id and Farmer evidence are required' };
     let goal = null, outcome = null, duplicate = false;
     await durable.update(STORE_KEY, cur => {
       const rec = normalize(cur); goal = rec.goals.find(g => g.id === id);
@@ -440,7 +440,7 @@ function makeJourneyStore(deps) {
       if (reached(m) && m.reachedAt == null) {
         m.reachedAt = stamp(now);
         outcome = foldOutcome(rec, { sourceId: 'metric:' + m.id + ':reached', kind: 'metric', goalId: m.goalId,
-          title: m.label + ' reached ' + m.target + (m.unit ? ' ' + m.unit : ''), evidence: 'Commander recorded ' + value + (m.unit ? ' ' + m.unit : ''),
+          title: m.label + ' reached ' + m.target + (m.unit ? ' ' + m.unit : ''), evidence: 'Farmer recorded ' + value + (m.unit ? ' ' + m.unit : ''),
           verifiedBy: 'commander-client', goalDone: false }, now);   // one metric target proves itself, never the whole life goal
       }
       // Goal-scoped high-water checkpoints survive metric retirement/replacement and regressions.
@@ -449,7 +449,7 @@ function makeJourneyStore(deps) {
       for (const checkpoint of [25, 50, 75, 100]) {
         if (progress * 100 >= checkpoint) award(rec, { key: 'goal:' + m.goalId + ':metric:' + checkpoint,
           kind: 'metric', goalId: m.goalId, title: m.label + ': ' + checkpoint + '% of metric target',
-          evidence: 'Commander recorded ' + value + (m.unit ? ' ' + m.unit : '') + (d.note ? ' — ' + clip(d.note, 240) : ''),
+          evidence: 'Farmer recorded ' + value + (m.unit ? ' ' + m.unit : '') + (d.note ? ' — ' + clip(d.note, 240) : ''),
           verifiedBy: 'commander-client' }, now);
       }
       metric = Object.assign({}, m); return rec;

@@ -63,7 +63,7 @@ function fallbackPurposeStep(opening) {
     ],
     custom: true, placeholder: 'in your own words — what’s the purpose?',
     build: t => ({ purpose: t }),
-    ack: 'there it is — your station’s purpose, in ink. that’s what this station’s for.'
+    ack: 'there it is — your farm’s purpose, in ink. that’s what this farm’s for.'
   };
 }
 
@@ -92,7 +92,7 @@ function makeAwakening(deps) {
     const a = ctx.agent;
     a.systemPrompt = system();
     const r = await st.post('/api/roster', { agents: [{ agentId: a.id, system: a.systemPrompt, name: a.name, model: a.model || '', provider: a.provider || ctx.prov, role: String(a.purpose || 'general specialist').slice(0, 120), approvalMode: a.approvalMode === 'full' ? 'full' : 'ask', executionProfile: a.executionProfile, track: '', workshop: !!a.workshop, skills: [], reasoningEffort: a.reasoningEffort || null }], updatedAt: now() }, 15000);
-    if (!(ok(r) && r.json && r.json.ok !== false)) throw new Error('the station did not take the roster' + ((r.json && r.json.error) ? ': ' + r.json.error : r.error ? ' (' + r.error + ')' : ' (HTTP ' + r.status + ')'));
+    if (!(ok(r) && r.json && r.json.ok !== false)) throw new Error('the farm did not take the roster' + ((r.json && r.json.error) ? ': ' + r.json.error : r.error ? ' (' + r.error + ')' : ' (HTTP ' + r.status + ')'));
     if (io.roster) io.roster([{ agentId: a.id, name: a.name, model: a.model, provider: a.provider, skin: a.skin }]);
   }
   async function pushDossier() {
@@ -115,7 +115,7 @@ function makeAwakening(deps) {
     };
     const envelope = M.Save.envelope ? M.Save.envelope(state) : state;
     const r = await st.post('/api/save', envelope, 20000);
-    if (!(ok(r) && r.json && r.json.ok !== false)) throw new Error('the station did not take the save' + ((r.json && r.json.error) ? ': ' + r.json.error : r.error ? ' (' + r.error + ')' : ' (HTTP ' + r.status + ')'));
+    if (!(ok(r) && r.json && r.json.ok !== false)) throw new Error('the farm did not take the save' + ((r.json && r.json.error) ? ': ' + r.json.error : r.error ? ' (' + r.error + ')' : ' (HTTP ' + r.status + ')'));
     if (r.json && r.json.revision != null) ctx.rev = r.json.revision;
   }
   // applyAgentConfig, for the docs the awakening authors: the docs, the dossier seeded from them, the prompt, roster, save
@@ -212,24 +212,24 @@ function makeAwakening(deps) {
   /* ======================================== CREATE ======================================================================= */
   async function create() {
     io.stage('CREATE YOUR OVERSEER', 'Who it is');
-    await io.say([seg('there’s no one aboard this station yet. you’re about to make its Overseer — the first agent, the one that runs the place.', 46, 300)], { who: 'STARNET' });
-    await io.say([seg('what should it be called?', 46, 0)], { who: 'STARNET' });
-    const n = await io.ask({ options: [{ label: 'Give it a station codename', value: '', skip: true }], custom: true, customLabel: 'its name', placeholder: 'a name, up to 18 letters', optional: true });
+    await io.say([seg('there’s no one on this farm yet. you’re about to make its Overseer — the first agent, the one that runs the place.', 46, 300)], { who: 'HOMESTEAD' });
+    await io.say([seg('what should it be called?', 46, 0)], { who: 'HOMESTEAD' });
+    const n = await io.ask({ options: [{ label: 'Give it a farm codename', value: '', skip: true }], custom: true, customLabel: 'its name', placeholder: 'a name, up to 18 letters', optional: true });
     let raw = n.skip ? '' : String(n.value || '').trim();
     if (M.Dialogue.isUnnamed(raw)) raw = M.Dialogue.codename();
     const name = raw.toUpperCase().slice(0, 18);
     let persona = null;
     for (;;) {
-      await io.say([seg('how should ' + name + ' talk?', 46, 0)], { who: 'STARNET' });
+      await io.say([seg('how should ' + name + ' talk?', 46, 0)], { who: 'HOMESTEAD' });
       const list = M.Personas.list();
       const p = await io.ask({ options: list.map(x => ({ label: x.name + ' — ' + x.vibe, value: x.id })) });
       persona = M.Personas.get ? M.Personas.get(p.value) : list.find(x => x.id === p.value);
       if (p.value !== 'unhinged') break;
-      await io.say([seg('unhinged is irreverent and profane by default. keep it?', 46, 0)], { who: 'STARNET' });
+      await io.say([seg('unhinged is irreverent and profane by default. keep it?', 46, 0)], { who: 'HOMESTEAD' });
       const sure = await io.ask({ options: [{ label: 'Keep unhinged', value: 'yes' }, { label: 'Pick another', value: 'no' }] });
       if (sure.value === 'yes') break;
     }
-    await io.say([seg('how much can ' + name + ' do without asking you?', 46, 0)], { who: 'STARNET' });
+    await io.say([seg('how much can ' + name + ' do without asking you?', 46, 0)], { who: 'HOMESTEAD' });
     const ap = await io.ask({ options: [
       { label: 'Ask for approval — stops to check with you before it writes, runs, or reaches out', value: 'ask' },
       { label: 'Full power — uses the whole local computer without approval prompts', value: 'full' }
@@ -246,15 +246,15 @@ function makeAwakening(deps) {
       const provs = (ok(pr) && pr.json && pr.json.providers) || [];
       const configured = new Set(provs.filter(p => p && p.configured).map(p => p.id));
       const named = id => BRAIN_NAME[id] || ((provs.find(p => p && p.id === id) || {}).name) || id;   // the station's own name for it
-      await io.say([seg(name + ' thinks with a model you connect. which one?', 46, 0)], { who: 'STARNET' });
+      await io.say([seg(name + ' thinks with a model you connect. which one?', 46, 0)], { who: 'HOMESTEAD' });
       const ready = [...configured].filter(id => id !== 'compute' && id !== 'mock');
-      const options = ready.map(id => ({ label: named(id) + ' — already connected on this station', value: 'use:' + id }))
+      const options = ready.map(id => ({ label: named(id) + ' — already connected on this farm', value: 'use:' + id }))
         .concat(BRAINS.filter(b => !configured.has(b.id)).map(b => ({ label: b.label, value: b.id })))
         .concat([{ label: 'An API key (OpenRouter, OpenAI, Anthropic …)', value: 'key' }]);
       const pick = await io.ask({ options });
       if (pick.value === 'key') {
-        await io.say([seg('API keys are added in the StarNet desktop app — SETTINGS › AI & MODELS — which keeps them in your computer’s keychain.', 44, 300)], { who: 'STARNET' });
-        if (o.privateStation) await io.say([seg('this station runs from the terminal on its own, so it can also read one from your environment: set it (for example OPENROUTER_API_KEY or ANTHROPIC_API_KEY) and run starnet again.', 44, 300)], { who: 'STARNET' });
+        await io.say([seg('API keys are added in the Homestead desktop app — SETTINGS › AI & MODELS — which keeps them in your computer’s keychain.', 44, 300)], { who: 'HOMESTEAD' });
+        if (o.privateStation) await io.say([seg('this farm runs from the terminal on its own, so it can also read one from your environment: set it (for example OPENROUTER_API_KEY or ANTHROPIC_API_KEY) and run homestead again.', 44, 300)], { who: 'HOMESTEAD' });
         continue;
       }
       const id = String(pick.value).replace(/^use:/, '');
@@ -270,9 +270,9 @@ function makeAwakening(deps) {
       io.note('', 'dim');
       if (wire && !wire.error && String(wire.text || '').trim()) return { provider: id, model };
       const why = String((wire && (wire.error || wire.text)) || 'no reply within 30 seconds (network or provider stall)').replace(/\s+/g, ' ').slice(0, 160);
-      await io.say([seg('your model didn’t answer — ' + why + '. fix it here, then try again; the awakening won’t start on a dead wire.', 44, 300)], { who: 'STARNET' });
+      await io.say([seg('your model didn’t answer — ' + why + '. fix it here, then try again; the awakening won’t start on a dead wire.', 44, 300)], { who: 'HOMESTEAD' });
       // a local model's first call also LOADS it into memory, which can outlast the test: the next try finds it warm
-      if (id === 'ollama' && /no reply within/.test(why)) await io.say([seg('Ollama may still be loading ' + model + ' into memory — the first call can take a minute. pick it again in a moment.', 44, 300)], { who: 'STARNET' });
+      if (id === 'ollama' && /no reply within/.test(why)) await io.say([seg('Ollama may still be loading ' + model + ' into memory — the first call can take a minute. pick it again in a moment.', 44, 300)], { who: 'HOMESTEAD' });
     }
   }
   // a sign-in shown in the terminal: the code and the link, polled until it lands (or the person goes back)
@@ -281,12 +281,12 @@ function makeAwakening(deps) {
       const r = await st.get('/api/models/ollama', 15000);
       const models = (ok(r) && r.json && Array.isArray(r.json.models)) ? r.json.models : [];
       if (models.length) return true;
-      await io.say([seg('Ollama isn’t answering on this computer, or it has no models yet. install it from ollama.com, pull a model (for example: ollama pull qwen3), then pick it again.', 44, 300)], { who: 'STARNET' });
+      await io.say([seg('Ollama isn’t answering on this computer, or it has no models yet. install it from ollama.com, pull a model (for example: ollama pull qwen3), then pick it again.', 44, 300)], { who: 'HOMESTEAD' });
       return false;
     }
     if (b.flow === 'device') {
       const s = await st.post('/api/auth/' + b.path + '/start', {}, 20000);
-      if (!(ok(s) && s.json && s.json.user_code)) { await io.say([seg('could not start the ' + BRAIN_NAME[b.id] + ' sign-in: ' + ((s.json && s.json.error) || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'STARNET' }); return false; }
+      if (!(ok(s) && s.json && s.json.user_code)) { await io.say([seg('could not start the ' + BRAIN_NAME[b.id] + ' sign-in: ' + ((s.json && s.json.error) || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'HOMESTEAD' }); return false; }
       const url = s.json.verification_uri_complete || s.json.verification_uri;
       return waitLink('open ' + url + ' and enter the code ' + s.json.user_code + ' to sign in with ' + BRAIN_NAME[b.id] + '.', url, (s.json.expires_in || 900) * 1000, Math.max(2, s.json.interval || 5) * 1000,
         async () => { const p = await st.post('/api/auth/' + b.path + '/poll', { device_auth_id: s.json.device_auth_id, user_code: s.json.user_code }, 20000); const j = (p && p.json) || { status: 'pending' }; return j.status === 'connected' ? 'ok' : j.status === 'error' ? 'sign-in failed: ' + (j.error || 'try again') : ''; });
@@ -294,38 +294,38 @@ function makeAwakening(deps) {
     if (b.flow === 'claude') {
       const status = await st.get('/api/auth/claude-cli/status', 15000);
       const j = (ok(status) && status.json) || null;
-      if (!j || typeof j.installed !== 'boolean') { await io.say([seg('couldn’t check Claude Code right now — pick it again in a moment.', 44, 300)], { who: 'STARNET' }); return false; }
+      if (!j || typeof j.installed !== 'boolean') { await io.say([seg('couldn’t check Claude Code right now — pick it again in a moment.', 44, 300)], { who: 'HOMESTEAD' }); return false; }
       if (!j.installed) {
-        await io.say([seg('Claude Code isn’t installed on this computer yet. install it — ' + (process.platform === 'win32' ? 'in PowerShell: irm https://claude.ai/install.ps1 | iex' : 'in a terminal: curl -fsSL https://claude.ai/install.sh | bash') + ' — then pick Claude again.', 44, 300)], { who: 'STARNET' });
+        await io.say([seg('Claude Code isn’t installed on this computer yet. install it — ' + (process.platform === 'win32' ? 'in PowerShell: irm https://claude.ai/install.ps1 | iex' : 'in a terminal: curl -fsSL https://claude.ai/install.sh | bash') + ' — then pick Claude again.', 44, 300)], { who: 'HOMESTEAD' });
         return false;
       }
       if (j.loggedIn) return true;
       const s = await st.post('/api/auth/claude-cli/start', {}, 30000);
       const sj = (s && s.json) || {};
       if (sj.status === 'connected') return true;
-      if (!sj.login_id) { await io.say([seg('could not start the Claude sign-in: ' + (sj.error || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'STARNET' }); return false; }
+      if (!sj.login_id) { await io.say([seg('could not start the Claude sign-in: ' + (sj.error || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'HOMESTEAD' }); return false; }
       return waitLink('finish signing in with Claude' + (sj.url ? ' at ' + sj.url : ' in the browser window Claude Code opened') + '. if it shows you a code, type it here and press enter.', sj.url, 15 * 60000, 3000,
         async () => { const p = await st.post('/api/auth/claude-cli/poll', { login_id: sj.login_id }, 20000); const pj = (p && p.json) || { status: 'pending' }; return pj.status === 'connected' ? 'ok' : (pj.status === 'error' || pj.status === 'failed') ? 'sign-in failed: ' + (pj.error || 'try again') : ''; },
         async code => { const c = await st.post('/api/auth/claude-cli/code', { login_id: sj.login_id, code }, 30000); return (c && c.json && (c.json.status === 'connected' || c.json.ok)) ? 'ok' : ''; },
         async () => { await st.post('/api/auth/claude-cli/cancel', { login_id: sj.login_id }, 10000); });
     }
     if (b.flow === 'credits') {
-      const s = await st.post('/api/credits/link/start', { deviceName: 'starnet terminal' }, 20000);
-      if (!(ok(s) && s.json && s.json.code)) { await io.say([seg('could not start linking your StarNet account: ' + ((s.json && s.json.error) || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'STARNET' }); return false; }
-      const linked = await waitLink('open ' + s.json.verifyUrl + ' and confirm the code ' + s.json.code + ' to link this station to your StarNet account.', s.json.verifyUrl, 15 * 60000, 3000,
+      const s = await st.post('/api/credits/link/start', { deviceName: 'homestead terminal' }, 20000);
+      if (!(ok(s) && s.json && s.json.code)) { await io.say([seg('could not start linking your StarNet account: ' + ((s.json && s.json.error) || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'HOMESTEAD' }); return false; }
+      const linked = await waitLink('open ' + s.json.verifyUrl + ' and confirm the code ' + s.json.code + ' to link this farm to your StarNet account.', s.json.verifyUrl, 15 * 60000, 3000,
         async () => { const p = await st.post('/api/credits/link/poll', { code: s.json.code }, 20000); const pj = (p && p.json) || {}; return pj.linked ? 'ok' : /^(expired|consumed|unknown|invalid)$/.test(String(pj.status || '')) ? 'that link code ' + pj.status + ' — start again' : ''; });
       if (!linked) return false;
       const c = await st.get('/api/credits', 20000);
       const bal = c && c.json && typeof c.json.balanceUsd === 'number' ? c.json.balanceUsd : null;
-      if (bal == null) { await io.say([seg('StarNet couldn’t confirm your credit balance right now. your credits are safe — try again in a moment.', 44, 300)], { who: 'STARNET' }); return false; }
-      if (!(bal > 0)) { await io.say([seg('your StarNet account has no credits yet — waking your agent uses credits right away. add credits at account.starnetos.com, then pick StarNet again.', 44, 300)], { who: 'STARNET' }); return false; }
+      if (bal == null) { await io.say([seg('Homestead couldn’t confirm your credit balance right now. your credits are safe — try again in a moment.', 44, 300)], { who: 'HOMESTEAD' }); return false; }
+      if (!(bal > 0)) { await io.say([seg('your StarNet account has no credits yet — waking your agent uses credits right away. add credits at account.starnetos.com, then pick StarNet again.', 44, 300)], { who: 'HOMESTEAD' }); return false; }
       return true;
     }
     return true;
   }
   // show the link + code, poll until it lands; the person can open the link, type a code (Claude), or go back
   async function waitLink(text, url, ttlMs, everyMs, poll, sendCode, cancel) {
-    await io.say([seg(text, 44, 200)], { who: 'STARNET' });
+    await io.say([seg(text, 44, 200)], { who: 'HOMESTEAD' });
     let settled = null, stop = false;
     const deadline = now() + ttlMs;
     (async () => {
@@ -343,11 +343,11 @@ function makeAwakening(deps) {
       if (settled || a.value === '__settled') break;
       if (a.value === 'open') { try { st.open(url); } catch (_) {} continue; }
       if (a.value === 'back') { stop = true; if (cancel) await cancel().catch(() => {}); return false; }
-      if (a.custom && sendCode && String(a.value || '').trim()) { const r = await sendCode(String(a.value).trim()); if (r) { settled = r; break; } await io.say([seg('that code didn’t take — check it and try again.', 44, 200)], { who: 'STARNET' }); }
+      if (a.custom && sendCode && String(a.value || '').trim()) { const r = await sendCode(String(a.value).trim()); if (r) { settled = r; break; } await io.say([seg('that code didn’t take — check it and try again.', 44, 200)], { who: 'HOMESTEAD' }); }
     }
     stop = true;
-    if (settled === 'ok') { await io.say([seg('connected.', 46, 200)], { who: 'STARNET' }); return true; }
-    await io.say([seg(String(settled), 44, 200)], { who: 'STARNET' });
+    if (settled === 'ok') { await io.say([seg('connected.', 46, 200)], { who: 'HOMESTEAD' }); return true; }
+    await io.say([seg(String(settled), 44, 200)], { who: 'HOMESTEAD' });
     return false;
   }
   async function pickModel(provider, label) {
@@ -355,7 +355,7 @@ function makeAwakening(deps) {
     const r = await st.get(route, 30000);
     const models = (ok(r) && r.json && Array.isArray(r.json.models)) ? r.json.models.filter(m => m && m.id) : [];
     const def = (r.json && r.json.default) || (models[0] && models[0].id) || '';
-    await io.say([seg('which model?' + (def ? ' (' + def + ' is the station’s pick for ' + (label || BRAIN_NAME[provider] || provider) + ')' : ''), 46, 0)], { who: 'STARNET' });
+    await io.say([seg('which model?' + (def ? ' (' + def + ' is the farm’s pick for ' + (label || BRAIN_NAME[provider] || provider) + ')' : ''), 46, 0)], { who: 'HOMESTEAD' });
     const top = models.slice(0, 7);
     if (def && !top.some(m => m.id === def)) top.unshift({ id: def });
     const a = await io.ask({ options: top.map(m => ({ label: m.id + (m.displayName && m.displayName.toLowerCase() !== m.id.toLowerCase() ? ' — ' + m.displayName : '') + (m.id === def ? ' (suggested)' : ''), value: m.id })).concat([{ label: 'Go back', value: '', skip: true }]), custom: true, customLabel: 'a model slug', placeholder: 'type a model id', optional: true });
@@ -384,7 +384,7 @@ function makeAwakening(deps) {
     const ar = await st.post('/api/autonomy/posture', { posture: M.Autonomy.fresh(), resumeHalt: false }, 15000);
     if (!(ok(ar) && ar.json && ar.json.ok === true)) throw new Error((ar.json && ar.json.error) || 'Could not confirm the autonomy setting.');
     const jr = await st.post('/api/journey', { op: 'journey.reset', epoch }, 15000);
-    if (!(ok(jr) && jr.json && jr.json.ok !== false)) throw new Error('the prior Commander journey could not be cleared safely');
+    if (!(ok(jr) && jr.json && jr.json.ok !== false)) throw new Error('the prior Farmer journey could not be cleared safely');
     await st.post('/api/memory/reset', { agent: 'agent' }, 15000);
     await pushDossier();
   }
@@ -457,7 +457,7 @@ function makeAwakening(deps) {
     const quickN0 = quickCount();
     const quickSays = (COUNT_WORD[quickN0] || String(quickN0)) + (quickN0 === 1 ? ' question' : ' questions');
     io.stage('GET ACQUAINTED', 'Choose your pace');
-    await io.say([seg('i’m awake. let’s give this station a direction. start with ' + quickSays.replace(/ (question)/, ' setup $1') + ', or take time to tell me about your work. you can edit what we save in your dossier — the COMMANDER file of what the station knows about you.', 46, 0)]);
+    await io.say([seg('i’m awake. let’s give this farm a direction. start with ' + quickSays.replace(/ (question)/, ' setup $1') + ', or take time to tell me about your work. you can edit what we save in your dossier — the FARMER file of what the farm knows about you.', 46, 0)]);
     const pace = await io.ask({ options: [
       { label: 'Quick setup — ' + quickSays, value: 'quick' },
       { label: 'A short conversation — your work and goals', value: 'loose' },
@@ -528,7 +528,7 @@ function makeAwakening(deps) {
         const pick = await io.ask({ options: opts });
         if (pick && /^o\d$/.test(String(pick.value))) {
           grabbedMove = mir.offers[Number(String(pick.value).slice(1))] || '';
-          if (grabbedMove) await upsertBelief('goals', { text: 'Wants the station to: ' + grabbedMove, source: 'onboarding', weight: 'synth' });
+          if (grabbedMove) await upsertBelief('goals', { text: 'Wants the farm to: ' + grabbedMove, source: 'onboarding', weight: 'synth' });
           await io.say([seg('then that’s the one i keep my eye on.', 44, 340)]);
           break;
         }
@@ -564,7 +564,7 @@ function makeAwakening(deps) {
       let purposeT = syn.purpose;
       if (c && c.value === 'adjust') {
         await io.say([seg('then say it straight — what are we actually here to do?', 46, 0)]);
-        const own = await io.ask({ options: [{ label: 'Keep your version', value: '', skip: true }], custom: true, customLabel: 'the mission, in my own words', placeholder: 'what this station is for…', optional: true });
+        const own = await io.ask({ options: [{ label: 'Keep your version', value: '', skip: true }], custom: true, customLabel: 'the mission, in my own words', placeholder: 'what this farm is for…', optional: true });
         if (own && !own.skip && own.value != null && String(own.value).trim()) purposeT = String(own.value).trim();
       }
       M.Dossier.upsert(ctx.dossier, 'goals', { text: purposeT, source: 'onboarding', weight: (purposeT !== syn.purpose ? 'stated' : (gaveAnything ? 'synth' : 'seed')) }, now());
@@ -573,7 +573,7 @@ function makeAwakening(deps) {
       if (syn.stack) M.Dossier.upsert(ctx.dossier, 'stack', { text: syn.stack, source: 'onboarding', weight: 'synth' }, now());
       M.Profile.seed(ctx.profile, M.Classify.getTag(purposeT));
       await persist(); await pushDossier();
-      await io.say([seg('there it is — your station’s purpose, in ink. that’s what this station’s for.', 44, 360)]);
+      await io.say([seg('there it is — your farm’s purpose, in ink. that’s what this farm’s for.', 44, 360)]);
       purposeDone = true;
     }
     if (!purposeDone) await askStep(fallbackPurposeStep());
@@ -593,19 +593,19 @@ function makeAwakening(deps) {
     if (!works.length) return;
     const recId = M.StationTemplates.recommend ? M.StationTemplates.recommend(ctx.purposeSaid) : null, rec = works.find(c => c.id === recId) || null;
     const ordered = rec ? [rec].concat(works.filter(c => c !== rec)) : works;
-    io.stage(ctx.quickTotal ? 'GET ACQUAINTED' : 'YOUR STATION', (ctx.quickTotal ? (++ctx.quickN) + ' of ' + ctx.quickTotal + ' · ' : '') + 'Where the work happens');
-    await io.say([seg('last question: which station should i build for you? '
+    io.stage(ctx.quickTotal ? 'GET ACQUAINTED' : 'YOUR FARM', (ctx.quickTotal ? (++ctx.quickN) + ' of ' + ctx.quickTotal + ' · ' : '') + 'Where the work happens');
+    await io.say([seg('last question: which farm should i build for you? '
       + (rec ? 'from what you told me, i’d start with the ' + rec.name.toLowerCase() + ': ' + rec.pitch + '.' : 'pick the kind of work you’ll do most, or start with one room and build it yourself.')
       + ' you can change it any time in BUILD MODE › Presets.', 46, 0)]);
     const res = await io.ask({ options: ordered.map(c => ({ label: titleCase(c.name) + (c.purposeLabel ? ' — ' + c.purposeLabel : '') + (c === rec ? ' (recommended)' : ''), value: c.id })).concat([{ label: 'Start with one room', value: 'default' }]) });
     const pick = works.find(c => c.id === String(res.value || ''));
-    if (!pick) { await io.say([seg('one room it is. you can pick a station any time in BUILD MODE › Presets.', 44, 360)]); return; }
+    if (!pick) { await io.say([seg('one room it is. you can pick a farm any time in BUILD MODE › Presets.', 44, 360)]); return; }
     let r = null;
     try { r = ctx.station.replaceLayout(M.StationTemplates.build(pick.id, M.WorldModel, M.PropSprites, ctx.station.doc()._nid + 100)); } catch (_) { r = null; }
     if (r && r.ok) await persist();
     await io.say([seg(r && r.ok
       ? 'done. the ' + pick.name.toLowerCase() + ' is built, and its line is waiting for a crew: WORK › AUTOMATE › WORKFLOWS walks you through who works each step.'
-      : 'i couldn’t build that station here, so we’ll keep one room. you can try again in BUILD MODE › Presets.', 44, 360)]);
+      : 'i couldn’t build that farm here, so we’ll keep one room. you can try again in BUILD MODE › Presets.', 44, 360)]);
   }
 
   /* ======================================== RUN ========================================================================== */
@@ -621,7 +621,7 @@ function makeAwakening(deps) {
       const c = await create();
       const wire = await connect(c.name, opts);
       io.stage('WAKE', c.name);
-      await io.say([seg('waking ' + c.name + '…', 46, 200)], { who: 'STARNET' });
+      await io.say([seg('waking ' + c.name + '…', 46, 200)], { who: 'HOMESTEAD' });
       await wake(c, wire);
       io.speaker(c.name);
       // its own first words, asked for the moment it wakes (fire-and-collect, never awaited by a beat)

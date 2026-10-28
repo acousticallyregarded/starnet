@@ -56,7 +56,7 @@ function makeGateway(deps) {
   const id = (v) => { const s = String(v == null ? '' : v); return ID_RE.test(s) ? s : ''; };
   const clampInt = (v, lo, hi, dflt) => { const n = Math.floor(Number(v)); return Number.isFinite(n) ? Math.max(lo, Math.min(hi, n)) : dflt; };
   const voiceCall = async (verb, a, ctx) => {
-    if (!deps.voice) return bad('this station cannot do voice');
+    if (!deps.voice) return bad('this farm cannot do voice');
     if (!ctx || !ctx.deviceId) return bad('unknown device');
     const r = await deps.voice[verb](ctx.deviceId, a);
     return r && r.ok ? good(r.data) : bad((r && r.error) || 'voice failed');
@@ -155,12 +155,12 @@ function makeGateway(deps) {
     },
 
     async pushKey(a, ctx) {
-      if (!deps.push) return bad('this station cannot send notifications');
+      if (!deps.push) return bad('this farm cannot send notifications');
       return good({ key: deps.push.publicKey(), on: deps.push.has(ctx.deviceId) });
     },
 
     async pushOn(a, ctx) {
-      if (!deps.push) return bad('this station cannot send notifications');
+      if (!deps.push) return bad('this farm cannot send notifications');
       const keys = a.keys && typeof a.keys === 'object' ? { p256dh: String(a.keys.p256dh || ''), auth: String(a.keys.auth || '') } : {};
       const r = deps.push.subscribe(ctx.deviceId, { endpoint: String(a.endpoint || ''), keys });
       return r.ok ? good({ on: true }) : bad(r.error);
@@ -174,7 +174,7 @@ function makeGateway(deps) {
 
     async pushTest(a, ctx) {
       if (!deps.push || !deps.push.has(ctx.deviceId)) return bad('notifications are not on for this phone');
-      const [r] = await deps.push.send([ctx.deviceId], { title: 'Notifications are on', body: 'Your station will tap this phone when your crew needs you.', tag: 'test', url: '#needs' });
+      const [r] = await deps.push.send([ctx.deviceId], { title: 'Notifications are on', body: 'Your farm will tap this phone when your crew needs you.', tag: 'test', url: '#needs' });
       return r && r.ok ? good({ sent: true }) : bad('the push service did not take the notification' + (r && r.status ? ' (' + r.status + ')' : ''));
     },
 
@@ -200,7 +200,7 @@ function makeGateway(deps) {
     if (!fn) return bad('unknown request');
     const args = msg.args && typeof msg.args === 'object' && !Array.isArray(msg.args) ? msg.args : {};
     try { return await fn(args, ctx || {}); }
-    catch (e) { return bad('the station hit an error doing that (' + String((e && e.message) || e).slice(0, 200) + ')'); }
+    catch (e) { return bad('the farm hit an error doing that (' + String((e && e.message) || e).slice(0, 200) + ')'); }
   }
 
   return { call, verbs: Object.keys(VERBS) };

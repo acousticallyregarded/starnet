@@ -99,10 +99,10 @@
      told "that channel is disconnected" instead of "no such target" (two different things to a user). */
   function resolveTarget(targets, want) {
     const q = clean(want, 200);
-    if (!q) throw new Error('target is required — call channel.targets to see what this station can reach');
+    if (!q) throw new Error('target is required — call channel.targets to see what this farm can reach');
     const all = (targets || []).map(packTarget).filter(t => t.target);
     if (!all.length) {
-      throw new Error('this station has no reachable chats yet — a person has to message it on a connected '
+      throw new Error('this farm has no reachable chats yet — a person has to message it on a connected '
         + 'channel once before an agent can send there');
     }
     const exact = all.find(t => t.target === q);
@@ -116,9 +116,9 @@
           + hits.map(t => t.target).join(', '));
       }
     }
-    throw new Error('"' + q + '" is not a chat this station can reach. Known targets: '
+    throw new Error('"' + q + '" is not a chat this farm can reach. Known targets: '
       + all.map(t => t.target).join(', ') + '. An agent can only message a chat a human already opened '
-      + 'with this station — it cannot dial a new id.');
+      + 'with this farm — it cannot dial a new id.');
   }
 
   function makeCommsTools(deps) {
@@ -139,7 +139,7 @@
 
     const targetsTool = {
       name: 'channel.targets', capability: 'comms', scope: 'read', requiresConsent: false,
-      description: 'List the messaging chats this station can actually send to (channel, chat, which agent it is bound to, and whether that channel is connected right now). Call this before channel.send.',
+      description: 'List the messaging chats this farm can actually send to (channel, chat, which agent it is bound to, and whether that channel is connected right now). Call this before channel.send.',
       schema: { type: 'object', properties: {} },
       run: async () => {
         const targets = (listTargets() || []).map(packTarget).filter(t => t.target);
@@ -148,14 +148,14 @@
           content: JSON.stringify({ targets: targets, reachable: live }),
           summary: targets.length
             ? live + ' of ' + targets.length + ' known chat(s) reachable now'
-            : 'no chats known yet — nobody has messaged this station on a connected channel'
+            : 'no chats known yet — nobody has messaged this farm on a connected channel'
         };
       }
     };
 
     const sendTool = {
       name: 'channel.send', capability: 'comms', scope: 'execute', requiresConsent: true, timeoutMs: 30000,
-      description: 'Send a message from this station to a connected messaging chat (Telegram, Discord, Slack, Matrix, Signal), optionally with files attached. Use this when the Commander asks to be told, pinged, notified, or messaged somewhere, or to report a result outside the station — including sending them an image, chart, or document you produced. The target must be a chat channel.targets lists — an agent cannot message a new id.',
+      description: 'Send a message from this farm to a connected messaging chat (Telegram, Discord, Slack, Matrix, Signal), optionally with files attached. Use this when the Farmer asks to be told, pinged, notified, or messaged somewhere, or to report a result outside the farm — including sending them an image, chart, or document you produced. The target must be a chat channel.targets lists — an agent cannot message a new id.',
       schema: {
         type: 'object',
         required: ['target', 'text'],
@@ -242,7 +242,7 @@
           const missed = wanted.slice(0, MAX_FILES).filter(f => attached.indexOf(f) === -1 && unreadable.indexOf(f) === -1);
           const lines = [];
           if (missed.length) lines.push((missed.length === 1 ? 'this file' : 'these files') + ' could not be attached here — '
-            + missed.map(f => '"' + f + '"').join(', ') + '. ' + (missed.length === 1 ? 'It is' : 'They are') + ' saved in the workspace on the station.');
+            + missed.map(f => '"' + f + '"').join(', ') + '. ' + (missed.length === 1 ? 'It is' : 'They are') + ' saved in the workspace on the farm.');
           if (unreadable.length) lines.push((unreadable.length === 1 ? 'this file' : 'these files') + ' could not be found in the workspace, so nothing was attached — '
             + unreadable.map(f => '"' + f + '"').join(', ') + '.');
           if (lines.length) {

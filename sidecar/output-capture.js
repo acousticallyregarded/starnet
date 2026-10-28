@@ -72,7 +72,7 @@
       const t = tail.length ? tail[0] : '';
       if (!dropped) return map(head + t);
       const h = map(head), tt = map(t);
-      return h + '\n…[' + dropped + ' characters of output elided here: StarNet keeps the first ' + h.length
+      return h + '\n…[' + dropped + ' characters of output elided here: Homestead keeps the first ' + h.length
         + ' and the last ' + tt.length + ' characters of a command\'s output]…\n' + tt;
     }
 

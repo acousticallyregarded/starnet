@@ -175,7 +175,7 @@
       // The count is the REAL total, not the shown slice — a truncated list that reports its own length as the
       // total would understate the offer, which is the failure this tool exists to fix.
       const head = 'AVAILABLE (' + out.length + ')' + (shown.length < out.length ? ', showing ' + shown.length : '')
-        + ' — NOT installed. The Commander adds either kind in CONNECT › ABILITIES › APPS: search the service and follow its card (sign-in, or SET UP API KEY). You cannot add these yourself; offer, never assume.';
+        + ' — NOT installed. The Farmer adds either kind in CONNECT › ABILITIES › APPS: search the service and follow its card (sign-in, or SET UP API KEY). You cannot add these yourself; offer, never assume.';
       return { label: 'available', count: out.length, head: head, body: shown };
     }
 
@@ -210,21 +210,21 @@
 
     const listTool = {
       name: 'connectors.list', capability: 'web', scope: 'read', requiresConsent: false, timeoutMs: 8000,
-      description: 'List the station\'s INTEGRATIONS: MCP connectors already connected, platform API keys already '
+      description: 'List the farm\'s INTEGRATIONS: MCP connectors already connected, platform API keys already '
         + 'connected, and — the part you cannot otherwise know — the vetted connectors and platform keys the '
-        + 'Commander could add but has not (GitHub, Notion, Stripe, Google Workspace, Printify, Etsy and more). '
-        + 'Check this BEFORE telling the Commander that StarNet cannot reach a service: it usually can, and the '
+        + 'Farmer could add but has not (GitHub, Notion, Stripe, Google Workspace, Printify, Etsy and more). '
+        + 'Check this BEFORE telling the Farmer that Homestead cannot reach a service: it usually can, and the '
         + 'honest answer is "that service has a setup path in CONNECT › ABILITIES › APPS — I can walk you through '
         + 'it?". Read-only: you cannot install or authenticate anything, and you never see a key\'s value. '
         + 'Optional `query` filters by service or category; `scope` narrows to connected or available. '
-        + 'Pass `goal` (the Commander\'s task in their words, e.g. "email my notes to myself") to get SUGGESTED: '
-        + 'the not-yet-connected connector(s) that task needs — the station then offers the Commander a one-click '
+        + 'Pass `goal` (the Farmer\'s task in their words, e.g. "email my notes to myself") to get SUGGESTED: '
+        + 'the not-yet-connected connector(s) that task needs — the farm then offers the Farmer a one-click '
         + 'door to connect it. Call it with `goal` BEFORE declining a task for lack of email/site/calendar/docs access.',
       schema: {
         type: 'object', properties: {
           scope: { type: 'string', enum: SCOPES, description: 'all (default), connected (what is live now), or available (what could be added)' },
           query: { type: 'string', description: 'filter by name, id, or category — e.g. "github", "payments"' },
-          goal: { type: 'string', description: 'the task in the Commander\'s words — returns SUGGESTED: the unconnected connector(s) it needs' }
+          goal: { type: 'string', description: 'the task in the Farmer\'s words — returns SUGGESTED: the unconnected connector(s) it needs' }
         }
       },
       run: async (args, ctx) => {
@@ -251,16 +251,16 @@
         }
         if (goal) {
           parts.push(suggested.length
-            ? { label: 'suggested', count: suggested.length, head: 'SUGGESTED for "' + goal + '" — NOT connected yet. The Commander now has a ⇄ CONNECT chip for it on your reply (or on your question card, if you ask one): tell them to tap it — it opens that service in CONNECT › ABILITIES › APPS. Setup varies by provider and may require an API key or developer app setup before sign-in. You cannot connect it yourself.', body: suggested.map(x => '- ' + x.id + ' — ' + x.reason) }
+            ? { label: 'suggested', count: suggested.length, head: 'SUGGESTED for "' + goal + '" — NOT connected yet. The Farmer now has a ⇄ CONNECT chip for it on your reply (or on your question card, if you ask one): tell them to tap it — it opens that service in CONNECT › ABILITIES › APPS. Setup varies by provider and may require an API key or developer app setup before sign-in. You cannot connect it yourself.', body: suggested.map(x => '- ' + x.id + ' — ' + x.reason) }
             : { label: 'suggested', count: 0, head: 'SUGGESTED (0) for "' + goal + '" — nothing connectable in the catalog matches this goal (or what it needs is already connected).', body: [] });
-          if (blocked.length) parts.push({ label: 'suggested-unavailable', count: blocked.length, head: 'CANNOT BE CONNECTED IN THIS BUILD — sign-in is switched off for these, so there is NO connect chip. Tell the Commander plainly that it is not available yet; never tell them to sign in or tap a chip for it.', body: blocked.map(x => '- ' + x.id + ' — ' + x.unavailable.slice(0, 200)) });
+          if (blocked.length) parts.push({ label: 'suggested-unavailable', count: blocked.length, head: 'CANNOT BE CONNECTED IN THIS BUILD — sign-in is switched off for these, so there is NO connect chip. Tell the Farmer plainly that it is not available yet; never tell them to sign in or tap a chip for it.', body: blocked.map(x => '- ' + x.id + ' — ' + x.unavailable.slice(0, 200)) });
           if (lost.length) parts.push({ label: 'suggested-emit-lost', count: lost.length, head: 'NOTE: the connect chip could not be raised for: ' + lost.join('; '), body: [] });
         }
         if (scope === 'all' || scope === 'connected') { parts.push(sectionConnected(q), sectionKeys(q)); }
         if (scope === 'all' || scope === 'available') { parts.push(sectionAvailable(q)); }
 
         const blocks = parts.filter(Boolean).map(s => s.head + '\n' + s.body.join('\n'));
-        if (!blocks.length) return { content: 'No integration state is readable on this station.', summary: 'no data' };
+        if (!blocks.length) return { content: 'No integration state is readable on this farm.', summary: 'no data' };
 
         let text = blocks.join('\n\n');
         if (text.length > MAX_CHARS) text = text.slice(0, MAX_CHARS) + '\n… (truncated — narrow it with `query`)';

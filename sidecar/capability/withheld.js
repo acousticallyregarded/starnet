@@ -21,11 +21,11 @@ const COMMAND_TOOLS = 'shell_exec, shell_bg_write, terminal_start, terminal_writ
 function delegatedCommandGap(lead) {
   const who = String(lead == null ? '' : lead).trim() || 'the lead agent that delegated this task';
   return {
-    why: 'you are a worker delegated by ' + who + ', and in ASK mode StarNet withholds command execution (' + COMMAND_TOOLS
-      + ') from delegated workers even when a WORKBENCH is placed: a command needs the Commander\'s approval in a watched '
+    why: 'you are a worker delegated by ' + who + ', and in ASK mode Homestead withholds command execution (' + COMMAND_TOOLS
+      + ') from delegated workers even when a WORKBENCH is placed: a command needs the Farmer\'s approval in a watched '
       + 'conversation, and a delegated run is not one',
     enable: 'put the exact command(s), and the folder to run them in, in your result for ' + who + ' so they can be run in '
-      + 'the Commander\'s watched conversation, where each command is approved under ASK. Placing more objects cannot change '
+      + 'the Farmer\'s watched conversation, where each command is approved under ASK. Placing more objects cannot change '
       + 'this; only Full Access for this agent (whole-computer authority) would'
   };
 }
@@ -33,14 +33,14 @@ function delegatedCommandGap(lead) {
 function routineCommandGap() {
   return {
     why: 'this is an unattended routine run and the routine has no terminal grant',
-    enable: 'the Commander grants this routine terminal access in the ROUTINES panel, or runs the command in a watched conversation'
+    enable: 'the Farmer grants this routine terminal access in the ROUTINES panel, or runs the command in a watched conversation'
   };
 }
 
 function unattendedCommandGap() {
   return {
     why: 'this is an unattended run (nobody is watching to approve a command)',
-    enable: 'run the command from a watched StarNet conversation, where it is approved under ASK'
+    enable: 'run the command from a watched Homestead conversation, where it is approved under ASK'
   };
 }
 

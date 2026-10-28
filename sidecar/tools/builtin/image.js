@@ -467,10 +467,10 @@
 
     async function orPost(body, timeoutMs, parentSignal) {
       checkCancelled(parentSignal);
-      if (!apiKey) throw new Error('STUDIO image generation is unavailable: no media connection is configured. Open SETTINGS and connect an OpenRouter API key for image generation, or link this station to your StarNet account, then retry; no image was produced.');
+      if (!apiKey) throw new Error('STUDIO image generation is unavailable: no media connection is configured. Open SETTINGS and connect an OpenRouter API key for image generation, or link this farm to your StarNet account, then retry; no image was produced.');
       const res = await withTimeout(signal => doFetch(orUrl, {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://starnet.local', 'X-Title': 'STARNET' },
+        headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://starnet.local', 'X-Title': 'HOMESTEAD' },
         body: JSON.stringify(body),
         signal
       }).then(async r => {
@@ -491,7 +491,7 @@
 
     async function openAIImagePost(body, timeoutMs, parentSignal) {
       checkCancelled(parentSignal);
-      if (!apiKey) throw new Error('STUDIO image generation is unavailable: no media connection is configured. Open SETTINGS and connect an OpenAI or OpenRouter API key for image generation, or link this station to your StarNet account, then retry; no image was produced.');
+      if (!apiKey) throw new Error('STUDIO image generation is unavailable: no media connection is configured. Open SETTINGS and connect an OpenAI or OpenRouter API key for image generation, or link this farm to your StarNet account, then retry; no image was produced.');
       const res = await withTimeout(signal => doFetch(openAIImageUrl, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
@@ -513,7 +513,7 @@
     // A non-2xx carries its status on the error so the caller can tell "this connection has no edits endpoint" apart.
     async function openAIEditPost(fields, ref, timeoutMs, parentSignal) {
       checkCancelled(parentSignal);
-      if (!apiKey) throw new Error('STUDIO image generation is unavailable: no media connection is configured. Open SETTINGS and connect an OpenAI or OpenRouter API key for image generation, or link this station to your StarNet account, then retry; no image was produced.');
+      if (!apiKey) throw new Error('STUDIO image generation is unavailable: no media connection is configured. Open SETTINGS and connect an OpenAI or OpenRouter API key for image generation, or link this farm to your StarNet account, then retry; no image was produced.');
       const res = await withTimeout(signal => {
         const form = new FormData();
         for (const k of Object.keys(fields)) if (fields[k] != null) form.append(k, String(fields[k]));
@@ -551,7 +551,7 @@
       const send = (token) => {
         const headers = {
           'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Accept': 'text/event-stream',
-          'originator': 'codex_cli_rs', 'User-Agent': 'codex_cli_rs/0.0.0 (StarNet)'
+          'originator': 'codex_cli_rs', 'User-Agent': 'codex_cli_rs/0.0.0 (Homestead)'
         };
         const account = jwtAccountId(token);
         if (account) headers['ChatGPT-Account-ID'] = account;

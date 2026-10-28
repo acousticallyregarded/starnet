@@ -27,20 +27,20 @@ function planCliLink(o) {
   const m = /^(.*\.app)\/Contents\/MacOS\/[^/]+$/.exec(String(o.execPath || ''));
   if (!m) return { skip: 'not running from an app bundle' };
   const target = m[1] + '/Contents/Resources/bin/starnet';
-  if (!o.exists(target)) return { skip: 'this app carries no starnet command' };
+  if (!o.exists(target)) return { skip: 'this app carries no homestead command' };
   if (!o.home) return { skip: 'no home folder' };
   const dir = path.posix.join(o.home, '.local', 'bin'), link = path.posix.join(dir, 'starnet');
   const actions = [];
   const cur = o.readlink(link);
   if (cur === target) { /* already ours, and current */ }
   else if (cur !== null && OURS.test(cur)) actions.push({ do: 'relink', dir, link, target, was: cur });   // the app moved
-  else if (cur !== null || o.exists(link)) return { skip: link + ' already exists and is not StarNet\'s — left alone' };
+  else if (cur !== null || o.exists(link)) return { skip: link + ' already exists and is not Homestead\'s — left alone' };
   else actions.push({ do: 'link', dir, link, target });
   // the folder on PATH: a login shell that reads any profile mentioning ~/.local/bin already has it
   const mentions = PROFILES.some(f => { const t = o.readText(path.posix.join(o.home, f)); return t !== null && /\.local\/bin/.test(t); });
   if (!mentions) actions.push({ do: 'profile', file: path.posix.join(o.home, '.zprofile'), text: '\n' + MARK + '\nexport PATH="$HOME/.local/bin:$PATH"\n' });
   if (!actions.length) return { actions, said: '' };
-  return { actions, said: 'terminal mode: `starnet` ' + (actions.some(a => a.do === 'relink') ? 're-linked' : actions.some(a => a.do === 'link') ? 'linked' : 'kept') + ' in ~/.local/bin' + (actions.some(a => a.do === 'profile') ? ', and ~/.local/bin added to PATH in ~/.zprofile (new terminals)' : '') };
+  return { actions, said: 'terminal mode: `homestead` ' + (actions.some(a => a.do === 'relink') ? 're-linked' : actions.some(a => a.do === 'link') ? 'linked' : 'kept') + ' in ~/.local/bin' + (actions.some(a => a.do === 'profile') ? ', and ~/.local/bin added to PATH in ~/.zprofile (new terminals)' : '') };
 }
 
 function applyCliLink(plan, f) {

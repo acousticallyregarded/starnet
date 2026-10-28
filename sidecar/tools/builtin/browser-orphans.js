@@ -220,7 +220,7 @@ function describeSweep(r) {
   if (!r) return 'no sweep ran';
   if (r.error) return 'nothing was ended: ' + r.error;
   const bits = [];
-  bits.push(r.found ? ('ended ' + r.killed.length + ' of ' + r.found + ' orphaned station-browser process' + (r.found === 1 ? '' : 'es')) : 'no orphaned station browser was running');
+  bits.push(r.found ? ('ended ' + r.killed.length + ' of ' + r.found + ' orphaned station-browser process' + (r.found === 1 ? '' : 'es')) : 'no orphaned farm browser was running');
   if (r.survivors.length) bits.push(r.survivors.length + ' still running (pid ' + r.survivors.join(', ') + ')');
   if (r.locks && r.locks.removed.length) bits.push('cleared stale profile lock' + (r.locks.removed.length === 1 ? '' : 's') + ' (' + r.locks.removed.join(', ') + ')');
   if (r.locks && r.locks.failed.length) bits.push('could not clear ' + r.locks.failed.map(f => f.name).join(', '));

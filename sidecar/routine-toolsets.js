@@ -109,7 +109,7 @@ function makeRoutineToolsets(deps) {
         out.lastError = 'toolset list repaired: dropped unknown ' + (r.dropped.length === 1 ? 'entry' : 'entries') + ' ' +
           r.dropped.map(s => '"' + s + '"').join(', ') + ' — ' + (onlyFree
             ? 'this routine still runs with only its always-on tools, as before; to give it a toolset, create it again with valid ids (' + ix().valid.join(', ') + ')'
-            : 'this routine now runs with ' + (r.list ? 'only ' + r.list.join(', ') : 'its agent\'s full station tools'));
+            : 'this routine now runs with ' + (r.list ? 'only ' + r.list.join(', ') : 'its agent\'s full farm tools'));
       }
       healed.push({ id: job.id, from: job.enabledToolsets, to: r.list, dropped: r.dropped });
       return out;

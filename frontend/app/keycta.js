@@ -158,9 +158,9 @@ const KeyCTA = (() => {
     if (gap.kind === 'nomodel') {
       spokenLine = Chat.localLine(who + 'no model is selected for ' + label + '. choose a model to send a message.');
     } else if (gap.kind === 'unlinked') {
-      spokenLine = Chat.localLine(who + 'i’m awake, but no brain is wired: this station isn’t linked to a STARNET account, so i can’t actually run anything yet. link one, wire a different provider, or run me free on a local model.');
+      spokenLine = Chat.localLine(who + 'i’m awake, but no brain is wired: this farm isn’t linked to a STARNET account, so i can’t actually run anything yet. link one, wire a different provider, or run me free on a local model.');
     } else {
-      spokenLine = Chat.localLine(who + 'i’m awake, but no brain is wired: there’s no ' + label + ' key on the station, so i can’t actually run anything yet. add one, wire a different provider, or run me free on a local model.');
+      spokenLine = Chat.localLine(who + 'i’m awake, but no brain is wired: there’s no ' + label + ' key on the farm, so i can’t actually run anything yet. add one, wire a different provider, or run me free on a local model.');
     }
     spokenChoices = Chat.choices([
       { label: primaryLabel(gap), value: 'primary' },
@@ -174,12 +174,12 @@ const KeyCTA = (() => {
   // ONE label per anchor: the primary door names exactly the thing that is missing.
   function primaryLabel(gap) {
     if (gap && gap.kind === 'nomodel') return '◇ CHOOSE MODEL';
-    if (gap && gap.kind === 'unlinked') return '🔗 LINK STARNET';
+    if (gap && gap.kind === 'unlinked') return '🔗 LINK HOMESTEAD';
     return '⚙ ADD ' + ((gap && gap.provider) || activeProvider()).toUpperCase() + ' KEY';
   }
   function bannerText(gap) {
     if (gap.kind === 'nomodel') return 'no model selected for ' + gap.provider.toUpperCase() + ' — choose a model to send a message.';
-    if (gap.kind === 'unlinked') return 'your agent is awake — but this station isn’t linked to a STARNET account, so it can’t run a task yet.';
+    if (gap.kind === 'unlinked') return 'your agent is awake — but this farm isn’t linked to a STARNET account, so it can’t run a task yet.';
     return 'your agent is awake — but it has no ' + gap.provider.toUpperCase() + ' key, so it can’t run a task yet.';
   }
 

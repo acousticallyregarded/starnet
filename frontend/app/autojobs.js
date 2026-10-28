@@ -106,7 +106,7 @@
 
     const lines = [];
     lines.push('INTERNAL — SELF-INITIATION. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You now know your Commander. Propose up to ' + max + ' RECURRING STANDING JOBS worth running for them on a schedule — real, useful, recurring work, not generic filler.');
+    lines.push('You now know your Farmer. Propose up to ' + max + ' RECURRING STANDING JOBS worth running for them on a schedule — real, useful, recurring work, not generic filler.');
     // hand the model the grounding material explicitly
     const dimLine = (key, label) => {
       const arr = Array.isArray(beliefs[key]) ? beliefs[key].filter(Boolean) : [];
@@ -132,7 +132,7 @@
     lines.push('WHY: <one sentence — the specific goal/pain/ambition it serves>');
     lines.push('GROUNDS: <the exact thing you know that grounds it>');
     lines.push('CADENCE: <one id from the list>');
-    lines.push('RUN: <the standing instruction the job runs each time — a self-contained reasoning/drafting task that ends by leaving a clear draft for the Commander>');
+    lines.push('RUN: <the standing instruction the job runs each time — a self-contained reasoning/drafting task that ends by leaving a clear draft for the Farmer>');
     return lines.join('\n');
   }
 

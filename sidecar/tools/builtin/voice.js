@@ -71,10 +71,10 @@
       name: 'voice_generate', capability: 'studio', scope: 'write', requiresConsent: true, timeoutMs: SYNTH_TIMEOUT_MS + 15000,
       description: 'Speak text as neural audio and SAVE it into your workspace as a playable clip (returns the saved '
         + 'path + a viewer URL, and the clip appears in chat with a player). Use for any "record / narrate / read this '
-        + 'aloud / make a voiceover" request, or to hand the Commander an audio version of something you wrote. This '
-        + 'is NOT how you talk in conversation — your spoken replies are already handled by the station. Optional '
+        + 'aloud / make a voiceover" request, or to hand the Farmer an audio version of something you wrote. This '
+        + 'is NOT how you talk in conversation — your spoken replies are already handled by the farm. Optional '
         + '"voice" picks a named voice and "style" gives delivery direction (e.g. "calm and deliberate"); support for '
-        + 'both depends on which voice credential the station holds. Optional "path" sets the output filename. Long '
+        + 'both depends on which voice credential the farm holds. Optional "path" sets the output filename. Long '
         + 'scripts: split them into takes and call once per take — text over ' + MAX_TEXT + ' characters is refused, never truncated.',
       schema: {
         type: 'object', required: ['text'], properties: {
@@ -93,7 +93,7 @@
           throw new Error('text is ' + text.length + ' characters; the cap is ' + MAX_TEXT
             + '. Split the script into takes and call voice_generate once per take — a truncated voiceover is worse than a refused one.');
         }
-        if (!synth) throw new Error('this station has no speech synthesizer wired — voice_generate cannot produce audio here');
+        if (!synth) throw new Error('this farm has no speech synthesizer wired — voice_generate cannot produce audio here');
 
         const r = await synth({ text: text, voice: str(args.voice), style: str(args.style) });
         if (!r || r.ok === false || !r.buf || !r.buf.length) {

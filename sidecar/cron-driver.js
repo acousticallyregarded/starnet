@@ -518,7 +518,7 @@
       let deliveryNote = '';
       if (deliveryNoteFor) { try { deliveryNote = String(deliveryNoteFor(job) || ''); } catch (e) { failNote('cron.deliveryNote', e); deliveryNote = ''; } }
       const system = ((ident.system && String(ident.system)) || personaOf(job.agentId, job))
-        + (dockBrief ? '\n\nYOUR STANDING BRIEF FOR THIS STATION:\n' + String(dockBrief).slice(0, 2000) : '')
+        + (dockBrief ? '\n\nYOUR STANDING BRIEF FOR THIS FARM:\n' + String(dockBrief).slice(0, 2000) : '')
         + deliveryNote;
 
       const messages = [{ role: 'user', content: assembledPrompt }];

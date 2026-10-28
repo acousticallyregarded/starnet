@@ -30,16 +30,16 @@
   // failopen.note — the tagged SYNC swallow (per-tag count + throttled warn): a fail-open catch must never be invisible.
   const { note: failNote, swallow } = (typeof require === 'function') ? require('../failopen.js') : { note: function (tag, e) { console.warn('[failopen] ' + tag + ':', (e && e.message) || e); }, swallow: function (tag) { return function (e) { console.warn('[failopen] ' + tag + ':', (e && e.message) || e); }; } };
 
-  const TASK_SUFFIX = ' The Commander has just messaged you a task — carry it out as best you can and report the result clearly.';
+  const TASK_SUFFIX = ' The Farmer has just messaged you a task — carry it out as best you can and report the result clearly.';
   /* dockSystem(persona, brief, isTask) — the system context an ENTRY dock runs under: its persona, the dock's
      standing brief (step editor — the SAME section header the chain handoff turn uses), and the task suffix.
      Pure + exported so the conveyor step-through test composes the identical entry run (2026-09-22). */
   function dockSystem(persona, brief, isTask) {
     return persona
-      + (brief ? '\n\nYOUR STANDING BRIEF FOR THIS STATION:\n' + String(brief).slice(0, 2000) : '')
+      + (brief ? '\n\nYOUR STANDING BRIEF FOR THIS FARM:\n' + String(brief).slice(0, 2000) : '')
       + (isTask ? TASK_SUFFIX : '');
   }
-  const DEFAULT_PERSONA = 'You are the Commander\'s AI agent, reachable over a messaging app. Address the user as "Commander", '
+  const DEFAULT_PERSONA = 'You are the Farmer\'s AI agent, reachable over a messaging app. Address the user as "Farmer", '
     + 'keep a spark of personality, and keep replies concise and chat-friendly. When given a task you have REAL tools '
     + '(web search/read, files, memory) — use them and report what you actually found.';
 
@@ -85,7 +85,7 @@
     }
     // a /stop, a newer message or an E-STOP never reaches here (abandoned() owns those); what is left is a STOP by run
     // id from the station (the desk screen / HUD STOP → POST /api/cancel), so say so instead of going quiet.
-    if (reason === 'cancelled') return '\n\n(stopped from the StarNet app before it finished — nothing more will run for this message.)';
+    if (reason === 'cancelled') return '\n\n(stopped from the Homestead app before it finished — nothing more will run for this message.)';
     if (reason === 'clarifying') return '';   // a Task Brief question IS the reply — never a "(stopped: …)" note
     if (reason === 'refusal') return '';
     if (reason === 'done') {
@@ -246,7 +246,7 @@
     { command: 'agents', description: 'List agents (→ marks the one you are talking to)', aliases: ['tasks'] },
     { command: 'talk', description: 'Switch this chat to another agent', usage: '/talk <name>', owner: 'always' },
     { command: 'model', description: 'Show or change the current agent\'s model', usage: '/model [id]', owner: 'write' },
-    { command: 'usage', description: 'Real spend from the station ledger', slash: true, owner: 'always' },
+    { command: 'usage', description: 'Real spend from the farm ledger', slash: true, owner: 'always' },
     { command: 'tools', description: 'The tools this agent can actually call', slash: true },
     { command: 'routine', description: 'List, create or pause scheduled routines', usage: '/routine [list|add <schedule> | <task>|pause N|rm N]', slash: true, owner: 'always', aliases: ['routines'] },
     { command: 'away', description: 'Queue work to build on the away shift', usage: '/away [<what to build>|list|on|off]', slash: true, owner: 'always', aliases: ['build-away', 'buildaway'] },
@@ -609,7 +609,7 @@
         // doesn't fit — a silent cut would ask for an approval of words the Commander never saw
         const ARGS_MAX = 3000;
         const args = String(f.argsSummary || '').trim();
-        const shown = args.length > ARGS_MAX ? args.slice(0, ARGS_MAX) + '\n… (' + (args.length - ARGS_MAX) + ' more characters: open StarNet to read the whole request before you allow it)' : args;
+        const shown = args.length > ARGS_MAX ? args.slice(0, ARGS_MAX) + '\n… (' + (args.length - ARGS_MAX) + ' more characters: open Homestead to read the whole request before you allow it)' : args;
         const body = '🔐 Permission needed\n\n' + String(f.tool || 'a tool')
           + (f.scope ? '  (' + f.scope + ')' : '')
           + (shown ? '\n' + shown : '')
@@ -1130,7 +1130,7 @@
     // live floor plan, which is content-per-message and not a stable "who am I talking to"). Used by /agents,
     // /talk confirmations, and /model to name the target honestly.
     function ownerOnlyReply(label) {
-      return '⚠ ' + label + ' is owner-only on this station — only the paired owner can use it. You can still talk to the agent here.';
+      return '⚠ ' + label + ' is owner-only on this farm — only the paired owner can use it. You can still talk to the agent here.';
     }
 
     function currentBoundAgent(chatId, boundAgentId, sec) {
@@ -1171,7 +1171,7 @@
         const me = (roster || []).find(x => String(x.agentId) === String(boundId));
         const who = me ? (me.name || me.agentId) : boundId;
         await deliver(chatId,
-          'STARNET online — you are talking to ' + who + '.\n\n'
+          'HOMESTEAD online — you are talking to ' + who + '.\n\n'
           + 'Just say what you need in plain language and I will get on it. I can search and read the web, '
           + 'work with your files, remember things for you, and run scheduled work.\n\n'
           + helpText(), '', 'command');
@@ -1390,7 +1390,7 @@
           : ', call me by name';
         await deliver(chatId,
           'This group is admitted. Anyone here can now talk to me — @-mention me, reply to me' + byName + ', or use a command — '
-          + 'and every answer is a real run on your station. Send /deny to remove me.', '', 'command');
+          + 'and every answer is a real run on your farm. Send /deny to remove me.', '', 'command');
         return;
       }
 
@@ -1647,7 +1647,7 @@
         catch (e) { failNote('channels.hub.interruptedAttempt.save', e); }
       }
       const ask = clipAsk(msg && msg.text);
-      await deliver(chatId, '⚠ StarNet restarted while it was working on ' + (ask ? '"' + ask + '"' : 'your message')
+      await deliver(chatId, '⚠ Homestead restarted while it was working on ' + (ask ? '"' + ask + '"' : 'your message')
         + '. That attempt had already begun ' + stepsWord(prior.tools) + ', so part of it may already be done. It was NOT run again, '
         + 'so nothing is done twice. Reply "continue" to finish what is left — the next run is told those steps already began.',
         runId, 'interrupted', agentId);
@@ -1656,9 +1656,9 @@
     }
     function interruptedAttemptNote(a) {
       const n = Math.max(0, Math.floor(Number(a && a.tools) || 0));
-      return '\n\nHOST NOTE — AN EARLIER REQUEST WAS INTERRUPTED: StarNet restarted while an earlier request in this chat was being '
+      return '\n\nHOST NOTE — AN EARLIER REQUEST WAS INTERRUPTED: Homestead restarted while an earlier request in this chat was being '
         + 'worked on, after that attempt had begun ' + stepsWord(n) + '. It was not run again. Any tool result of it in this conversation '
-        + 'already happened. If the Commander asks to continue it, finish only what is still missing: never repeat a step whose result '
+        + 'already happened. If the Farmer asks to continue it, finish only what is still missing: never repeat a step whose result '
         + 'is already here, and check the current state before redoing a step whose result is not.';
     }
 
@@ -2107,14 +2107,14 @@
       try { emit('channel.inbound', { channel, chatId, agentId, userId: msg.userId || '', kind: msg.chatType === 'group' ? 'group' : 'dm' }); } catch (_) {}
 
       if (!sec.model || (!usingCodex && !sec.configured && !sec.key)) {
-        await deliver(chatId, '⚠ ' + (sec.error || 'No provider/model is configured yet. Open the STARNET app → Messaging tab and connect.'), '', 'error');
+        await deliver(chatId, '⚠ ' + (sec.error || 'No provider/model is configured yet. Open the HOMESTEAD app → Messaging tab and connect.'), '', 'error');
         return;
       }
       // an earlier run of this message began no tool step before the crash: running it again cannot do anything twice —
       // but the chat is told it is a second go, never left to think it is the first
       if (priorAttempt) {
         const ask = clipAsk(msg.text);
-        await deliver(chatId, '↻ StarNet restarted while it was working on ' + (ask ? '"' + ask + '"' : 'your message')
+        await deliver(chatId, '↻ Homestead restarted while it was working on ' + (ask ? '"' + ask + '"' : 'your message')
           + '. It had not begun any tool step yet, so nothing can happen twice — running it again now.', priorAttempt.runId, 'command', agentId);
       }
 
@@ -2285,7 +2285,7 @@
           haltNoticeSent = true;
           // the station's OWN process-fault containment marks the run `faulted` before it kills it (halt.js markFaulted): that
           // stop is said as the fault it was, never as an E-STOP nobody pressed (wave 2 repair, conveyor-backend-08)
-          const why = myRec.faulted ? 'the station hit an internal fault and stopped this run' : 'E-STOP was pressed in the station';
+          const why = myRec.faulted ? 'the farm hit an internal fault and stopped this run' : 'E-STOP was pressed in the farm';
           try {
             await deliver(chatId, '⏹ Stopped — ' + why + '. This message got no reply and nothing further will run for it.', myRec.runId || '', 'command');
           } catch (_) { /* a stop notice must never crash the teardown */ }
@@ -2657,7 +2657,7 @@
       // result is not read. What it must never be is a different answer from the one the broker applied.
       if (editMessage && entry.messageId) {
         const outcome = allowedAs
-          ? '▸ already answered in StarNet — ALLOWED (' + allowedAs + ')'
+          ? '▸ already answered in Homestead — ALLOWED (' + allowedAs + ')'
           : lostRace
           ? '▸ ⚠ expired — DENIED, the run moved on'
           : '▸ ' + String(opt.display || opt.value);

@@ -119,7 +119,7 @@
   }
 
   const STATUS_WORDS = {
-    undecided: 'UNDECIDED — built, waiting on your review', kept: 'kept by the Commander', discarded: 'discarded by the Commander',
+    undecided: 'UNDECIDED — built, waiting on your review', kept: 'kept by the Farmer', discarded: 'discarded by the Farmer',
     implemented: 'implemented into the project', failed: 'failed to build', queued: 'queued, not built yet',
     building: 'being built', drafted: 'drafted (text only)'
   };

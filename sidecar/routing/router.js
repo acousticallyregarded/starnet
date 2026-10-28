@@ -78,7 +78,7 @@ function makeRouter(o) {
     if (!v.routingOk) {
       return {
         ok: false,
-        error: 'station routing plan has blocking errors',
+        error: 'farm routing plan has blocking errors',
         codes: v.routingPlan.errors.filter(e => !e.warn).map(e => e.code)
       };
     }

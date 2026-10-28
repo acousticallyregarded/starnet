@@ -23,7 +23,7 @@ const ModelPicker = (() => {
   function shellHTML(opts) {
     opts = opts || {};
     const id = opts.id || 'mp';
-    const inherit = opts.inheritLabel || 'Follow station default';
+    const inherit = opts.inheritLabel || 'Follow farm default';
     let h = '<span class="mp-wrap" data-mp="' + esc(id) + '">';
     h += '<select class="mp-model" id="' + esc(id) + '-model" aria-label="' + esc(opts.ariaLabel || 'Model') + '">';
     h += '<option value="">' + esc(inherit) + '</option>';
@@ -72,7 +72,7 @@ const ModelPicker = (() => {
     catch (_) { list = []; }
     root._mpList = list;   // stash the full items so onChange can recompute effort options accurately
 
-    const inheritLabel = opts.inheritLabel || (sel.querySelector('option[value=""]') ? sel.querySelector('option[value=""]').textContent : 'Follow station default');
+    const inheritLabel = opts.inheritLabel || (sel.querySelector('option[value=""]') ? sel.querySelector('option[value=""]').textContent : 'Follow farm default');
     sel.innerHTML = '';
     sel.appendChild(new Option(inheritLabel, ''));
     let group = '', og = null;

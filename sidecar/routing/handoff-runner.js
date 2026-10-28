@@ -98,7 +98,7 @@ function makeHandoffRunner(deps) {
   /* can the TARGET line take work right now? (no side effects) — the trigger preflight's questions, asked of the target */
   function preflight(plan, toLine) {
     // (bare reasons — wave 2 review, conveyor-backend-09: the record's 'not sent on: ' and every sender surface already say it was not sent)
-    if (halted()) return faulted() ? 'the station hit an internal fault and stopped its background work' : 'automation is stopped (E-STOP)';
+    if (halted()) return faulted() ? 'the farm hit an internal fault and stopped its background work' : 'automation is stopped (E-STOP)';
     if (closing) return closing;
     if (!plan) return 'no work line is armed';
     if (!lineRec(plan, toLine)) return 'the line it sends to is no longer on the floor — set its SEND TO again';
@@ -338,7 +338,7 @@ function makeHandoffRunner(deps) {
     // E-STOP killed it: the Commander stopped this job (the sample route's STOPPED), never "a step did not finish cleanly" — or the
     // station's own fault containment did, which says so rather than naming an E-STOP nobody pressed
     const stopped = !completed && halted();
-    if (stopped) err = faulted() ? 'the station hit an internal fault and stopped this job' : 'E-STOP stopped this job';
+    if (stopped) err = faulted() ? 'the farm hit an internal fault and stopped this job' : 'E-STOP stopped this job';
     else if (!completed) {
       if (threw && threw.error) err = 'the line failed: ' + threw.error;
       else if (!info || !info.agentId || !s.current.routed || s.current.routed.agentId !== info.agentId) err = 'the line routed this work to no dock';

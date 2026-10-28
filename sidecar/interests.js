@@ -129,7 +129,7 @@
   function buildDirective(ctx) {
     ctx = ctx || {};
     const lines = [];
-    lines.push('You are the station\'s intake analyst. From the Commander\'s REAL recent activity below, extract the');
+    lines.push('You are the farm\'s intake analyst. From the Farmer\'s REAL recent activity below, extract the');
     lines.push('SPECIFIC recurring topics or domains they are working in — the kind of interest a tailored recipe or a');
     lines.push('specialist crew member could serve (e.g. "stock research", "songwriting", "kubernetes ops").');
     lines.push('');

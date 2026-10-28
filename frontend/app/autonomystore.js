@@ -44,7 +44,7 @@ const AutonomyStore = (() => {
         return { ok: !error, posture: get(), error, haltLifted: j.haltLifted === true };
       } catch (e) {
         if (generation === epoch) {
-          error = 'Autonomy could not be confirmed. ' + ((e && e.message) || 'Check the station connection and try again.');
+          error = 'Autonomy could not be confirmed. ' + ((e && e.message) || 'Check the farm connection and try again.');
           loaded = false;
           // A lost acknowledgement can follow a committed write. Reconcile before
           // claiming the old setting is current; failed readback means unknown.

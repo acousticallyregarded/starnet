@@ -117,7 +117,7 @@
 
       const raw = await readJson(hooksFile, null);
       const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.hooks) ? raw.hooks : []);
-      if (list.length >= MAX_HOOKS) return { ok: false, error: 'this station already has the maximum of ' + MAX_HOOKS + ' hooks' };
+      if (list.length >= MAX_HOOKS) return { ok: false, error: 'this farm already has the maximum of ' + MAX_HOOKS + ' hooks' };
       if (list.some(h => h && String(h.event) === event && String(h.command).trim() === command)) {
         return { ok: false, error: 'that exact hook already exists' };
       }

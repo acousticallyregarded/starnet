@@ -161,7 +161,7 @@ function documentViewHtml(name, text) {
     + '.doc blockquote{border-left:3px solid #b9791c;margin-left:0;padding-left:14px;color:#e6c08a}.doc hr{border:0;border-top:1px solid #4a3410;margin:1.6em 0}'
     + '.doc table{border-collapse:collapse}.doc th,.doc td{border:1px solid #4a3410;padding:4px 10px;text-align:left}.doc th{color:#ffaa33}'
     + '::selection{background:#ffaa33;color:#0b0904}'
-    + '</style></head><body><main><header><div class="name">' + title + '</div><span>StarNet · read-only</span></header>'
+    + '</style></head><body><main><header><div class="name">' + title + '</div><span>Homestead · read-only</span></header>'
     + (md ? '<article class="doc">' + markdownHtml(text) + '</article>' : '<pre>' + escapeHtml(text) + '</pre>') + '</main></body></html>';
 }
 

@@ -117,7 +117,7 @@
       return /could not attach to Chromium|exited before CDP ownership|Chromium not found|browser could not start|WebSocket\/fetch is not available/i.test(m)
         ? m.replace(/^browser unavailable:\s*/i, '').replace(/^the station browser could not start:\s*/i, '') : '';
     };
-    const downNote = () => 'the station browser could not start (' + launchDown.reason.slice(0, 160) + ')';
+    const downNote = () => 'the farm browser could not start (' + launchDown.reason.slice(0, 160) + ')';
 
     function availability() {
       if (String(env.SKYNET_WEB_READER || env.STARNET_WEB_READER || '') === '0') return { ok: false, reason: 'disabled' };

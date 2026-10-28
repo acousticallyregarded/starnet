@@ -183,7 +183,7 @@ function makeApps(deps) {
   async function publish(id, key, value) {
     await need(id);
     const k = String(key || '');
-    if (k === META_KEY) throw new Error('"' + META_KEY + '" is kept by the station');
+    if (k === META_KEY) throw new Error('"' + META_KEY + '" is kept by the farm');
     // Models often send the JSON as TEXT ("{\"items\":[…]}"): the page would then read a string with no .items and
     // show nothing. Text that is a JSON object or array is stored as that value.
     if (typeof value === 'string' && /^\s*[[{]/.test(value)) value = jsonOr(value);
@@ -220,7 +220,7 @@ function makeApps(deps) {
   }
   async function scheduleNow(id, spec) {
     const { meta } = await need(id);
-    if (!cron) throw new Error('routines are not available on this station');
+    if (!cron) throw new Error('routines are not available on this farm');
     const every = plain(spec && spec.every, 80);
     const task = plain(spec && spec.task, 2000);
     const old = (meta.schedule && meta.schedule.jobId && ownJob(id, meta.schedule.jobId)) ? meta.schedule.jobId : null;
@@ -239,13 +239,13 @@ function makeApps(deps) {
     // keeps its grants and the Commander's words stay theirs (review 2026-10-02 — the label alone used to read as a new prompt)
     const crewRewrite = !!(spec && spec.byAgent) && !(meta.schedule && meta.schedule.task === task);
     const keptJob = (old && meta.schedule && meta.schedule.task === task) ? cron.get(old) : null;
-    const prompt = (spec && spec.byAgent && keptJob && typeof keptJob.prompt === 'string') ? keptJob.prompt : 'Refresh the StarNet app "' + meta.name + '" (app id: ' + id + ').\n\n' +
+    const prompt = (spec && spec.byAgent && keptJob && typeof keptJob.prompt === 'string') ? keptJob.prompt : 'Refresh the Homestead app "' + meta.name + '" (app id: ' + id + ').\n\n' +
       'Today\'s real date is in your [RUNTIME] block — your own sense of the date is out of date; the task is about today.\n\n' +
-      (crewRewrite ? 'TASK (what each update should do, as the crew set it up): ' : 'TASK (the Commander\'s own words for every update): ') + task + '\n\n' +
+      (crewRewrite ? 'TASK (what each update should do, as the crew set it up): ' : 'TASK (the Farmer\'s own words for every update): ') + task + '\n\n' +
       'Do what the task says. New or current INFORMATION goes in with app.publish (find it with tool.search "app publish"): app "' + id + '", ' +
       'using the SAME key and data shape the app\'s page reads (check with app.read { app: "' + id + '" }). ' +
       'If the task asks the app ITSELF to change — its look, layout, what it shows or how it works — rewrite the page: app.read { app: "' + id + '", path: "index.html" }, then app.write the whole new file, then app.check it; keep everything that already works. ' +
-      'For this routine THE APP IS THE DELIVERY: an update that neither publishes nor writes did nothing — the Commander sees only what you publish or write, so never put the result in your reply instead. ' +
+      'For this routine THE APP IS THE DELIVERY: an update that neither publishes nor writes did nothing — the Farmer sees only what you publish or write, so never put the result in your reply instead. ' +
       'Your final reply is one short line saying what changed in the app.';
     const name = 'App: ' + meta.name;
     let out;
@@ -258,7 +258,7 @@ function makeApps(deps) {
       out = await cron.create({ name, schedule: every, prompt, agentId: 'agent', meta: { appId: id } });
       if (!out.ok) throw new Error(out.error || 'the routine could not be created');
       // the routine must be THIS app's own new one — never an existing routine handed back as a "duplicate"
-      if (out.job.id === old || !out.job.meta || out.job.meta.appId !== id) throw new Error('the routine could not be created (the station answered with another routine)');
+      if (out.job.id === old || !out.job.meta || out.job.meta.appId !== id) throw new Error('the routine could not be created (the farm answered with another routine)');
       await retire();
     }
     await retireOthers(id, out.job.id);

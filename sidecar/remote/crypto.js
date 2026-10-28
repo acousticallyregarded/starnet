@@ -73,7 +73,7 @@ function newNonce() { return b64u(crypto.randomBytes(16)); }
    their own private keys and the other side's publics and get byte-identical { p2s, s2p }. */
 function deriveSessionKeys(o) {
   const side = o.side;
-  if (side !== 'station' && side !== 'phone') throw new Error('side must be station or phone');
+  if (side !== 'station' && side !== 'phone') throw new Error('side must be farm or phone');
   const ee = ecdh(o.myEphPrivate, o.peerEphPublic);
   const ss = ecdh(o.myStaticPrivate, o.peerStaticPublic);
   const stationPub = side === 'station' ? o.myStaticPublic : o.peerStaticPublic;

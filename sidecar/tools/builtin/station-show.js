@@ -19,35 +19,35 @@ const Places = require('../../../frontend/app/places.js');
 function makeStationShowTool(deps) {
   deps = deps || {};
   const station = (deps.station && typeof deps.station.request === 'function') ? deps.station : null;
-  const refuse = error => ({ content: 'REFUSED: ' + error + ' — do not tell the Commander it is open.', summary: 'not shown' });
+  const refuse = error => ({ content: 'REFUSED: ' + error + ' — do not tell the Farmer it is open.', summary: 'not shown' });
   const tool = {
     name: 'station.show', capability: 'stationinfo', scope: 'read', requiresConsent: false, timeoutMs: 15000,
-    description: 'OPEN a StarNet window, tab or section on the Commander\'s screen when they ask where something is or to '
+    description: 'OPEN a Homestead window, tab or section on the Farmer\'s screen when they ask where something is or to '
       + 'see it ("show me my deliverables", "open schedules", "take me to the recruitment bay") — instead of describing '
       + 'the clicks. place: ' + Places.PLACES.map(p => p.id + ' (' + p.words + ')').join(', ')
       + '. agent (name or id) is required for agent, agent-growth, agent-record, agent-memory, agent-config, agent-desk. '
-      + 'Only works while the Commander is watching this conversation; if refused, tell them where it is.',
+      + 'Only works while the Farmer is watching this conversation; if refused, tell them where it is.',
     // no `required`: a real model (Claude Haiku 4.5, 2026-10-08) sent {target | window | page | section: "settings-…"} and was turned away as
     // invalid arguments — the place is read from place | target | id | window here, and only a catalog id ever opens
     schema: { type: 'object', properties: { place: { type: 'string', enum: Places.ids() }, agent: { type: 'string' } } },
     run: async (args, ctx) => {
       const asked = ['place', 'target', 'id', 'window', 'page', 'section'].map(k => args && args[k]).find(v => typeof v === 'string' && v.trim()) || '';
       const place = Places.get(asked);
-      if (!place) return refuse((asked ? 'there is no StarNet place "' + asked + '"' : 'no place was named') + ' — call it as {place: "<id>"} with an id from this tool\'s list');
+      if (!place) return refuse((asked ? 'there is no Homestead place "' + asked + '"' : 'no place was named') + ' — call it as {place: "<id>"} with an id from this tool\'s list');
       const agent = String((args && args.agent) || '').trim();
       if (Places.needsAgent(place) && !agent) return refuse(place.id + ' needs the agent\'s name');
-      if (!station) return refuse('this run has no StarNet page attached (nobody has the station open)');
+      if (!station) return refuse('this run has no Homestead page attached (nobody has the farm open)');
       const origin = ctx && ctx.streamId && ctx.runId ? { streamId: String(ctx.streamId), runId: String(ctx.runId) } : null;
       let out;
       try { out = await station.request('station.show', { place: place.id, agent: agent || undefined, origin }); }
       catch (e) { out = { ok: false, error: String((e && e.message) || e) }; }
-      if (!out || !out.ok) return refuse(String((out && out.error) || 'the station did not answer'));
+      if (!out || !out.ok) return refuse(String((out && out.error) || 'the farm did not answer'));
       const r = out.result || {};
       const where = place.words + (r.agentName ? ' for ' + r.agentName : '');
       // real-model run 2026-10-08: "clear my notifications" opened NOTIFICATIONS and told the Commander to clear them by hand
-      return { content: 'OPEN on the Commander\'s screen: ' + where + ' — ' + place.about + '. If they asked you to CHANGE something '
+      return { content: 'OPEN on the Farmer\'s screen: ' + where + ' — ' + place.about + '. If they asked you to CHANGE something '
         + 'here, opening it is not doing it: do the change with station.control / station.power if you have them (tool.search '
-        + '"station control").', summary: 'showed ' + where };
+        + '"farm control").', summary: 'showed ' + where };
     }
   };
   return { tool, register(reg) { reg.register(tool); return reg; } };

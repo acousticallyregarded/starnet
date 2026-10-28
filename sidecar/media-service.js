@@ -283,7 +283,7 @@ function makeMediaService(options) {
     try {
       response = await fetchFn('https://openrouter.ai/api/v1/audio/speech', voiceFetchOpts({
         method: 'POST',
-        headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://localhost', 'X-Title': 'STARNET' },
+        headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://localhost', 'X-Title': 'HOMESTEAD' },
         body: JSON.stringify(payload)
       }, 60000));
     } catch (error) { return { ok: false, reason: 'network: ' + ((error && error.message) || error) }; }
@@ -336,7 +336,7 @@ function makeMediaService(options) {
         reasons.push('edge: empty audio');
       } catch (error) { reasons.push('edge: ' + ((error && error.message) || error)); }
     } else if (edgeFloor) reasons.push('edge: disabled');
-    return { ok: false, reason: reasons.join('; ') || (edgeFloor ? 'this station holds no voice-capable credential' : 'no keyed voice provider') };
+    return { ok: false, reason: reasons.join('; ') || (edgeFloor ? 'this farm holds no voice-capable credential' : 'no keyed voice provider') };
   }
   /* The spoken voice for a paired device (remote/voice.js `speak`): always the built-in engine's DEFAULT voice
      (am_onyx), then that voice's mapped Edge neural voice, then the keyed ladder. Voice picks (station and
@@ -622,7 +622,7 @@ function makeMediaService(options) {
         try {
           response = await fetchFn('https://openrouter.ai/api/v1/chat/completions', voiceFetchOpts({
             method: 'POST',
-            headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://localhost', 'X-Title': 'STARNET' },
+            headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://localhost', 'X-Title': 'HOMESTEAD' },
             body: JSON.stringify({ model, messages: [{ role: 'user', content: [
               { type: 'input_audio', input_audio: { data: audio, format } }, { type: 'text', text: STT_PROMPT }
             ] }] })

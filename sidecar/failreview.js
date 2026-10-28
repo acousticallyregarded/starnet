@@ -176,9 +176,9 @@
       ' durable LESSONS worth remembering for future runs — one per line, each tagged LESSON:. A lesson names ' +
       'what failed, why, and what to do differently next time — concrete and reusable, never a restatement of ' +
       'the failure, never blame. Skip one-off transient noise (a single network blip) unless a recovery ' +
-      'pattern is visible across attempts. The Commander reads these lessons: write them in plain words about ' +
+      'pattern is visible across attempts. The Farmer reads these lessons: write them in plain words about ' +
       'the task, never internal tool names, schemas or error codes. Never advise skipping, bypassing or treating ' +
-      'as optional a step the station requires (the task brief, an approval, consent, a permission) — if such a ' +
+      'as optional a step the farm requires (the task brief, an approval, consent, a permission) — if such a ' +
       'step kept failing, the lesson is how to satisfy it. If nothing durable can be learned, reply NONE.\n\n' +
       head.join('\n') + (body ? ('\n\nTRANSCRIPT TAIL:\n' + body) : '');
   }

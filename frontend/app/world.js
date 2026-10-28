@@ -325,16 +325,16 @@ const World = (() => {
   const CURIO_NEW_BELT = ['a conveyor!', 'where does this go?', 'a new line', 'that wasnt here before'];
   const CURIO_WATCH = ['cargo moving', 'busy line today', 'steady flow', 'there it goes', 'keep it moving'];
   const CURIO_STUDY = ['how does this run', 'let me look closer', 'curious', 'noted', 'interesting'];
-  const CURIO_LOOK = ['hm.', 'all quiet', 'good station', '...', 'just taking it in'];
+  const CURIO_LOOK = ['hm.', 'all quiet', 'good farm', '...', 'just taking it in'];
   const SELF_REST = ['need a breather', 'feet up for a bit', 'recharge', 'easy for a minute', 'resting the circuits'];
   const SELF_STIM = ['too quiet', 'something to do', 'restless', 'let me find something', 'need a spark'];
-  const SELF_TEND = ['anything for me?', 'standing by', 'awaiting orders', 'still here, Commander', 'ready when you are'];
+  const SELF_TEND = ['anything for me?', 'standing by', 'awaiting orders', 'still here, Farmer', 'ready when you are'];
   const SELF_ONDUTY = ['on it', 'parsing', 'let me think', 'working it', 'processing'];
   const SELF_NOCOMPUTE = ['no terminal in this room', 'nothing to run on here', 'i need a computer here', 'this room has no compute'];   // G0.7: sat down to work in a room that grants no COMPUTE — said once, then silence
   const SELF_QUIET = ['...', 'cycles to spare', 'so quiet', 'just me and the stars', 'standing by'];
   const SELF_CONTEMPLATE = ['quiet out there', 'so much void', 'just... processing', 'the stars again', 'endless out there'];
   const SELF_DISPATCH = ['sent', 'delivered', 'thats away', 'reply is out', 'done and gone'];
-  const SELF_GREET = ['yes, Commander?', 'still here', 'watching', 'at your service', 'go ahead'];
+  const SELF_GREET = ['yes, Farmer?', 'still here', 'watching', 'at your service', 'go ahead'];
   const SELF_ACK = ['hm?', 'yes?', 'still here', 'watching'];
   /* LEISURE FLAVOUR, keyed by the catalog `use.kind`. Every prop with a `use` descriptor is a real
      destination an idle body walks to, so a line here is a truthful report of where it IS — never a
@@ -986,7 +986,7 @@ const World = (() => {
     if (futileRecoveries > 0 && now - lastRecoverAt < cooldown) return false;
     lastRecoverAt = now; recoveries++;
     try {
-      console.warn('[world] cached canvases lost (' + why + ') — rebuilding station + sky + ground (recovery #' + recoveries + ')');
+      console.warn('[world] cached canvases lost (' + why + ') — rebuilding farm + sky + ground (recovery #' + recoveries + ')');
     } catch (_) {}
     bakeDirty = true; bakeProbe = null;
     resetLossProbe();
@@ -1516,8 +1516,8 @@ const World = (() => {
     // and re-bake. Rejection is ignored on purpose — a missing face is already a hard failure the
     // gate catches (test/font.law.test.js), and there is nothing useful to do about it here.
     try {
-      if (document.fonts && !document.fonts.check("16px 'VT323'", 'Station')) {
-        document.fonts.load("16px 'VT323'", 'Station')
+      if (document.fonts && !document.fonts.check("16px 'VT323'", 'Farm')) {
+        document.fonts.load("16px 'VT323'", 'Farm')
           .then(() => { bakeDirty = true; redrawNow(); })
           .catch(() => {});
       }
@@ -6947,7 +6947,7 @@ const World = (() => {
     ctx.font = Math.round(14 * (window.devicePixelRatio || 1)) + 'px VT323, monospace';
     ctx.shadowBlur = 6 * (window.devicePixelRatio || 1);
     ctx.fillStyle = '#ffb0a0';
-    ctx.fillText('the station render loop is faulting — reload if this persists', cx, cy + Math.round(26 * (window.devicePixelRatio || 1)));
+    ctx.fillText('the farm render loop is faulting — reload if this persists', cx, cy + Math.round(26 * (window.devicePixelRatio || 1)));
     ctx.shadowBlur = 0; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
   }
 
@@ -11497,7 +11497,7 @@ const World = (() => {
     U.bus.on('provider.fallback', p => {
       if (!p || !p.toModel) return;
       const to = String(p.toModel).split('/').pop();
-      pushTicker('STATION ▸ REROUTE · ' + tickerClip(to, 32).toUpperCase(), '', null);
+      pushTicker('FARM ▸ REROUTE · ' + tickerClip(to, 32).toUpperCase(), '', null);
     });
     // ── STRETCH: desk work-glyph state — a tool in flight (tool_call → its tool_result) marks the agent;
     //    the render pass (drawWorkGlyphs) draws a tiny tag at that desk. run.end clears any stale mark. ──

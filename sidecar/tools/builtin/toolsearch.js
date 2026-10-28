@@ -217,7 +217,7 @@
     const hit = COMMAND_WORDS.test(String(q)) || names.some(n => qs.some(w => String(n).toLowerCase().indexOf(w) >= 0));
     if (!hit) return '';
     const first = withheld[names[0]] || {};
-    return 'WITHHELD on this run (these exist on this station, but you cannot call them here): ' + names.join(', ')
+    return 'WITHHELD on this run (these exist on this farm, but you cannot call them here): ' + names.join(', ')
       + '. Why: ' + first.why + '. What works instead: ' + first.enable + '.';
   }
 

@@ -317,10 +317,10 @@
     const unread = cleanList(list).filter(r => r.enabled !== false && r.envVar && r.ref && !r.key)
       .slice().sort((a, b) => String(a.name).localeCompare(String(b.name)))
       .map(r => '- ' + r.name + ': ' + r.envVar + ' — kept in 1Password, which could not be read for this run ('
-        + String(r.refError || 'not read yet') + '). Ask the Commander to unlock 1Password; do not ask for the key itself.');
+        + String(r.refError || 'not read yet') + '). Ask the Farmer to unlock 1Password; do not ask for the key itself.');
     if (!rows.length && !unread.length) return '';
     if (!rows.length) {
-      return '<service_keys>\nThe Commander keeps these API keys in 1Password. None could be read for this run, so none is in your environment:\n'
+      return '<service_keys>\nThe Farmer keeps these API keys in 1Password. None could be read for this run, so none is in your environment:\n'
         + unread.join('\n') + '\n</service_keys>';
     }
     // WHICH WAY can this run actually spend a key? The block must describe only the routes the run HAS,
@@ -356,9 +356,9 @@
         + rows[0].envVar + '% (inside powershell -Command use $env:' + rows[0].envVar + '); $' + rows[0].envVar + ' is NOT expanded there'
       : 'in your shell, where each name is an environment variable ($' + rows[0].envVar + ' in curl etc.)');
     return '<service_keys>\n'
-      + 'The Commander has connected API keys for these services. You can use them ' + how.join('; and ') + '.\n'
+      + 'The Farmer has connected API keys for these services. You can use them ' + how.join('; and ') + '.\n'
       + (canRequest && canShell ? 'Prefer web_request for API calls — it needs no shell quoting and works the same on every OS.\n' : '')
-      + 'You will never see a key\'s value and must never ask the Commander for one. NEVER print, echo, or '
+      + 'You will never see a key\'s value and must never ask the Farmer for one. NEVER print, echo, or '
       + 'write a value anywhere; reference it only by name.\n'
       + lines.join('\n')
       + (unread.length ? '\nNot available for this run:\n' + unread.join('\n') : '')

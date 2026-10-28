@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STARNET</title>
+<title>HOMESTEAD</title>
 <!-- no favicon file ships: an empty data: icon stops a full browser probing /favicon.ico (a 404 in the console on every load) -->
 <link rel="icon" href="data:,">
 <!-- VT323 — THE STARNET FONT — has exactly ONE source: the local @font-face in css/style.css
@@ -77,9 +77,9 @@
      ends in show(<screen>) (splash / game / connect / future / recovery), which clears this veil — so a
      returning Commander never flashes the CREATE console on the way to their station (the old bug: #screen-connect
      carried the static .active). Truthful telemetry: it asserts nothing about state — just "connecting". -->
-<section id="screen-boot" class="screen active" aria-label="StarNet booting" aria-hidden="true">
+<section id="screen-boot" class="screen active" aria-label="Homestead booting" aria-hidden="true">
   <div class="boot-veil">
-    <div class="boot-mark">◆ STARNET</div>
+    <div class="boot-mark">◆ HOMESTEAD</div>
     <div class="boot-line">establishing local uplink<span class="boot-dots"></span></div>
   </div>
 </section>
@@ -89,18 +89,18 @@
      perspective grid floor, the big phosphor wordmark, and a blinking PRESS ANY KEY. Any key / click /
      tap advances into CREATE YOUR OVERSEER (app.js showSplash()). Resume/recovery paths never route
      here — a returning Commander lands in the station or the RESUME console, not a title card. -->
-<section id="screen-splash" class="screen" aria-label="StarNet boot screen">
+<section id="screen-splash" class="screen" aria-label="Homestead boot screen">
   <canvas id="sp-stars" aria-hidden="true"></canvas>
   <div class="sp-nebula" aria-hidden="true"></div>
   <div class="sp-floor" aria-hidden="true"><div class="sp-grid"></div></div>
   <span class="cc-bracket sp-tl">┌</span><span class="cc-bracket sp-tr">┐</span>
   <span class="cc-bracket sp-bl">└</span><span class="cc-bracket sp-br">┘</span>
   <div class="sp-center">
-    <img class="sp-logo" src="assets/brand/starnet-logo.png" alt="STARNET" draggable="false">
+    <img class="sp-logo" src="assets/brand/homestead-logo.png" alt="HOMESTEAD" draggable="false">
     <div class="sp-tag">AI-AGENT HARNESS</div>
     <button id="sp-press" class="sp-press" type="button">▮ PRESS ANY KEY TO START</button>
   </div>
-  <div class="sp-stamp"><span class="sp-rec">● LIVE</span><span class="sp-sig">SIGNAL LOCKED · LOCAL STATION 127.0.0.1</span></div>
+  <div class="sp-stamp"><span class="sp-rec">● LIVE</span><span class="sp-sig">SIGNAL LOCKED · LOCAL FARM 127.0.0.1</span></div>
 </section>
 
 <!-- ============ CONNECT / CREATE ============ -->
@@ -118,10 +118,10 @@
     <span class="cc-bracket cc-bl">└</span><span class="cc-bracket cc-br">┘</span>
 
     <header class="cc-console-head ov-head">
-      <div class="cc-titlebar"><span class="ov-wordmark" role="img" aria-label="StarNet"></span><span id="cc-mode" class="cc-tb-mode">GENESIS</span><span class="cc-tb-phosphor"><span class="cc-tb-plabel">COLOR</span><span id="phosphor-swatches" class="phosphor-swatches" role="group" aria-label="Console phosphor tint"></span></span></div>
+      <div class="cc-titlebar"><span class="ov-wordmark" role="img" aria-label="Homestead"></span><span id="cc-mode" class="cc-tb-mode">GENESIS</span><span class="cc-tb-phosphor"><span class="cc-tb-plabel">COLOR</span><span id="phosphor-swatches" class="phosphor-swatches" role="group" aria-label="Console phosphor tint"></span></span></div>
       <div class="cc-title-row ov-title-row">
         <h2 id="cc-title">Create your Overseer</h2>
-        <span id="cc-sub" class="ov-sub">the first mind you wake is your <b>OVERSEER</b> — it runs the station and recruits every agent after it.</span>
+        <span id="cc-sub" class="ov-sub">the first mind you wake is your <b>OVERSEER</b> — it runs the farm and recruits every agent after it.</span>
       </div>
       <ol class="ov-journey" aria-label="Getting started"><li><b>01</b> Create your agent</li><li><b>02</b> Wake &amp; get acquainted</li><li><b>03</b> Start your first task</li></ol>
       <!-- RESUME banner — shown only when re-entering an existing station (recovery / disconnect re-entry).
@@ -189,7 +189,7 @@
       <div class="ov-cfg ov-col-brain" id="ov-brain">
         <div class="ov-step">THE BRAIN <span class="ov-req">REQUIRED</span></div>
         <div class="ov-field ov-field-brain">
-          <div class="ov-section-heading" id="ov-provider-intro"><h3>Connect a brain</h3><p>Start with StarNet, or use a provider you already have.</p></div>
+          <div class="ov-section-heading" id="ov-provider-intro"><h3>Connect a brain</h3><p>Start with Homestead, or use a provider you already have.</p></div>
           <!-- BEGINNER FUNNEL: lead with the no-API-key path. A ChatGPT Plus/Pro login (Codex OAuth) needs
                no key at all, so it's the recommended default and sits first; BYOK (OpenRouter etc.) stays a
                fully visible one-click alternative for anyone who already has a key. -->
@@ -209,7 +209,7 @@
               <button class="prov prov-hero hidden" data-prov="starnet" aria-pressed="false">
                 <span class="prov-hero-row">
                   <span class="prov-hero-body">
-                    <span class="prov-hero-title"><span class="prov-hero-prefix">START WITH</span><span class="ov-wordmark" role="img" aria-label="StarNet"></span></span>
+                    <span class="prov-hero-title"><span class="prov-hero-prefix">START WITH</span><span class="ov-wordmark ov-wordmark-starnet" role="img" aria-label="StarNet"></span></span>
                     <span class="prov-hero-sub">Subscribe and start. No API keys.</span>
                   </span>
                   <span class="prov-hero-arrow" aria-hidden="true">→</span>
@@ -295,7 +295,7 @@
                   <button type="button" id="btn-starnet-credits" class="btn hidden">＄ ADD CREDITS ▸</button>
                   <button type="button" id="btn-starnet-switch" class="btn hidden">↻ USE A DIFFERENT ACCOUNT</button>
                 </div>
-                <div class="dim hint" id="starnet-hint">Runs on your StarNet subscription — no API key to find or paste. You’ll confirm a short code in your browser; StarNet never handles your payment details in the app.</div>
+                <div class="dim hint" id="starnet-hint">Runs on your Homestead subscription — no API key to find or paste. You’ll confirm a short code in your browser; Homestead never handles your payment details in the app.</div>
               </div>
             </div>
 
@@ -335,7 +335,7 @@
                     <button type="button" id="btn-claude-code" class="btn">SUBMIT ▸</button>
                   </div>
                 </div>
-                <div class="dim hint" id="claude-cli-hint">Uses your Claude subscription (Pro, Max, Team or Enterprise) through <b>Claude Code</b> on this computer. Claude Code keeps your sign-in — StarNet never sees or stores it. StarNet keeps every Claude Code tool switched off and runs its own, so your station's permissions still apply. Subscription turns are booked at $0; an API-key sign-in is booked at the cost Claude Code reports.</div>
+                <div class="dim hint" id="claude-cli-hint">Uses your Claude subscription (Pro, Max, Team or Enterprise) through <b>Claude Code</b> on this computer. Claude Code keeps your sign-in — Homestead never sees or stores it. Homestead keeps every Claude Code tool switched off and runs its own, so your farm's permissions still apply. Subscription turns are booked at $0; an API-key sign-in is booked at the cost Claude Code reports.</div>
               </div>
             </div>
 
@@ -364,7 +364,7 @@
                  keyless Codex path (no key ⇒ the whole note is irrelevant there). -->
             <div id="byok-disclose" class="byok-disclose">
               <button type="button" id="byok-toggle" class="byok-toggle" aria-expanded="false" aria-controls="byok-note">▸ where does my key go?</button>
-              <p id="byok-note" class="muted byok-note hidden">Bring your own key — stored locally, sent only to the STARNET sidecar on this machine (127.0.0.1), which calls your chosen model. On a <b>task</b> the agent can search the live web (DuckDuckGo · Jina Reader) and read/write files in its workspace. <span class="dim">(In the shipped desktop build the key moves behind the OS keychain.)</span></p>
+              <p id="byok-note" class="muted byok-note hidden">Bring your own key — stored locally, sent only to the HOMESTEAD sidecar on this machine (127.0.0.1), which calls your chosen model. On a <b>task</b> the agent can search the live web (DuckDuckGo · Jina Reader) and read/write files in its workspace. <span class="dim">(In the shipped desktop build the key moves behind the OS keychain.)</span></p>
             </div>
             </div>
           </div>
@@ -383,7 +383,7 @@
         <button id="btn-import" class="btn-sm">⭱ RESTORE BACKUP</button>
         <button id="btn-export" class="btn-sm hidden">⭳ EXPORT AGENT</button>
         <input id="file-import" type="file" accept="application/json,.json" hidden>
-        <span class="dim">restores a StarNet export file — secrets excluded, re-enter keys after</span>
+        <span class="dim">restores a Homestead export file — secrets excluded, re-enter keys after</span>
         <span id="data-status" class="title-status"></span>
       </div>
       <div class="connect-actions ov-actions">
@@ -411,13 +411,13 @@
     <span class="cc-bracket cc-tl">┌</span><span class="cc-bracket cc-tr">┐</span>
     <span class="cc-bracket cc-bl">└</span><span class="cc-bracket cc-br">┘</span>
     <header class="cc-console-head ov-head">
-      <div class="cc-titlebar"><span class="cc-tb-tag">STARNET</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">UPDATE REQUIRED</span><span class="cc-tb-rec">● HOLD</span></div>
+      <div class="cc-titlebar"><span class="cc-tb-tag">HOMESTEAD</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">UPDATE REQUIRED</span><span class="cc-tb-rec">● HOLD</span></div>
       <div class="cc-title-row ov-title-row">
-        <h2>▮ SAVE FROM A NEWER STARNET</h2>
+        <h2>▮ SAVE FROM A NEWER HOMESTEAD</h2>
         <span id="future-sub" class="ov-sub"></span>
       </div>
       <div class="ov-recovery" role="alert">
-        Your station was last saved by a <b>newer version of StarNet</b>. This build can't read that save
+        Your farm was last saved by a <b>newer version of Homestead</b>. This build can't read that save
         without risking damage to it, so it's being kept <b>untouched</b>. Update the app to continue — your
         agent, history and progress are safe.
       </div>
@@ -428,7 +428,7 @@
         <span class="ov-foot-cap">＋ your save is intact — this build simply predates it</span>
       </div>
       <div class="connect-actions ov-actions">
-        <button id="btn-future-update" class="btn-xl">⭯ UPDATE STARNET ▸</button>
+        <button id="btn-future-update" class="btn-xl">⭯ UPDATE HOMESTEAD ▸</button>
       </div>
     </div>
   </div>
@@ -445,16 +445,16 @@
     <span class="cc-bracket cc-tl">┌</span><span class="cc-bracket cc-tr">┐</span>
     <span class="cc-bracket cc-bl">└</span><span class="cc-bracket cc-br">┘</span>
     <header class="cc-console-head ov-head">
-      <div class="cc-titlebar"><span class="cc-tb-tag">STARNET</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">SAVE DAMAGED</span><span class="cc-tb-rec">● HOLD</span></div>
+      <div class="cc-titlebar"><span class="cc-tb-tag">HOMESTEAD</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">SAVE DAMAGED</span><span class="cc-tb-rec">● HOLD</span></div>
       <div class="cc-title-row ov-title-row">
         <h2>▮ YOUR SAVE WAS DAMAGED</h2>
         <span class="ov-sub"></span>
       </div>
       <div class="ov-recovery" role="alert">
-        Your station's save file was <b>damaged and could not be recovered</b> — the main copy and its backup
+        Your farm's save file was <b>damaged and could not be recovered</b> — the main copy and its backup
         both failed to read. The damaged file was <b>not deleted</b>: a copy is kept at
         <code id="recovery-quarantine-path" style="word-break:break-all"></code> in case it can be salvaged.
-        Continuing will start a <b>fresh station</b>.
+        Continuing will start a <b>fresh farm</b>.
       </div>
     </header>
     <div class="ov-foot">
@@ -462,7 +462,7 @@
         <span class="ov-foot-cap">＋ the damaged copy stays on disk — nothing more is lost by continuing</span>
       </div>
       <div class="connect-actions ov-actions">
-        <button id="btn-recovery-continue" class="btn-xl">▶ CONTINUE WITH A FRESH STATION</button>
+        <button id="btn-recovery-continue" class="btn-xl">▶ CONTINUE WITH A FRESH FARM</button>
       </div>
     </div>
   </div>
@@ -479,16 +479,16 @@
     <span class="cc-bracket cc-tl">┌</span><span class="cc-bracket cc-tr">┐</span>
     <span class="cc-bracket cc-bl">└</span><span class="cc-bracket cc-br">┘</span>
     <header class="cc-console-head ov-head">
-      <div class="cc-titlebar"><span class="cc-tb-tag">STARNET</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">RECONNECTING</span><span class="cc-tb-rec">● HOLD</span></div>
+      <div class="cc-titlebar"><span class="cc-tb-tag">HOMESTEAD</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">RECONNECTING</span><span class="cc-tb-rec">● HOLD</span></div>
       <div class="cc-title-row ov-title-row">
-        <h2>▮ STATION DATA UNREACHABLE</h2>
+        <h2>▮ FARM DATA UNREACHABLE</h2>
         <span id="unreachable-sub" class="ov-sub"></span>
       </div>
       <div class="ov-recovery" role="alert">
-        StarNet <b>could not read your saved station</b> — the local station service didn't answer.
+        Homestead <b>could not read your saved farm</b> — the local farm service didn't answer.
         Your save has <b>not</b> been deleted or touched; it just can't be reached right now.
-        StarNet is retrying automatically and will resume your station the moment it reconnects.
-        If it cannot recover, <b>START COMPLETELY FRESH</b> safely sets the old local station aside.
+        Homestead is retrying automatically and will resume your farm the moment it reconnects.
+        If it cannot recover, <b>START COMPLETELY FRESH</b> safely sets the old local farm aside.
         It does not remove your StarNet account link or purchased credits.
       </div>
       <div id="unreachable-code" class="ov-recovery" aria-live="polite"></div>
@@ -499,7 +499,7 @@
         <span class="ov-foot-cap" id="unreachable-status">＋ retrying…</span>
       </div>
       <div class="connect-actions ov-actions">
-        <button id="btn-unreachable-restart" class="btn-xl" hidden>⏻ RESTART STATION SERVICE</button>
+        <button id="btn-unreachable-restart" class="btn-xl" hidden>⏻ RESTART FARM SERVICE</button>
         <button id="btn-unreachable-retry" class="btn-xl">⟳ RETRY NOW</button>
         <button id="btn-unreachable-report" class="btn">⧉ COPY RECOVERY DETAILS</button>
         <button id="btn-unreachable-fresh" class="btn" hidden>✦ START COMPLETELY FRESH</button>
@@ -517,14 +517,14 @@
     <span class="cc-bracket cc-tl">┌</span><span class="cc-bracket cc-tr">┐</span>
     <span class="cc-bracket cc-bl">└</span><span class="cc-bracket cc-br">┘</span>
     <header class="cc-console-head ov-head">
-      <div class="cc-titlebar"><span class="cc-tb-tag">STARNET</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">RECOVERY MODE</span><span class="cc-tb-rec">● READ ONLY</span></div>
+      <div class="cc-titlebar"><span class="cc-tb-tag">HOMESTEAD</span><span class="cc-tb-rule"></span><span class="cc-tb-mode">RECOVERY MODE</span><span class="cc-tb-rec">● READ ONLY</span></div>
       <div class="cc-title-row ov-title-row">
-        <h2>▮ PRIOR STATION DATA FOUND</h2>
+        <h2>▮ PRIOR FARM DATA FOUND</h2>
         <span class="ov-sub">new-station onboarding is paused</span>
       </div>
       <div class="ov-recovery" role="alert">
-        StarNet did not find a readable active save, but it <b>did find evidence of an earlier station</b>.
-        Nothing has been erased. Recovery Mode prevents a new station from being created over that evidence.
+        Homestead did not find a readable active save, but it <b>did find evidence of an earlier farm</b>.
+        Nothing has been erased. Recovery Mode prevents a new farm from being created over that evidence.
         <div id="lineage-evidence" style="margin-top:12px;word-break:break-word"></div>
       </div>
     </header>
@@ -554,7 +554,7 @@
      var(--ph) per theme and stay crisp at any DPR / TEXT SIZE. The SVG is the master art's OWN
      letterforms traced out of its perceived-density field (dev/trace-logo.mjs), NOT a redraw; the
      title screen keeps the full-size master PNG, where the ASCII-digit texture actually reads. -->
-<div id="logo"><span class="logo-img" role="img" aria-label="STARNET"></span></div>
+<div id="logo"><span class="logo-img" role="img" aria-label="HOMESTEAD"></span></div>
 
 <section id="screen-game" class="screen">
 
@@ -571,9 +571,9 @@
       <!-- INSTRUMENT CLUSTER (topbar.js) — one cockpit gauge group: STATION (level + XP sliver) ·
            the session-status instruments (UPLINK / ONLINE / save) moved up from
            #bottombar .bb-right with their ids intact so their existing writers keep working. -->
-      <div class="tb-stat station tb-inst" id="tb-station" data-tip-host title="Your Commander level grows through recorded progress toward your life goals. Open the quest log to see the achievements behind it.">
+      <div class="tb-stat station tb-inst" id="tb-station" data-tip-host title="Your Farmer level grows through recorded progress toward your life goals. Open the quest log to see the achievements behind it.">
         <svg class="tb-station-mark" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 2 22 8v12l-10 6-10-6V8Z"/><path d="m6 11 6-4 6 4M6 16l6-4 6 4M6 21l6-4 6 4"/></svg>
-        <span class="tb-lbl">COMMANDER</span>
+        <span class="tb-lbl">FARMER</span>
         <b class="tb-val" id="gt-station">—</b>
         <span class="tb-xp" aria-hidden="true"><i class="tb-xp-fill"></i></span>
       </div>
@@ -622,12 +622,12 @@
   </aside>
 
   <div id="stage-wrap">
-    <canvas id="stage" role="img" aria-label="Live view of your agent station" aria-describedby="stage-summary"></canvas>
+    <canvas id="stage" role="img" aria-label="Live view of your agent farm" aria-describedby="stage-summary"></canvas>
     <div id="stage-summary" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
     <div class="cam-hud">
       <span class="cam-c cam-tl">┌</span><span class="cam-c cam-tr">┐</span>
       <span class="cam-c cam-bl">└</span><span class="cam-c cam-br">┘</span>
-      <span class="cam-label">CAM · STATION VIEW</span>
+      <span class="cam-label">CAM · FARM VIEW</span>
       <span class="cam-rec">● CONNECTING</span>
       <span class="cam-feed">FEED: CONNECTING</span>
     </div>
@@ -644,7 +644,7 @@
 
   <aside id="chat-panel">
     <div id="comms-resizer" class="col-resizer" title="drag to resize COMMS" role="separator" aria-orientation="vertical" aria-label="Resize COMMS panel"><span class="col-resizer-grip"></span></div>
-    <h3><span id="comms-title">COMMS</span><span class="h3-right"><span class="dim" id="chat-status" role="status" aria-live="polite" aria-atomic="true">offline</span><span class="chat-elapsed" id="chat-elapsed" aria-hidden="true"></span><button id="comms-hud" type="button" hidden aria-label="Open the HUD" title="HUD: fold StarNet into a small panel that stays above your game or video (Ctrl+Shift+H)">HUD</button></span></h3>
+    <h3><span id="comms-title">COMMS</span><span class="h3-right"><span class="dim" id="chat-status" role="status" aria-live="polite" aria-atomic="true">offline</span><span class="chat-elapsed" id="chat-elapsed" aria-hidden="true"></span><button id="comms-hud" type="button" hidden aria-label="Open the HUD" title="HUD: fold Homestead into a small panel that stays above your game or video (Ctrl+Shift+H)">HUD</button></span></h3>
     <!-- AGENT LINE (chat.js): pick which roster agent you're talking to + a truthful readout of that agent's
          current model. The <select> options + the model text are filled from the LIVE roster (App.agents),
          never hardcoded — the header is honest about who's on the line and what they run on. -->
@@ -711,11 +711,11 @@
         <div id="model-dock-list" class="model-dock-list scrolly" role="listbox" aria-label="Available models"></div>
         <div class="model-dock-foot">
           <button id="model-dock-refresh" type="button">REFRESH</button>
-          <a id="model-dock-subscription" href="https://www.starnetos.com/pricing" target="_blank" rel="noopener noreferrer" aria-label="StarNet subscription (opens in your browser)"><span>STARNET SUBSCRIPTION</span><span aria-hidden="true">↗</span></a>
+          <a id="model-dock-subscription" href="https://www.starnetos.com/pricing" target="_blank" rel="noopener noreferrer" aria-label="Homestead subscription (opens in your browser)"><span>STARNET SUBSCRIPTION</span><span aria-hidden="true">↗</span></a>
         </div>
       </div>
       <button id="voice-toggle" class="voice-toggle" title="agent voice" aria-label="Agent voice" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.2 6.1h2.1L7.7 3.3v9.4L4.3 9.9H2.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="miter"/><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M10.3 6a3.2 3.2 0 0 1 0 4"/><path d="M12.4 4a6.2 6.2 0 0 1 0 8"/></g></svg></button>
-      <button id="voice-live" class="voice-toggle voice-live" title="Local Live hands-free voice — local speech with your active Starnet agent" aria-label="Start Local Live hands-free voice" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="5.8" stroke-width="1.2"/><path d="M5.1 8h1.2m1.1-2.4v4.8M9.7 7v2m1.6-3.1v4.2" stroke-width="1.35" stroke-linecap="square"/></svg></button>
+      <button id="voice-live" class="voice-toggle voice-live" title="Local Live hands-free voice — local speech with your active Homestead agent" aria-label="Start Local Live hands-free voice" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor"><circle cx="8" cy="8" r="5.8" stroke-width="1.2"/><path d="M5.1 8h1.2m1.1-2.4v4.8M9.7 7v2m1.6-3.1v4.2" stroke-width="1.35" stroke-linecap="square"/></svg></button>
       <button id="chat-mic" class="mic-btn" title="click to talk" aria-label="Click to talk" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.8" y="1.7" width="4.4" height="7.2" rx="2.2"/><path d="M3.7 7.5a4.3 4.3 0 0 0 8.6 0"/><path d="M8 11.8v2.4"/><path d="M5.4 14.2h5.2"/></svg></button>
       </div>
     </div>
@@ -735,17 +735,17 @@
          same Recruitment Bay in different modes — now a single #bb-recruit opens the bay once, and
          the class dossier offers BOTH verbs (summon new / deploy to current). -->
     <div class="bb-group" data-group="crew">
-      <button class="bb-grp" data-hint="crew" aria-haspopup="menu" aria-expanded="false" title="Your agents — dossiers, recruitment, and your own Commander file"><span class="bb-gi">☻</span>CREW<span id="bb-crew-stepin-badge" class="bb-grp-badge" aria-label="agents waiting for you in STEP-IN" hidden></span></button>
+      <button class="bb-grp" data-hint="crew" aria-haspopup="menu" aria-expanded="false" title="Your agents — dossiers, recruitment, and your own Farmer file"><span class="bb-gi">☻</span>CREW<span id="bb-crew-stepin-badge" class="bb-grp-badge" aria-label="agents waiting for you in STEP-IN" hidden></span></button>
       <div class="bb-menu" role="menu">
         <button class="bb" data-term="agents"><span class="bb-i">◉</span><span class="bb-tx"><b>AGENTS</b><small>each crew member's dossier — config, memory, record</small></span></button>
         <button class="bb" id="bb-recruit" data-hint="recruit"><span class="bb-i">＋</span><span class="bb-tx"><b>RECRUIT</b><small>pick a class, or re-spec your agent</small></span></button>
-        <button class="bb" data-term="commander"><span class="bb-i">◈</span><span class="bb-tx"><b>YOU</b><small>what the station has learned about you</small></span></button>
+        <button class="bb" data-term="commander"><span class="bb-i">◈</span><span class="bb-tx"><b>YOU</b><small>what the farm has learned about you</small></span></button>
         <!-- STEP-IN shows ONLY while an agent is waiting for you (stepin.js badge); saved sign-ins live in SETTINGS › BROWSER -->
         <button class="bb" data-term="stepin" hidden><span class="bb-i">⇆</span><span class="bb-tx"><b>STEP-IN</b><small>take an agent's browser when it needs you to sign in — and your saved sign-ins</small></span><span id="si-badge" class="badge" style="display:none"></span></button>
       </div>
     </div>
     <div class="bb-group" data-group="work">
-      <button class="bb-grp" data-hint="work" aria-haspopup="menu" aria-expanded="false" title="The station's work — tasks, recipes, automation, quests"><span class="bb-gi">▤</span>WORK</button>
+      <button class="bb-grp" data-hint="work" aria-haspopup="menu" aria-expanded="false" title="The farm's work — tasks, recipes, automation, quests"><span class="bb-gi">▤</span>WORK</button>
       <div class="bb-menu" role="menu">
         <!-- ONE MENU (front doors, 2026-10-01): the WORK dock is three doors. MY WORK = one window with tabs TASKS ·
              DELIVERABLES · RECIPES; AUTOMATE = WORKFLOWS · SCHEDULES · GOAL LOOPS · AWAY WORK (stationui.js
@@ -756,9 +756,9 @@
       </div>
     </div>
     <div class="bb-group" data-group="build">
-      <button class="bb-grp" data-hint="build" aria-haspopup="menu" aria-expanded="false" title="Shape the station — Build Mode, abilities and channels, new apps"><span class="bb-gi">⚒</span>BUILD</button>
+      <button class="bb-grp" data-hint="build" aria-haspopup="menu" aria-expanded="false" title="Shape the farm — Build Mode, abilities and channels, new apps"><span class="bb-gi">⚒</span>BUILD</button>
       <div class="bb-menu" role="menu">
-        <button class="bb" id="bb-build" data-hint="refit"><span class="bb-i">⌂</span><span class="bb-tx"><b>BUILD MODE</b><small>rooms, corridors, gear &amp; workflow lines</small></span></button>
+        <button class="bb" id="bb-build" data-hint="refit"><span class="bb-i">⌂</span><span class="bb-tx"><b>BUILD MODE</b><small>rooms, paths, gear &amp; workflow lines</small></span></button>
         <!-- ONE MENU (front doors, 2026-10-01; back in BUILD 10-02 — Andrew): CONNECT = one window with tabs ABILITIES (the agents' tools OUT — toolsets,
              connectors, skills) · CHANNELS (YOUR way in — Telegram, Slack, Discord). Two tabs, never one card grid. -->
         <button class="bb" id="bb-connect" data-family="connect" data-hint="connect"><span class="bb-i">⇄</span><span class="bb-tx"><b>CONNECT</b><small>services your agents use, and where you message them</small></span></button>
@@ -777,12 +777,12 @@
       </div>
     </div>
     <div class="bb-group" data-group="system">
-      <button class="bb-grp" data-hint="system" aria-haspopup="menu" aria-expanded="false" title="Station systems — manual, settings, updates, notifications"><span class="bb-gi">▣</span>SYSTEM<span id="bb-sys-badge" class="bb-grp-badge" aria-label="unread notifications" hidden></span></button>
+      <button class="bb-grp" data-hint="system" aria-haspopup="menu" aria-expanded="false" title="Farm systems — manual, settings, updates, notifications"><span class="bb-gi">▣</span>SYSTEM<span id="bb-sys-badge" class="bb-grp-badge" aria-label="unread notifications" hidden></span></button>
       <div class="bb-menu" role="menu">
         <!-- NAV CONDENSE 2: LOGBOOK + RESTORE are per-agent and live in the AGENTS dossier
              (LOGBOOK / RESTORE tabs); openTerm keeps the old keys as deep links. UPDATES stays
              its own window (Andrew's call — check-it-now, not a setting). -->
-        <button class="bb" data-term="manual" data-hint="manual"><span class="bb-i">§</span><span class="bb-tx"><b>FIELD MANUAL</b><small>first mission, controls &amp; station handbook</small></span></button>
+        <button class="bb" data-term="manual" data-hint="manual"><span class="bb-i">§</span><span class="bb-tx"><b>FIELD MANUAL</b><small>first mission, controls &amp; farm handbook</small></span></button>
         <button class="bb" data-term="settings" data-hint="settings"><span class="bb-i">⚙</span><span class="bb-tx"><b>SETTINGS</b><small>models, keys, permissions, spending &amp; more</small></span></button>
         <button class="bb" data-term="updates" data-hint="update"><span class="bb-i">↑</span><span class="bb-tx"><b>UPDATES</b><small>version &amp; release notes</small></span><span id="up-badge" class="badge" style="display:none"></span></button>
         <button class="bb" data-term="notifs" data-hint="notification"><span class="bb-i">▲</span><span class="bb-tx"><b>NOTIFICATIONS</b><small>alerts &amp; unread events</small></span><span id="nf-badge" class="badge"></span></button>
@@ -811,7 +811,7 @@
   <div id="nav-coach" class="nav-coach" hidden>
     <span>Everything you run lives in these <b>docks</b>&nbsp;— click one to open it. Talk to your agent in <b>COMMS ▸</b></span>
     <!-- systems.js: a fresh station's dock grows as it is used; a returning power user can have it all now -->
-    <button id="nav-coach-all" class="nav-coach-x" data-tip="Bring every station system online in the dock now" hidden>SHOW EVERYTHING</button>
+    <button id="nav-coach-all" class="nav-coach-x" data-tip="Bring every farm system online in the dock now" hidden>SHOW EVERYTHING</button>
     <button id="nav-coach-x" class="nav-coach-x" aria-label="dismiss hint">GOT IT ✕</button>
     <span class="nav-coach-arrow">▾</span>
   </div>

@@ -63,8 +63,8 @@
       clientSecretRequired: false,
       developerPreview: false,
       setupUrl: 'https://developers.google.com/identity/protocols/oauth2/native-app',
-      setupName: 'StarNet publisher setup',
-      setupNote: 'StarNet supplies the Google application registration. Users only sign in and approve access.'
+      setupName: 'Homestead publisher setup',
+      setupNote: 'Homestead supplies the Google application registration. Users only sign in and approve access.'
     };
   }
 
@@ -151,7 +151,7 @@
         scopes: ['https://www.googleapis.com/auth/drive.file'],
         extraAuthParams: { access_type: 'offline', prompt: 'consent', trigger_onepick: 'true', include_granted_scopes: 'false', allow_multiple: 'true', mimetypes: 'application/vnd.google-apps.document,application/vnd.google-apps.spreadsheet' }
       }),
-      blurb: 'Choose Google Docs and Sheets in Google’s file picker. Agents can read and edit files you grant to StarNet and create new ones. Other Drive files, Gmail and Calendar are not included.' },
+      blurb: 'Choose Google Docs and Sheets in Google’s file picker. Agents can read and edit files you grant to Homestead and create new ones. Other Drive files, Gmail and Calendar are not included.' },
     { id: 'gmail', name: 'Gmail', category: 'Productivity', authType: 'oauth', transport: 'http',
       url: 'https://gmail.googleapis.com/gmail/v1/users/me', googleApi: true, official: false, homepage: 'https://mail.google.com',
       aliases: ['google', 'gmail', 'google mail', 'email', 'gsuite', 'g suite', 'google workspace'],
@@ -204,7 +204,7 @@
     { id: 'atlassian', name: 'Jira & Confluence', category: 'Productivity', authType: 'oauth', transport: 'http',
       url: '', official: true, homepage: 'https://atlassian.com', via: 'zapier',
       aliases: ['atlassian', 'jira', 'confluence'],
-      blurb: 'Atlassian Jira issues and Confluence pages. A newer direct OAuth endpoint is under verification; use the proven Zapier route until StarNet completes an authenticated tool call.' },
+      blurb: 'Atlassian Jira issues and Confluence pages. A newer direct OAuth endpoint is under verification; use the proven Zapier route until Homestead completes an authenticated tool call.' },
     // Registered public device client: GitHub has no dynamic client registration.
     { id: 'github', name: 'GitHub', category: 'Developer Tools', authType: 'oauth', deviceFlow: true, transport: 'http',
       url: 'https://api.githubcopilot.com/mcp', official: true, homepage: 'https://github.com',

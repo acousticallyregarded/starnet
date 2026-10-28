@@ -130,7 +130,7 @@ const BuildShare = (() => {
   function slug(name) { return String(name || 'station').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'station'; }
 
   function exportBuild(stationDoc, model, opts) {
-    const name = cleanName(opts && opts.name, 40) || cleanName(stationDoc && stationDoc.meta && stationDoc.meta.name, 40) || 'MY STATION';
+    const name = cleanName(opts && opts.name, 40) || cleanName(stationDoc && stationDoc.meta && stationDoc.meta.name, 40) || 'MY FARM';
     const r = cleanDoc(stationDoc, model, 1);
     if (r.error) return { error: r.error };
     r.doc.meta.name = name;
@@ -140,13 +140,13 @@ const BuildShare = (() => {
   }
 
   const ERRORS = {
-    TOO_LARGE: 'That file is too large to be a station build.',
-    NOT_JSON: 'That file is not a station build (it is not readable JSON).',
-    NOT_BUILD: 'That file is not a station build.',
-    NEWER: 'That build was made by a newer StarNet. Update the app to open it.',
+    TOO_LARGE: 'That file is too large to be a farm build.',
+    NOT_JSON: 'That file is not a farm build (it is not readable JSON).',
+    NOT_BUILD: 'That file is not a farm build.',
+    NEWER: 'That build was made by a newer Homestead. Update the app to open it.',
     NO_LAYOUT: 'That build has no layout in it.',
     NO_ROOMS: 'That build has no rooms that can be built.',
-    TOO_BIG: 'That build is larger than a station can be.'
+    TOO_BIG: 'That build is larger than a farm can be.'
   };
   function fail(code) { return { ok: false, error: code, message: ERRORS[code] || 'That build could not be read.' }; }
 

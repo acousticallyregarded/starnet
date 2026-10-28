@@ -128,7 +128,7 @@ function makePush(deps) {
     if (!id) return { ok: false, error: 'unknown phone' };
     const endpoint = String((sub && sub.endpoint) || '');
     const keys = (sub && sub.keys) || {};
-    if (!ENDPOINT_RE.test(endpoint) || !pushHostOk(endpoint, extraHosts)) return { ok: false, error: 'that is not a push address this station can use' };
+    if (!ENDPOINT_RE.test(endpoint) || !pushHostOk(endpoint, extraHosts)) return { ok: false, error: 'that is not a push address this farm can use' };
     let p256dh, auth;
     try { p256dh = unb64u(keys.p256dh); auth = unb64u(keys.auth); publicFromRaw(p256dh); }
     catch (_) { return { ok: false, error: 'the phone sent unusable push keys' }; }

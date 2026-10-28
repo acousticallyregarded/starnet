@@ -10,12 +10,12 @@ const StationTemplates = (() => {
      that follows speaks the same vocabulary. */
   const catalog = [
     { id: 'software', group: 'work', purpose: 'code', purposeLabel: 'Code & build', name: 'SOFTWARE STUDIO', rooms: 5, pitch: 'a builder makes each change and a tester checks it', description: 'A workshop, a Build & Test room, a review room and a library. A Builder makes each change and a Tester sends it back until it passes.', wings: [['engineering','west'],['buildTest','north'],['review','east'],['reading','south']] },
-    { id: 'research', group: 'work', purpose: 'research', purposeLabel: 'Research & brief', name: 'RESEARCH STATION', rooms: 3, pitch: 'one agent digs up sources and the next writes the brief', description: 'An analysis lab with a Research → Write line, and a reference archive. One agent digs up sources, the next writes the brief.', wings: [['researchLab','north'],['archive','east']] },
+    { id: 'research', group: 'work', purpose: 'research', purposeLabel: 'Research & brief', name: 'RESEARCH FARM', rooms: 3, pitch: 'one agent digs up sources and the next writes the brief', description: 'An analysis lab with a Research → Write line, and a reference archive. One agent digs up sources, the next writes the brief.', wings: [['researchLab','north'],['archive','east']] },
     { id: 'creative', group: 'work', purpose: 'write', purposeLabel: 'Write & edit', name: 'CREATIVE STUDIO', rooms: 3, pitch: 'a drafter writes it and a reviewer sends it back until it is right', description: 'A design studio and a Draft & Review room. A Drafter writes it, and a Reviewer sends it back until it meets your brief.', wings: [['creative','north'],['creativeReview','east']] },
-    { id: 'operations', group: 'work', purpose: 'ops', purposeLabel: 'Run tasks & ops', name: 'OPERATIONS STATION', rooms: 5, pitch: 'each request goes to a code, research or general specialist', description: 'Dispatch, comms, archive and review rooms. Each incoming request is sorted to a code, research or general specialist.', wings: [['archive','west'],['comms','east'],['dispatch','north'],['review','south']] },
+    { id: 'operations', group: 'work', purpose: 'ops', purposeLabel: 'Run tasks & ops', name: 'OPERATIONS FARM', rooms: 5, pitch: 'each request goes to a code, research or general specialist', description: 'Dispatch, comms, archive and review rooms. Each incoming request is sorted to a code, research or general specialist.', wings: [['archive','west'],['comms','east'],['dispatch','north'],['review','south']] },
     { id: 'cozy', group: 'work', purpose: 'general', purposeLabel: 'A bit of everything', name: 'COZY WORKSHOP', rooms: 3, pitch: 'one agent handles any job, with a $5-a-day spending cap', description: 'Warm wood floors, a furnished lounge, and a front desk where one agent handles any job within a $5-a-day cap.', wings: [['cozyWorkshop','north'],['cozyLounge','south']] },
     { id: 'default', group: 'look', name: 'DEFAULT', rooms: 1, description: 'One open room. All five essentials, your workstation, and space to grow.', wings: [] },
-    { id: 'retreat', group: 'look', name: 'QUIET RETREAT', rooms: 2, description: 'Your home station with a quiet library and lounge to the south.', wings: [['reading','south']] }
+    { id: 'retreat', group: 'look', name: 'QUIET RETREAT', rooms: 2, description: 'Your home farm with a quiet library and lounge to the south.', wings: [['reading','south']] }
   ];
   /* a room's `line` stamps a shelf blueprint at (x, y) in room tiles: `label` names its INBOX (the guide finds its line
      by that name) and `briefs` fills each Bay's standing instructions by the Bay's shelf ROLE (one Bay per role). */
@@ -94,7 +94,7 @@ const StationTemplates = (() => {
                TESTER: { name: 'Tester', description: 'Checks the change against your request and sends it back to the builder until it passes.' } }
     }),
     research: Object.freeze({
-      title: 'Research Station', label: 'RESEARCH · DIG & WRITE',
+      title: 'Research Farm', label: 'RESEARCH · DIG & WRITE',
       purpose: 'Ask a question: one agent digs up sources, and the next writes a brief you can read in a minute.',
       flow: ['Your question', 'Researcher', 'Writer', 'Outbox'],
       sample: 'SAMPLE JOB: Compare three popular note-taking apps for a small team: price, collaboration features, and one drawback each. Link a source for every claim.',
@@ -110,7 +110,7 @@ const StationTemplates = (() => {
                REVIEWER: { name: 'Reviewer', description: 'Checks the draft against your brief and sends it back for another pass until it is right.' } }
     }),
     operations: Object.freeze({
-      title: 'Operations Station', label: 'OPERATIONS · TRIAGE',
+      title: 'Operations Farm', label: 'OPERATIONS · TRIAGE',
       purpose: 'Requests arrive at one Inbox, and a sorter hands each one to the specialist that fits: code, research, or everything else.',
       flow: ['A request', 'Sorter', 'The right specialist', 'Outbox'],
       sample: 'SAMPLE JOB: Find three simple, well-sourced ways a small team can cut its monthly cloud bill, and link a source for each.',
@@ -179,7 +179,7 @@ const StationTemplates = (() => {
   }
   function build(id, model, sprites, nextId) {
     const entry = catalog.find(c => c.id === id);
-    if (!entry) throw new Error('Unknown station build');
+    if (!entry) throw new Error('Unknown farm build');
     const station = model.create(model.starterDoc());
     const requireOK = r => { if (!r.ok) throw new Error(r.msg || r.error); return r; };
     entry.wings.forEach(([type, side]) => {
@@ -190,13 +190,13 @@ const StationTemplates = (() => {
       requireOK(station.placeHallway({rect:slot.hall}));
       for (const [t,x,y,facing=0] of r.props) {
         const spec = sprites.spec(t);
-        if (!spec) throw new Error('Missing station furniture: '+t);
+        if (!spec) throw new Error('Missing farm furniture: '+t);
         requireOK(station.addProp({t,x:slot.x+x,y:slot.y+y,w:spec.w,h:spec.h,r:facing,block:spec.blocks!==false}));
       }
       if (r.line) {
         // the SAME stamp the Lines shelf places (one validated mutation); ids come back in the blueprint's prop order
         const L = r.line, bp = (model.BLUEPRINTS || []).find(b => b.id === L.bp);
-        if (!bp) throw new Error('Missing station line: '+L.bp);
+        if (!bp) throw new Error('Missing farm line: '+L.bp);
         const res = requireOK(station.stampBlueprint(L.bp,slot.x+L.x,slot.y+L.y));
         res.ids.forEach((pid,i) => {
           const s = bp.props[i];

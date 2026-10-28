@@ -24,7 +24,7 @@ const Build = (() => {
        tool's number changed. */
     { id: 'select', key: '0', label: 'SELECT', verb: 'click to select · drag a machine onto another to belt them · drag a selected piece onto open floor to move it', hint: 'click to select · drag a selected piece to move it · drag a box to select several', cursor: 'default' },
     { id: 'room', key: '1', label: 'ROOM', verb: 'click to place · drag to size', hint: 'click the deck to place a room at the last size you drew, or drag out any size', cursor: 'crosshair' },
-    { id: 'hall', key: '2', label: 'HALLWAY', verb: 'click to run · drag to size', hint: 'click to run a corridor at the last length you drew, or drag along an axis for any length', cursor: 'crosshair' },
+    { id: 'hall', key: '2', label: 'PATH', verb: 'click to run · drag to size', hint: 'click to run a path at the last length you drew, or drag along an axis for any length', cursor: 'crosshair' },
     // 'paint' stays the INTERNAL id (the drag mode, the model's paintTiles verb, the key map and every
     // saved reference key off it) — only the display name changed. The tool stopped being "paint" the
     // day it grew wall cladding and a material axis: it now sets what a room's surfaces are MADE OF,
@@ -38,7 +38,7 @@ const Build = (() => {
     { id: 'prop', key: '6', label: 'PROPS', verb: 'click the deck to place it', hint: 'browse equipment and decoration, then click the deck to place your selection', cursor: 'crosshair' },
     { id: 'belt', key: '7', label: 'BELT', verb: 'click one machine, then another · or drag across the floor to lay belt by hand', hint: 'CLICK one machine, then another — the belt lays itself · (or drag to lay tiles by hand)', cursor: 'crosshair' },
     { id: 'dupe', key: '8', label: 'COPY', verb: 'click a room or prop to copy it', hint: 'click a room or prop to copy it · then every click stamps a copy — mirror your build fast', cursor: 'copy' },
-    { id: 'line', key: '9', label: 'CONVEYOR LINES', verb: 'choose a conveyor line below, then click clear floor to place it', hint: 'add connected workflow equipment to your existing station — choose a line, then place it on clear floor', cursor: 'copy' },
+    { id: 'line', key: '9', label: 'CONVEYOR LINES', verb: 'choose a conveyor line below, then click clear floor to place it', hint: 'add connected workflow equipment to your existing farm — choose a line, then place it on clear floor', cursor: 'copy' },
   ];
   // Every tool stays visible. The Select landing offers two starting points without
   // arming a placement tool. Shortcut numbers remain compatible with the guide/tutorial.
@@ -408,7 +408,7 @@ const Build = (() => {
     // the chunks (and their dense plates) are not drawn again until the next open() takes the world's bake: free them now
     cache = null; cacheGeo = null; bakeDirty = true;
     const saved = opts.persist ? opts.persist() : false;
-    if (saved && typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify('Station layout saved locally', 'good', undefined, { transient: true });
+    if (saved && typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify('Farm layout saved locally', 'good', undefined, { transient: true });
     if (opts.world && opts.world.refit) opts.world.refit();     // recenter the live world on the new build
     if (opts.world && opts.world.start) opts.world.start();     // resume the live sim with the new build
     if (opts.onClose) opts.onClose();
@@ -436,7 +436,7 @@ const Build = (() => {
           <button class="bb sm" id="refit-undo" title="undo (Ctrl+Z)">↶ UNDO</button>
           <button class="bb sm" id="refit-redo" title="redo (Ctrl+Shift+Z)">↷ REDO</button>
         </span>
-        <button class="bb sm" id="refit-fit" title="frame the station">⊹ FIT</button>
+        <button class="bb sm" id="refit-fit" title="frame the farm">⊹ FIT</button>
         <button class="bb sm" id="refit-test" data-tip="Test this line: WATCH IT is free (a crate rides the belts, no agent runs); STEP THROUGH and SEND A REAL JOB run it for real.">${esc(PREVIEW_LABEL)}</button>
         <button class="bb sm" id="refit-help" title="how to build">? HELP</button>
         <button class="bb sm refit-primary" id="refit-done" title="finish + save (or press Esc twice)">SAVE & EXIT</button>
@@ -651,7 +651,7 @@ const Build = (() => {
   let makeBusy = false;      // a paid start (preview, make, side view) is in flight: one at a time, from every door (button, Enter, kit)
   let makeDraft = '', makeFocused = false;   // what is typed survives a palette redraw (a job landing, a chip click)
   const MAKE_PRICE = 0.35;
-  const MAKE_STEP = { queued: 'Queued', waiting: 'Working', starting: 'Starting', saving: 'Saving it to the station', sizing: 'Sizing it against the catalog', drawing: 'Drawing', retrying: 'Redrawing', checking: 'Checking it matches the station' };
+  const MAKE_STEP = { queued: 'Queued', waiting: 'Working', starting: 'Starting', saving: 'Saving it to the farm', sizing: 'Sizing it against the catalog', drawing: 'Drawing', retrying: 'Redrawing', checking: 'Checking it matches the farm' };
   function makeStatusText() {
     if (makeMsg) return makeMsg;
     if (!makeJob) {
@@ -930,7 +930,7 @@ const Build = (() => {
   }
   function makePropPanel() {
     const box = document.createElement('section'); box.className = 'refit-makeprop'; box.setAttribute('aria-label', 'Make a prop');
-    box.innerHTML = '<div class="refit-makeprop-head"><b>MAKE A PROP</b><small>Type any object. StarNet draws it in the station\u2019s style.</small></div>' +
+    box.innerHTML = '<div class="refit-makeprop-head"><b>MAKE A PROP</b><small>Type any object. Homestead draws it in the farm\u2019s style.</small></div>' +
       '<div class="refit-makeprop-cta" id="refit-makeprop-cta" hidden><span></span><button type="button" class="bb sm" id="refit-makeprop-cta-go"></button></div>' +
       '<div class="refit-makeprop-row"><input type="text" class="refit-input refit-searchfield" id="refit-makeprop-input" maxlength="60" spellcheck="false" autocomplete="off" aria-label="Object to make" placeholder="e.g. a grandfather clock">' +
       '<button type="button" class="bb sm" id="refit-makeprop-go">PREVIEW</button></div>' +
@@ -1148,13 +1148,13 @@ const Build = (() => {
     const key = [spec.id, id, geoVer].join('|');
     if (box.dataset.infoKey !== key) {
       box.dataset.infoKey = key;
-      const purpose = facts.purpose || PALETTE_PURPOSE[spec.id] || spec.desc || (category === 'decoration' ? 'Changes the look of your station. Adds no agent tools.' : 'Equipment for arranging work in the station.');
+      const purpose = facts.purpose || PALETTE_PURPOSE[spec.id] || spec.desc || (category === 'decoration' ? 'Changes the look of your farm. Adds no agent tools.' : 'Equipment for arranging work in the farm.');
       box.innerHTML = '<p class="refit-purpose">' + esc(purpose) + '</p>' +
         (facts.cap ? '<div class="equipment-status" role="status">Checking current access…</div><div class="refit-equipment-scope">' +
         esc('Equipment sharing: ' + facts.scope + '.') + '</div>' :
-        category === 'decoration' ? '' : '<div class="refit-equipment-scope">Organizes the station; does not add an ability.</div>') +
+        category === 'decoration' ? '' : '<div class="refit-equipment-scope">Organizes the farm; does not add an ability.</div>') +
         '<div class="refit-equipment-detail">' + esc(facts.cap ? facts.duplicates : spec.desc || '') +
-        (facts.cap ? '<p>Without a workflow bay, an agent draws on station equipment. With a bay, it uses equipment in its desk room (or bay room if there is no desk). Each workflow agent needs its own desk.</p><p>Connected accounts and providers are configured in Abilities.</p>' : '') + '</div>';
+        (facts.cap ? '<p>Without a workflow bay, an agent draws on farm equipment. With a bay, it uses equipment in its desk room (or bay room if there is no desk). Each workflow agent needs its own desk.</p><p>Connected accounts and providers are configured in Abilities.</p>' : '') + '</div>';
     }
     refreshLibraryAccess(facts, id);
   }
@@ -1181,11 +1181,11 @@ const Build = (() => {
     const facts = EquipmentHelp.inspect(station, aid, spec.id);
     const sharingOpen = !!box.querySelector('details[open]');
     const propRoom = placedProp && station.roomById(station.roomAt(placedProp.x, placedProp.y));
-    box.innerHTML = '<p class="refit-purpose">' + esc(facts.purpose || spec.desc || 'Station decoration.') + '</p>'
+    box.innerHTML = '<p class="refit-purpose">' + esc(facts.purpose || spec.desc || 'Farm decoration.') + '</p>'
       + (facts.cap ? (agents.length > 1 ? '<label> For <select class="refit-input" aria-label="Inspect equipment for agent">' + agents.map(a => '<option value="' + esc(a.id) + '"' + (a.id === aid ? ' selected' : '') + '>' + esc(a.name || a.id) + '</option>').join('') + '</select></label>' : '')
       + '<div class="equipment-status" role="status">Checking current access…</div>'
       + '<div>Equipment scope: ' + esc(facts.scope) + (propRoom ? ' · This copy: ' + esc(propRoom.name || propRoom.id) : '') + '</div>'
-      + '<details' + (sharingOpen ? ' open' : '') + '><summary>Sharing, rooms & extra copies</summary><p>' + facts.count + ' matching prop' + (facts.count === 1 ? '' : 's') + '. ' + esc(facts.duplicates) + '</p>Without a workflow bay, the lead draws on equipment across the station. With a bay, an agent uses its desk room (or the bay room if it has no desk). Agents in that room share equipment; each needs its own desk. Moving or removing the last matching prop changes that room’s equipment; access settings may still supply its tools. Connect external services in Abilities.</details>' : '<div>' + esc(facts.duplicates) + '</div>');
+      + '<details' + (sharingOpen ? ' open' : '') + '><summary>Sharing, rooms & extra copies</summary><p>' + facts.count + ' matching prop' + (facts.count === 1 ? '' : 's') + '. ' + esc(facts.duplicates) + '</p>Without a workflow bay, the lead draws on equipment across the farm. With a bay, an agent uses its desk room (or the bay room if it has no desk). Agents in that room share equipment; each needs its own desk. Moving or removing the last matching prop changes that room’s equipment; access settings may still supply its tools. Connect external services in Abilities.</details>' : '<div>' + esc(facts.duplicates) + '</div>');
     const select = box.querySelector('select');
     if (select) select.onchange = () => renderEquipmentInfo(spec.id, placedProp);
     const status = box.querySelector('.equipment-status');
@@ -1211,7 +1211,7 @@ const Build = (() => {
     if (head) {
       head.setAttribute('role', 'button'); head.tabIndex = 0;
       head.setAttribute('aria-expanded', String(open));
-      head.dataset.tip = open ? 'Close MAKE A PROP' : 'Make your own prop: type any object, StarNet draws it in the station\u2019s style (StarNet credits)';
+      head.dataset.tip = open ? 'Close MAKE A PROP' : 'Make your own prop: type any object, Homestead draws it in the farm\u2019s style (StarNet credits)';
       const toggle = () => {
         if (busy) return;   // a running job, a preview or a message keeps it open
         makeOpen = !box.classList.contains('is-compact') ? false : true;
@@ -1349,7 +1349,7 @@ const Build = (() => {
       if (propSection === 'decoration' && typeof UserProps !== 'undefined') browser.append(makePropMount());
       else if (typeof UserProps !== 'undefined') {   // the door to MAKE A PROP from the other shelves: one click to FURNITURE with the field focused
         const door = document.createElement('button'); door.type = 'button'; door.className = 'bb sm refit-makeprop-door';
-        door.innerHTML = '<b>MAKE A PROP</b><small>Type any object. StarNet draws it in the station\u2019s style.</small>';
+        door.innerHTML = '<b>MAKE A PROP</b><small>Type any object. Homestead draws it in the farm\u2019s style.</small>';
         door.onclick = () => { makeOpen = true; chooseLibrarySection('decoration'); setTimeout(() => { const f = root && root.querySelector('#refit-makeprop-input'); if (f) f.focus(); }, 0); sfx('click'); };
         browser.append(door);
       }
@@ -1955,7 +1955,7 @@ const Build = (() => {
       '<div class="refit-preview-actions">' +
       (canTurn(c.id) ? '<button class="bb xs" type="button" data-preview-turn>↻ TURN · R</button>' : '') +
       (canFlip(c.id) ? '<button class="bb xs" type="button" data-preview-flip>⇆ FLIP · M</button>' : '') + '</div></div>' +
-      '<span class="refit-placement-note">Click a clear spot on the station · Esc cancels</span>';
+      '<span class="refit-placement-note">Click a clear spot on the farm · Esc cancels</span>';
     const alternatives = capOf(c) && capOf(c) !== 'computer' ? catalog().filter(p => capOf(p) === capOf(c)) : [];
     const more = root.querySelector('.refit-prop-more');
     more?.querySelector('.refit-designs')?.remove();
@@ -2558,7 +2558,7 @@ const Build = (() => {
       return;
     }
     sfx('bad');
-    flashTip(ev, 'no clear space beside the station for a ' + W + '×' + H + ' room — use Rooms to draw one where you want it', false);
+    flashTip(ev, 'no clear space beside the farm for a ' + W + '×' + H + ' room — use Rooms to draw one where you want it', false);
   }
   function stampLine(w, ev) {
     const bp = blueprintOf(lineType);
@@ -2876,7 +2876,7 @@ const Build = (() => {
      a card previews what it builds; applying replaces the layout in one undoable step (the old one is backed up), and a
      WORK preset opens its setup guide straight after. Staffing is that guide's next click — a preset never hires. */
   const PRESET_GROUPS = [
-    ['work', 'BUILT FOR YOUR WORK', 'A whole station for one kind of work. Its line is wired, every step has instructions, and a sample job is ready to try.'],
+    ['work', 'BUILT FOR YOUR WORK', 'A whole farm for one kind of work. Its line is wired, every step has instructions, and a sample job is ready to try.'],
     ['look', 'JUST THE LOOK', 'Rooms and furniture only. Add a line from the Lines shelf whenever you want one.'],
   ];
   function presetPreviewHTML(item, doc) {
@@ -2898,12 +2898,12 @@ const Build = (() => {
     cardCloseAll();
     const g = document.createElement('div');
     g.className = 'refit-guide refit-station-builds refit-workflow-editor';
-    g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-label','Station presets');
-    g.innerHTML = '<div class="refit-guide-box station-build-box"><div class="station-build-heading"><div><span class="station-build-eyebrow">BUILD MODE / STATION PRESETS</span><h2>A place for your work</h2></div><button class="bb sm" data-workflow-close>BACK TO BUILD</button></div>' +
-      '<p class="station-build-intro">Pick a station for the kind of work you do, then make it yours. Every station includes your workstation and all five essentials.</p>' +
+    g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-label','Farm presets');
+    g.innerHTML = '<div class="refit-guide-box station-build-box"><div class="station-build-heading"><div><span class="station-build-eyebrow">BUILD MODE / FARM PRESETS</span><h2>A place for your work</h2></div><button class="bb sm" data-workflow-close>BACK TO BUILD</button></div>' +
+      '<p class="station-build-intro">Pick a farm for the kind of work you do, then make it yours. Every farm includes your workstation and all five essentials.</p>' +
       '<div class="station-build-scroll">' + PRESET_GROUPS.map(([id, label, blurb]) => '<section class="station-build-section" data-build-section="' + id + '"><div class="station-build-section-head"><h3>' + label + '</h3><p>' + esc(blurb) + '</p></div><div class="station-build-grid" aria-label="' + esc(label.toLowerCase()) + '"></div></section>').join('') +
-      (typeof BuildShare !== 'undefined' ? '<section class="station-build-section" data-build-section="shared"><div class="station-build-section-head"><h3>SHARED BUILDS</h3><p>Save this layout as a file to share, or open one someone sent you. Only rooms, furniture and conveyors travel.</p><span class="station-build-share-keys"><button class="bb sm" type="button" data-export-build>EXPORT THIS STATION</button><button class="bb sm" type="button" data-import-build>IMPORT A BUILD…</button>' + (communityLive() ? '<button class="bb sm" type="button" data-share-community>SHARE TO COMMUNITY</button>' : '') + '<input type="file" accept=".json,application/json" hidden data-import-file></span></div><div class="station-build-grid" aria-label="shared builds"></div></section>' : '') +
-      (typeof BuildShare !== 'undefined' && communityLive() ? '<section class="station-build-section" data-build-section="community"><div class="station-build-section-head"><h3>COMMUNITY MAPS</h3><p>Stations other players built and shared. Only layouts travel: you choose who works them.</p><span class="station-build-community-note" role="status"></span></div><div class="station-build-grid" aria-label="community maps"></div></section>' : '') + '</div>' +
+      (typeof BuildShare !== 'undefined' ? '<section class="station-build-section" data-build-section="shared"><div class="station-build-section-head"><h3>SHARED BUILDS</h3><p>Save this layout as a file to share, or open one someone sent you. Only rooms, furniture and conveyors travel.</p><span class="station-build-share-keys"><button class="bb sm" type="button" data-export-build>EXPORT THIS FARM</button><button class="bb sm" type="button" data-import-build>IMPORT A BUILD…</button>' + (communityLive() ? '<button class="bb sm" type="button" data-share-community>SHARE TO COMMUNITY</button>' : '') + '<input type="file" accept=".json,application/json" hidden data-import-file></span></div><div class="station-build-grid" aria-label="shared builds"></div></section>' : '') +
+      (typeof BuildShare !== 'undefined' && communityLive() ? '<section class="station-build-section" data-build-section="community"><div class="station-build-section-head"><h3>COMMUNITY MAPS</h3><p>Farms other players built and shared. Only layouts travel: you choose who works them.</p><span class="station-build-community-note" role="status"></span></div><div class="station-build-grid" aria-label="community maps"></div></section>' : '') + '</div>' +
       '<div class="station-build-footer"><div class="station-build-status" role="status">Select a preset to see what it builds.</div>' +
       '<div class="station-build-actions"><button class="bb" data-restore-build>RESTORE PREVIOUS</button><button class="bb refit-primary" data-use-build disabled>CHOOSE A PRESET</button></div><small class="station-build-note">Applying replaces rooms, props and conveyors. Your current layout is backed up; agents and conversations stay.</small></div></div>';
     g.style.setProperty('--station-build-scale', typeof U.uiZoom === 'function' ? U.uiZoom() : 1);
@@ -3032,10 +3032,10 @@ const Build = (() => {
   const MAP_CREDIT_KEY = 'starnet.communityMapCredit';
   function shareOutcomeText(res, what) {
     if (res.ok) return '';
-    if (res.outcome === 'unknown') return (res.error ? res.error + ' ' : '') + 'This station cannot tell whether the ' + what + ' arrived. Check your account page on account.starnetos.com before you send it again.';
-    if (res.linked === false) return 'Link this station to your StarNet account first (STORE › LINK STATION). A free account works. Nothing was shared.';
+    if (res.outcome === 'unknown') return (res.error ? res.error + ' ' : '') + 'This farm cannot tell whether the ' + what + ' arrived. Check your account page on account.starnetos.com before you send it again.';
+    if (res.linked === false) return 'Link this farm to your StarNet account first (STORE › LINK FARM). A free account works. Nothing was shared.';
     if (res.code === 'token_rejected') return res.error;
-    return (res.error || 'StarNet refused it.') + ' Nothing was shared.';
+    return (res.error || 'Homestead refused it.') + ' Nothing was shared.';
   }
   function openShareToCommunity(g, status, shareKey) {
     const section = g.querySelector('[data-build-section="shared"]');
@@ -3044,7 +3044,7 @@ const Build = (() => {
     const open = section.querySelector('.station-build-sharepanel');
     if (open) { open.querySelector('#sbs-title')?.focus(); return; }
     const r = BuildShare.exportBuild(station.serialize(), WorldModel, { name: station.doc().meta.name });
-    if (r.error) { status.textContent = 'This station could not be shared: it has no layout to send.'; sfx('bad'); return; }
+    if (r.error) { status.textContent = 'This farm could not be shared: it has no layout to send.'; sfx('bad'); return; }
     const read = BuildShare.readBuild(r.text, WorldModel, 1);
     const pic = CommunityMaps.picture(read.doc, r.dropped, drawPlan);
     let credit = ''; try { credit = localStorage.getItem(MAP_CREDIT_KEY) || ''; } catch (_) {}
@@ -3056,7 +3056,7 @@ const Build = (() => {
       '<label for="sbs-title">NAME</label><input id="sbs-title" class="refit-input" maxlength="40" autocomplete="off">' +
       '<label for="sbs-credit">CREDIT ME AS</label><input id="sbs-credit" class="refit-input" maxlength="40" autocomplete="off" placeholder="your name or handle">' +
       '<label for="sbs-desc">ONE LINE ABOUT IT <span class="sbs-dim">optional</span></label><input id="sbs-desc" class="refit-input" maxlength="200" autocomplete="off">' +
-      '<label class="sbs-agree"><input type="checkbox" id="sbs-agree"> <span>I made this station and share it under CC BY 4.0: anyone may build it and change it, with credit to me.</span></label>' +
+      '<label class="sbs-agree"><input type="checkbox" id="sbs-agree"> <span>I made this farm and share it under CC BY 4.0: anyone may build it and change it, with credit to me.</span></label>' +
       '<p class="sbs-travel">Only the layout travels: <b>' + esc(travels) + '</b>. Your crew, step instructions, project folders and connections stay home' + (r.dropped.made ? ', and so do your ' + n(r.dropped.made, 'made prop', 'made props') : '') + '.' + (pic.why ? ' ' + esc(pic.why) : '') + '</p>' +
       '<p class="sbs-travel">A person looks at every map before it appears in the community gallery.</p>' +
       '<div class="sbs-keys"><button class="bb refit-primary" type="button" data-sbs-send>SEND FOR REVIEW</button><button class="bb" type="button" data-sbs-cancel>CANCEL</button></div></div>';
@@ -3071,7 +3071,7 @@ const Build = (() => {
       const fields = { title: title.value.trim(), credit: creditIn.value.trim(), description: desc.value.trim(), agree: agree.checked, build: r.text, still: pic.dataUrl };
       if (!fields.title) { status.textContent = 'Give the map a name.'; title.focus(); return; }
       if (!fields.credit) { status.textContent = 'Add the name you want credited in the gallery.'; creditIn.focus(); return; }
-      if (!fields.agree) { status.textContent = 'Turn on the CC BY 4.0 agreement to share it: it is how others may build your station.'; agree.focus(); return; }
+      if (!fields.agree) { status.textContent = 'Turn on the CC BY 4.0 agreement to share it: it is how others may build your farm.'; agree.focus(); return; }
       send.disabled = true; send.textContent = 'SENDING…'; status.textContent = 'Sending ' + fields.title + ' for review…';
       try { localStorage.setItem(MAP_CREDIT_KEY, fields.credit); } catch (_) {}
       const res = await CommunityMaps.share(fields);
@@ -3084,7 +3084,7 @@ const Build = (() => {
         sfx('click');
         return;
       }
-      const text = shareOutcomeText(res.ok ? { ok: false, outcome: 'unknown', error: 'StarNet gave no readable answer.' } : res, 'map');
+      const text = shareOutcomeText(res.ok ? { ok: false, outcome: 'unknown', error: 'Homestead gave no readable answer.' } : res, 'map');
       if (!shown) { if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify(fields.title + ': ' + text, 'warn'); return; }
       send.textContent = 'SEND FOR REVIEW';
       send.disabled = unlinked || res.linked === false;
@@ -3099,7 +3099,7 @@ const Build = (() => {
       if (!c || c.linked !== false || !panel.isConnected) return;
       unlinked = true; send.disabled = true;
       const p = document.createElement('p'); p.className = 'sbs-travel sbs-link';
-      p.textContent = 'This station is not linked to a StarNet account yet. Link it first: STORE › LINK STATION (a free account works), then open SHARE TO COMMUNITY again.';
+      p.textContent = 'This farm is not linked to a StarNet account yet. Link it first: STORE › LINK FARM (a free account works), then open SHARE TO COMMUNITY again.';
       panel.querySelector('.sbs-keys').before(p);
     });
   }
@@ -3116,7 +3116,7 @@ const Build = (() => {
       if (!g.isConnected) return;
       if (!c.ok) {
         if (c.error) console.warn('[community maps] gallery not read:', c.error);
-        note.textContent = c.off ? 'The community gallery is switched off on this station.' : 'The community gallery could not be read right now. Close PRESETS and open it again to retry.';
+        note.textContent = c.off ? 'The community gallery is switched off on this farm.' : 'The community gallery could not be read right now. Close PRESETS and open it again to retry.';
         return;
       }
       if (!c.maps.length) { note.textContent = 'No community maps yet. Be the first: SHARE TO COMMUNITY, above.'; return; }
@@ -3140,8 +3140,8 @@ const Build = (() => {
 
   function sharedBuildCopy(name, stats, dropped, lead) {
     const n = (k, one, many) => k + ' ' + (k === 1 ? one : many);
-    const left = ['Crew, step instructions, project folders and connections stay with the station that made it.'];
-    if (dropped.made) left.push(n(dropped.made, 'made prop was', 'made props were') + ' left out: made props belong to the station that paid for them.');
+    const left = ['Crew, step instructions, project folders and connections stay with the farm that made it.'];
+    if (dropped.made) left.push(n(dropped.made, 'made prop was', 'made props were') + ' left out: made props belong to the farm that paid for them.');
     if (stats.lines) left.push('Its ' + (stats.lines === 1 ? 'line arrives' : 'lines arrive') + ' wired but unstaffed, with no step instructions.');
     return '<span>' + lead + '<b>' + esc(name) + '</b> · ' + n(stats.rooms, 'room', 'rooms') + ' · ' + n(stats.props, 'prop', 'props') + '</span>'
       + '<span class="station-build-need">' + left.map(esc).join(' ') + '</span>';
@@ -3152,7 +3152,7 @@ const Build = (() => {
     if (!exp || !imp || !fileIn || !grid) return;
     exp.onclick = () => {
       const r = BuildShare.exportBuild(station.serialize(), WorldModel, { name: station.doc().meta.name });
-      if (r.error) { status.textContent = 'This station could not be exported.'; sfx('bad'); return; }
+      if (r.error) { status.textContent = 'This farm could not be exported.'; sfx('bad'); return; }
       const url = URL.createObjectURL(new Blob([r.text], { type: 'application/json' }));
       const a = document.createElement('a'); a.href = url; a.download = r.filename;
       document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
@@ -3163,7 +3163,7 @@ const Build = (() => {
     fileIn.onchange = () => {
       const f = fileIn.files && fileIn.files[0]; fileIn.value = '';
       if (!f) return;
-      if (f.size > BuildShare.MAX_BYTES) { status.textContent = 'That file is too large to be a station build.'; sfx('bad'); return; }
+      if (f.size > BuildShare.MAX_BYTES) { status.textContent = 'That file is too large to be a farm build.'; sfx('bad'); return; }
       const reader = new FileReader();
       reader.onerror = () => { status.textContent = 'That file could not be read.'; sfx('bad'); };
       reader.onload = () => {
@@ -3197,7 +3197,7 @@ const Build = (() => {
     const g = document.createElement('div');
     g.className = 'refit-guide refit-preset-example';
     g.setAttribute('role','dialog'); g.setAttribute('aria-modal','true'); g.setAttribute('aria-label','Set up '+first.title);
-    g.innerHTML = '<div class="refit-guide-card"><header class="refit-prop-actions-head"><div><span class="ui-overline">SET UP YOUR STATION</span><h3>'+esc(first.title)+'</h3></div><button class="bb" data-workflow-close>CLOSE</button></header><div data-example-body></div></div>';
+    g.innerHTML = '<div class="refit-guide-card"><header class="refit-prop-actions-head"><div><span class="ui-overline">SET UP YOUR FARM</span><h3>'+esc(first.title)+'</h3></div><button class="bb" data-workflow-close>CLOSE</button></header><div data-example-body></div></div>';
     let unsubscribe;
     const closeP = () => { unsubscribe?.(); g.remove(); root?.querySelector('[data-build-group="workflow"]')?.focus(); };
     cardRegister(g,closeP); root.appendChild(g); g.querySelector('[data-workflow-close]').onclick = closeP;
@@ -3301,7 +3301,7 @@ const Build = (() => {
     const G = guideNames();
     g.innerHTML = `
       <div class="refit-guide-card refit-guide-wide" role="dialog" aria-modal="true" aria-labelledby="refit-guide-title">
-        <span class="refit-guide-kicker">BUILD MODE · QUICK GUIDE</span><h3 id="refit-guide-title">Shape your station</h3>
+        <span class="refit-guide-kicker">BUILD MODE · QUICK GUIDE</span><h3 id="refit-guide-title">Shape your farm</h3>
         <p class="refit-guide-lead">Add rooms, choose equipment, and make the space your own. When you want a repeatable workflow, connect an inbox, an agent’s bay, and an outbox.</p>
         <div class="refit-steps">
           <div class="refit-step" data-art="room">
@@ -3351,7 +3351,7 @@ const Build = (() => {
   function summonForRole(role, ri) {
     if (typeof App === 'undefined' || !App.summonAgent) return null;
     const cls = (ri && ri.cls && typeof Specialties !== 'undefined' && Specialties.get) ? Specialties.get(ri.cls) : null;
-    const duty = 'You crew this station line as its ' + role + ' — you ' + ((ri && ri.desc) || 'work this dock') + '.';
+    const duty = 'You crew this farm line as its ' + role + ' — you ' + ((ri && ri.desc) || 'work this dock') + '.';
     const spec = Object.assign({}, cls || { name: role, model: 'balanced' });
     spec.purpose = duty + (cls && cls.purpose ? '\n\n' + cls.purpose : '');
     // a role that borrows another class (TESTER rides the reviewer class) names its recruit for the STEP — the button said
@@ -3587,7 +3587,7 @@ const Build = (() => {
         return station.canInsertBayBetween(fromId, toId, { w: sp.w, h: sp.h, block: sp.blocks !== false });
       },
       insertBay: (fromId, toId, role) => {
-        if (typeof station.insertBayBetween !== 'function') return { ok: false, msg: 'this station model cannot insert a step' };
+        if (typeof station.insertBayBetween !== 'function') return { ok: false, msg: 'this farm model cannot insert a step' };
         const sp = propSpec('bay');
         const res = station.insertBayBetween(fromId, toId, { role: role || null, w: sp.w, h: sp.h, block: sp.blocks !== false });
         if (res && res.ok) { pushFlash([{ x1: res.x, y1: res.y, x2: res.x + (sp.w || 2) - 1, y2: res.y + (sp.h || 2) - 1 }], false); if (typeof Tutorial !== 'undefined' && Tutorial.onPropPlaced) Tutorial.onPropPlaced('bay'); }
@@ -4109,7 +4109,7 @@ const Build = (() => {
     cardRegister(g, closeP);
     g.innerHTML = '<div class="refit-guide-card"><h3>▮ PLUGIN TERMINAL — choose its plugin</h3>'
       + '<ul><li>This terminal gives its room’s agent the chosen plugin’s <b>tools</b> (each call asks you first, unless you choose Always or Full access).</li>'
-      + '<li>Clicking it in the station opens that plugin’s window.</li></ul>'
+      + '<li>Clicking it in the farm opens that plugin’s window.</li></ul>'
       + '<div class="refit-conn-rows" id="pl-rows">loading…</div>'
       + '<div class="refit-actions"><button type="button" class="btn-sm" id="pl-unbind">✕ UNBIND</button><button type="button" class="btn-sm" id="pl-cancel">CANCEL</button></div></div>';
     root.appendChild(g);
@@ -4819,7 +4819,7 @@ const Build = (() => {
       if (!s) return null;
       const errs = (s.errors || []);
       if (errs.length) return { refuse: 'line not posted — fix the floor first: ' + errs.map(e => VAL_LABEL[e.code] || e.code).filter((v, i, a) => a.indexOf(v) === i).join(' · ') };
-      if (s.refusedHash && s.refusedHash === s.lastHash) return { refuse: 'the station refused this line — fix the nags on the floor first' };
+      if (s.refusedHash && s.refusedHash === s.lastHash) return { refuse: 'the farm refused this line — fix the nags on the floor first' };
       if (s.stale || s.inflight || s.retryPending) return { refuse: 'line not posted — sidecar unreachable, the old line was NOT run' };
       return null;
     }, () => ({ refuse: 'line not posted — the old line was NOT run' }));
@@ -5052,7 +5052,7 @@ const Build = (() => {
       const now = StationBuilder.strandedHalls(station).filter(id => !before.has(id));
       if (!now.length) return r;
       const h = station.roomById(now[0]);
-      return { ok: false, error: 'STRANDS_HALL', msg: ((h && h.name) || 'A hallway') + ' would lead nowhere · keep it joined to two rooms, or delete the hallway first' };
+      return { ok: false, error: 'STRANDS_HALL', msg: ((h && h.name) || 'A path') + ' would lead nowhere · keep it joined to two rooms, or delete the path first' };
     });
   }
   // the ONE room-removal path the card and the DELETE tool both take (flash, undo nudge, honest refusal)
@@ -5499,7 +5499,7 @@ const Build = (() => {
       rememberDrawn(rect);
       deselectTool({ silent: true });
     }
-    feedback(res, ev, isHall ? 'hallway run' : 'room placed');
+    feedback(res, ev, isHall ? 'path run' : 'room placed');
   }
   function commitMove(d, ev) {
     // the SAME snapped delta the move ghost drew — commit what was on screen, never the raw drag
@@ -6038,7 +6038,7 @@ const Build = (() => {
     const notes = [];
     if (c.dropped) notes.push(c.dropped + ' SEND TO LEFT OUT (IT POINTS OUTSIDE THE COPY)');
     if (c.oldBelts) notes.push(c.oldBelts + ' OLD HAND-OFF BELT' + (c.oldBelts === 1 ? '' : 'S') + ' LEFT OUT (A HAND-OFF IS SEND TO)');
-    if (c.crewLeft) notes.push(c.crewLeft + ' CREW LEFT OUT (NOT ON THIS STATION)');
+    if (c.crewLeft) notes.push(c.crewLeft + ' CREW LEFT OUT (NOT ON THIS FARM)');
     /* a COPY carries the belts BETWEEN the copied machines only — the box's other belts (counted on its card, drawn gold) are said,
        never dropped silently (wave 2, build-22: "3 things · 4 belts" copied as "1 BELT"); a CUT says the same in cutLeavesBehind */
     if (!cut) {
@@ -7204,7 +7204,7 @@ const Build = (() => {
   }
   // deck tiles → the station's size word. Thresholds are round numbers, not tuned: they exist to
   // give a growing floor a few named landmarks, and every one is reachable from minute one.
-  const TIER_STEPS = [[3000, 'CITADEL'], [1200, 'COMPLEX'], [400, 'STATION'], [0, 'OUTPOST']];
+  const TIER_STEPS = [[3000, 'ESTATE'], [1200, 'RANCH'], [400, 'FARM'], [0, 'HOMESTEAD']];   // the farm's size, smallest last
   const tierFor = tiles => (TIER_STEPS.find(s => tiles >= s[0]) || TIER_STEPS[TIER_STEPS.length - 1])[1];
   let lastTier = '';
   function announceTier(tier) {
@@ -9555,7 +9555,7 @@ const Build = (() => {
       : c.stack ? ' · deck or table'
       : (c.surface ? ' · things can stand on it' : '');
     const foot = c.w + '×' + c.h + (c.blocks === false ? ' · walkable' : ' · solid') + mount;
-    const desc = c.desc || (fn ? '' : 'Decor — looks only. Sets the mood; no effect on how the station runs.');
+    const desc = c.desc || (fn ? '' : 'Decor — looks only. Sets the mood; no effect on how the farm runs.');
     let assign = '';
     if (placed && WORKSTATION_TYPES[placed.t]) {
       assign = placed.agentId

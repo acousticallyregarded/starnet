@@ -298,7 +298,7 @@ function makeRemoteHost(d) {
 
   async function send(o) {
     const who = agentsList().find(a => a.agentId === o.agentId);
-    if (!who) return { ok: false, error: 'there is no agent called ' + o.agentId + ' on this station' };
+    if (!who) return { ok: false, error: 'there is no agent called ' + o.agentId + ' on this farm' };
     const cred = d.credentials(o.agentId);
     if (!cred || !cred.ok) return { ok: false, error: (cred && cred.error) || 'this agent has no model set up yet' };
     const streamId = o.streamId || ('remote_' + String(o.agentId).replace(/[^A-Za-z0-9_-]/g, '_') + '_' + now().toString(36)).slice(0, 64);

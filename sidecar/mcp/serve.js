@@ -58,7 +58,7 @@ let tokenPromise = null;
 // Drop a scraped token that the station has stopped honouring, so the next call re-scrapes the live one.
 function invalidateToken(why) {
   if (TOKEN_IS_EXPLICIT || !cachedToken) return false;
-  log('token rejected (' + why + ') — re-discovering; the station was probably restarted');
+  log('token rejected (' + why + ') — re-discovering; the farm was probably restarted');
   cachedToken = '';
   return true;
 }
@@ -203,6 +203,6 @@ process.stdin.on('data', chunk => {
 process.stdin.on('end', () => { process.exit(0); });
 process.stdin.on('close', () => { process.exit(0); });
 
-log('StarNet MCP bridge ready on stdio → proxying ' + BASE_LABEL + (cachedToken ? ' (token from env/flag)' : ' (token via page scrape)'));
+log('Homestead MCP bridge ready on stdio → proxying ' + BASE_LABEL + (cachedToken ? ' (token from env/flag)' : ' (token via page scrape)'));
 
 module.exports = { readConfig, _internals: { discoverToken, callSidecar, queue } };

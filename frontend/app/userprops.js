@@ -110,7 +110,7 @@ const UserProps = (() => {
     try {
       const r = await apiFetch('/api/userprops/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(previewId ? { noun, previewId } : { noun }) });
       return await r.json();
-    } catch (_) { return { ok: false, code: 'unreachable', message: 'The station did not answer. Try again.' }; }
+    } catch (_) { return { ok: false, code: 'unreachable', message: 'The farm did not answer. Try again.' }; }
   }
   // SIZE: store the player's size, then re-register the art at it (no regeneration, no credits).
   async function setScale(id, scale) {
@@ -120,7 +120,7 @@ const UserProps = (() => {
     try {
       const r = await apiFetch('/api/userprops/scale', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, scale }) });
       j = await r.json();
-    } catch (_) { return { ok: false, code: 'unreachable', message: 'The station did not answer. Try again.' }; }
+    } catch (_) { return { ok: false, code: 'unreachable', message: 'The farm did not answer. Try again.' }; }
     if (!j || !j.ok) return j || { ok: false, code: 'failed', message: 'That size could not be saved.' };
     p.scale = j.scale;
     localScale.set(id, { scale: j.scale, seq: ++seq });
@@ -152,7 +152,7 @@ const UserProps = (() => {
     try {
       const r = await apiFetch('/api/userprops/side', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) });
       return await r.json();
-    } catch (_) { return { ok: false, code: 'unreachable', message: 'The station did not answer. Try again.' }; }
+    } catch (_) { return { ok: false, code: 'unreachable', message: 'The farm did not answer. Try again.' }; }
   }
   // delete a made prop from the station's library; the caller removes placed copies and the catalog row
   async function remove(id) {
@@ -166,13 +166,13 @@ const UserProps = (() => {
         if (typeof PropSprites !== 'undefined' && PropSprites.markUserDeleted) PropSprites.markUserDeleted([id]);
       }
       return j;
-    } catch (_) { return { ok: false, code: 'unreachable', message: 'The station did not answer. Try again.' }; }
+    } catch (_) { return { ok: false, code: 'unreachable', message: 'The farm did not answer. Try again.' }; }
   }
   async function startPreview(noun) {
     try {
       const r = await apiFetch('/api/userprops/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ noun }) });
       return await r.json();
-    } catch (_) { return { ok: false, code: 'unreachable', message: 'The station did not answer. Try again.' }; }
+    } catch (_) { return { ok: false, code: 'unreachable', message: 'The farm did not answer. Try again.' }; }
   }
   // poll one preview until it settles; onUpdate(job) on every change; resolves with { job, preview }
   function watchPreview(id, onUpdate) {
@@ -204,7 +204,7 @@ const UserProps = (() => {
         const j = r && r.ok ? r.job : null;
         // the station no longer knows this job (it settled while it restarted): stop instead of polling forever
         if (!j && r && r.code === 'not_found' && ++missing >= 3) {
-          resolve({ id, status: 'failed', costUsd: 0, error: { code: 'lost', message: 'The station lost track of this job. If it finished, it is in MADE BY YOU; check your credit history for its charge.' } });
+          resolve({ id, status: 'failed', costUsd: 0, error: { code: 'lost', message: 'The farm lost track of this job. If it finished, it is in MADE BY YOU; check your credit history for its charge.' } });
           return;
         }
         if (j) missing = 0;

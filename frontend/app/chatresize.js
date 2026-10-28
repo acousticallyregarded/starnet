@@ -17,7 +17,7 @@
     const expanded = game.classList.toggle('comms-expanded');
     expand.textContent = expanded ? 'RESTORE' : 'EXPAND';
     expand.setAttribute('aria-pressed', String(expanded));
-    expand.setAttribute('aria-label', expanded ? 'Restore station layout' : 'Expand conversation');
+    expand.setAttribute('aria-label', expanded ? 'Restore farm layout' : 'Expand conversation');
     // Existing canvas, overlays and logo trackers share this layout notification.
     window.dispatchEvent(new Event('resize'));
   });

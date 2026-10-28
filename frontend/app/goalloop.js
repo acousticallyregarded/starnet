@@ -136,13 +136,13 @@
   // the head every goal step stored BEFORE the org pass carries (0.13.2 / 0.13.3 / the 0.13.5 candidate wrote "standing goal"):
   // a saved session replays those steps too, so the READER accepts both heads; only CONT_HEAD is ever written
   const CONT_HEAD_RE = /^\[Continuing toward your (?:session|standing) goal\]\nGoal: /;
-  const CONT_SUBS = '\n\nAdditional criteria the Commander added:\n';
+  const CONT_SUBS = '\n\nAdditional criteria the Farmer added:\n';
   const CONT_TAIL = '\n\nContinue working toward this goal. ';
   function continuationPrompt(s) {
     if (!isActive(s)) return null;
     let p = CONT_HEAD + s.goal + '\n\n';
     if (s.subgoals.length) {
-      p += 'Additional criteria the Commander added:\n'
+      p += 'Additional criteria the Farmer added:\n'
         + s.subgoals.map((t, i) => '- ' + (i + 1) + '. ' + t).join('\n') + '\n\n'
         + 'Continue working toward the goal AND every criterion. Take the next concrete step. '
         + 'If the goal and all criteria are complete, say so explicitly and stop. '

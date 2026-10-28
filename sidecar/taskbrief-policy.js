@@ -98,7 +98,7 @@ function validateQuestions(candidate, brief) {
     if(raw.length !== 1) return {ok:false,error:'Ask one conversational question, then listen before choosing the next.'};
     if(prior.some(q=>!q.answer)) return {ok:false,error:'Wait for the pending answer before asking again.'};
     if(Context.delegate(brief && brief.originalDirective) || prior.some(q=>Context.delegate(q.answer)))
-      return {ok:false,error:'The Commander delegated the remaining choices. Update your understanding and proceed with reversible assumptions.'};
+      return {ok:false,error:'The Farmer delegated the remaining choices. Update your understanding and proceed with reversible assumptions.'};
     if(calls >= 6) return {ok:false,error:'Stop discovery now. Produce a useful draft or proceed with stated assumptions; do not keep interviewing.'};
     if(calls && !Context.current(brief)) return {ok:false,error:'Call brief.update to incorporate the entire latest answer before choosing a follow-up.'};
     if(prior.some(q=>clean(q.text,240).toLowerCase()===clean(c.question,240).toLowerCase()))

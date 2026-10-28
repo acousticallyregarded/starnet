@@ -12,11 +12,11 @@ function effectiveToolsets({ registry, agentId, agent, placed = [], disabled = {
   const onFloor = new Set(placed);
   const projected = new Set(profile.capabilityObjects);
   return {
-    authority: { agentId: agentId || null, name: agent.name || agentId || 'Station defaults', unrestricted, source,
+    authority: { agentId: agentId || null, name: agent.name || agentId || 'Farm defaults', unrestricted, source,
       context: lead ? 'interactive lead' : 'capability grants',
       profile: profile.id, profileLabel: profile.label, filesystemLabel: unrestricted ? 'Whole local computer' : profile.filesystemLabel,
-      approvalLabel: unrestricted ? 'FULL ACCESS — no StarNet approval prompts' : 'ASK — standing grants apply',
-      revoke: source === 'environment' ? 'Clear SKYNET_FULL_ACCESS in the launch environment and restart.' : source === 'station' ? 'Turn off the station master bypass in Settings → Permissions; individual Full Access agents stay unrestricted.' : source === 'agent' ? 'Set this agent to ASK in its dossier.' : 'Revoke standing grants in Settings → Permissions.' },
+      approvalLabel: unrestricted ? 'FULL ACCESS — no Homestead approval prompts' : 'ASK — standing grants apply',
+      revoke: source === 'environment' ? 'Clear SKYNET_FULL_ACCESS in the launch environment and restart.' : source === 'station' ? 'Turn off the farm master bypass in Settings → Permissions; individual Full Access agents stay unrestricted.' : source === 'agent' ? 'Set this agent to ASK in its dossier.' : 'Revoke standing grants in Settings → Permissions.' },
     toolsets: toolsetRows(registry).map(r => {
       const enabled = disabled[r.id] !== false;
       const placedHere = !!(r.object && onFloor.has(r.object));
@@ -24,7 +24,7 @@ function effectiveToolsets({ registry, agentId, agent, placed = [], disabled = {
       const runtimeGranted = lead && r.object === 'orchestrator';
       return Object.assign({}, r, { toolCount: r.tools.length, enabled, placed: placedHere, profileGranted, runtimeGranted,
         available: unrestricted || (enabled && (placedHere || profileGranted || runtimeGranted)),
-        grantSource: unrestricted ? 'Full Access' : profileGranted ? profile.label : placedHere ? 'station prop' : runtimeGranted ? 'lead run' : null,
+        grantSource: unrestricted ? 'Full Access' : profileGranted ? profile.label : placedHere ? 'farm prop' : runtimeGranted ? 'lead run' : null,
         switchEffective: !unrestricted, consentGated: !unrestricted && r.consentGated });
     })
   };
@@ -41,23 +41,23 @@ function effectiveToolsets({ registry, agentId, agent, placed = [], disabled = {
    may message the station mid-run), image_analyze (falls back to the run's own model). */
 const AVAILABILITY_SIGNALS = [
   { id: 'media-route', fact: 'mediaRoute', tools: ['image_generate'], label: 'image_generate', announce: true,
-    why: 'no image-generation connection is configured for this station',
-    enable: 'the Commander signs in to ChatGPT, or connects an OpenAI or OpenRouter key or a StarNet account in SETTINGS' },
+    why: 'no image-generation connection is configured for this farm',
+    enable: 'the Farmer signs in to ChatGPT, or connects an OpenAI or OpenRouter key or a StarNet account in SETTINGS' },
   { id: 'voice-route', fact: 'voiceRoute', tools: ['voice_generate'], label: 'voice_generate', announce: true,
     why: 'no voice route exists: no OpenRouter, Gemini or OpenAI key is connected and the free Edge voice is switched off',
-    enable: 'the Commander connects one of those keys in SETTINGS, or removes STARNET_EDGE_TTS=0 from the launch environment' },
+    enable: 'the Farmer connects one of those keys in SETTINGS, or removes STARNET_EDGE_TTS=0 from the launch environment' },
   { id: 'spotify', fact: 'spotifyConnected', label: 'spotify_*', announce: true,
     tools: ['spotify_search', 'spotify_now_playing', 'spotify_playlists', 'spotify_play', 'spotify_pause', 'spotify_next', 'spotify_previous', 'spotify_queue'],
     why: 'Spotify is not connected',
-    enable: 'the Commander connects Spotify in ABILITIES > TOOLSETS' },
+    enable: 'the Farmer connects Spotify in ABILITIES > TOOLSETS' },
   // Only the four that need a LIVE pty: status/read/stop still answer for recorded sessions, so they stay.
   { id: 'pty', fact: 'ptyRuntime', tools: ['terminal.start', 'terminal.write', 'terminal.resize', 'terminal.interrupt'], label: 'terminal_start/write/resize/interrupt', announce: true,
-    why: 'the interactive terminal runtime (node-pty) is not installed or could not load in this StarNet install',
+    why: 'the interactive terminal runtime (node-pty) is not installed or could not load in this Homestead install',
     enable: 'use shell_exec (background:true for long-running processes) instead; interactive terminals need node-pty in the install' },
   // Found by search, never announced: every interactive run would otherwise carry a sentence about routines.
   { id: 'routine-run', fact: 'routineRun', tools: ['routine.notepad'], label: 'routine_notepad', announce: false,
     why: 'it works only inside a scheduled routine run, and this run is not one',
-    enable: 'nothing to enable here: it activates by itself when this agent runs as a StarNet routine' }
+    enable: 'nothing to enable here: it activates by itself when this agent runs as a Homestead routine' }
 ];
 // unavailableTools(facts, granted) -> { byTool: { name: { signal, why, enable } }, bySignal: { signalId: [name] } }
 // `granted` (Set or array) limits the answer to tools this run actually holds; absent = every signal tool.
@@ -83,6 +83,6 @@ function unavailableLine(bySignal) {
   }
   if (!parts.length) return '';
   return 'Granted tools that CANNOT work right now (tool_search still finds them): ' + parts.join('. ') + '. '
-    + 'Never claim one of these worked; tell the Commander what is missing. ';
+    + 'Never claim one of these worked; tell the Farmer what is missing. ';
 }
 module.exports = { effectiveToolsets, AVAILABILITY_SIGNALS, unavailableTools, unavailableLine };

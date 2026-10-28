@@ -79,7 +79,7 @@ function compose(input) {
   const deferred = Array.isArray(input.deferredDimensions) ? input.deferredDimensions.slice(0, 8) : [];
   if (deferred.length) {
     lines.push('<deferred_decisions provenance="commander-observed">');
-    lines.push('The Commander has repeatedly answered "use your judgment" on these decision dimensions: '
+    lines.push('The Farmer has repeatedly answered "use your judgment" on these decision dimensions: '
       + deferred.map(d => clip(d, 24)).join(', ') + '. Do NOT ask about them. Choose the most sensible reversible default and state it as a correctable assumption in brief_proceed.');
     lines.push('</deferred_decisions>');
   }
@@ -88,7 +88,7 @@ function compose(input) {
   // Commander — creating nothing. Only present when the ask is about automation (see automationIntent()).
   if (input.automationAsk) {
     lines.push('<automation_request provenance="the current request asks for automation">');
-    lines.push('Turn this into StarNet routines now. Settle the Task Brief with brief_proceed (state your assumptions: focus, times) instead of asking, then call routine_create in the same turn. Do not interview the Commander.');
+    lines.push('Turn this into Homestead routines now. Settle the Task Brief with brief_proceed (state your assumptions: focus, times) instead of asking, then call routine_create in the same turn. Do not interview the Farmer.');
     lines.push('- Build routines your own tools can run today (web research, watching public pages, drafting, summaries, checklists, reminders). Never wait on a connection or API key: create the runnable version and mention any upgrade in one line.');
     lines.push('- A broad goal ("help me run my shop") gets 2-5 distinct routines at sensible times. Plain-English schedules work: "weekdays at 8am", "mondays at 9am", "1st of every month".');
     lines.push('- Every run must deliver something useful on its own (fresh findings, a ready draft, a short decision list), never a blank template or generic advice. Each prompt is self-contained: task, sources, output format, what to flag. Results come back to this chat by default. Check routine_list first; never duplicate.');
@@ -101,7 +101,7 @@ function compose(input) {
   if (sw && Number(sw.count) >= 3 && Array.isArray(sw.dates)) {
     const day = t => { const d = new Date(Number(t)); return isFinite(d.getTime()) ? d.toDateString() : ''; };
     lines.push('<standing_work_notice provenance="observed: completed task history">');
-    lines.push('The Commander has now asked for this same work ' + Number(sw.count) + ' times on separate days (earlier: '
+    lines.push('The Farmer has now asked for this same work ' + Number(sw.count) + ' times on separate days (earlier: '
       + sw.dates.slice(-4).map(day).filter(Boolean).join('; ') + ').'
       + (Array.isArray(sw.quotes) && sw.quotes.length ? ' Earlier wording: ' + sw.quotes.map(q => '"' + clip(q, 160) + '"').join(' / ') + '.' : ''));
     lines.push('Do the current task fully first. Then, at the very END of your reply, offer ONCE in one short sentence to take it off their plate as a standing routine'

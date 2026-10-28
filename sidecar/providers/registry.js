@@ -152,7 +152,7 @@
       name: 'StarNet Managed',
       label: 'STARNET',
       endpoint: 'managed inference (credits)',
-      blurb: 'run on credits, no API key — link a station',
+      blurb: 'run on credits, no API key — link a farm',
       live: true,
       adapter: 'openai-compatible',
       apiMode: 'chat_completions',
@@ -223,7 +223,7 @@
         // Chat Completions cannot combine gpt-5.6 reasoning with function tools ("set reasoning_effort to 'none'"),
         // and every StarNet agent run sends tools — so on this wire the model only runs with reasoning off.
         { match: '^gpt-5\\.6(?:[.-]|$)', efforts: ['none'], supportsReasoning: false,
-          note: "OpenAI's Chat Completions API can't combine this model's reasoning with tools, so StarNet runs it with reasoning off." },
+          note: "OpenAI's Chat Completions API can't combine this model's reasoning with tools, so Homestead runs it with reasoning off." },
         { match: '^gpt-5\\.5(?:-\\d{4}-\\d{2}-\\d{2})?$', efforts: ['none', 'low', 'medium', 'high', 'xhigh'], default: 'medium' },
         { match: '^gpt-5\\.4(?:-mini|-nano)?(?:-\\d{4}-\\d{2}-\\d{2})?$', efforts: ['none', 'low', 'medium', 'high', 'xhigh'] },
         { match: '^gpt-5\\.2(?:-\\d{4}-\\d{2}-\\d{2})?$', efforts: ['none', 'low', 'medium', 'high'] },

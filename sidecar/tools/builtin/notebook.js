@@ -53,7 +53,7 @@
      is not proof, and the note keeps its ordinary provenance. Pure + deterministic. */
   const PROOF_STOP = new Set(('a an the of to in on for and or but is are was were be been it its this that these those with as at by ' +
     'from your you i we they he she them our their not no do does did has have had will would can could me my so if up us am ' +
-    'user users commander prefers prefer preferred preference preferences wants want wanted likes like liked love loves ' +
+    'user users farmer prefers prefer preferred preference preferences wants want wanted likes like liked love loves ' +
     'ask asks asked said says say told tell should must need needs please always never use uses used using instead rather ' +
     'over than also just only really very all any every when what which whenever don doesn didn won isn aren shouldn can cannot t s ll ve re d m').split(/\s+/));
   const PROOF_NEG = /\b(?:not|no|never|nor|none|don'?t|doesn'?t|didn'?t|won'?t|can'?t|cannot|isn'?t|aren'?t|shouldn'?t|avoid|without|stop|hate|hates|dislike|dislikes|against)\b/i;
@@ -237,7 +237,7 @@
         let taintedBy = '';
         try { const a = ctx && ctx.connectorAuthority; taintedBy = a && typeof a.taintedBy === 'function' ? String(a.taintedBy() || '') : ''; } catch (_) { taintedBy = 'taint check failed'; }
         if (taintedBy && args.pinned === true) {
-          return { content: 'Not saved — this run has read outside content (' + taintedBy + '), so it cannot pin a memory into every future prompt. Save it unpinned, or ask the Commander to pin it.', summary: 'pin refused (tainted run)' };
+          return { content: 'Not saved — this run has read outside content (' + taintedBy + '), so it cannot pin a memory into every future prompt. Save it unpinned, or ask the Farmer to pin it.', summary: 'pin refused (tainted run)' };
         }
         const now = clock.now();
         // PROVENANCE (see statedSentence): the Commander's own sentence behind this note, proven by the host's words —
@@ -363,16 +363,16 @@
         // carries the Commander's own words (a model may only claim that because the tool says so)
         const where = (!args.replaceId || args.scope || widen)
           ? ' Scope: ' + (note.scope === 'global' ? 'every conversation' : note.projectRoot ? 'this project' : 'this conversation only') +
-            (widen && !args.scope && note.scope === 'global' ? ' (a standing instruction in the Commander\'s own words)' : '') + '.'
+            (widen && !args.scope && note.scope === 'global' ? ' (a standing instruction in the Farmer\'s own words)' : '') + '.'
           : '';
-        const proof = note.confirmation === 'user-stated' || (statedBy && note.confirmation === 'user-confirmed') ? ' Recorded as the Commander\'s own words.' : '';
+        const proof = note.confirmation === 'user-stated' || (statedBy && note.confirmation === 'user-confirmed') ? ' Recorded as the Farmer\'s own words.' : '';
         let tail = '';
         if (folded) tail = ' Folded ' + folded.id + ' (saved earlier this run with the same text) into it.';
         if (similar.length) {
           tail = '\n\nSimilar notes you already hold:\n' + similar.map(n => '[' + n.id + '] ' + String(n.title || '') + ': ' +
             String(n.content != null ? n.content : (n.body != null ? n.body : ''))).join('\n') +
             '\n\nIf ' + note.id + ' REPLACES one of them, retire the old one now: call notebook.write with replaceId set to its id, ' +
-            'previousBody set to its exact text above, and this same title/body — StarNet folds ' + note.id + ' into it, so only ' +
+            'previousBody set to its exact text above, and this same title/body — Homestead folds ' + note.id + ' into it, so only ' +
             'the corrected belief stays active. If they are separate facts, leave both.';
         }
         return Object.assign({ content: (args.replaceId ? 'Updated' : 'Saved') + ' note "' + note.title + '" (' + note.id + ').' + (args.replaceId ? ' The previous text is archived and is no longer active recall.' : '') + where + proof + tail, summary: (args.replaceId ? 'updated ' : 'wrote ') + note.id }, echoTaint(similar));

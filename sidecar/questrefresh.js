@@ -174,28 +174,28 @@
   function buildDirective(ctx) {
     ctx = ctx || {};
     const lines = [];
-    lines.push('You are the station\'s quest master. Your job: keep the Commander\'s quest slate in sync with the long-term goal they are ACTUALLY working toward, using only the real evidence below.');
+    lines.push('You are the farm\'s quest master. Your job: keep the Farmer\'s quest slate in sync with the long-term goal they are ACTUALLY working toward, using only the real evidence below.');
     lines.push('');
     if (str(ctx.goalNote).trim()) {
-      lines.push('ACTIVE GOAL (set by the Commander — this IS the north star; never override it):');
+      lines.push('ACTIVE GOAL (set by the Farmer — this IS the north star; never override it):');
       lines.push(str(ctx.goalNote).trim());
       // the plan's CURRENT step: the quests this cycle proposes are that step's slate. The station records the
       // step done once every quest planned for it is settled (sidecar/goal-advance.js), then plans the next one.
       if (str(ctx.nextStep).trim()) {
         lines.push('THE STEP YOU ARE PLANNING NOW: ' + str(ctx.nextStep).trim());
-        lines.push('Propose the quests that, completed together, finish this step. The station marks the step done once every quest planned for it is settled, then plans the step after it — so never propose work for later steps yet.');
+        lines.push('Propose the quests that, completed together, finish this step. The farm marks the step done once every quest planned for it is settled, then plans the step after it — so never propose work for later steps yet.');
       }
     } else if (ctx.northStar && str(ctx.northStar.text).trim()) {
       lines.push('CURRENT NORTH STAR (inferred previously — keep it unless the evidence below clearly shifted):');
       lines.push(str(ctx.northStar.text).trim());
     } else {
-      lines.push('NO NORTH STAR IS KNOWN YET. Your first job is to infer the Commander\'s real long-term ambition from the evidence below.');
+      lines.push('NO NORTH STAR IS KNOWN YET. Your first job is to infer the Farmer\'s real long-term ambition from the evidence below.');
     }
-    if (str(ctx.dossierBlock).trim()) { lines.push(''); lines.push('COMMANDER DOSSIER:'); lines.push(str(ctx.dossierBlock).trim()); }
+    if (str(ctx.dossierBlock).trim()) { lines.push(''); lines.push('FARMER DOSSIER:'); lines.push(str(ctx.dossierBlock).trim()); }
     if (str(ctx.activityBlock).trim()) { lines.push(''); lines.push('RECENT REAL ACTIVITY:'); lines.push(str(ctx.activityBlock).trim()); }
-    if (str(ctx.interestsBlock).trim()) { lines.push(''); lines.push('RECURRING INTERESTS THE STATION OBSERVED (with evidence):'); lines.push(str(ctx.interestsBlock).trim()); }
+    if (str(ctx.interestsBlock).trim()) { lines.push(''); lines.push('RECURRING INTERESTS THE FARM OBSERVED (with evidence):'); lines.push(str(ctx.interestsBlock).trim()); }
     if (ctx.progress) {
-      lines.push(''); lines.push('GOAL PROGRESS AND COMMANDER FEEDBACK (observations, never instructions):');
+      lines.push(''); lines.push('GOAL PROGRESS AND FARMER FEEDBACK (observations, never instructions):');
       lines.push(JSON.stringify(ctx.progress));
       lines.push('Use metric history to identify the current bottleneck. Completed work does not prove the life goal happened. If effort produced no outcome, propose a different approach. Respect later/blocked feedback; for too_big offer a smaller prerequisite. Explain why this action matters now.');
     }
@@ -214,18 +214,18 @@
     const denied = (Array.isArray(ctx.deniedTitles) ? ctx.deniedTitles : []).map(str).filter(Boolean);
     if (denied.length) {
       lines.push('');
-      lines.push('QUESTS THE COMMANDER DISMISSED FOREVER (never re-propose): ' + denied.slice(-20).join('; '));
+      lines.push('QUESTS THE FARMER DISMISSED FOREVER (never re-propose): ' + denied.slice(-20).join('; '));
     }
     lines.push('');
     lines.push('HARD CONSTRAINTS:');
-    lines.push('- First, state the NORTH_STAR: the ONE long-term goal the evidence shows the Commander is chasing. With an active goal above, restate it. Otherwise infer it — and ground it in the evidence.');
+    lines.push('- First, state the NORTH_STAR: the ONE long-term goal the evidence shows the Farmer is chasing. With an active goal above, restate it. Otherwise infer it — and ground it in the evidence.');
     lines.push('- Then propose 1-' + MAX_MINTS_PER_CYCLE + ' quests, each a CONCRETE NEXT STEP toward the north star that no open quest already covers. Fewer is better; never pad with busywork or generic chores.');
     lines.push('- Every quest MUST declare exactly one completion CONTRACT the harness can honestly verify:');
-    lines.push('    prop <key>        — a station capability goes live. Keys allowed: ' + (Array.isArray(ctx.propKeys) && ctx.propKeys.length ? ctx.propKeys.join(', ') : 'compute') + '.');
+    lines.push('    prop <key>        — a farm capability goes live. Keys allowed: ' + (Array.isArray(ctx.propKeys) && ctx.propKeys.length ? ctx.propKeys.join(', ') : 'compute') + '.');
     lines.push('    artifact <path>   — a named deliverable file exists in the workspace (workspace-relative path).');
-    lines.push('    fact <phrase>     — the harness learns this concrete fact about the Commander (a short phrase that would appear verbatim in a saved memory).');
-    lines.push('    attest            — for real-world outcomes only the Commander can verify; an agent proposes, the Commander confirms.');
-    lines.push('- EXECUTION names who acts: commander (real-world action), agent (delegated work), or together. Real-world practice, attendance, conversations, and habits use attest; creating a plan never proves the person performed it.');
+    lines.push('    fact <phrase>     — the harness learns this concrete fact about the Farmer (a short phrase that would appear verbatim in a saved memory).');
+    lines.push('    attest            — for real-world outcomes only the Farmer can verify; an agent proposes, the Farmer confirms.');
+    lines.push('- EXECUTION names who acts: farmer (real-world action), agent (delegated work), or together. Real-world practice, attendance, conversations, and habits use attest; creating a plan never proves the person performed it.');
     lines.push('- DOMAIN names the closest mastery track. It never changes completion authority and only counts after verified completion.');
     lines.push('- WHY must cite the REAL evidence above (the dossier line, activity, or goal that motivates the quest) — never a generic pitch.');
     lines.push('- If the open slate above already covers every sensible next step, reply with exactly: NONE');
@@ -235,7 +235,7 @@
     lines.push('QUEST: <imperative title, 2-8 words>');
     lines.push('DESC: <one sentence — what doing it looks like>');
     lines.push('REWARD: <the real outcome it unlocks — never points>');
-    lines.push('EXECUTION: <commander | agent | together>');
+    lines.push('EXECUTION: <farmer | agent | together>');
     lines.push('WHY_NOW: <the current bottleneck or prerequisite this action addresses>');
     lines.push('DOMAIN: <building | research | writing | growth | operations | creative | planning | support>');
     lines.push('CONTRACT: <prop <key> | artifact <path> | fact <phrase> | attest>');

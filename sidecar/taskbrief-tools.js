@@ -34,7 +34,7 @@ function registerTaskBriefTools(registry, store, state, deps) {
         recommended: { type: 'string' }, reason: { type: 'string' },
         mode:{type:'string',enum:['conversation','choice'],description:'conversation: one open-ended question with optional shortcuts. choice: legacy bounded choices.'},
         sample:{type:'string',description:'Optional short draft/example to react to; not a claim of a created file or completed action.'},
-        multiSelect: { type: 'boolean', description: 'true when the options are NOT mutually exclusive and the Commander may pick several (e.g. sources, constraints). The chips then toggle instead of firing.' }
+        multiSelect: { type: 'boolean', description: 'true when the options are NOT mutually exclusive and the Farmer may pick several (e.g. sources, constraints). The chips then toggle instead of firing.' }
       };
       return { type: 'object', required: ['dimension', 'question', 'reason', 'discoverable'], properties: Object.assign({}, qProps, {
         // live-caught 2026-07-16: with no description the model reads 'discoverable' as an open judgment call
@@ -67,7 +67,7 @@ function registerTaskBriefTools(registry, store, state, deps) {
       const droppedDims = checked.questions.filter(q => deferred.indexOf(q.dimension) >= 0).map(q => q.dimension);
       if (!kept.length) {
         try { console.warn('[taskbrief] brief_ask suppressed: ' + droppedDims.join(', ') + ' habitually deferred'); } catch (_) {}
-        throw new Error('the Commander has repeatedly answered "use your judgment" on ' + droppedDims.join(', ')
+        throw new Error('the Farmer has repeatedly answered "use your judgment" on ' + droppedDims.join(', ')
           + ' decisions — do not ask this. Choose the most sensible reversible default, call brief_proceed, and state that choice as a correctable assumption.');
       }
       if (droppedDims.length) { try { console.warn('[taskbrief] brief_ask trimmed deferred dimension(s): ' + droppedDims.join(', ')); } catch (_) {} }
@@ -121,7 +121,7 @@ function registerTaskBriefTools(registry, store, state, deps) {
           }
         }
         if (answers.length === asked.length) {
-          const lines = answers.map(a => 'The Commander answered "' + a.text + '" to: ' + a.q.text + (a.q.mode==='conversation' ? '\nAnswer sourceId: '+a.q.id : ''));
+          const lines = answers.map(a => 'The Farmer answered "' + a.text + '" to: ' + a.q.text + (a.q.mode==='conversation' ? '\nAnswer sourceId: '+a.q.id : ''));
           if(asked.some(q=>q.mode==='conversation')) return {content:lines.join('\n')+'\nRead the WHOLE answer, including volunteered constraints, sources, exceptions and corrections. Call brief.update with through='+answers[answers.length-1].q.id+' and a complete revised understanding. Then proceed if the next useful action is clear, show a small draft for feedback, or ask ONE newly useful question. Do not mechanically fill every field.',summary:'conversation answered'};
           return { content: lines.join('\n') + '\nContinue the task with ' + (answers.length > 1 ? 'these decisions' : 'this decision') + ' applied — do not re-ask them.', summary: 'answered in turn' };
         }
@@ -130,7 +130,7 @@ function registerTaskBriefTools(registry, store, state, deps) {
         // remaining ones resume from the durable 'clarifying' brief on the next reply.
       }
       const open = (state.brief.questions || []).find(x => !x.answer) || asked[0];
-      return { content: 'Waiting for the Commander\'s decision.', summary: 'task question ready', control: {
+      return { content: 'Waiting for the Farmer\'s decision.', summary: 'task question ready', control: {
         final: true, reason: 'done', text: 'TASK_QUESTION: ' + open.text + ' || ' + (open.options.length ? open.options.join(' | ') : '[free text]')
       } };
     }
@@ -151,7 +151,7 @@ function registerTaskBriefTools(registry, store, state, deps) {
       // (taskbrief-context QUOTE ANCHORING). Say so, so the model neither re-sends them nor treats them as quoted.
       const sent=Array.isArray(args && args.assumptions) ? args.assumptions.map(a=>String(a).trim()) : [];
       const demoted=((saved.context && saved.context.assumptions) || []).filter(a=>a.indexOf(Context.UNCONFIRMED)===0 && sent.indexOf(a)<0);
-      const note=demoted.length ? '\n'+demoted.length+' item(s) had no matching quote from the Commander and were saved as unconfirmed assumptions instead. That does not block the task: continue (brief.proceed when ready) and state them as assumptions.' : '';
+      const note=demoted.length ? '\n'+demoted.length+' item(s) had no matching quote from the Farmer and were saved as unconfirmed assumptions instead. That does not block the task: continue (brief.proceed when ready) and state them as assumptions.' : '';
       return {content:'Working understanding saved for this task only.'+note+'\n'+JSON.stringify(saved.context),summary:'task context updated'};
     }
   });

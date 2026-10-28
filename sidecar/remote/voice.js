@@ -343,11 +343,11 @@ function makeRemoteVoice(deps) {
     const p = (async () => {
       const ms = u.frames.length * u.frameMs;
       if (ms < MIN_SPEECH_MS) return { ok: true, data: { utt, text: '', ms, short: true } };
-      if (typeof transcribeOgg !== 'function') return { ok: false, error: 'this station cannot transcribe speech' };
+      if (typeof transcribeOgg !== 'function') return { ok: false, error: 'this farm cannot transcribe speech' };
       const ogg = opusFramesToOgg(u.frames, { frameMs: u.frameMs });
       let r;
       try { r = await transcribeOgg(ogg); } catch (e) { r = { ok: false, reason: (e && e.message) || String(e) }; }
-      if (!r || !r.ok) return { ok: false, error: 'the station could not transcribe that (' + String((r && r.reason) || 'no transcription').slice(0, 160) + ')' };
+      if (!r || !r.ok) return { ok: false, error: 'the farm could not transcribe that (' + String((r && r.reason) || 'no transcription').slice(0, 160) + ')' };
       // Whisper turns room noise into timestamps or punctuation ("00:00:01 - 00:00:03", first live test): a
       // transcript with no letters in any script is not speech, and must not become a run on the overseer.
       const text = String(r.text || '').trim();
@@ -371,12 +371,12 @@ function makeRemoteVoice(deps) {
   // appended as it is (MP3 frames concatenate). A later sentence in a different format, or from a different
   // engine (another speaker), ends the reply there: silence beats a voice that changes halfway.
   function append(rec, r) {
-    if (rec.provider && String(r.provider || '') !== rec.provider) return 'the station voice changed mid-reply';
+    if (rec.provider && String(r.provider || '') !== rec.provider) return 'the farm voice changed mid-reply';
     const mime = String(r.mime || '');
     if (/wav/.test(mime)) {
       if (rec.mime !== ADPCM_MIME) return 'the voice changed format mid-reply';
       const w = decodeWavMono(r.buf);
-      if (!w) return 'the station\'s voice produced audio this device cannot play';
+      if (!w) return 'the farm\'s voice produced audio this device cannot play';
       if (rec.rate && w.rate !== rec.rate) return 'the voice changed sample rate mid-reply';
       if (!rec.rate) { rec.rate = w.rate; rec.gain = speakerGain(w.samples); rec.enc = makeAdpcmEncoder(); rec.parts.push(adpcmHeader(w.rate)); }
       rec.parts.push(rec.enc.encode(levelToInt16(w.samples, rec.gain)));
@@ -395,7 +395,7 @@ function makeRemoteVoice(deps) {
     const text = String(a.text == null ? '' : a.text).replace(/\s+/g, ' ').trim();
     if (!text) return { ok: false, error: 'nothing to say' };
     if (text.length > MAX_SPEAK_TEXT) return { ok: false, error: 'that is too long to say in one reply (' + MAX_SPEAK_TEXT + ' characters max)' };
-    if (typeof synthesize !== 'function') return { ok: false, error: 'this station has no voice' };
+    if (typeof synthesize !== 'function') return { ok: false, error: 'this farm has no voice' };
     const sentences = splitSentences(text);
     // Ownership starts at admission. An older first chunk may finish after a replacement or device revocation;
     // it must never publish audio or start synthesising the rest of that now-abandoned reply.
@@ -408,7 +408,7 @@ function makeRemoteVoice(deps) {
       return { ok: false, error: 'that reply was replaced, forgotten, or expired' };
     }
     pendingReplies.delete(deviceId);
-    if (!first.ok) return { ok: false, error: 'the station could not speak that (' + first.reason.slice(0, 160) + ')' };
+    if (!first.ok) return { ok: false, error: 'the farm could not speak that (' + first.reason.slice(0, 160) + ')' };
     const firstMime = String(first.mime || '');
     const rec = { id: String(newId()).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40), mime: /wav/.test(firstMime) ? ADPCM_MIME : firstMime,
       provider: String(first.provider || ''), parts: [], buf: Buffer.alloc(0), rate: 0, gain: 1, enc: null, complete: false, error: '', at: now() };

@@ -70,7 +70,7 @@ const StationCommands = (() => {
      sidecar accepted the save and a fresh GET returned the expected workstream/tombstone. A retry after an
      ambiguous transport failure is safe because create and every state-setting manage action are idempotent. */
   async function persistWorkstreams(proof) {
-    if (typeof App === 'undefined' || !App.persist) throw new Error('the station cannot save task changes right now');
+    if (typeof App === 'undefined' || !App.persist) throw new Error('the farm cannot save task changes right now');
     if (typeof CloudSave === 'undefined' || !CloudSave.flush || !CloudSave.pull) {
       throw new Error('durable task storage is unavailable - no change can be reported as complete');
     }
@@ -118,12 +118,12 @@ const StationCommands = (() => {
   // the save on disk must show the change before it is reported: flush, read back, check the agent's row
   async function proveCrewSaved(id, check, what) {
     if (typeof CloudSave === 'undefined' || !CloudSave.flush || !CloudSave.pull) throw new Error('durable agent storage is unavailable; do not report ' + what + ' as done');
-    if (App.configSynced && await App.configSynced() === false) throw new Error('the crew roster did not reach the station; ' + what + ' may be local only — do not report it as done');
+    if (App.configSynced && await App.configSynced() === false) throw new Error('the crew roster did not reach the farm; ' + what + ' may be local only — do not report it as done');
     App.persist();
     if (!await CloudSave.flush({ force: true })) throw new Error('the agent save was refused; do not report ' + what + ' as done');
     const saved = await CloudSave.pull();
     const row = saved && (((saved.agents || []).find(x => x && x.id === id)) || (saved.agent && saved.agent.id === id ? saved.agent : null));
-    if (!check(row || null)) throw new Error('the saved station does not show ' + what + '; do not report it as done');
+    if (!check(row || null)) throw new Error('the saved farm does not show ' + what + '; do not report it as done');
   }
   async function agentControl(act, a) {
     const cfg = App.agentConfig || {};
@@ -136,7 +136,7 @@ const StationCommands = (() => {
       if (!ok) throw new Error('the model could not be set');
       await proveCrewSaved(x.id, r => r && (r.model || '') === model, 'the model change');
       const now = row();
-      return { agent: x.name, model: now.model || 'follows the station default', provider: now.provider, reasoningEffort: now.reasoningEffort, applies: 'next run' };
+      return { agent: x.name, model: now.model || 'follows the farm default', provider: now.provider, reasoningEffort: now.reasoningEffort, applies: 'next run' };
     }
     if (act === 'agent.personality') {
       const pid = String(a.personality || '').trim().toLowerCase();
@@ -166,18 +166,18 @@ const StationCommands = (() => {
     }
     if (act === 'agent.reach') {
       const p = String(a.reach || '').trim();
-      if (!App.setExecutionProfile || !await App.setExecutionProfile(x.id, p)) throw new Error('"' + p + '" could not be set (reach is one of station-gear, safe-cell, remote-ssh, trusted-project, this-computer; the station refused it otherwise)');
+      if (!App.setExecutionProfile || !await App.setExecutionProfile(x.id, p)) throw new Error('"' + p + '" could not be set (reach is one of station-gear, safe-cell, remote-ssh, trusted-project, this-computer; the farm refused it otherwise)');
       await proveCrewSaved(x.id, r => r && r.executionProfile === p, 'the reach change');
       return { agent: x.name, reach: p, applies: 'next run' };
     }
     if (act === 'agent.away_work') {
-      if (!cfg.setWorkshop || !await cfg.setWorkshop(x.id, a.on === true)) throw new Error('the station did not record the away-work change');
+      if (!cfg.setWorkshop || !await cfg.setWorkshop(x.id, a.on === true)) throw new Error('the farm did not record the away-work change');
       await proveCrewSaved(x.id, r => r && !!r.workshop === (a.on === true), 'the away-work change');
       return { agent: x.name, awayWork: a.on === true };
     }
     if (act === 'agent.delete') {
       if (x.id === 'agent' || x.role === 'orchestrator') throw new Error(x.name + ' is the Overseer and cannot be deleted');
-      if (!cfg.deleteAgent || !await cfg.deleteAgent(x.id)) throw new Error('the station refused to delete ' + x.name + ' (it may be working right now: stop it first)');
+      if (!cfg.deleteAgent || !await cfg.deleteAgent(x.id)) throw new Error('the farm refused to delete ' + x.name + ' (it may be working right now: stop it first)');
       await proveCrewSaved(x.id, r => !r, 'the deletion');
       return { deleted: x.name, id: x.id, note: 'its notebook and workspace were archived, not wiped' };
     }
@@ -242,9 +242,9 @@ const StationCommands = (() => {
       const hits = (Workstreams.list() || []).filter(w =>
         String(w.title != null ? w.title : (w.id === generalId ? 'General' : '')).trim().toLowerCase() === lower);
       if (hits.length === 1) return { w: hits[0], resolvedBy: 'title' };
-      if (hits.length > 1) throw new Error('more than one session is called "' + title + '" on this station');
+      if (hits.length > 1) throw new Error('more than one session is called "' + title + '" on this farm');
     }
-    throw new Error('there is no session with id ' + (id || '(none given)') + ' on this station');
+    throw new Error('there is no session with id ' + (id || '(none given)') + ' on this farm');
   }
 
   function refreshAndPersist(ws, quiet, turns) {
@@ -373,9 +373,9 @@ const StationCommands = (() => {
     const errs = (sync && sync.errors) || [];
     let out;
     if (!sync || !sync.station) out = { state: 'unknown', note: 'The page could not say whether the router holds this floor.' };
-    else if (sync.refusedHash && sync.refusedHash === sync.lastHash) out = { state: 'off', note: 'Routing is OFF for the whole station: the router refused the floor it was last sent, so no line routes work.' + (errs.length ? ' Fix: ' + labels(errs) + '.' : '') };
+    else if (sync.refusedHash && sync.refusedHash === sync.lastHash) out = { state: 'off', note: 'Routing is OFF for the whole farm: the router refused the floor it was last sent, so no line routes work.' + (errs.length ? ' Fix: ' + labels(errs) + '.' : '') };
     else if (sync.stale || sync.inflight || sync.retryPending) out = { state: 'unconfirmed', note: 'The router has not confirmed this floor (the last send failed or is still in flight), so it may still be routing by the previous floor.' };
-    else if (errs.length) out = { state: 'off', note: 'Routing is OFF for the whole station: the router refuses the entire floor while any blocking error is on it, so no line routes work. Fix: ' + labels(errs) + '.' };
+    else if (errs.length) out = { state: 'off', note: 'Routing is OFF for the whole farm: the router refuses the entire floor while any blocking error is on it, so no line routes work. Fix: ' + labels(errs) + '.' };
     else if (!sync.lastHash) out = { state: 'unknown', note: 'The router has not answered for this floor yet.' };
     else out = { state: 'live', note: 'Routing is live: the router is running ' + (sync.pending ? 'the floor as last sent.' : 'this floor.') };
     if (sync && sync.station) out.planHash = sync.hash || null;
@@ -402,7 +402,7 @@ const StationCommands = (() => {
     if (hits.length === 1) return hits[0];
     const names = lines.map(l => (l.name || l.word || 'unnamed') + ' (' + l.lineId + ')').join(', ');
     throw new Error(hits.length > 1 ? 'more than one line matches "' + want + '" — name it exactly. Lines: ' + names
-      : 'there is no line called "' + want + '"' + (names ? '. Lines: ' + names : ' — this station has no assembly lines'));
+      : 'there is no line called "' + want + '"' + (names ? '. Lines: ' + names : ' — this farm has no assembly lines'));
   }
   // when a LOOP's escalation lane is taken — the router's own rule (chain.js loopDecision), in words
   function escWhen(g) {
@@ -519,7 +519,7 @@ const StationCommands = (() => {
         else if (d.detached) s.note = 'not connected to the INBOX';
         else if (flow.probeNext && flow.probeNext[pid]) s.note = 'its belt leads on to ' + flow.probeNext[pid].map(n => 'step ' + (step[n] || '?')).join(' or ') + ', which has no agent yet';
         else if (d.deadEnd) s.note = 'its work goes nowhere: connect a belt onward';
-        if (d.agentId && !onCrew(d.agentId)) s.note = (s.note ? s.note + '; ' : '') + 'its agent is not on the crew, so its runs use the station\'s default identity';
+        if (d.agentId && !onCrew(d.agentId)) s.note = (s.note ? s.note + '; ' : '') + 'its agent is not on the crew, so its runs use the farm\'s default identity';
         return s;
       });
       const gates = flow.gates.map(g => g.kind === 'loop'
@@ -567,7 +567,7 @@ const StationCommands = (() => {
       o.note = !aid ? 'no agent and not on a belt line: it does nothing until an agent is assigned'
         : 'not on a belt line: work addressed to ' + upper(aid) + ' arrives at this BAY directly, with this brief and this room\'s tools'
           + (hasCompute(aid, p.id) ? '' : '; it has no workstation here, so those runs cannot compute')
-          + (onCrew(aid) ? '' : '; its agent is not on the crew, so its runs use the station\'s default identity');
+          + (onCrew(aid) ? '' : '; its agent is not on the crew, so its runs use the farm\'s default identity');
       return o;
     });
     if (want) lines = [pickLine(lines, want)];
@@ -595,7 +595,7 @@ const StationCommands = (() => {
   const builtRead = st => { try { const v = JSON.parse(localStorage.getItem(builtKey(st)) || '[]'); return Array.isArray(v) ? v.slice(-10) : []; } catch (_) { return []; } };
   const builtWrite = (st, list) => { try { localStorage.setItem(builtKey(st), JSON.stringify(list.slice(-10))); } catch (_) {} };
   let planSeq = 0;
-  const NEXT_STEP = 'Tell the Commander the summary in plain words, then call station.build with this planId. Nothing has been built yet.';
+  const NEXT_STEP = 'Tell the Farmer the summary in plain words, then call station.build with this planId. Nothing has been built yet.';
   // a LINE plan with nobody on a step says how to staff it in the same plan (StationBuilder.planNext: its top-level steps), else the
   // usual word; a room or build plan staffs a line inside its zones and lines (staff), so its receipt names the staff form instead
   const planNextOf = pl => (StationBuilder.planNext && StationBuilder.planNext(pl, (App.agents ? App.agents() : []).map(x => x && x.name).filter(Boolean))) || NEXT_STEP;
@@ -621,8 +621,8 @@ const StationCommands = (() => {
   const blobOfCanvas = (cv, type, q) => new Promise(res => { try { cv.toBlob(b => res(b || null), type, q); } catch (_) { res(null); } });
   const base64OfBlob = b => new Promise(res => { try { const fr = new FileReader(); fr.onload = () => { const s = String(fr.result || ''); res(s.slice(s.indexOf(',') + 1)); }; fr.onerror = () => res(''); fr.readAsDataURL(b); } catch (_) { res(''); } });
   async function lookAt(st, env, ref) {
-    if (typeof World === 'undefined' || typeof World.renderStill !== 'function' || typeof World.renderStillOfTiles !== 'function') throw new Error('the station picture is not available on this page');
-    let tiles = null, of = 'the whole station', issues = null;
+    if (typeof World === 'undefined' || typeof World.renderStill !== 'function' || typeof World.renderStillOfTiles !== 'function') throw new Error('the farm picture is not available on this page');
+    let tiles = null, of = 'the whole farm', issues = null;
     if (ref) {
       const d = StationBuilder.mapOf(st.serialize(), env, { room: ref });
       if (!d || !d.ok) throw new Error((d && d.error) || 'there is no room "' + ref + '"');
@@ -632,7 +632,7 @@ const StationCommands = (() => {
     }
     for (let px = 1400; px >= 400; px = Math.round(px * 0.75)) {
       const still = tiles ? World.renderStillOfTiles(tiles, px, { noBodies: false }) : World.renderStill(px);
-      if (!still || !still.canvas) throw new Error('the station is not drawn yet (it may still be waking up): look again in a moment');
+      if (!still || !still.canvas) throw new Error('the farm is not drawn yet (it may still be waking up): look again in a moment');
       let b = await blobOfCanvas(still.canvas, 'image/webp', 0.82);
       if (!b || b.type !== 'image/webp') b = await blobOfCanvas(still.canvas, 'image/jpeg', 0.85);
       if (!b || !/^image\/(webp|jpeg)$/.test(b.type)) throw new Error('this page could not encode the picture');
@@ -658,10 +658,10 @@ const StationCommands = (() => {
   }
   function builderReady(a) {
     const st = typeof App !== 'undefined' && App.station ? App.station() : null;
-    if (!st || !st.serialize || !st.transact || !st.roomSpots) throw new Error('the station is not ready yet');
+    if (!st || !st.serialize || !st.transact || !st.roomSpots) throw new Error('the farm is not ready yet');
     if (typeof StationBuilder === 'undefined' || typeof WorldModel === 'undefined' || typeof Pipeline === 'undefined' || typeof WorkflowLine === 'undefined')
-      throw new Error('the station builder is not loaded on this page');
-    if (typeof Build !== 'undefined' && Build.isOpen && Build.isOpen()) throw new Error('Build mode is open, so the Commander is editing the floor. Ask them to close Build mode, then plan again.');
+      throw new Error('the farm builder is not loaded on this page');
+    if (typeof Build !== 'undefined' && Build.isOpen && Build.isOpen()) throw new Error('Build mode is open, so the Farmer is editing the floor. Ask them to close Build mode, then plan again.');
     const crew = (App.agents ? App.agents() : []).map(x => ({ id: x.id, name: x.name }));
     return { st, env: { WorldModel, Pipeline, WorkflowLine, crew, heroId: App.heroId ? App.heroId() : null,
       StationTemplates: typeof StationTemplates !== 'undefined' ? StationTemplates : null, PropSprites: typeof PropSprites !== 'undefined' ? PropSprites : null,
@@ -700,7 +700,7 @@ const StationCommands = (() => {
         if (errors.length) return unconfirmed('The floor was built, but its work lines need repairs: '
           + [...new Set(errors.map(e => typeof Build !== 'undefined' && Build.nagLabel ? Build.nagLabel(e.code) : e.code))].join(' · ') + '. Check Workflow.');
         if (state.refusedHash && state.refusedHash === state.lastHash)
-          return unconfirmed('The floor was built, but the station refused its work lines. Fix the findings in Workflow before starting a line.');
+          return unconfirmed('The floor was built, but the farm refused its work lines. Fix the findings in Workflow before starting a line.');
         if (state.pending || state.stale || state.inflight || state.retryPending || state.pendingHash) return unconfirmed(unknown);
       }
       if (current.hash !== s.hash || current.lastHash !== s.lastHash) return unconfirmed(unknown);
@@ -715,7 +715,7 @@ const StationCommands = (() => {
      builderPublication); any doubt answers durable:false, and the build itself is never undone. */
   const DURABLE_WAIT_MS = 3000;
   async function builderDurability(st) {
-    const unproven = { durable: false, durability: 'The floor is built on screen, but the station file has not confirmed it yet, so it could revert after a restart. Do not tell the Commander it is saved.' };
+    const unproven = { durable: false, durability: 'The floor is built on screen, but the farm file has not confirmed it yet, so it could revert after a restart. Do not tell the Farmer it is saved.' };
     if (typeof App === 'undefined' || !App.persist || typeof CloudSave === 'undefined' || !CloudSave.flush || !CloudSave.pull || typeof StationBuilder === 'undefined' || !StationBuilder.sigOf) return unproven;
     let timer = null;
     try {
@@ -754,7 +754,7 @@ const StationCommands = (() => {
        and workstation holders. Refuses honestly when the station, routing, or the line reader is not loaded. */
     'station.layout': async (a) => {
       const st = typeof App !== 'undefined' && App.station ? App.station() : null;
-      if (!st || !st.projectGeometry || !st.rooms || !st.bayObjects) throw new Error('the station layout is not ready yet');
+      if (!st || !st.projectGeometry || !st.rooms || !st.bayObjects) throw new Error('the farm layout is not ready yet');
       if (typeof Pipeline === 'undefined' || !Pipeline.compileRoutingPlan || !Pipeline.lineComponents || !Pipeline.dockLayer) throw new Error('workflow routing is not loaded on this page');
       if (typeof WorkflowLine === 'undefined' || !WorkflowLine.lineStarts) throw new Error('the workflow line reader is not loaded on this page');
       const want = String((a && a.line) || '').trim().slice(0, 80);
@@ -785,8 +785,8 @@ const StationCommands = (() => {
        side, how big, by a hallway or open plan, empty or filled. StationBuilder.planBuild turns that into tiles. */
     'station.map': async (a) => {
       const st = typeof App !== 'undefined' && App.station ? App.station() : null;
-      if (!st || !st.serialize || !st.rooms) throw new Error('the station is not ready yet');
-      if (typeof StationBuilder === 'undefined' || !StationBuilder.mapOf || typeof WorldModel === 'undefined') throw new Error('the station builder is not loaded on this page');
+      if (!st || !st.serialize || !st.rooms) throw new Error('the farm is not ready yet');
+      if (typeof StationBuilder === 'undefined' || !StationBuilder.mapOf || typeof WorldModel === 'undefined') throw new Error('the farm builder is not loaded on this page');
       const crew = (App.agents ? App.agents() : []).map(x => ({ id: x.id, name: x.name }));
       const env = { WorldModel, Pipeline: typeof Pipeline !== 'undefined' ? Pipeline : null, crew,
         PropSprites: typeof PropSprites !== 'undefined' ? PropSprites : null, RoomStyles: typeof RoomStyles !== 'undefined' ? RoomStyles : null, LineEdit: typeof LineEdit !== 'undefined' ? LineEdit : null };
@@ -821,7 +821,7 @@ const StationCommands = (() => {
     // a line by name or by a machine on it (station.test_line): the routing plan's lineId and its steps in words
     'station.line_ref': (a) => {
       const st = typeof App !== 'undefined' && App.station ? App.station() : null;
-      if (!st || !st.serialize) throw new Error('the station is not ready yet');
+      if (!st || !st.serialize) throw new Error('the farm is not ready yet');
       if (typeof StationBuilder === 'undefined' || !StationBuilder.lineRef || typeof Pipeline === 'undefined') throw new Error('this page cannot read its lines yet; reload it');
       const crew = (App.agents ? App.agents() : []).map(x => ({ id: x.id, name: x.name }));
       const r = StationBuilder.lineRef(st.serialize(), { WorldModel, Pipeline, crew, PropSprites: typeof PropSprites !== 'undefined' ? PropSprites : null }, String((a && a.line) || '').slice(0, 80), a && a.room != null ? String(a.room).slice(0, 60) : null);
@@ -866,15 +866,15 @@ const StationCommands = (() => {
         else built.push({ resultSig: StationBuilder.sigOf(st.serialize()), floorSig: e.plan.floorSig, summary: String(e.plan.summary || '').slice(0, 400), recruited: (r.recruited || []).length > 0 });
         builtWrite(st, built); }
       const hallsBuilt = (r.hallways || []).length, roomNames = (r.rooms || []).map(x => x.name).join(', ');
-      const what = r.line ? r.line.name + ' in ' + r.where : r.kind === 'restyle' ? 'the restyle of ' + r.where : r.kind === 'edit' ? r.where : r.kind === 'swap' ? (r.preset ? r.preset.name : 'the preset') + ' (RESTORE PREVIOUS in Build → Presets brings your old station back)'
-        : roomNames + (hallsBuilt ? (roomNames ? ' and ' : '') + (hallsBuilt > 1 ? hallsBuilt + ' hallways' : 'a hallway') : '');
+      const what = r.line ? r.line.name + ' in ' + r.where : r.kind === 'restyle' ? 'the restyle of ' + r.where : r.kind === 'edit' ? r.where : r.kind === 'swap' ? (r.preset ? r.preset.name : 'the preset') + ' (RESTORE PREVIOUS in Build → Presets brings your old farm back)'
+        : roomNames + (hallsBuilt ? (roomNames ? ' and ' : '') + (hallsBuilt > 1 ? hallsBuilt + ' paths' : 'a path') : '');
       const by = a && a.by ? String(a.by) : '', builder = (env.crew || []).find(x => x.id === (by || env.heroId));
       try { if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify('Built by ' + (builder ? builder.name : by ? 'your crew' : 'your lead') + ': ' + what + ' · open BUILD and press UNDO to remove it', 'good'); } catch (_) {}
       // the camera shows what was built: the one room, or the whole station when a preset added several
       const ids = r.roomIds || [];
       setTimeout(() => { try { if (typeof World !== 'undefined' && World.frameReviewRoom) World.frameReviewRoom(ids.length === 1 ? ids[0] : ''); } catch (_) {} }, 700);
-      const undo = 'The Commander can take all of it back with one UNDO in Build mode'
-        + (r.kind === 'swap' ? ', or bring the old station back with RESTORE PREVIOUS in Build → Presets' : '')
+      const undo = 'The Farmer can take all of it back with one UNDO in Build mode'
+        + (r.kind === 'swap' ? ', or bring the old farm back with RESTORE PREVIOUS in Build → Presets' : '')
         + ((r.recruited || []).length ? '; the recruited agents stay on the crew (DELETE AGENT in a Dossier removes one)' : '') + '.';
       // the receipt's body is the builder's own (StationBuilder.receipt): every line it laid or touched, with the floor's readiness
       const result = Object.assign({ built: true, undo }, StationBuilder.receipt(r, e.plan));
@@ -922,10 +922,10 @@ const StationCommands = (() => {
     /* Everything the station can currently see: which sessions exist, which is active, who is busy, what is
        waiting on approval. Reuses VoiceLive's snapshot so voice and tools cannot drift into two answers. */
     'station.status': () => {
-      if (typeof VoiceLive === 'undefined' || !VoiceLive.statusSnapshot) throw new Error('the station view is not ready yet');
+      if (typeof VoiceLive === 'undefined' || !VoiceLive.statusSnapshot) throw new Error('the farm view is not ready yet');
       const snap = VoiceLive.statusSnapshot();
       if (!snap || (snap.active === null && !(snap.workstreams || []).length)) {
-        throw new Error('the station is still starting up — no sessions are readable yet');
+        throw new Error('the farm is still starting up — no sessions are readable yet');
       }
       return snap;
     },
@@ -968,7 +968,7 @@ const StationCommands = (() => {
         throw new Error('no crew member with id "' + agentId + '" - use station.crew for the roster, or omit agentId');
       }
       const ws = existing || Workstreams.create(title, { kind: 'task', activate: false, agentId: agentId || undefined });
-      if (!ws) throw new Error('the station could not create the task');
+      if (!ws) throw new Error('the farm could not create the task');
       if (existing && existing.archived) Workstreams.archive(existing.id, false);
       if (agentId && ws.agentId !== agentId && !Workstreams.setAgent(ws.id, agentId)) throw new Error('the task could not be assigned');
       await persistWorkstreams(save => (save.workstreams || []).some(w => w && w.id === ws.id && w.kind === 'task' && !w.archived));
@@ -1035,7 +1035,7 @@ const StationCommands = (() => {
       }
       if (a && a.focus) await requireCurrentFocus(a.origin);
       const ws = Workstreams.create(title, { agentId: agentId || undefined, activate: !!(a && a.focus) });
-      if (!ws) throw new Error('the station could not create the session');
+      if (!ws) throw new Error('the farm could not create the session');
       if (a && a.focus && typeof Chat !== 'undefined' && Chat.load) { try { Chat.load(ws); } catch (_) {} }
       await persistWorkstreams(save => (save.workstreams || []).some(w => w && w.id === ws.id && w.kind === 'chat')
         && (!(a && a.focus) || save.activeId === ws.id));
@@ -1049,7 +1049,7 @@ const StationCommands = (() => {
       const hit = resolveSession(a && a.session);
       await requireCurrentFocus(a && a.origin);
       const ws = Workstreams.switch(hit.w.id);
-      if (!ws) throw new Error('the station could not switch sessions');
+      if (!ws) throw new Error('the farm could not switch sessions');
       if (typeof Chat !== 'undefined' && Chat.load) { try { Chat.load(ws); } catch (_) {} }
       await persistWorkstreams(save => save.activeId === ws.id && (save.workstreams || []).some(w => w && w.id === ws.id));
       try { await reconcile(ws.id); } catch (_) {}
@@ -1128,7 +1128,7 @@ const StationCommands = (() => {
     'station.settings': () => {
       if (typeof App === 'undefined' || !App.agents) throw new Error('the crew roster is not ready yet');
       const out = {
-        crew: App.agents().map(a => ({ id: a.id, name: a.name, role: a.role, model: a.model || 'follows the station default', provider: a.provider || null,
+        crew: App.agents().map(a => ({ id: a.id, name: a.name, role: a.role, model: a.model || 'follows the farm default', provider: a.provider || null,
           reasoningEffort: a.reasoningEffort || null, approval: a.approvalMode || 'ask', reach: a.executionProfile, personality: a.personaId || null,
           skin: a.skin || null, awayWork: !!a.workshop }))
       };
@@ -1166,7 +1166,7 @@ const StationCommands = (() => {
         if (!r.saved) throw new Error('the notifications changed on screen but this browser did not keep it (local storage refused) — do not report it as saved');
         return r;
       }
-      throw new Error('this page has no station control "' + act + '"; reload it');
+      throw new Error('this page has no farm control "' + act + '"; reload it');
     },
 
     /* SHOW THE COMMANDER A PLACE (station.show, 2026-10-04): open one of the PLACES (app/places.js) through the same door
@@ -1175,15 +1175,15 @@ const StationCommands = (() => {
     'station.show': async (a) => {
       await requireWatching(a && a.origin);
       const place = typeof Places !== 'undefined' && Places.get ? Places.get(a && a.place) : null;
-      if (!place) throw new Error('there is no StarNet place "' + String((a && a.place) || '') + '"; places: ' + (typeof Places !== 'undefined' ? Places.ids().join(', ') : 'none loaded — reload the page'));
-      if (typeof StationUI === 'undefined' || !StationUI.showTerm) throw new Error('the station windows are not ready yet');
+      if (!place) throw new Error('there is no Homestead place "' + String((a && a.place) || '') + '"; places: ' + (typeof Places !== 'undefined' ? Places.ids().join(', ') : 'none loaded — reload the page'));
+      if (typeof StationUI === 'undefined' || !StationUI.showTerm) throw new Error('the farm windows are not ready yet');
       const o = place.open;
       const ag = (o.agent || o.desk) ? resolveAgent(a && a.agent) : null;
       // the ONE opener (app/places.js), with this page's own objects
       const out = await Places.open(place, { ui: StationUI, agentId: ag && ag.id,
         build: typeof Build !== 'undefined' ? Build : null, app: typeof App !== 'undefined' ? App : null, market: typeof Marketplace !== 'undefined' ? Marketplace : null });
       if (ag && out) out.agentName = ag.name || ag.id;
-      if (!out || !out.open) throw new Error(place.words + ' did not open on the Commander\'s screen' + (o.term === 'apps' ? ' (no app exists yet)' : '') + '; tell them where it is instead');
+      if (!out || !out.open) throw new Error(place.words + ' did not open on the Farmer\'s screen' + (o.term === 'apps' ? ' (no app exists yet)' : '') + '; tell them where it is instead');
       return Object.assign({ place: place.id, words: place.words }, out);
     },
 
@@ -1191,7 +1191,7 @@ const StationCommands = (() => {
     'station.crew': () => {
       if (typeof App === 'undefined' || !App.agents) throw new Error('the crew roster is not ready yet');
       const crew = App.agents() || [];
-      if (!crew.length) throw new Error('no crew are on this station yet');
+      if (!crew.length) throw new Error('no crew are on this farm yet');
       return {
         count: crew.length,
         crew: crew.map(a => ({ id: a.id, name: a.name || a.id, role: a.role || null, model: a.model || null }))
@@ -1317,7 +1317,7 @@ const StationCommands = (() => {
   async function requireCurrentFocus(origin) {
     await runConfirmed(origin);
     if (typeof Chat === 'undefined' || !Chat.canFocusSession || !Chat.canFocusSession(origin)) {
-      throw new Error('session focus was left unchanged: the originating run is no longer current or the Commander has a draft; do not retry the switch automatically');
+      throw new Error('session focus was left unchanged: the originating run is no longer current or the Farmer has a draft; do not retry the switch automatically');
     }
   }
 
@@ -1330,7 +1330,7 @@ const StationCommands = (() => {
     const live = !!(origin && origin.streamId && origin.runId && active === origin.streamId
       && typeof Channels !== 'undefined' && Channels.isBusy && Channels.isBusy(origin.streamId)
       && Channels.runIdOf && Channels.runIdOf(origin.streamId) === origin.runId);
-    if (!live) throw new Error('the Commander is not looking at this conversation right now, so their screen was left alone — tell them where it is instead');
+    if (!live) throw new Error('the Farmer is not looking at this conversation right now, so their screen was left alone — tell them where it is instead');
   }
   // an agent by exact id or name (case-insensitive) — never a guess: unknown or ambiguous refuses with the real roster
   /* group.add (station-control.js): bring crew into a chat through the SAME path the chat's + Add agents key takes
@@ -1360,7 +1360,7 @@ const StationCommands = (() => {
     let out;
     try {
       const fn = VERBS[String(verb || '')];
-      if (!fn) throw new Error('unknown station verb: ' + verb);
+      if (!fn) throw new Error('unknown farm verb: ' + verb);
       out = { id, ok: true, result: await fn(args || {}) };
     } catch (error) {
       out = { id, ok: false, error: String((error && error.message) || error) };

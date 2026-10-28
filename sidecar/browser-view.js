@@ -190,12 +190,12 @@ function makeBrowserViews(deps) {
        to throw "in use by another run", so a second agent could not browse at all for the whole of a long COMMS run).
        A run that went private stays private for the rest of the run: one run, one browser. */
     function take() {
-      if (me.released) throw new Error('this run has ended — it no longer drives the station browser');
+      if (me.released) throw new Error('this run has ended — it no longer drives the farm browser');
       if (me.private) return 'private';
       const st = ensureStation();
       if (st.driver && st.driver.runId === me.runId) return null;
       if (st.driver) {
-        if (typeof info.makePrivate !== 'function') throw new Error('the station browser is in use by another run right now — retry after it finishes');
+        if (typeof info.makePrivate !== 'function') throw new Error('the farm browser is in use by another run right now — retry after it finishes');
         me.private = info.makePrivate();
         registerRun({ agentId: me.agentId, runId: me.runId, session: me.private });   // the Commander may still watch it
         return 'private';
@@ -271,7 +271,7 @@ function makeBrowserViews(deps) {
      after a page change — withRefRecovery). */
   function driving() { return null; }
   async function open(raw) {
-    if (!makeSession) return { ok: false, error: 'this station cannot open a browser of its own' };
+    if (!makeSession) return { ok: false, error: 'this farm cannot open a browser of its own' };
     const addr = resolveAddress(raw);
     if (!addr.ok) return addr;
     const busy = driving(); if (busy) return busy;
@@ -329,7 +329,7 @@ function makeBrowserViews(deps) {
      time they have typed an address (a real window can take many seconds to start on a busy machine). Nothing is
      navigated; a browser already open, or one a run is driving, is left alone. */
   function warm() {
-    if (!makeSession) return { ok: false, error: 'this station cannot open a browser of its own' };
+    if (!makeSession) return { ok: false, error: 'this farm cannot open a browser of its own' };
     if (station && station.driver) return { ok: true, open: true };
     const st = ensureStation();
     touchStation();
@@ -358,7 +358,7 @@ function makeBrowserViews(deps) {
   async function front() {
     const s = station ? surfaceOf(station.session) : null;
     if (!s) return { ok: false, code: 'closed', error: 'the browser is not open' };
-    if (!s.visible || typeof s.front !== 'function') return { ok: false, error: 'the browser is running hidden on this station (STARNET_BROWSER_HEADLESS)' };
+    if (!s.visible || typeof s.front !== 'function') return { ok: false, error: 'the browser is running hidden on this farm (STARNET_BROWSER_HEADLESS)' };
     try { await s.front(); } catch (e) { return { ok: false, error: String((e && e.message) || e) }; }
     return { ok: true };
   }
@@ -470,7 +470,7 @@ function makeBrowserViews(deps) {
     }
     const wasOpen = !!station;
     const r = await closeStation();
-    if (!(r && r.ok)) { out.error = (r && r.error) || 'the station browser did not close'; return out; }
+    if (!(r && r.ok)) { out.error = (r && r.error) || 'the farm browser did not close'; return out; }
     out.closed = wasOpen;   // "closed" only when there was a browser to close
     if (typeof deps.sweepStationProfile === 'function') {
       try { out.sweep = await deps.sweepStationProfile(); }

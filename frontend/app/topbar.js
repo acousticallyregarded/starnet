@@ -44,7 +44,7 @@ const Topbar = (() => {
         fill.style.width = pct + '%';
         const xp = $('#tb-station .tb-xp');
         // the station tooltip card, not the OS bubble (org pass 10-14, P28)
-        if (xp && xp.setAttribute) xp.setAttribute('data-tip', 'COMMANDER Lv ' + g.level + ' — ' + g.points + ' achievement points; ' + g.pointsToNextLevel + ' to the next level');
+        if (xp && xp.setAttribute) xp.setAttribute('data-tip', 'FARMER Lv ' + g.level + ' — ' + g.points + ' achievement points; ' + g.pointsToNextLevel + ' to the next level');
       }
     } catch (_) { /* honest no-op: leave the sliver where it is */ }
   }
@@ -72,7 +72,7 @@ const Topbar = (() => {
      port, same per-launch token), so there is no reload. A browser has nothing to restart: the tip names the step. */
   const DOWN_ESCALATE_MS = 15000, PROBE_EVERY_MS = 10000;
   let downSince = 0, lastProbeAt = 0, probing = false, engine = null, restarting = false, recoverable = false;
-  const DOWN_TIP = 'lost the connection to StarNet’s background service — live numbers pause until it’s back (is the app still running?)';
+  const DOWN_TIP = 'lost the connection to Homestead’s background service — live numbers pause until it’s back (is the app still running?)';
   const BROWSER_STEP = ' — if you launched with `npm start`, check that terminal; otherwise open the desktop app';
   function canRestart() { try { return typeof Harness !== 'undefined' && !!Harness.canRestartEngine && Harness.canRestartEngine(); } catch (_) { return false; } }
   function probeEngine() {
@@ -83,9 +83,9 @@ const Topbar = (() => {
   }
   function downTip(desktop) {
     if (!engine) return DOWN_TIP;
-    if (engine.state === 'ok') return 'lost the live link to StarNet’s background service — the service itself is answering, so this window is reconnecting on its own';
-    const what = engine.reason || (engine.state === 'silent' ? 'StarNet’s background service isn’t answering (it may be stuck)' : 'StarNet’s background service isn’t running');
-    return what + (desktop ? ' — click to restart the station service' : BROWSER_STEP);
+    if (engine.state === 'ok') return 'lost the live link to Homestead’s background service — the service itself is answering, so this window is reconnecting on its own';
+    const what = engine.reason || (engine.state === 'silent' ? 'Homestead’s background service isn’t answering (it may be stuck)' : 'Homestead’s background service isn’t running');
+    return what + (desktop ? ' — click to restart the farm service' : BROWSER_STEP);
   }
   function connectionBox(el) { return (el && el.closest && el.closest('.tb-connection')) || el; }
   function setRecoverable(el, on) {
@@ -94,7 +94,7 @@ const Topbar = (() => {
     const box = connectionBox(el);
     if (!box) return;
     box.classList.toggle('recoverable', on);
-    if (on) { box.setAttribute('role', 'button'); box.tabIndex = 0; box.setAttribute('aria-label', 'LINK DOWN — restart the station service'); }
+    if (on) { box.setAttribute('role', 'button'); box.tabIndex = 0; box.setAttribute('aria-label', 'LINK DOWN — restart the farm service'); }
     else { box.removeAttribute('role'); box.removeAttribute('tabindex'); box.removeAttribute('aria-label'); }
   }
   function notifyUser(text, cls) { try { if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify(text, cls); } catch (_) {} }
@@ -102,17 +102,17 @@ const Topbar = (() => {
     const ls = linkNow();
     if (!recoverable || restarting || !ls || !ls.down || typeof Harness === 'undefined' || !Harness.restartEngine) return;
     restarting = true;
-    notifyUser('restarting the station service…', 'warn');
+    notifyUser('restarting the farm service…', 'warn');
     let ok = false;
     try { ok = await Harness.restartEngine(); } catch (_) { ok = false; }
-    if (!ok) notifyUser('the station service could not be restarted — quit StarNet fully (tray → Quit) and open it again. Your save is untouched.', 'warn');
+    if (!ok) notifyUser('the farm service could not be restarted — quit Homestead fully (tray → Quit) and open it again. Your save is untouched.', 'warn');
     else {
       // A respawn that comes straight back degraded (a workspace owned by another process, a crash at boot) is not
       // healed: say what the service now says instead of claiming success.
       let after = null;
       try { after = await Harness.engineState(); } catch (_) { after = null; }
-      if (after && after.state === 'degraded' && after.reason) notifyUser('restarted, but the station service still reports: ' + after.reason, 'warn');
-      else notifyUser('station service restarted — reconnecting…', 'good');
+      if (after && after.state === 'degraded' && after.reason) notifyUser('restarted, but the farm service still reports: ' + after.reason, 'warn');
+      else notifyUser('farm service restarted — reconnecting…', 'good');
     }
     // give the bridge a full escalation window to reconnect before the door is offered again
     downSince = Date.now(); engine = null; lastProbeAt = 0; restarting = false;
@@ -131,7 +131,7 @@ const Topbar = (() => {
       el.classList.add('standby');
       el.childNodes[0].nodeValue = 'STANDBY ';
       bars.textContent = SIG_STANDBY;   // dim even bars — NOT full signal
-      el.title = ls && ls.paused ? 'connection to the background service is paused (disconnected)' : 'connection to StarNet’s background service — standby (not connected yet)';
+      el.title = ls && ls.paused ? 'connection to the background service is paused (disconnected)' : 'connection to Homestead’s background service — standby (not connected yet)';
       return;
     }
     if (ls.down) {
@@ -150,7 +150,7 @@ const Topbar = (() => {
       el.classList.remove('down', 'standby');
       el.childNodes[0].nodeValue = 'UPLINK ';
       bars.textContent = SIG_UP;
-      el.title = 'connected to StarNet’s background service — everything on screen is live';
+      el.title = 'connected to Homestead’s background service — everything on screen is live';
     }
   }
 

@@ -600,7 +600,7 @@
       try { if (lease.abort && isFn(lease.abort.abort)) lease.abort.abort(); } catch (_) {}
       try {
         settle(loopId, lease.runId, {
-          status: 'error', cancelled: true, error: String(reason || 'cancelled by the Commander')
+          status: 'error', cancelled: true, error: String(reason || 'cancelled by the Farmer')
         });
       } catch (_) {}
       return true;

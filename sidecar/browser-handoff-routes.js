@@ -51,7 +51,7 @@ function makeSigninStore(deps) {
   }
   function forget() {
     if (anyLive()) return { ok: false, error: 'an agent is waiting on you in this browser right now - hand it back or cancel first' };
-    if (isBusy()) return { ok: false, error: 'a run is using the station browser right now - try again when it finishes' };
+    if (isBusy()) return { ok: false, error: 'a run is using the farm browser right now - try again when it finishes' };
     try { fs.rmSync(dir, { recursive: true, force: true }); }
     catch (e) { return { ok: false, error: 'could not remove the saved browser profile: ' + ((e && e.message) || e) }; }
     let gone = true; try { gone = !fs.existsSync(dir); } catch (e) { failNote('signins.gone', e); }

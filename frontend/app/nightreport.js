@@ -28,7 +28,7 @@
     posture: 'it is set to WAIT or SUGGEST, so it is not allowed to act on its own',
     // "present" confused real users (2026-07-15): "while you're away" read as "while the app is closed". It isn't —
     // away = no clicks/keys for the idle threshold; the app stays open 24/7. Say the actual rule.
-    present: 'you were using the station — it waits until you step away (no clicks or keys for a while); the app stays open',
+    present: 'you were using the farm — it waits until you step away (no clicks or keys for a while); the app stays open',
     halt: 'the emergency stop was engaged — press an ON ITS OWN rung in SETTINGS › AUTONOMY, or RESUME AUTOMATION in the top bar, to lift it',
     leash: 'today’s job limit was already used',
     // NS-2 pre-spend readiness: no current grounded aim in the dossier AND no recent run, so a beat could not have
@@ -36,22 +36,22 @@
     // grounding, not usage). ONE sentence true in EVERY non-hot state (41b2d015 review): nothing known, only a seed (a
     // quick-setup chip, a thin run, a doc copy), aims past the recency window, or other areas without an aim. It is shown
     // beside readinessText (SETTINGS › AUTONOMY), so it never says "nothing of yours" next to "aims too old to act on".
-    readiness: 'the station has no current aim or recent run to ground a job on — tell it in your own words what you want help with now, or run one task',
+    readiness: 'the farm has no current aim or recent run to ground a job on — tell it in your own words what you want help with now, or run one task',
     // NS-2 pre-spend gates the precheck can also bind on (they flow through statusDecision as bindings):
     budget: 'the spending budget is exhausted — raise the cap or resume to let jobs run',
     // NOT an exhausted budget: spend history is uncertain (usually an interrupted run that never recorded its spend), so
     // a limit the Commander chose can't be checked. Raising the cap or resuming changes nothing; SPENDING LIMITS names
     // the cause and its fix (settle that run, or restart after a failed save).
-    'spend-unknown': 'StarNet can’t verify past spending (usually a run that was interrupted before it recorded its spend), so your spending limits can’t be checked — see SETTINGS › SPENDING LIMITS',
+    'spend-unknown': 'Homestead can’t verify past spending (usually a run that was interrupted before it recorded its spend), so your spending limits can’t be checked — see SETTINGS › SPENDING LIMITS',
     // #89: the provider-less form of the station's ONE no-credential sentence (sidecar/engine-credential.js
     // UNATTENDED_REMEDY, locked equal in test/engine-credential.test.js) — a key saved in a browser page now reaches the
     // station when it is saved, so re-saving it is a real way out, and so is the env var on a headless station.
-    'no-provider': 'no runnable provider/model is configured for unattended runs — connect or re-save a provider key under SETTINGS → AI & MODELS (or set its API key variable in the environment that starts StarNet) and pick a model',
+    'no-provider': 'no runnable provider/model is configured for unattended runs — connect or re-save a provider key under SETTINGS → AI & MODELS (or set its API key variable in the environment that starts Homestead) and pick a model',
     cooldown: 'it wasn’t time for the next job yet',
     concurrency: 'the desk was busy with another run',
     'in-flight': 'a job was still running',
-    'precheck-error': 'the station could not verify its budget, provider, or readiness checks, so it stood down safely',
-    'persist-failed': 'the station couldn’t safely record the work, so it stood down'
+    'precheck-error': 'the farm could not verify its budget, provider, or readiness checks, so it stood down safely',
+    'persist-failed': 'the farm couldn’t safely record the work, so it stood down'
   };
 
   // a stable, HONEST label for a binding we don't recognise (forward-compat: a new gate name renders as itself,
@@ -202,7 +202,7 @@
     const s = input.status;
     const tz = input.tzOffsetMin;
     if (!s || typeof s !== 'object') {
-      return { reachable: false, stateText: 'station telemetry unreachable', detail: '' };
+      return { reachable: false, stateText: 'farm telemetry unreachable', detail: '' };
     }
     const active = !!s.active;
     const away = !!s.away;
@@ -243,7 +243,7 @@
       halted: false,
       stateText: stateText,
       why: whyOff,
-      presence: away ? 'you’re away — it can act' : 'you’re at the station — it’s waiting',
+      presence: away ? 'you’re away — it can act' : 'you’re at the farm — it’s waiting',
       awayRuleText: awayRuleText(s),
       leashText: leashText,
       leashSpent: leash != null && used >= leash,

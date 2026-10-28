@@ -1863,10 +1863,10 @@
     // verdict-keyed LOOP gate (sidecar/routing/verdict.js composes it) — optional 6th param, same law.
     const brief = (typeof stageBrief === 'string' && stageBrief.trim()) ? stageBrief.trim().slice(0, 2000) : '';
     const verdict = (typeof verdictBrief === 'string' && verdictBrief.trim()) ? verdictBrief.trim().slice(0, 600) : '';
-    return 'PIPELINE HANDOFF — you are stage ' + (hop + 1) + ' of a work line on this station.\n\n'
+    return 'PIPELINE HANDOFF — you are stage ' + (hop + 1) + ' of a work line on this farm.\n\n'
       + 'The original request was:\n' + String(originalText || '(none recorded)') + '\n\n'
       + 'The upstream stage (' + fromAgentId + ') produced:\n' + String(upstream) + '\n\n'
-      + (brief ? 'YOUR STANDING BRIEF FOR THIS STATION:\n' + brief + '\n\n' : '')
+      + (brief ? 'YOUR STANDING BRIEF FOR THIS FARM:\n' + brief + '\n\n' : '')
       + (verdict ? verdict + '\n\n' : '')
       /* lastStage (2026-09-30 — found on a real model): the stage whose reply LEAVES the line is told so. "Produce the output for
          the next stage … build on it" made a last WRITER asked for three short stories write an essay about "the upstream report".
@@ -2033,10 +2033,10 @@
      says last stage (the JOINER after it combines), and keeps the whole request only as context at the end. */
   function partHandoff(originalText, part, i, k, hop, stageBrief) {
     const brief = (typeof stageBrief === 'string' && stageBrief.trim()) ? stageBrief.trim().slice(0, 2000) : '';
-    return 'PIPELINE HANDOFF — you are stage ' + (hop + 1) + ' of a work line on this station.\n\n'
+    return 'PIPELINE HANDOFF — you are stage ' + (hop + 1) + ' of a work line on this farm.\n\n'
       + 'The job was split into ' + k + ' parts, and other agents are doing the other parts. YOUR PART (' + (i + 1) + ' of ' + k + '):\n'
       + String(part || '').trim() + '\n\n'
-      + (brief ? 'YOUR STANDING BRIEF FOR THIS STATION:\n' + brief + '\n\n' : '')
+      + (brief ? 'YOUR STANDING BRIEF FOR THIS FARM:\n' + brief + '\n\n' : '')
       + 'Do ONLY your part — not the other parts, and not the whole job. A JOINER puts every part together after you. '
       + 'Answer with the work for your part itself.\n\n'
       + 'For context only, the whole request was:\n' + String(originalText || '(none recorded)');
@@ -2398,7 +2398,7 @@
     if (original) parts.push('THE JOB AS IT FIRST ARRIVED:\n' + original);
     parts.push('WHAT ' + who.toUpperCase() + ' DELIVERED:\n' + (output || '(no text came back)'));
     if (files.length) parts.push('FILES IT MADE (paths on this machine):\n' + files.map(f => '- ' + f).join('\n'));
-    parts.push(HANDOFF_PART_HEAD + 'build on the work ' + who + ' delivered above, never start the job over with new work of your own. Do what your standing brief for this station says to it; with no brief, hand that work on as the finished result, corrected only where it falls short of the job. Answer with the full finished work itself (what the job asks for), never a note on whether the job is done.]');
+    parts.push(HANDOFF_PART_HEAD + 'build on the work ' + who + ' delivered above, never start the job over with new work of your own. Do what your standing brief for this farm says to it; with no brief, hand that work on as the finished result, corrected only where it falls short of the job. Answer with the full finished work itself (what the job asks for), never a note on whether the job is done.]');
     return parts.join('\n\n');
   }
   const HANDOFF_PART_HEAD = '[THIS LINE’S PART — ';

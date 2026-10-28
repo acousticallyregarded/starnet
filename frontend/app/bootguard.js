@@ -231,7 +231,7 @@
   }
   function report() {
     const L = [];
-    L.push('STARNET BOOT GUARD (page-side — measured by the app window itself)');
+    L.push('HOMESTEAD BOOT GUARD (page-side — measured by the app window itself)');
     L.push('when:           ' + new Date().toISOString());
     L.push('page:           ' + String((root.location && root.location.pathname) || '/'));
     L.push('boot check:     ' + (!state.checked ? 'not run yet' : (state.missing.length || state.scriptFailures) ? 'FAILED' : 'passed'));
@@ -272,13 +272,13 @@
     const head = doc.createElement('div'); head.className = 'bgf-head';
     const old = webviewTooOld();
     const mac = isMacUA();
-    head.textContent = old ? (mac ? '▮ STARNET NEEDS A NEWER macOS' : '▮ STARNET NEEDS A NEWER WEB ENGINE') : '▮ STATION FAILED TO BOOT';
+    head.textContent = old ? (mac ? '▮ HOMESTEAD NEEDS A NEWER macOS' : '▮ HOMESTEAD NEEDS A NEWER WEB ENGINE') : '▮ FARM FAILED TO BOOT';
     const lead = doc.createElement('div'); lead.className = 'bgf-lead';
     lead.textContent = old
       ? (mac
-        ? 'this Mac’s built-in web engine is too old to run StarNet. StarNet needs macOS 11 Big Sur or later with Safari 16.4 or newer — macOS 13.3 Ventura or later works out of the box. nothing is broken and your station is untouched: update macOS (or Safari) in System Settings, then reopen StarNet.'
-        : 'this computer’s web engine is too old to run StarNet (it has no regular-expression lookbehind). nothing is broken and your station is untouched: update the system web engine (WebKitGTK on Linux, WebView2 on Windows), then reopen StarNet.')
-      : 'the app window loaded, but a required module did not. this is a broken or blocked file, not your station — your saved station has not been changed by this screen.';
+        ? 'this Mac’s built-in web engine is too old to run Homestead. Homestead needs macOS 11 Big Sur or later with Safari 16.4 or newer — macOS 13.3 Ventura or later works out of the box. nothing is broken and your farm is untouched: update macOS (or Safari) in System Settings, then reopen Homestead.'
+        : 'this computer’s web engine is too old to run Homestead (it has no regular-expression lookbehind). nothing is broken and your farm is untouched: update the system web engine (WebKitGTK on Linux, WebView2 on Windows), then reopen Homestead.')
+      : 'the app window loaded, but a required module did not. this is a broken or blocked file, not your farm — your saved farm has not been changed by this screen.';
     const list = doc.createElement('ul'); list.className = 'bgf-list';
     why.forEach(w => { const li = doc.createElement('li'); li.textContent = w; list.appendChild(li); });
     const pre = doc.createElement('pre'); pre.className = 'bgf-pre'; pre.textContent = report();

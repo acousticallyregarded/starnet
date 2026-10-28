@@ -130,8 +130,8 @@
     if (!r || blessed) return '';
     return '\n\nPROJECT FOLDER NOT TRUSTED: this session is anchored to ' + r.slice(0, 1024) + ', but that folder is not a ' +
       'trusted project right now, so a RELATIVE file path writes to your private workspace, not that folder (the shell ' +
-      'will not find it there). To work in the folder, use absolute paths inside it (StarNet may ask the Commander to ' +
-      'approve it), or ask the Commander to add it again under PROJECTS. Never report a file as saved in that folder ' +
+      'will not find it there). To work in the folder, use absolute paths inside it (Homestead may ask the Farmer to ' +
+      'approve it), or ask the Farmer to add it again under PROJECTS. Never report a file as saved in that folder ' +
       'unless its receipt names a location inside it.';
   }
 
@@ -143,7 +143,7 @@
     if (hasFolder) return '';
     return '\n\nNO WORKING FOLDER: this workflow has no working folder, so a RELATIVE file path saves to your private ' +
       'workspace, which other agents cannot read. To put a file in a trusted project, use its absolute path inside that ' +
-      'project, and tell the Commander to set WORKING FOLDER on this workflow\'s INBOX.';
+      'project, and tell the Farmer to set WORKING FOLDER on this workflow\'s INBOX.';
   }
 
   /* PROJECT INSTRUCTIONS — the folder's OWN house rules (2026-07-27).

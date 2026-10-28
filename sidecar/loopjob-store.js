@@ -257,7 +257,7 @@
   function stopLoop(loops, id, reason, ctx) {
     const now = (ctx && ctx.now) || 0;
     return mapLoop(loops, id, (loop) => Object.assign({}, loop, {
-      enabled: false, state: 'stopped', stopReason: reason != null ? str(reason, NOTE_CAP) : 'stopped by the Commander',
+      enabled: false, state: 'stopped', stopReason: reason != null ? str(reason, NOTE_CAP) : 'stopped by the Farmer',
       fireClaim: null, heartbeatAt: null, updatedAt: iso(now)
     }));
   }

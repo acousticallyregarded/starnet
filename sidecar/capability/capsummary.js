@@ -116,13 +116,13 @@ function summarizeCapabilities(resolved, opts) {
 
   let note = '\n<capabilities_ground_truth>\n' +
     (unrestrictedHost
-      ? 'FULL POWER is active: the Commander authorized the whole local computer. StarNet policy must not refuse a host task; only report real unavailable OS, hardware, credential, account, or service prerequisites. '
-      : 'These are your REAL powers this run, decided by the objects placed on your station floor and host-granted station roles -- not aspirational. ') +
+      ? 'FULL POWER is active: the Farmer authorized the whole local computer. Homestead policy must not refuse a host task; only report real unavailable OS, hardware, credential, account, or service prerequisites. '
+      : 'These are your REAL powers this run, decided by the objects placed on your farm floor and host-granted farm roles -- not aspirational. ') +
     'This block is AUTHORITATIVE: if anything earlier in your instructions implies you always have web or file access, ignore it -- what follows is what you ACTUALLY have right now:\n' +
     (toolless && havePhrases.length
-      ? '- Your station grants: ' + haveStr + '. NONE of these tools are attached to THIS reply (a conversational turn): ' +
+      ? '- Your farm grants: ' + haveStr + '. NONE of these tools are attached to THIS reply (a conversational turn): ' +
         'do not write tool-call markup, and never claim you searched, fetched, browsed, read, ran or saved anything in this reply. ' +
-        'If the Commander wants one of these done, say you can do it and ask them to say exactly what to do; the tools attach to that message.\n'
+        'If the Farmer wants one of these done, say you can do it and ask them to say exactly what to do; the tools attach to that message.\n'
       : '- You CAN: ' + haveStr + '.\n');
 
   // On the UNATTENDED surface, absent connector tools are themselves a missing power worth naming -- and the
@@ -166,10 +166,10 @@ function summarizeCapabilities(resolved, opts) {
       // the LEAD holds the station builder (2026-10-02): it places the missing object itself rather than sending the
       // Commander into Build mode — the builder's own approval card is the Commander's yes, and the power arrives on
       // the next run (the floor decides each run's grants)
-      note += 'If the Commander asks for something you lack, do NOT claim, promise, or pretend to do it. Say plainly you can\'t yet, ' +
+      note += 'If the Farmer asks for something you lack, do NOT claim, promise, or pretend to do it. Say plainly you can\'t yet, ' +
         // the terminal CLI has no station floor on screen: name the object, placed in the desktop app (never "I'll place it")
-        (opts.viewer === 'terminal' ? 'and name the object to place in the StarNet desktop app to grant it: '
-          : capIds.has('orchestrator') ? 'and offer to place it yourself (station builder add; they approve; works from their next message): ' : 'and name the object to place to grant it: ') +
+        (opts.viewer === 'terminal' ? 'and name the object to place in the Homestead desktop app to grant it: '
+          : capIds.has('orchestrator') ? 'and offer to place it yourself (farm builder add; they approve; works from their next message): ' : 'and name the object to place to grant it: ') +
         lackCore.map((c) => c.have + ' -> place ' + c.object).concat(roomExtra.map((c) => extraHave(c, noImageRoute) + ' -> place ' + c.object)).join('; ') + '. ' +
         // only what is true of FLOOR gear: files + terminal come from a hire's execution profile and connectors are
         // account-level, so "your tools come only from that room" was false for the very agents this names
@@ -186,11 +186,11 @@ function summarizeCapabilities(resolved, opts) {
         (lacksCommands
           ? 'Commands: ' + gap.why + '. ' +
             (toolNames.some((t) => /^shell\.bg\./.test(String(t))) ? 'The shell_bg_* tools you see only inspect or stop processes you already started; they cannot run a command. ' : '') +
-            'Do NOT report that the station has no shell. Instead, ' + gap.enable + '. '
+            'Do NOT report that the farm has no shell. Instead, ' + gap.enable + '. '
           : '') +
         'Do NOT claim, promise, or pretend to do what you lack. Do everything you genuinely can, then state plainly what is left for ' + delegatedBy + '.\n';
     } else if (ownerTrusted) {
-      note += 'This is an authenticated owner Telegram session: it has the same non-physical authority as the StarNet desktop app. ' +
+      note += 'This is an authenticated owner Telegram session: it has the same non-physical authority as the Homestead desktop app. ' +
         'Do NOT claim, promise, or pretend to do what is genuinely absent; state the actual missing setup or tool plainly.\n';
     } else {
       // GRANT-AWARE (2026-07-25): a routine can now be granted the terminal and/or its Commander's MCP
@@ -203,17 +203,17 @@ function summarizeCapabilities(resolved, opts) {
       // The fix is named only when the job needed it: an order on every line hop put the same gear advice into every
       // delivered output and channel reply (and a toolless turn has no job that could have needed it).
       const rest = lackAutonomous.filter((h) => !roomFix.some((c) => c.have === h));
-      note += 'This is an UNATTENDED run: no Commander is watching, so ' + (rest.length || !roomFix.length
+      note += 'This is an UNATTENDED run: no Farmer is watching, so ' + (rest.length || !roomFix.length
         ? rest.join(', ') + ' and desktop control ' +
           'are unavailable on this run -- each needs either a watched session or an explicit per-routine grant the ' +
-          'Commander sets on the routine itself. Placing objects cannot change that here. '
+          'Farmer sets on the routine itself. Placing objects cannot change that here. '
         : 'desktop control is unavailable on this run. ') +
         (roomFix.length ? 'No ' + listJoin(roomFix.map((c) => ROOM_WORD[c.id]), 'or') + ' on this run: ' + roomIs + ', has no ' + listJoin(roomFix.map(bare), 'or') +
-          '; the Commander can place ' + (roomFix.length > 1 ? 'them' : 'one') + ' there for your next job' + elsewhereOf(roomFix, scope) + '. ' +
+          '; the Farmer can place ' + (roomFix.length > 1 ? 'them' : 'one') + ' there for your next job' + elsewhereOf(roomFix, scope) + '. ' +
           (toolless ? '' : 'If the job needed ' + (roomFix.length > 1 ? 'them' : 'it') + ', name that fix in your closing clause. ') : '') +
         'Do NOT claim, promise, or pretend to do what you lack, and do NOT blame missing credentials for a power you were never granted. ' +
-        'Do everything you genuinely can, then state plainly what you could not do and why, so the Commander can finish it in a watched session. ' +
-        'Say it in the Commander\'s terms, in one short closing clause (e.g. "Not saved as a file — copy it from here."), and never open with or explain approval rules, run modes or station policy; ' +
+        'Do everything you genuinely can, then state plainly what you could not do and why, so the Farmer can finish it in a watched session. ' +
+        'Say it in the Farmer\'s terms, in one short closing clause (e.g. "Not saved as a file — copy it from here."), and never open with or explain approval rules, run modes or farm policy; ' +
         'if a file could not be saved, put its content in your reply.\n';
     }
   }

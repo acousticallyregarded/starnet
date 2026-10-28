@@ -147,7 +147,7 @@ function boot(state, at) {
   const jobs = (state && Array.isArray(state.jobs) ? state.jobs : []).map(j => {
     if (j.status !== 'running') return j;
     changed = true;
-    return Object.assign({}, j, { status: 'interrupted', endedAt: num(at) || j.startedAt, error: 'the station stopped while this job was out — send it again' });
+    return Object.assign({}, j, { status: 'interrupted', endedAt: num(at) || j.startedAt, error: 'the farm stopped while this job was out — send it again' });
   });
   return { state: { jobs }, changed };
 }

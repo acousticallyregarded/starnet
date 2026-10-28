@@ -645,11 +645,11 @@
     if (source && source.path) {
       const name = noteSafe(source.name, 120);
       return '[image omitted' + (name ? ': ' + name : '') + ' — ' + who + 'it was not sent. It is saved at ' + pathSafe(source.path)
-        + ' — to see what it shows, run an image-analysis tool (image_analyze) on that path if you have one, or tell the Commander to pick a vision model in the COMMS model dock.]';
+        + ' — to see what it shows, run an image-analysis tool (image_analyze) on that path if you have one, or tell the Farmer to pick a vision model in the COMMS model dock.]';
     }
     const what = count > 1 ? count + ' images omitted' : 'image omitted';
     return '[' + what + ' — ' + who + (count > 1 ? 'they were' : 'it was') + ' not sent. If you need what ' + (count > 1 ? 'they show' : 'it shows')
-      + ', tell the Commander to pick a vision model in the COMMS model dock; an image-analysis tool can read ' + (count > 1 ? 'them' : 'it')
+      + ', tell the Farmer to pick a vision model in the COMMS model dock; an image-analysis tool can read ' + (count > 1 ? 'them' : 'it')
       + ' only from a saved file this conversation names.]';
   }
   function withoutImageParts(messages, model) {

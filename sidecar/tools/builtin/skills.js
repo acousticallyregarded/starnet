@@ -26,8 +26,8 @@
   function proposedReply(r, isNew) {
     return {
       content: isNew
-        ? 'Proposed new skill "' + r.skill.name + '". It is not active until the Commander evaluates and approves it in ABILITIES > SKILLS.'
-        : 'Proposed revision for skill "' + r.skill.name + '". It is not active until the Commander evaluates and approves it in ABILITIES > SKILLS; the active version is unchanged.',
+        ? 'Proposed new skill "' + r.skill.name + '". It is not active until the Farmer evaluates and approves it in ABILITIES > SKILLS.'
+        : 'Proposed revision for skill "' + r.skill.name + '". It is not active until the Farmer evaluates and approves it in ABILITIES > SKILLS; the active version is unchanged.',
       summary: 'proposed'
     };
   }
@@ -91,12 +91,12 @@
       return {
         content: 'The skill "' + (skill && skill.name) + '" is withheld by the skill guard and its body was not loaded: '
           + ((decision && decision.reason) || 'held by the skill guard') + '.' + cats
-          + ' Do not recreate it and do not guess its contents; tell the Commander it needs review in ABILITIES > SKILLS.',
+          + ' Do not recreate it and do not guess its contents; tell the Farmer it needs review in ABILITIES > SKILLS.',
         summary: 'withheld'
       };
     }
     function decideFor(skill, withBody) {
-      if (skill && skill.pendingCandidate) return { visible: false, reason: 'proposed skill awaits behavior evaluation and Commander approval' };
+      if (skill && skill.pendingCandidate) return { visible: false, reason: 'proposed skill awaits behavior evaluation and Farmer approval' };
       if (!gate || !skill) return { visible: true };
       try {
         const d = (withBody && typeof gate.verify === 'function') ? gate.verify(skill)
@@ -188,7 +188,7 @@
         const aid = (ctx && ctx.agentId) || 'agent';
         const action = String((args && args.action) || 'create').toLowerCase();
         // The pin is the Commander's lock against model writes (bug 97743dff): a run may add it, never take it off.
-        if (action === 'unpin') return { content: 'Refused: only the Commander can unpin a skill, in ABILITIES > SKILLS. Leave it pinned and tell the Commander what you would change.', summary: 'not saved' };
+        if (action === 'unpin') return { content: 'Refused: only the Farmer can unpin a skill, in ABILITIES > SKILLS. Leave it pinned and tell the Farmer what you would change.', summary: 'not saved' };
         if (readBeforeWrite && action !== 'create') {
           const prior = peek(aid, (args && (args.target != null ? args.target : (args.id != null ? args.id : args.name))));
           const unread = unreadRefusal(prior, action);
@@ -209,7 +209,7 @@
 
     const listTool = {
       name: 'skill.list', capability: 'memory', scope: 'read', requiresConsent: false,
-      description: 'Search or page through saved skills available to you, including explicitly shared station and project skills. Names, summaries, owners, scope and usage only. Load a procedure with skill.view; pass ownerAgentId for a shared skill.',
+      description: 'Search or page through saved skills available to you, including explicitly shared farm and project skills. Names, summaries, owners, scope and usage only. Load a procedure with skill.view; pass ownerAgentId for a shared skill.',
       schema: { type: 'object', properties: { includeArchived: { type: 'boolean' }, query: { type: 'string' }, offset: { type: 'integer', minimum: 0 }, limit: { type: 'integer', minimum: 1, maximum: 100 } } },
       run: (args, ctx) => {
         if (!store) return { content: 'The skill library is unavailable.', summary: 'unavailable' };
@@ -266,7 +266,7 @@
         // A proposal this run cannot read is waiting on the Commander, not held by the guard: say so, or the agent
         // reports a guard hold that does not exist.
         if (v.pendingCandidate && !pending) return {
-          content: 'The skill "' + v.name + '" is a proposal awaiting the Commander\'s evaluation and approval in ABILITIES > SKILLS; it is not active and its body was not loaded. Do not recreate it.',
+          content: 'The skill "' + v.name + '" is a proposal awaiting the Farmer\'s evaluation and approval in ABILITIES > SKILLS; it is not active and its body was not loaded. Do not recreate it.',
           summary: 'pending'
         };
         const decision = pending && gate && typeof gate.verifyDraft === 'function' ? gate.verifyDraft(v) : decideFor(v, true);

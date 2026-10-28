@@ -698,7 +698,7 @@ const Marketplace = (() => {
         'build one from scratch below' + (deploy && !query ? ', or save the live agent as a class above' : '') + '.</p>';
       html += '<div class="mkt-grid mkt-rows">' + customs.map(cardHTML).join('') + buildTile + '</div>';
     }
-    if (!filtering) html += '<details class="mkt-library-more"><summary>Suggestions for your station</summary>' +
+    if (!filtering) html += '<details class="mkt-library-more"><summary>Suggestions for your farm</summary>' +
       glassHTML() + recShelfHTML() + interestGapShelfHTML() + prospectShelfHTML() + scoutLogHTML() + '</details>';
     return html;
   }
@@ -721,7 +721,7 @@ const Marketplace = (() => {
       '<span aria-hidden="true">' + (archiveOpen ? '▾' : '▸') + '</span> CLASS ARCHIVE (' + all.length + ')</button>';
     if (!archiveOpen) return head;
     return head +
-      '<p class="mkt-hint">niche classes held off the main roster — fully specified, recruit any time. When your real work points at one, the station drafts it onto the shelf above for you.</p>' +
+      '<p class="mkt-hint">niche classes held off the main roster — fully specified, recruit any time. When your real work points at one, the farm drafts it onto the shelf above for you.</p>' +
       '<div class="mkt-grid mkt-rows">' + archs.map(cardHTML).join('') + '</div>';
   }
   /* Name and the live character preview lead. Skin choices stay visible; model controls expand
@@ -824,8 +824,8 @@ const Marketplace = (() => {
   // second copy of the console. Hidden the moment it's acked; the panel below remains the place to pause or wipe.
   function consentStripHTML() {
     const ps = profileApi(); if (!ps || !ps.summary || !ps.summary()) return '';
-    return '<div class="mkt-consent-strip">◉ STARNET keeps a local preference profile. When Scout drafts a new option, a bounded summary is sent only to your configured model. ' +
-      'Pause or wipe it anytime in STATION FAMILIARITY below. <button class="bb sm mkt-fam-ack">GOT IT</button></div>';
+    return '<div class="mkt-consent-strip">◉ HOMESTEAD keeps a local preference profile. When Scout drafts a new option, a bounded summary is sent only to your configured model. ' +
+      'Pause or wipe it anytime in FARM FAMILIARITY below. <button class="bb sm mkt-fam-ack">GOT IT</button></div>';
   }
 
   // Keep the raw value visible so a 19-character paste can be explained, never silently clipped.
@@ -1299,7 +1299,7 @@ const Marketplace = (() => {
     const head =
       '<button class="mkt-fam-head" aria-expanded="' + (glassOpen ? 'true' : 'false') + '">' +
         '<span class="mkt-fam-ico" aria-hidden="true">◉</span>' +
-        '<span class="mkt-fam-ttl">STATION FAMILIARITY</span>' +
+        '<span class="mkt-fam-ttl">FARM FAMILIARITY</span>' +
         '<span class="mkt-fam-meter ' + (on && !summ.calibrating ? 'known' : 'cal') + '">' + meter + '</span>' +
         '<span class="mkt-fam-note">' + esc(noteTxt) + '</span>' +
         '<span class="mkt-fam-caret" aria-hidden="true">' + (glassOpen ? '▾' : '▸') + '</span>' +
@@ -1312,7 +1312,7 @@ const Marketplace = (() => {
         '<span class="mkt-fam-v">' + v + '%</span></div>';
     }).join('');
     const consent = !acked()
-      ? '<div class="mkt-fam-consent">STARNET learns what you work on to tailor these picks. The profile is stored locally; bounded summaries are sent to your configured model only when it drafts a recommendation. ' +
+      ? '<div class="mkt-fam-consent">HOMESTEAD learns what you work on to tailor these picks. The profile is stored locally; bounded summaries are sent to your configured model only when it drafts a recommendation. ' +
         'Pause or wipe it anytime, right here. <button class="bb sm mkt-fam-ack">GOT IT</button></div>' : '';
     const acts = '<div class="mkt-fam-acts">' +
         '<span class="mkt-fam-priv">◇ local-first · pause stops browser and sidecar personalization</span>' +
@@ -1569,7 +1569,7 @@ const Marketplace = (() => {
     // one glyph with the rest of the family; the VERB stays "drafted" because that is what actually happened —
     // these are specs the station wrote, not catalog classes it ranked.
     return '<div class="mkt-sect-h mkt-rec-sect mkt-prospect-sect">' +
-      noticedHead('new roles the station drafted from your work') + '</div>' +
+      noticedHead('new roles the farm drafted from your work') + '</div>' +
       '<div class="mkt-rec-rail">' + items.map(prospectCardHTML).join('') + '</div>';
   }
   function prospectCardHTML(p) {
@@ -1580,9 +1580,9 @@ const Marketplace = (() => {
         '<div class="mkt-rec-id"><div class="mkt-rec-name">' + esc(d.name || 'New specialist') + '</div>' +
           '<div class="mkt-rec-tag">' + esc(d.tagline || '') + '</div></div></div>' +
       (p.why ? '<div class="mkt-rec-why"><span class="mkt-rec-why-k">WHY</span> ' + esc(p.why) + '</div>' : '') +
-      '<div class="mkt-prospect-prov">◇ drafted by the station from your work — review &amp; save to add it</div>' +
+      '<div class="mkt-prospect-prov">◇ drafted by the farm from your work — review &amp; save to add it</div>' +
       '<div class="mkt-prospect-acts"><button class="bb sm mkt-prospect-open" data-prospect="' + esc(p.id) + '">▸ REVIEW &amp; SAVE</button>' +
-        '<button class="bb sm mkt-prospect-dismiss" data-prospect="' + esc(p.id) + '" aria-label="dismiss this drafted role forever" title="dismiss forever — the station won\'t draft this role again">✕</button></div>' +
+        '<button class="bb sm mkt-prospect-dismiss" data-prospect="' + esc(p.id) + '" aria-label="dismiss this drafted role forever" title="dismiss forever — the farm won\'t draft this role again">✕</button></div>' +
     '</div>';
   }
   /* ---------- R6: the "FOR YOU" row (ranked by dossier interest lanes + goal-text keyword match) ----------
@@ -1669,7 +1669,7 @@ const Marketplace = (() => {
        honest-header fix, still overclaiming one path down. Three states, one per thing that actually happened. */
     const scored = Number.isFinite(ranked.scored) ? ranked.scored : (ranked.personalized ? items.length : 0);
     const head = !(ready && ranked.personalized)
-      ? coldHead('STARTING POINTS — a varied lineup while the station gets to know you')
+      ? coldHead('STARTING POINTS — a varied lineup while the farm gets to know you')
       : (scored >= items.length)
         ? noticedHead('picked from your real work')
         : noticedHead(scored === 1
@@ -1797,7 +1797,7 @@ const Marketplace = (() => {
     const basis = RecipeFit.basis(ctx);
     offers.forEach((o, i) => trackRecommendation('recipe', o.recipe, o.why, i + 1));
     // the basis strip is the audit trail: it names exactly what was looked at to produce the cards below it.
-    const head = '<div class="mkt-sect-h mkt-ready-sect">▲ READY ON THIS STATION' +
+    const head = '<div class="mkt-sect-h mkt-ready-sect">▲ READY ON THIS FARM' +
       (basis ? '<span class="mkt-ready-basis">read: ' + esc(basis) + '</span>' : '') + '</div>';
     const deep = offers.length > 3 ? ' mkt-rail-deep' : '';
     return head + '<div class="mkt-rec-rail' + deep + '">' + offers.map(readyCardHTML).join('') + '</div>';
@@ -1904,17 +1904,17 @@ const Marketplace = (() => {
     if (!gate) return '';   // no /api/scout read yet — assert nothing rather than guess
     let line = '';
     if (gate.fire) {
-      line = 'signal locked — the station attempts a new draft after your next run.';
+      line = 'signal locked — the farm attempts a new draft after your next run.';
     } else if (gate.binding === 'cold') {
       line = !warm && nInterests > 0
-        ? 'CALIBRATING — ' + nInterests + ' early signal' + (nInterests === 1 ? '' : 's') + ' held, none strong enough to draft from yet. Keep working; the station is watching what you work on.'
-        : 'CALIBRATING — watching what you work on. Run real tasks and the station learns what to suggest.';
+        ? 'CALIBRATING — ' + nInterests + ' early signal' + (nInterests === 1 ? '' : 's') + ' held, none strong enough to draft from yet. Keep working; the farm is watching what you work on.'
+        : 'CALIBRATING — watching what you work on. Run real tasks and the farm learns what to suggest.';
     } else if (gate.binding === 'cooldown') {
       const n = Number(gate.runsSinceMint), N = Number(gate.mintEveryRuns);
       line = 'no draft staged yet — the next attempt earns itself with more runs' +
         (Number.isFinite(n) && Number.isFinite(N) && N > 0 ? ' (' + Math.min(n, N) + '/' + N + ')' : '') + '.';
     } else if (gate.binding === 'gap') {
-      line = 'the station attempted a draft recently — cooling down before the next try.';
+      line = 'the farm attempted a draft recently — cooling down before the next try.';
     } else {
       return '';   // 'full' (or an unknown binding) can't co-occur with an empty shelf — stay silent, stay honest
     }
@@ -1960,7 +1960,7 @@ const Marketplace = (() => {
       '<button type="button" class="mkt-scoutlog-head" aria-expanded="' + (scoutLogOpen ? 'true' : 'false') + '">' +
         '<span class="mkt-scoutlog-caret" aria-hidden="true">' + (scoutLogOpen ? '▾' : '▸') + '</span>' +
         '<span class="mkt-scoutlog-ttl">SCOUT LOG</span>' +
-        '<span class="mkt-scoutlog-sum">' + n + ' attempt' + (n === 1 ? '' : 's') + ' the station recorded</span>' +
+        '<span class="mkt-scoutlog-sum">' + n + ' attempt' + (n === 1 ? '' : 's') + ' the farm recorded</span>' +
       '</button>';
     if (!scoutLogOpen) return '<div class="mkt-scoutlog">' + head + '</div>';
     return '<div class="mkt-scoutlog open">' + head +
@@ -2024,9 +2024,9 @@ const Marketplace = (() => {
         '<div class="mkt-rec-id"><div class="mkt-rec-name">' + esc(d.name || 'New recipe') + '</div>' +
           '<div class="mkt-rec-tag">' + esc(d.tagline || '') + '</div></div></div>' +
       (p.why ? '<div class="mkt-rec-why"><span class="mkt-rec-why-k">WHY</span> ' + esc(p.why) + '</div>' : '') +
-      '<div class="mkt-prospect-prov">◇ drafted by the station from your work — review &amp; save to add it</div>' +
+      '<div class="mkt-prospect-prov">◇ drafted by the farm from your work — review &amp; save to add it</div>' +
       '<div class="mkt-prospect-acts"><button class="bb sm mkt-scout-recipe-open" data-scout="' + esc(p.id) + '">▸ REVIEW &amp; SAVE</button>' +
-        '<button class="bb sm mkt-scout-recipe-dismiss" data-scout="' + esc(p.id) + '" aria-label="dismiss this drafted recipe forever" title="dismiss forever — the station won\'t draft this recipe again">✕</button></div>' +
+        '<button class="bb sm mkt-scout-recipe-dismiss" data-scout="' + esc(p.id) + '" aria-label="dismiss this drafted recipe forever" title="dismiss forever — the farm won\'t draft this recipe again">✕</button></div>' +
     '</div>';
   }
   function suggestCardHTML(c) {
@@ -2736,7 +2736,7 @@ const Marketplace = (() => {
       transfers += t('MODEL', esc(lbl) + ' · ' + esc(mp.pin.model));
     } else {
       const known = String(mp.raw || mp.provider || '').trim();
-      transfers += t('MODEL', (known ? esc(known) + ' ' : '') + '<span class="mkt-imp-dim">— ' + (known ? 'not pinnable here' : 'none found') + '; station default model will be used</span>');
+      transfers += t('MODEL', (known ? esc(known) + ' ' : '') + '<span class="mkt-imp-dim">— ' + (known ? 'not pinnable here' : 'none found') + '; farm default model will be used</span>');
     }
     const dailyNote = dailyCount
       ? '<div class="mkt-imp-dim">' + dailyCount + ' daily note' + (dailyCount === 1 ? ' stays' : 's stay') + ' behind — not imported</div>'
@@ -2920,17 +2920,17 @@ const Marketplace = (() => {
       });
       done();
     };
-    if (typeof fetch === 'undefined') return paint([], 'no station — type the service name in the directive instead');
+    if (typeof fetch === 'undefined') return paint([], 'no farm — type the service name in the directive instead');
     fetch('/api/connectors', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
       const list = (j && j.connectors) || [];
       if (!list.length) return paint([], 'no connected services yet — add one in ⇄ ABILITIES');
       paint(list.map(c => ({ id: c.id, label: c.label || c.id })), '');
-    }).catch(() => paint([], 'could not reach the station'));
+    }).catch(() => paint([], 'could not reach the farm'));
   }
   // the native chooser behind ⌸ BROWSE. Cancel is silent; a real failure explains itself and leaves the typed
   // path alone (the honest fallback everywhere in this app is "type it yourself").
   function browseForPath(mode, onPicked) {
-    if (typeof fetch === 'undefined') { note('no station — type the path instead', 'bad'); return; }
+    if (typeof fetch === 'undefined') { note('no farm — type the path instead', 'bad'); return; }
     fetch('/api/pickpath', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: mode }) })
       .then(res => res.json().then(j => ({ ok: res.ok, j })).catch(() => ({ ok: false, j: null })))
       .then(({ ok, j }) => {
@@ -2938,7 +2938,7 @@ const Marketplace = (() => {
         if (ok && j && j.ok && j.cancelled) return;                       // a cancel is not an error
         note((j && j.reason) || 'no picker available — type the path instead', 'bad');
       })
-      .catch(() => note('could not reach the station', 'bad'));
+      .catch(() => note('could not reach the farm', 'bad'));
   }
 
   function launchFormHTML() {
@@ -3348,7 +3348,7 @@ const Marketplace = (() => {
     const rows = editParams.map(paramRowHTML).join('');
     return '<div class="mkt-r-params" id="mkt-r-params">' + rows + '</div>' +
       '<button type="button" class="bb xs mkt-r-padd">＋ ADD FILL-IN</button>' +
-      '<span class="mkt-hint mkt-r-phint"> — or leave empty and STARNET derives them from the {tokens} in your directive.</span>';
+      '<span class="mkt-hint mkt-r-phint"> — or leave empty and HOMESTEAD derives them from the {tokens} in your directive.</span>';
   }
   // SOP acceptance rows: one typed check per row. The TYPE picks which second box applies (path / command) and
   // whether a third (text / sha256) exists — the same swap-a-box discipline the fill-in grid uses for 'pick one'.
@@ -3403,13 +3403,13 @@ const Marketplace = (() => {
     const forking = !editing && !!editForkedFrom;
     const parent = forking && hasRecipes() ? Recipes.get(editForkedFrom) : null;
     const d = editing || (scouting ? scoutSeedDraft : null) || { emoji: '✦', name: '', tagline: '', task: '' };
-    const title = editing ? 'EDIT RECIPE' : forking ? 'TWEAK RECIPE' : minting ? 'SAVE THIS AS A RECIPE' : scouting ? 'REVIEW THE STATION’S DRAFT' : 'SAVE A RECIPE';
+    const title = editing ? 'EDIT RECIPE' : forking ? 'TWEAK RECIPE' : minting ? 'SAVE THIS AS A RECIPE' : scouting ? 'REVIEW THE FARM’S DRAFT' : 'SAVE A RECIPE';
     const intro = forking
       ? 'a copy of <b>' + esc((parent && parent.name) || 'the recipe') + '</b> — yours to change. adjust the wording, the fill-ins, the gear or cadence, then save it as your own. the original stays put.'
       : minting
       ? 'you’ve done this a few times — saving it makes it a one-tap recipe you own. Tweak the wording, wrap any blanks in <b>{braces}</b>, then save.'
       : scouting
-      ? 'the station drafted this from your observed work — review it, change anything, and save to make it yours. Nothing is added without this save.'
+      ? 'the farm drafted this from your observed work — review it, change anything, and save to make it yours. Nothing is added without this save.'
       : 'write the directive your agent should run. Wrap each blank in <b>{braces}</b> — “Brief me on <b>{topic}</b>” — and it becomes a fill-in at launch.';
     // when the form is (re)rendered we read the CURRENT working state (editGear/editCadence/... survive across
     // re-renders); name/emoji/tagline/task come from the DOM on save, but seed from `d` here on first paint.
@@ -3437,7 +3437,7 @@ const Marketplace = (() => {
       acceptGridHTML() +
       '<label class="mkt-lbl">LIVE PREVIEW <span class="mkt-lbl-hint">— what your agent receives</span></label>' +
       '<pre class="mkt-r-preview" id="mkt-r-preview"></pre>' +
-      '<label class="mkt-lbl">GEAR IT DRAWS ON <span class="mkt-lbl-hint">— advisory; a WANT badge if the station lacks it, never a lock</span></label>' +
+      '<label class="mkt-lbl">GEAR IT DRAWS ON <span class="mkt-lbl-hint">— advisory; a WANT badge if the farm lacks it, never a lock</span></label>' +
       '<div class="mkt-chips" id="mkt-r-gear">' + gearPickHTML() + '</div>' +
       '<div class="mkt-save-row">' +
         '<label class="mkt-lbl mkt-grow">CATEGORY<select class="mkt-in" id="mkt-r-cat">' + catSelectHTML() + '</select></label>' +

@@ -126,7 +126,7 @@ function makePluginRuntime(deps) {
   async function answerRequest(rec, m) {
     const reply = (ok, v, err) => { try { rec.child && rec.child.send({ t: 'ans', id: m.id, ok, v, err }); } catch (e) { note('plugins.runtime.answer-send', e); } };
     if (m.op === 'store') {
-      if (!store) return reply(false, null, 'this station has no plugin store');
+      if (!store) return reply(false, null, 'this farm has no plugin store');
       const a = m.args || {};
       try {
         const r = await store.op(rec.id, String(a.op || ''), a.key, a.value);

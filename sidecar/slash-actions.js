@@ -68,7 +68,7 @@ function makeSlashActions(deps) {
   // The scheduler being DISARMED is the single most confusing state in this subsystem: routines exist, look
   // healthy, and never fire. Every routine readout that could be misread as "this will run" carries this.
   function armedNote() {
-    if (typeof cron.halted === 'function' && cron.halted()) return " Routines are STOPPED by the Commander's E-STOP, so nothing will fire — /cron on to resume them.";
+    if (typeof cron.halted === 'function' && cron.halted()) return " Routines are STOPPED by the Farmer's E-STOP, so nothing will fire — /cron on to resume them.";
     if (typeof cron.armed !== 'function') return '';
     if (cron.armed()) return '';
     // the Commander turned scheduling OFF (org wire AUTO-P16-1): a save keeps it off — said as their choice, never as a fault
@@ -77,7 +77,7 @@ function makeSlashActions(deps) {
   }
 
   async function routineAction(args, ctx) {
-    if (!cron || typeof cron.jobs !== 'function') return fail('Routines are not available on this station.');
+    if (!cron || typeof cron.jobs !== 'function') return fail('Routines are not available on this farm.');
     const { verb, rest } = splitVerb(args);
     const all = (cron.jobs() || []).filter(Boolean);
     // The routine belongs to the agent this workstream is talking to — same rule /away uses. Without this every
@@ -97,7 +97,7 @@ function makeSlashActions(deps) {
 
     if (verb === 'preview') {
       if (!rest) return fail('Usage: /routine preview <schedule> — e.g. /routine preview 0 9 * * *');
-      if (typeof cron.preview !== 'function') return fail('Schedule preview is not wired on this station.');
+      if (typeof cron.preview !== 'function') return fail('Schedule preview is not wired on this farm.');
       const p = cron.preview(rest);
       if (!p || p.ok === false) return fail(String((p && p.error) || 'Could not read that schedule.'));
       // nextFireAt returns a one-shot's time even when it has already passed, so a stale timestamp would be
@@ -129,7 +129,7 @@ function makeSlashActions(deps) {
       const task = rest.slice(bar + 1).trim();
       if (!schedule) return fail('That routine has no schedule — /routine add <schedule> | <task>.');
       if (!task) return fail('That routine has no task — say what it should do after the pipe.');
-      if (typeof cron.create !== 'function') return fail('Creating routines is not wired on this station.');
+      if (typeof cron.create !== 'function') return fail('Creating routines is not wired on this farm.');
       /* WHERE ITS RESULTS GO (bug 3b958e41). Typed in a messaging chat, the routine reports back to THAT chat — the
          same default the routine.create tool takes from the run's deliveryOrigin, so the two doors make one kind of
          routine. Typed on the desktop there is no origin and the spec is exactly what it always was. */
@@ -142,8 +142,8 @@ function makeSlashActions(deps) {
         // The mint ledger's decline is STICKY and has no un-decline API, so "you deleted this before" is a dead
         // end unless we name the way out. Names normalize to lowercase-alphanumeric (mint-ledger normName), so a
         // slightly different wording genuinely mints — say that rather than leaving the user stuck.
-        if (r && r.declined) return fail('You deleted a routine by that name before, so the station will not re-create it. Give this one a slightly different name.');
-        return fail(String((r && r.error) || 'The station refused that routine.'));
+        if (r && r.declined) return fail('You deleted a routine by that name before, so the farm will not re-create it. Give this one a slightly different name.');
+        return fail(String((r && r.error) || 'The farm refused that routine.'));
       }
       if (r.duplicate) {
         const j = r.job || {};
@@ -176,7 +176,7 @@ function makeSlashActions(deps) {
     if (verb === 'pause' || verb === 'resume') {
       const j = pickFrom(all, rest);
       if (!j) return fail(rest ? ('No routine ' + rest + ' — /routine list to see them.') : ('Usage: /routine ' + verb + ' <number>'));
-      if (typeof cron.setEnabled !== 'function') return fail('Editing routines is not wired on this station.');
+      if (typeof cron.setEnabled !== 'function') return fail('Editing routines is not wired on this farm.');
       const want = verb === 'resume';
       const r = await cron.setEnabled(j.id, want);
       if (!r || r.ok === false) return fail('Could not ' + verb + ' "' + (j.name || j.id) + '": ' + String((r && r.error) || 'the write failed') + '.');
@@ -193,7 +193,7 @@ function makeSlashActions(deps) {
     if (verb === 'rm' || verb === 'remove' || verb === 'delete') {
       const j = pickFrom(all, rest);
       if (!j) return fail(rest ? ('No routine ' + rest + ' — /routine list to see them.') : 'Usage: /routine rm <number>');
-      if (typeof cron.remove !== 'function') return fail('Deleting routines is not wired on this station.');
+      if (typeof cron.remove !== 'function') return fail('Deleting routines is not wired on this farm.');
       const r = await cron.remove(j.id);
       if (!r || r.ok === false) return fail('Could not delete "' + (j.name || j.id) + '": ' + String((r && r.error) || 'the write failed') + '.');
       return say('Deleted routine "' + (j.name || j.id) + '".');
@@ -217,7 +217,7 @@ function makeSlashActions(deps) {
     'no-capability': 'this agent has no model credential it can build with yet — add a key in SETTINGS → AI & MODELS',
     'empty-backlog': 'there is nothing queued to build — /away <what to build> adds one',
     'not-granted': '"build while away" is off for this agent — /away on to turn it on',
-    'bad-agent': 'that agent id is not one of your station agents',
+    'bad-agent': 'that agent id is not one of your farm agents',
     // these two come back with fired:TRUE — the shift ran and produced nothing usable. See awayAction.
     'run-failed': 'the build run itself failed',
     'no-manifest': 'the run finished but produced no valid deliverable'
@@ -228,7 +228,7 @@ function makeSlashActions(deps) {
   }
 
   async function awayAction(args, ctx) {
-    if (!workshop || typeof workshop.state !== 'function') return fail('The away workshop is not available on this station.');
+    if (!workshop || typeof workshop.state !== 'function') return fail('The away workshop is not available on this farm.');
     const agentId = String((ctx && ctx.agentId) || 'agent');
     const raw = String(args || '').trim();
     const low = raw.toLowerCase();
@@ -259,18 +259,18 @@ function makeSlashActions(deps) {
 
     if (isReserved && (low === 'on' || low === 'off')) {
       const want = low === 'on';
-      if (typeof workshop.grant !== 'function') return fail('The away grant is not wired on this station.');
+      if (typeof workshop.grant !== 'function') return fail('The away grant is not wired on this farm.');
       const r = await workshop.grant(agentId, want);
       if (!r || r.ok === false) return fail('Could not turn "build while away" ' + (want ? 'on' : 'off') + ': ' + String((r && r.error) || 'the write failed') + '.');
       return say(want
-        ? '"Build while away" is ON — this agent will work its queue on its next away shift while the station is up.'
+        ? '"Build while away" is ON — this agent will work its queue on its next away shift while the farm is up.'
         : '"Build while away" is OFF — the queue is kept, but nothing new will be built.');
     }
 
     if (isReserved && low === 'now') {
-      if (typeof workshop.shiftNow !== 'function') return fail('Firing an away shift is not wired on this station.');
+      if (typeof workshop.shiftNow !== 'function') return fail('Firing an away shift is not wired on this farm.');
       const r = await workshop.shiftNow(agentId);
-      if (!r || r.ok === false) return fail('Could not run an away shift: ' + String((r && r.error) || 'the station refused it') + '.');
+      if (!r || r.ok === false) return fail('Could not run an away shift: ' + String((r && r.error) || 'the farm refused it') + '.');
       if (r.fired === false) return say('No away shift ran — ' + shiftReason(r.reason) + '.');
       // A shift that RAN but produced no valid manifest still returns fired:true (reason 'run-failed' /
       // 'no-manifest'). Reporting that as "finished work waits in OUTBOX" would be a flat lie: nothing landed,
@@ -284,9 +284,9 @@ function makeSlashActions(deps) {
     }
 
     // Anything else is the thing to build.
-    if (typeof workshop.queue !== 'function') return fail('Queueing away builds is not wired on this station.');
+    if (typeof workshop.queue !== 'function') return fail('Queueing away builds is not wired on this farm.');
     const r = await workshop.queue(agentId, raw);
-    if (!r || r.ok === false) return fail('Could not queue that: ' + String((r && r.error) || 'the station refused it') + '.');
+    if (!r || r.ok === false) return fail('Could not queue that: ' + String((r && r.error) || 'the farm refused it') + '.');
     return say('Queued for the away workshop: "' + raw.slice(0, 80) + '".' + grantNote(r.granted !== false));
   }
 
@@ -298,7 +298,7 @@ function makeSlashActions(deps) {
      read as available, so /tools advertised tools the run would never be given. The registry lives here, so
      the answer is computed here from the same rows the TOOLSETS console renders. */
   async function toolsAction(args, ctx) {
-    if (!tools || typeof tools.rows !== 'function') return fail('The tool registry is not available on this station.');
+    if (!tools || typeof tools.rows !== 'function') return fail('The tool registry is not available on this farm.');
     const placed = Array.isArray(ctx && ctx.placed) ? ctx.placed : [];
     let rows;
     try { rows = tools.rows(placed) || []; } catch (e) { return fail('Could not read the tool registry: ' + ((e && e.message) || e)); }
@@ -336,7 +336,7 @@ function makeSlashActions(deps) {
     return '$' + v.toFixed(2);
   }
   async function usageAction(args, ctx) {
-    if (!budget || typeof budget.snapshot !== 'function') return fail('Spend tracking is not available on this station.');
+    if (!budget || typeof budget.snapshot !== 'function') return fail('Spend tracking is not available on this farm.');
     const agentId = String((ctx && ctx.agentId) || 'agent');
     let s;
     try { s = await budget.snapshot(agentId); } catch (e) { return fail('Could not read the spend ledger: ' + ((e && e.message) || e)); }
@@ -363,7 +363,7 @@ function makeSlashActions(deps) {
     if (cut) lines.push(plural(cut) + ' stopped mid-answer before the provider reported usage — the dollars above are at least what was spent.');
     // The point of moving this server-side: say WHOSE numbers these are, so the figure is not read as
     // "what I watched happen in this window".
-    lines.push('From the station ledger — includes routines, away shifts and messaging runs, not just this window.');
+    lines.push('From the farm ledger — includes routines, away shifts and messaging runs, not just this window.');
     return card('Spend', lines);
   }
 

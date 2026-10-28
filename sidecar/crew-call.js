@@ -88,7 +88,7 @@ function crewCallNote(text, crew, leadId, opts) {
   if (seated.length) {
     if (!o.seat) return '';
     const names = seated.map(m => m.name === m.agentId ? m.agentId : m.name + ' (agentId ' + m.agentId + ')').join(', ');
-    return '\n\n[CREW CALL] The Commander wants ' + names + ' IN THIS CHAT with them. Seat them with station.control '
+    return '\n\n[CREW CALL] The Farmer wants ' + names + ' IN THIS CHAT with them. Seat them with station.control '
       + '{"action": "group.add", "args": {"agents": [' + seated.map(m => JSON.stringify(m.agentId)).join(', ') + ']}} '
       + '(tool_search "group add" if it is not in your list); team.dispatch never puts anyone in this chat.';
   }
@@ -97,7 +97,7 @@ function crewCallNote(text, crew, leadId, opts) {
   if (!named.length) return '';
   const who = named.map(m => m.name === m.agentId ? m.agentId : m.name + ' (agentId ' + m.agentId + ')').join(', ');
   const workers = named.map(m => '{agentId:"' + m.agentId + '", prompt:"<their part of the task>"}').join(', ');
-  return '\n\n[CREW CALL] The Commander named ' + who + ' in this request. Hand that part to them with team.dispatch, '
+  return '\n\n[CREW CALL] The Farmer named ' + who + ' in this request. Hand that part to them with team.dispatch, '
     + 'workers:[' + workers + '], and build your answer from what they return. '
     + 'Do it yourself only if the dispatch is refused.';
 }

@@ -181,7 +181,7 @@
     // a whole new layout: the station cleared to its main room exactly as the plan did it, then the layout built on it
     if (spec && spec.kind === 'relayout') {
       const r = st.replaceLayout(clone(spec.stripped));
-      if (!r || !r.ok) return refuse('the station could not be cleared for the new layout' + (r && r.msg ? ' (' + r.msg + ')' : ''));
+      if (!r || !r.ok) return refuse('the farm could not be cleared for the new layout' + (r && r.msg ? ' (' + r.msg + ')' : ''));
       const b = buildParts(st, spec.build, WM);
       if (!b.ok) return b;
       for (const m of spec.moves || []) { const mv = st.moveProp(m.id, m.dx, m.dy); if (!mv || !mv.ok) return refuse('a desk could not be moved to its new room'); }
@@ -197,8 +197,8 @@
   // a hallway's corridor deck and its planters and lights (a grid room's hallway, as a layout's)
   function trimHall(st, hallId, spec) {
     if (!hallId || (!spec.hallDeck && !(spec.hallProps || []).length)) return { ok: true };
-    if (spec.hallDeck) { const d = st.setDeck(hallId, spec.hallDeck); if (!d || !d.ok) return refuse('the hallway floor could not be laid'); }
-    for (const p of spec.hallProps || []) { const r = st.addProp({ t: p.t, x: p.x, y: p.y, w: p.w, h: p.h, r: p.r || 0, block: p.block }); if (!r || !r.ok) return refuse('the hallway could not be dressed'); }
+    if (spec.hallDeck) { const d = st.setDeck(hallId, spec.hallDeck); if (!d || !d.ok) return refuse('the path floor could not be laid'); }
+    for (const p of spec.hallProps || []) { const r = st.addProp({ t: p.t, x: p.x, y: p.y, w: p.w, h: p.h, r: p.r || 0, block: p.block }); if (!r || !r.ok) return refuse('the path could not be dressed'); }
     return { ok: true };
   }
   // a part's second hallway, laid first: the stretch a concourse's spine is lengthened by, deck and planters too
@@ -213,7 +213,7 @@
     const ids = [];
     let roomId = part.roomId || null, hallId = null;
     const h2 = layHall2(st, part); if (!h2.ok) return h2;
-    if (part.hall) { const h = st.placeHallway({ rect: part.hall }); if (!h || !h.ok) return refuse('the hallway could not be laid there' + (h && h.msg ? ' (' + h.msg + ')' : '')); hallId = h.id; }
+    if (part.hall) { const h = st.placeHallway({ rect: part.hall }); if (!h || !h.ok) return refuse('the path could not be laid there' + (h && h.msg ? ' (' + h.msg + ')' : '')); hallId = h.id; }
     if (part.room) {
       const before = new Set(st.rooms().map(r => r.id));
       const r = st.addRoom({ kind: part.room.kind, name: part.room.name, floorStyle: part.room.floorStyle, floorMat: part.room.floorMat, rect: part.room.rect });
@@ -242,9 +242,9 @@
     for (const id of spec.removeRooms || []) { const r = st.removeRoom(id); if (!r || !r.ok) return refuse('a room could not be removed' + (r && r.msg ? ' (' + r.msg + ')' : '')); }
     if (spec.moveRoom) { const m = spec.moveRoom, r = st.moveRoom(m.id, m.dx, m.dy); if (!r || !r.ok) return refuse('the room could not be moved there' + (r && r.msg ? ' (' + r.msg + ')' : '')); }
     if (spec.newHall) {
-      const h = st.placeHallway({ rect: spec.newHall.rect }); if (!h || !h.ok) return refuse('the new hallway could not be laid' + (h && h.msg ? ' (' + h.msg + ')' : ''));
-      if (spec.newHall.deck) { const d = st.setDeck(h.id, spec.newHall.deck); if (!d || !d.ok) return refuse('the hallway floor could not be laid'); }
-      for (const p of spec.newHall.props || []) { const r = st.addProp({ t: p.t, x: p.x, y: p.y, w: p.w, h: p.h, r: p.r || 0, block: p.block }); if (!r || !r.ok) return refuse('the hallway could not be dressed'); }
+      const h = st.placeHallway({ rect: spec.newHall.rect }); if (!h || !h.ok) return refuse('the new path could not be laid' + (h && h.msg ? ' (' + h.msg + ')' : ''));
+      if (spec.newHall.deck) { const d = st.setDeck(h.id, spec.newHall.deck); if (!d || !d.ok) return refuse('the path floor could not be laid'); }
+      for (const p of spec.newHall.props || []) { const r = st.addProp({ t: p.t, x: p.x, y: p.y, w: p.w, h: p.h, r: p.r || 0, block: p.block }); if (!r || !r.ok) return refuse('the path could not be dressed'); }
     }
     for (const s of spec.reseat || []) {
       const d = s.desk, a = st.addProp({ t: d.t, x: d.x, y: d.y, w: d.w, h: d.h, r: 0, block: true });
@@ -273,7 +273,7 @@
     if (!bp) return refuse('unknown line');
     let hallId = null;
     const h2 = layHall2(st, spec); if (!h2.ok) return h2;
-    if (spec.hall) { const h = st.placeHallway({ rect: spec.hall }); if (!h || !h.ok) return refuse('the hallway could not be laid there' + (h && h.msg ? ' (' + h.msg + ')' : '')); hallId = h.id; }
+    if (spec.hall) { const h = st.placeHallway({ rect: spec.hall }); if (!h || !h.ok) return refuse('the path could not be laid there' + (h && h.msg ? ' (' + h.msg + ')' : '')); hallId = h.id; }
     if (spec.room) {
       const r = st.addRoom({ kind: spec.room.kind, name: spec.room.name, rect: spec.room.rect });
       if (!r || !r.ok) return refuse('the room could not be added there' + (r && r.msg ? ' (' + r.msg + ')' : ''));
@@ -496,7 +496,7 @@
      review with no instructions, so COPY's Bay was told the Writer's stock "Turn the notes into a 200-word newsletter blurb…
      Keep every link" while the reply said "COPY drafts the post". A step with only its role's stock instructions (no
      instructions, no purpose) is named too, in the same one re-plan. */
-  const NEXT_WORD = 'Tell the Commander the summary in plain words, then call station.build with this planId. Nothing has been built yet.';   // = the page's usual next step
+  const NEXT_WORD = 'Tell the Farmer the summary in plain words, then call station.build with this planId. Nothing has been built yet.';   // = the page's usual next step
   function planNext(p, crewNames) {
     const steps = ((p && p.steps) || []).filter(s => s && s.step != null), stockAt = (p && Array.isArray(p.stock)) ? p.stock : [];
     const idle = steps.filter(s => !s.agent), stock = steps.filter(s => stockAt.indexOf(s.step) >= 0);
@@ -506,7 +506,7 @@
     const first = String((stock[0] || {}).instructions || '').replace(/\s+/g, ' ').trim(), quote = (first.match(/^[^.!?]{1,70}[.!?]/) || [first.slice(0, 60) + '…'])[0];
     const canned = stock.length ? ' only ' + (stock.length === 1 ? "its role's" : "their roles'") + ' stock instructions (step ' + stock[0].step + ': "' + quote + '")' : '';
     const form = '[ ' + steps.filter(s => idle.indexOf(s) >= 0 || stock.indexOf(s) >= 0).map(s => '{ "step": ' + s.step + ', "agent": ' + (s.agent ? JSON.stringify(String(s.agent)) : '"…"') + (stock.indexOf(s) >= 0 ? ', "instructions": "…"' : '') + ' }').join(', ') + ' ]';
-    const why = stock.length ? ' (instructions: what that step does in the workflow the Commander described)' : '';
+    const why = stock.length ? ' (instructions: what that step does in the workflow the Farmer described)' : '';
     // staffed, with stock instructions only: often right ("builds features and tests them" IS the Engineer's and Tester's stock work),
     // so it is the lead's call, said once; the usual next step stays, word for word
     if (!idle.length) return said(stock) + (stock.length === 1 ? ' has' : ' have') + canned + '. If that is not the work the Commander described, plan again with the same request plus steps: '
@@ -514,16 +514,16 @@
     const one = idle.length === 1, same = stock.length && stock.every(s => idle.indexOf(s) >= 0) && idle.every(s => stock.indexOf(s) >= 0);
     return 'Nothing is built yet. ' + said(idle) + (one ? ' has nobody to work it' : ' have nobody to work them') + ', so the line will not run'
       + (!stock.length ? '. ' : same ? '; ' + (one ? 'it also has' : 'they also have') + canned + '. ' : '. ' + said(stock) + (stock.length === 1 ? ' has' : ' have') + canned + '. ')
-      + 'If the Commander said who works ' + (one ? 'it' : 'them') + (names.length ? ', or someone on the crew (' + names.join(', ') + ') is right for ' + (one ? 'it' : 'them') : '') + ', plan again with the same request plus steps: '
-      + form + why + ', so ONE approval builds it ready to run. Otherwise tell the Commander the summary, call station.build with this planId, and say which steps still need crew.';
+      + 'If the Farmer said who works ' + (one ? 'it' : 'them') + (names.length ? ', or someone on the crew (' + names.join(', ') + ') is right for ' + (one ? 'it' : 'them') : '') + ', plan again with the same request plus steps: '
+      + form + why + ', so ONE approval builds it ready to run. Otherwise tell the Farmer the summary, call station.build with this planId, and say which steps still need crew.';
   }
 
   function plan(doc, req, env) {
     const WM = env && env.WorldModel, P = env && env.Pipeline, W = env && env.WorkflowLine;
-    if (!WM || !P || !W || !doc) return refuse('the station builder is not loaded on this page');
+    if (!WM || !P || !W || !doc) return refuse('the farm builder is not loaded on this page');
     if (!req || typeof req !== 'object' || Array.isArray(req)) return refuse('Send the request as an object with: ' + MENU.join(', ') + '.');
     const extra = Object.keys(req).filter(k => MENU.indexOf(k) < 0);
-    if (extra.length) return refuse('StarNet chooses every position, belt and piece of furniture itself, so these fields are not accepted: '
+    if (extra.length) return refuse('Homestead chooses every position, belt and piece of furniture itself, so these fields are not accepted: '
       + extra.slice(0, 8).join(', ') + '. Use only: ' + MENU.join(', ') + '.');
     /* NOWHERE NAMED: a line goes into the station's conveyor hall when one has room for it (that is what the hall is for),
        and only then into a room of its own on the grid */
@@ -565,18 +565,18 @@
     }
     // purpose: the Commander's own words. With no line named, StarNet picks one with the reader behind FOR YOUR GOAL
     // (WorkflowLine.suggestLineFor: the SHAPE of the work), and every step's standard instructions carry those words
-    if (req.purpose != null && typeof req.purpose !== 'string') return refuse('purpose is the Commander\'s own words for what the line is for, as text.');
+    if (req.purpose != null && typeof req.purpose !== 'string') return refuse('purpose is the Farmer\'s own words for what the line is for, as text.');
     const purpose = typeof req.purpose === 'string' ? req.purpose.replace(/\s+/g, ' ').trim().slice(0, 300) : '';
     let bp = resolveLine(WM, req.line), picked = null;
     const lines = { lines: catalog(WM).map(l => ({ id: l.id, name: l.name, roles: l.roles })) };
     if (!bp && req.line == null && purpose) {
       const s = W.suggestLineFor ? W.suggestLineFor(purpose) : null;
       bp = s ? resolveLine(WM, s.id) : null;
-      if (!bp) return refuse('StarNet picks a line from the shape of the work (research then writing, a draft and a reviewer, code with tests or a review, two takes to compare), and "'
+      if (!bp) return refuse('Homestead picks a line from the shape of the work (research then writing, a draft and a reviewer, code with tests or a review, two takes to compare), and "'
         + purpose.slice(0, 80) + '" names no such shape. Choose a line: ' + lineList(WM) + '.', lines);
       picked = s.why;
     }
-    if (!bp) return refuse((req.line ? 'There is no line called "' + String(req.line).slice(0, 60) + '".' : 'Choose a line, or give its purpose in the Commander\'s words.') + ' The lines are: ' + lineList(WM) + '.', lines);
+    if (!bp) return refuse((req.line ? 'There is no line called "' + String(req.line).slice(0, 60) + '".' : 'Choose a line, or give its purpose in the Farmer\'s words.') + ' The lines are: ' + lineList(WM) + '.', lines);
     const plain = bp.plain || bp.label;
     const label = uniqueLineLabel(WM.create(clone(doc)), (typeof req.name === 'string' ? req.name : '').replace(/\s+/g, ' ').trim().slice(0, 48) || plain.toUpperCase(), WM);
     const notes = [];
@@ -643,9 +643,9 @@
         }
         if (placed) break;
       }
-      if (!placed) return none || refuse('There is no clear space ' + (tq.room ? 'beside ' + tq.room.name : 'beside the station') + ' for a room that fits ' + plain + '. Try another side or another room (station.map shows what is free).');
+      if (!placed) return none || refuse('There is no clear space ' + (tq.room ? 'beside ' + tq.room.name : 'beside the farm') + ' for a room that fits ' + plain + '. Try another side or another room (station.map shows what is free).');
     } else {
-      if (['beside', 'side', 'hallway'].some(k => req[k] != null)) return refuse('beside, side and hallway place a NEW room; with where naming ' + target.name + ', leave them out.');
+      if (['beside', 'side', 'hallway'].some(k => req[k] != null)) return refuse('beside, side and path place a NEW room; with where naming ' + target.name + ', leave them out.');
       let tries = 0;
       // every machine and belt must stand inside THIS room: a stamp that fits the floor can still run through a doorway
       // into the next room, and "in the HOME room" would then be a lie
@@ -690,7 +690,7 @@
     });
     const staffed = staffSteps(stepsOut, reqSteps, env, purpose, { line: bp.id, notes }); if (!staffed.ok) return staffed;
     const recruits = stepsOut.filter(x => x.recruit).map(x => ({ propIndex: x.propIndex, role: x.role }));
-    if (recruits.length > MAX_RECRUITS) return refuse('That plan recruits ' + recruits.length + ' new agents. Recruit only when the Commander asks for new crew, and at most ' + MAX_RECRUITS + ' in one plan: staff the other steps with "lead" or a crew member, or leave agent out (the card then lists them as still to do).');
+    if (recruits.length > MAX_RECRUITS) return refuse('That plan recruits ' + recruits.length + ' new agents. Recruit only when the Farmer asks for new crew, and at most ' + MAX_RECRUITS + ' in one plan: staff the other steps with "lead" or a crew member, or leave agent out (the card then lists them as still to do).');
     spec = Object.assign({}, spec, { steps: stepsOut.map(x => ({ propIndex: x.propIndex, brief: x.brief, agentId: x.agentId })), recruits });
 
     // the whole build on one more probe: its fingerprint is what apply() must reproduce exactly (the recruits' desks, a
@@ -716,7 +716,7 @@
       rp.assignPropAgent(fb.ids[rc.propIndex], id); crewIds.push(id);
     });
     const rd = readLine(rp, fb.ids, env, crewIds);
-    const whereText = spec.room ? 'a new room ' + spec.placed.side + ' of ' + spec.placed.target + (spec.placed.len ? ', through a hallway' : ', open to it') : 'the ' + target.name + ' room';
+    const whereText = spec.room ? 'a new room ' + spec.placed.side + ' of ' + spec.placed.target + (spec.placed.len ? ', through a path' : ', open to it') : 'the ' + target.name + ' room';
     const stepsView = stepsOut.map(x => ({ step: x.step, role: titleCase(x.role), agent: x.recruit ? 'a new recruit' : x.agentId ? nameOf(env, x.agentId) : null, instructions: x.brief }));
     const capNow = (() => { const ip = fb.ids.map(id => finalProbe.propById(id)).find(p => p && p.t === 'intake'); return ip && ip.limits ? ip.limits.maxUsdPerDay : null; })();
     const summary = plain + (hasIntake ? ' ("' + label + '")' : '') + ' in ' + whereText + ': '
@@ -868,15 +868,15 @@
      to Build mode's own slot first, so RESTORE PREVIOUS in Build → Presets brings it back; one UNDO does too. */
   function planSwap(doc, req, env) {
     const WM = env.WorldModel, P = env.Pipeline, T = env.StationTemplates;
-    if (req.kit) return refuse('replace swaps the whole station for a preset; a kit is one room. Use preset, or leave replace out to add the kit as a room.');
+    if (req.kit) return refuse('replace swaps the whole farm for a preset; a kit is one room. Use preset, or leave replace out to add the kit as a room.');
     const extra = Object.keys(req).filter(k => k !== 'preset' && k !== 'replace');
     if (extra.length) return refuse('A swap puts in a preset exactly as designed, so leave out: ' + extra.slice(0, 8).join(', ') + '.');
     const all = T.catalog || [], n = norm(req.preset), pr = n ? all.find(c => norm(c.id) === n || norm(c.name) === n) : null;
     if (!pr) return refuse('There is no preset called "' + String(req.preset || '').slice(0, 40) + '". Presets: ' + all.map(c => c.name).join(', ') + '.');
     const layout = T.build(pr.id, WM, env.PropSprites, (doc._nid || 0) + 100);
     const probe = WM.create(clone(doc)), r = probe.replaceLayout(layout);
-    if (!r || !r.ok) return refuse(pr.name + ' could not replace this station (' + ((r && (r.msg || r.error)) || 'it did not fit') + '), so nothing was changed.');
-    if (floorFacts(probe, P).errs.size) return refuse(pr.name + ' would not route cleanly on this station, so nothing was changed.');
+    if (!r || !r.ok) return refuse(pr.name + ' could not replace this farm (' + ((r && (r.msg || r.error)) || 'it did not fit') + '), so nothing was changed.');
+    if (floorFacts(probe, P).errs.size) return refuse(pr.name + ' would not route cleanly on this farm, so nothing was changed.');
     const crewIds = (env.crew || []).map(a => a && a.id).filter(Boolean), geo = probe.projectGeometry();
     const steps = [], lines = [];
     const comps = P.lineComponents(geo).filter(c => (c.bays || []).length);
@@ -894,12 +894,12 @@
     const was = WM.create(clone(doc)), wasRooms = was.rooms().filter(x => x.kind !== 'corridor').length, wasProps = was.props().length;
     const rooms = probe.rooms().filter(x => x.kind !== 'corridor').map(x => x.name);
     const equip = equipmentOf(env, probe.props()), gains = gainsOf(env, probe.props());
-    const summary = 'Swap your whole station for ' + pr.name + ' (' + rooms.join(', ') + '). Your ' + wasRooms + (wasRooms === 1 ? ' room' : ' rooms') + ' and ' + wasProps + ' props are replaced; agents and conversations stay, and every agent keeps a desk. '
+    const summary = 'Swap your whole farm for ' + pr.name + ' (' + rooms.join(', ') + '). Your ' + wasRooms + (wasRooms === 1 ? ' room' : ' rooms') + ' and ' + wasProps + ' props are replaced; agents and conversations stay, and every agent keeps a desk. '
       + 'Your current layout is backed up: RESTORE PREVIOUS in Build → Presets brings it back.'
       + (equip.length ? ' It brings equipment: ' + equip.join(', ') + (gains.length ? '. What agents gain there: ' + gains.join('; ') : '') + '.' : '')
       + lines.map(l => ' Its line "' + l.label + '" ' + (l.ready ? 'will be ready to run' : 'still needs: ' + l.blocking.join('; ')) + '.').join('');
     return { ok: true, plan: { floorSig: sigOf(doc), resultSig: sigOf(probe.serialize()), spec: { kind: 'swap', preset: pr.id, layout }, preview: previewOf(WM, doc, probe.serialize(), []), summary, notes: [], steps, line: null,
-      where: 'the whole station', rooms: rooms.map(name => ({ name })), preset: { id: pr.id, name: pr.name }, lines } };
+      where: 'the whole farm', rooms: rooms.map(name => ({ name })), preset: { id: pr.id, name: pr.name }, lines } };
   }
 
   function planRoom(doc, req, env) {
@@ -908,16 +908,16 @@
       return planDesign(doc, req, env);
     }
     const WM = env && env.WorldModel, P = env && env.Pipeline, W = env && env.WorkflowLine;
-    if (!WM || !P || !W || !doc || !env.StationTemplates || !env.PropSprites) return refuse('the station builder is not loaded on this page');
+    if (!WM || !P || !W || !doc || !env.StationTemplates || !env.PropSprites) return refuse('the farm builder is not loaded on this page');
     if (!req || typeof req !== 'object' || Array.isArray(req)) return refuse('Send the request as an object with: ' + ROOM_MENU.join(', ') + '.');
     if (req.replace != null && req.replace !== false && !/^(false|no)$/i.test(String(req.replace))) {
-      if (req.replace !== true && !/^(true|yes)$/i.test(String(req.replace))) return refuse('replace is true (swap the whole station for the preset) or left out (add rooms).');
+      if (req.replace !== true && !/^(true|yes)$/i.test(String(req.replace))) return refuse('replace is true (swap the whole farm for the preset) or left out (add rooms).');
       return planSwap(doc, req, env);
     }
     const extra = Object.keys(req).filter(k => ROOM_MENU.indexOf(k) < 0);
-    if (extra.length) return refuse('StarNet chooses every position and piece of furniture itself, so these fields are not accepted: ' + extra.slice(0, 8).join(', ') + '. Use only: ' + ROOM_MENU.join(', ') + '.');
+    if (extra.length) return refuse('Homestead chooses every position and piece of furniture itself, so these fields are not accepted: ' + extra.slice(0, 8).join(', ') + '. Use only: ' + ROOM_MENU.join(', ') + '.');
     const presetNames = presetsOf(env).map(c => c.name).join(', ');
-    if (!!req.kit === !!req.preset) return refuse('Choose one: kit (one room) or preset (every room of a preset, added beside your station). Kits: ' + kitMenu(env) + '. Presets: ' + presetNames + '.');
+    if (!!req.kit === !!req.preset) return refuse('Choose one: kit (one room) or preset (every room of a preset, added beside your farm). Kits: ' + kitMenu(env) + '. Presets: ' + presetNames + '.');
     const style = styleOf(WM, req); if (!style.ok) return style;
     let list;
     if (req.kit) { const k = resolveKit(env, req.kit); if (!k) return refuse('There is no room kit called "' + String(req.kit).slice(0, 40) + '". Kits: ' + kitMenu(env) + '.'); list = [k]; }
@@ -943,7 +943,7 @@
     const bq = req.beside != null ? roomNamed(live, req.beside) : { ok: true, room: null }; if (!bq.ok) return bq;
     const sq = sideOf(req.side); if (!sq.ok) return sq;
     const hq = hallOf(req.hallway); if (!hq.ok) return hq;
-    if (target && ['beside', 'side', 'hallway'].some(k => req[k] != null)) return refuse('beside, side and hallway place a NEW room; with where naming ' + target.name + ', leave them out.');
+    if (target && ['beside', 'side', 'hallway'].some(k => req[k] != null)) return refuse('beside, side and path place a NEW room; with where naming ' + target.name + ', leave them out.');
     if (req.size != null) return refuse('A preset room comes at its own size (18 × 11). For a room of another size use station.plan_build.');
     const besideRoom = bq.room, placeSide = sq.side, placeHall = hq.len;
     for (const kit of list) {
@@ -975,7 +975,7 @@
           Object.assign(part, gridHallTrim(env.WorldModel, env, sofar, cand, kit.kind));
           if (tryKit(doc, { kind: 'rooms', parts: parts.concat([part]) }, env, before).ok) { found = part; break outer; }
         }
-        if (!found) return refuse('There is no clear space ' + (besideRoom ? 'beside ' + besideRoom.name : 'beside the station') + ' for an 18 × 11 ' + kit.name + '. Try another side or another room (station.map shows what is free).');
+        if (!found) return refuse('There is no clear space ' + (besideRoom ? 'beside ' + besideRoom.name : 'beside the farm') + ' for an 18 × 11 ' + kit.name + '. Try another side or another room (station.map shows what is free).');
       }
       parts.push(found);
     }
@@ -995,7 +995,7 @@
         const b = finalProbe.props().find(q => q.id === pid);
         if (b && b.t === 'bay') steps.push({ step: ++n, role: titleCase(b.role) + (manyLines ? ' in ' + roomName : ''), agent: null, instructions: b.brief || '' });
       }
-      return { name: roomName, kit: part.meta.kit, about: part.meta.about, where: part.room ? 'a new room ' + part.meta.placed.side + ' of ' + part.meta.placed.target + (part.meta.placed.len ? ', through a hallway' : ', open to it') : 'the ' + part.meta.name + ' room',
+      return { name: roomName, kit: part.meta.kit, about: part.meta.about, where: part.room ? 'a new room ' + part.meta.placed.side + ' of ' + part.meta.placed.target + (part.meta.placed.len ? ', through a path' : ', open to it') : 'the ' + part.meta.name + ' room',
         equipment: equip, gains, line: line ? { label: part.line.label, ready: line.ready, blocking: line.blocking } : null };
     });
     const summary = view.map(v => (v.where.indexOf('a new room') === 0 ? v.name + ' (' + v.about + ') in ' + v.where : v.about.charAt(0).toUpperCase() + v.about.slice(1) + ', furnishing ' + v.where)
@@ -1006,7 +1006,7 @@
 
   function planRestyle(doc, req, env) {
     const WM = env && env.WorldModel;
-    if (!WM || !doc) return refuse('the station builder is not loaded on this page');
+    if (!WM || !doc) return refuse('the farm builder is not loaded on this page');
     if (!req || typeof req !== 'object' || Array.isArray(req)) return refuse('Send the request as an object with: ' + STYLE_MENU.join(', ') + '.');
     const extra = Object.keys(req).filter(k => STYLE_MENU.indexOf(k) < 0);
     if (extra.length) return refuse('A restyle only changes a room\'s floor, material or name, so these fields are not accepted: ' + extra.slice(0, 8).join(', ') + '. Use only: ' + STYLE_MENU.join(', ') + '.');
@@ -1224,7 +1224,7 @@
     if (!q || typeof q !== 'object' || Array.isArray(q)) return refuse('add is { room, pieces }: pieces such as ["a tv", "three plants"].');
     const bad = Object.keys(q).filter(k => ['room', 'pieces'].indexOf(k) < 0); if (bad.length) return refuse('add only takes room and pieces. Not accepted: ' + bad.slice(0, 6).join(', ') + '.');
     const t = roomNamed(live, q.room); if (!t.ok) return t;
-    const room = t.room; if (room.rects.length > 1) return refuse(room.name + ' is not a plain rectangle, so StarNet cannot place pieces in it.');
+    const room = t.room; if (room.rects.length > 1) return refuse(room.name + ' is not a plain rectangle, so Homestead cannot place pieces in it.');
     const pa = piecesAsked(env, q.pieces, false); if (!pa.ok) return pa;
     const scratch = env.WorldModel.create(clone(live.serialize())), pl = placePieces(scratch, env, room.id, pa.items);
     if (!pl.ok) return pl;
@@ -1287,7 +1287,7 @@
      which is the routing plan's lineId), its name and room, and its steps in order with who works each. */
   function lineRef(doc, env, ref, roomRef) {
     const WM = env && env.WorldModel, P = env && env.Pipeline;
-    if (!WM || !P || !doc) return refuse('the station builder is not loaded on this page');
+    if (!WM || !P || !doc) return refuse('the farm builder is not loaded on this page');
     const live = WM.create(clone(doc));
     let comp = null, label = null, room = null;
     const p = typeof ref === 'string' ? live.propById(ref) : null;
@@ -1378,10 +1378,10 @@
   function editMove(doc, live, env, q, before) {
     const WM = env.WorldModel;
     if (!q || typeof q !== 'object' || Array.isArray(q)) return refuse('move is { room, beside, side }: the room, and beside which room and on which side it goes (beside the main room when only a side is given).');
-    const bad = Object.keys(q).filter(k => ['room', 'beside', 'side', 'hallway'].indexOf(k) < 0); if (bad.length) return refuse('move only takes room, beside, side and hallway. Not accepted: ' + bad.slice(0, 6).join(', ') + '. Rooms do not resize: remove one and build it again the size it should be.');
+    const bad = Object.keys(q).filter(k => ['room', 'beside', 'side', 'hallway'].indexOf(k) < 0); if (bad.length) return refuse('move only takes room, beside, side and path. Not accepted: ' + bad.slice(0, 6).join(', ') + '. Rooms do not resize: remove one and build it again the size it should be.');
     const t = roomNamed(live, q.room); if (!t.ok) return t;
     const room = t.room, main = mainRoom(live), spawnId = (live.serialize().meta || {}).spawnRoomId;
-    if ((main && room.id === main.id) || room.id === spawnId) return refuse(room.name + ' is the main room: the station is built round it, so it stays. Move the rooms round it instead.');
+    if ((main && room.id === main.id) || room.id === spawnId) return refuse(room.name + ' is the main room: the farm is built round it, so it stays. Move the rooms round it instead.');
     if (room.rects.length > 1) return refuse(room.name + ' is not a plain rectangle, so it cannot be moved whole.');
     const R = room.rects[0], W = R.x2 - R.x1 + 1, H = R.y2 - R.y1 + 1;
     const sd = sideOf(q.side); if (!sd.ok) return sd;
@@ -1412,7 +1412,7 @@
       const at = q.beside != null || q.side != null ? (cand.side || '') + ' of ' + (cand.target || '') : 'the next free place of the grid (' + (cand.side || '') + ' of ' + (cand.target || '') + ')';
       return { ok: true, spec, moved, mark: room.id, where: 'the move of ' + room.name,
         summary: 'Move ' + room.name + ' (' + W + ' × ' + H + ') to ' + at + ', with everything in it' + (riders.length ? ' (all ' + riders.length + ' of its pieces ride along' + rideText(live, riders) + ')' : '') + '. '
-          + (halls.length ? 'Its old ' + (halls.length > 1 ? halls.length + ' hallways go' : 'hallway goes') + (cand.hall ? ' and a new one joins it there. ' : '. ') : cand.hall ? 'A new hallway joins it there. ' : '')
+          + (halls.length ? 'Its old ' + (halls.length > 1 ? halls.length + ' paths go' : 'path goes') + (cand.hall ? ' and a new one joins it there. ' : '. ') : cand.hall ? 'A new path joins it there. ' : '')
           + 'One UNDO in Build mode puts it back.' };
     }
     return why || refuse('There is no clear place to move ' + room.name + ' to.');
@@ -1584,10 +1584,10 @@
       case 'room': case 'hall': {
         const rects = Array.isArray(o.rects) ? o.rects.map(tileRect) : [tileRect(o)];
         if (!rects.length || rects.some(r => !r)) return refuse('a ' + op + ' is { x, y, w, h } in tiles' + (op === 'room' ? ', or rects: [ { x, y, w, h }, … ] for an L or U' : ''));
-        if (op === 'hall') { if (rects.length > 1) return refuse('a hall is one straight run; give several hall edits for a turning one'); const r = st.placeHallway({ rect: rects[0] }); if (!r || !r.ok) return refuse(wmMsg(r)); st.setDeck(r.id, CORRIDOR_DECK); if (o.as) names[o.as] = r.id; const R = rects[0]; return { ok: true, text: 'a ' + (R.x2 - R.x1 + 1) + ' × ' + (R.y2 - R.y1 + 1) + ' hallway at ' + at(R.x1, R.y1) }; }
+        if (op === 'hall') { if (rects.length > 1) return refuse('a hall is one straight run; give several hall edits for a turning one'); const r = st.placeHallway({ rect: rects[0] }); if (!r || !r.ok) return refuse(wmMsg(r)); st.setDeck(r.id, CORRIDOR_DECK); if (o.as) names[o.as] = r.id; const R = rects[0]; return { ok: true, text: 'a ' + (R.x2 - R.x1 + 1) + ' × ' + (R.y2 - R.y1 + 1) + ' path at ' + at(R.x1, R.y1) }; }
         const kind = o.kind == null ? 'hab' : String(o.kind).toLowerCase(), K = WM.ROOM_KINDS || {};
         const kid = K[kind] ? kind : Object.keys(K).find(k => (K[k].label && K[k].label.toLowerCase() === kind) || (K[k].was && K[k].was.toLowerCase() === kind));
-        if (!kid || kid === 'corridor') return refuse('kind is one of ' + Object.keys(K).filter(k => k !== 'corridor').join(', ') + ' (use hall for a hallway)');
+        if (!kid || kid === 'corridor') return refuse('kind is one of ' + Object.keys(K).filter(k => k !== 'corridor').join(', ') + ' (use hall for a path)');
         const name = typeof o.name === 'string' && o.name.trim() ? roomCut(o.name) : null;
         if (name && st.rooms().some(r => r.kind !== 'corridor' && norm(r.name) === norm(name))) return refuse('a room is already called ' + name);
         const r = st.addRoom(Object.assign({ kind: kid, rects }, name ? { name } : {})); if (!r || !r.ok) return refuse(wmMsg(r));
@@ -1648,7 +1648,7 @@
         return { ok: true, text: (/^[aeiou]/.test(nm(tt)) ? 'an ' : 'a ') + nm(tt) + ' at ' + at(p.x, p.y) + inRoom(p.x, p.y) + moved + (r ? ', facing ' + ['south', 'west', 'north', 'east'][r] : '') + twinNote + (mirror ? ', flipped' : '') };
       }
       case 'move': {
-        if (o.room != null) { const t = roomRef(o.room); if (!t.ok) return t; if (isMain(t.room)) return refuse(t.room.name + ' is the main room: the station is built round it'); const q = tileOf(o); if (!q) return refuse('move a room with its new top-left x and y'); const B = bboxOf(t.room); return did(st.moveRoom(t.room.id, q.x - B.x1, q.y - B.y1), t.room.name + ' moved to ' + at(q.x, q.y) + ' with everything in it'); }
+        if (o.room != null) { const t = roomRef(o.room); if (!t.ok) return t; if (isMain(t.room)) return refuse(t.room.name + ' is the main room: the farm is built round it'); const q = tileOf(o); if (!q) return refuse('move a room with its new top-left x and y'); const B = bboxOf(t.room); return did(st.moveRoom(t.room.id, q.x - B.x1, q.y - B.y1), t.room.name + ' moved to ' + at(q.x, q.y) + ' with everything in it'); }
         const t = propRef(o.prop); if (!t.ok) return t; const q = tileOf(o.to || o); if (!q) return refuse('move a piece with its new top-left x and y'); const p = t.p, from = at(p.x, p.y);
         if (ctx) ctx.touched.add(p.id);
         return did(st.moveProp(p.id, q.x - p.x, q.y - p.y), 'the ' + nm(p.t) + ' at ' + from + ' moved to ' + at(q.x, q.y) + inRoom(q.x, q.y));
@@ -1673,7 +1673,7 @@
         const hallOf = ref => { if (ref == null) return null; const tt = tileOf(ref), onTile = tt ? st.roomAt(tt.x, tt.y) : null;
           return st.rooms().find(r => r.kind === 'corridor' && (r.id === ref || r.id === onTile || names[ref] === r.id || (typeof ref === 'string' && norm(r.name) === norm(ref)))) || null; };
         const hall = o.hall != null ? hallOf(o.hall) : hallOf(o.room);
-        if (o.hall != null && !hall) return refuse('there is no hallway "' + String(typeof o.hall === 'object' ? JSON.stringify(o.hall) : o.hall).slice(0, 40) + '" (station.map lists every hallway under halls)');
+        if (o.hall != null && !hall) return refuse('there is no path "' + String(typeof o.hall === 'object' ? JSON.stringify(o.hall) : o.hall).slice(0, 40) + '" (station.map lists every path under halls)');
         // DELETE LINE (Build mode's own, 2026-10-11): every machine of the line and every belt between them (removeLine), one edit;
         // a SEND TO into it goes with it, and the card says which lines stop handing work on. A room given WITH the line names the
         // room the line stands in (plan_edit's remove: { line, room }, the duplicate-name refusal's own advice) — it never turns the
@@ -1691,7 +1691,7 @@
         // what goes with a removal: every piece TOUCHING it (removeRoom's own rule), and an agent's desk or a line's machine by name
         const goes = room => { const ps = st.props().filter(p => touchesRoom(p, room)), key = ps.filter(p => p.agentId || MACHINE_T.test(p.t));
           return { n: ps.length, named: (key.length ? ' (' + key.slice(0, 6).map(p => p.agentId ? nameOf(env, p.agentId) + '\'s ' + nm(p.t) : 'the ' + nm(p.t)).join(', ') + (key.length > 6 ? ' …' : '') + ')' : '') + cutSendText(sendersInto(st, env, ps.map(p => p.id))) }; };
-        if (hall) { const B = bboxOf(hall), g = goes(hall), n = g.n; return did(st.removeRoom(hall.id), 'the hallway ' + hall.name + ' at ' + at(B.x1, B.y1) + ' taken up' + (n ? ', with the ' + n + (n === 1 ? ' piece' : ' pieces') + ' in or reaching into it' + g.named : '')); }
+        if (hall) { const B = bboxOf(hall), g = goes(hall), n = g.n; return did(st.removeRoom(hall.id), 'the path ' + hall.name + ' at ' + at(B.x1, B.y1) + ' taken up' + (n ? ', with the ' + n + (n === 1 ? ' piece' : ' pieces') + ' in or reaching into it' + g.named : '')); }
         if (o.room != null) { const t = roomRef(o.room); if (!t.ok) return t; if (isMain(t.room)) return refuse(t.room.name + ' is the main room, so it stays'); const g = goes(t.room), n = g.n; return did(st.removeRoom(t.room.id), t.room.name + ' removed, with the ' + n + (n === 1 ? ' piece' : ' pieces') + ' on it' + g.named); }
         const t = propRef(o.prop); if (!t.ok) return t; const p = t.p, cut = p.t === 'intake' ? cutSendText(sendersInto(st, env, [p.id]))
           : p.t === 'outbox' && p.sendTo && st.propById(p.sendTo) ? ' (its SEND TO on to ' + lineWordOf(st, env, p.sendTo) + ' goes with it)' : '';
@@ -1715,7 +1715,7 @@
           return didA(st.connectBelt(A.id, B.id), 'the ' + nm(A.t) + ' at ' + at(A.x, A.y) + ' belted to the ' + nm(B.t) + ' at ' + at(B.x, B.y) + why);
         }
         const r = st.placeBeltRun({ tx: a.x, ty: a.y }, { tx: b.x, ty: b.y }), hit = r && !r.ok && r.error === 'ON_PROP' ? runBlocker(st, a, b) : null;
-        if (hit) return refuse('the tile ' + at(hit.x, hit.y) + ' is under the ' + nm(hit.p.t) + ' at ' + at(hit.p.x, hit.p.y) + ' (' + (hit.p.w || 1) + ' × ' + (hit.p.h || 1) + '). A belt runs on clear floor between machines; to join two machines send { op: "connect", from, to } (each an id, an as name or a tile on it) and StarNet lays the belt');
+        if (hit) return refuse('the tile ' + at(hit.x, hit.y) + ' is under the ' + nm(hit.p.t) + ' at ' + at(hit.p.x, hit.p.y) + ' (' + (hit.p.w || 1) + ' × ' + (hit.p.h || 1) + '). A belt runs on clear floor between machines; to join two machines send { op: "connect", from, to } (each an id, an as name or a tile on it) and Homestead lays the belt');
         return didA(r, 'a belt from ' + at(a.x, a.y) + ' to ' + at(b.x, b.y)); }
       case 'unbelt': { const tiles = (Array.isArray(o.tiles) ? o.tiles : []).map(tileOf).filter(Boolean).map(q => [q.x, q.y]); if (!tiles.length) return refuse('unbelt needs tiles: [[x, y], …]'); return did(st.removeBelts(tiles), tiles.length + ' belt tiles taken up'); }
       case 'connect': { const a = propRef(o.from); if (!a.ok) return a; const b = propRef(o.to); if (!b.ok) return b;
@@ -1804,9 +1804,9 @@
         return did(st.swapJoinerMerger(t.p.id), 'the ' + t.p.t + ' at ' + at(t.p.x, t.p.y) + ' becomes a ' + to + (to === 'joiner' ? ' (the branches each get a copy and it waits for all of them)' : ' (the branches take turns)')); }
       case 'hands': { const t = propRef(o.prop); if (!t.ok) return t; if (t.p.t !== 'bay') return refuse('hands is for a bay: what that step hands on'); const txt = String(o.text == null ? '' : o.text).replace(/\s+/g, ' ').trim(); if (txt.length > 160) return refuse('hands text is up to 160 characters');
         return did(st.setPropHands(t.p.id, txt), 'the bay at ' + at(t.p.x, t.p.y) + (txt ? ' hands on: "' + txt + '"' : ' hands on its whole result')); }
-      case 'folder': { const t = propRef(o.prop); if (!t.ok) return t; const ip = intakeOf(t.p); if (!ip) return refuse('that piece is not on a line with an inbox'); if (!res || res.root == null) return refuse('the folder must be one of the Commander\'s trusted projects');
+      case 'folder': { const t = propRef(o.prop); if (!t.ok) return t; const ip = intakeOf(t.p); if (!ip) return refuse('that piece is not on a line with an inbox'); if (!res || res.root == null) return refuse('the folder must be one of the Farmer\'s trusted projects');
         return did(st.setPropProject(ip.id, res.root), 'the line at ' + at(ip.x, ip.y) + (res.root ? ' works in ' + res.name : ' works in no project folder')); }
-      case 'bind': { const t = propRef(o.prop); if (!t.ok) return t; if (!res) return refuse('bind needs a service the station has'); const fn = t.p.t === 'plugin_terminal' ? 'bindPlugin' : 'bindConnector';
+      case 'bind': { const t = propRef(o.prop); if (!t.ok) return t; if (!res) return refuse('bind needs a service the farm has'); const fn = t.p.t === 'plugin_terminal' ? 'bindPlugin' : 'bindConnector';
         if (t.p.t !== 'plugin_terminal' && !CONNECTOR_T.test(t.p.t)) return refuse('bind is for a connector portal (a connector) or a plugin terminal (a plugin)'); if (res.id && (fn === 'bindPlugin') !== (res.kind === 'plugin')) return refuse(fn === 'bindPlugin' ? 'a plugin terminal takes a plugin' : 'a connector portal takes a connector');
         return did(st[fn](t.p.id, res.id), 'the ' + nm(t.p.t) + ' at ' + at(t.p.x, t.p.y) + (res.id ? ' gives its room\'s agents ' + res.name + '\'s tools' : ' is unbound')); }
       case 'stamp': { const bp = resolveLine(WM, o.line); if (!bp) return refuse('there is no line called "' + String(o.line).slice(0, 40) + '" (lines: ' + lineList(WM) + ')'); const q = tileOf(o); if (!q) return refuse('stamp needs the line\'s top-left x and y'); const r = st.stampBlueprint(bp.id, q.x, q.y, {}); if (!r || !r.ok) return refuse(wmMsg(r)); if (o.as) names[o.as] = r.ids[0]; return { ok: true, text: 'the line ' + (bp.plain || bp.label) + ' laid at ' + at(q.x, q.y) + inRoom(q.x, q.y) }; }
@@ -1846,20 +1846,20 @@
     const pick = (rows, want, keys) => { const w = String(want).trim().toLowerCase(); return rows.find(r => keys.some(k => r[k] != null && String(r[k]).trim().toLowerCase() === w)) || rows.find(r => keys.some(k => r[k] != null && String(r[k]).toLowerCase().replace(/\\/g, '/').split('/').pop() === w)) || null; };
     if (op === 'folder') {
       if (none(o.project)) return { root: '', name: '' };
-      if (!Array.isArray(sv.projects)) return { error: 'this page could not read the Commander\'s trusted projects; try again' };
+      if (!Array.isArray(sv.projects)) return { error: 'this page could not read the Farmer\'s trusted projects; try again' };
       const p = pick(sv.projects, o.project, ['name', 'root']);
-      return p ? { root: String(p.root), name: String(p.name || p.root) } : { error: '"' + String(o.project).slice(0, 60) + '" is not one of the Commander\'s trusted projects (' + (sv.projects.map(x => x.name || x.root).join(', ') || 'none yet') + '). The Commander trusts a folder under PROJECTS first' };
+      return p ? { root: String(p.root), name: String(p.name || p.root) } : { error: '"' + String(o.project).slice(0, 60) + '" is not one of the Farmer\'s trusted projects (' + (sv.projects.map(x => x.name || x.root).join(', ') || 'none yet') + '). The Farmer trusts a folder under PROJECTS first' };
     }
     const want = o.plugin != null ? ['plugin', o.plugin] : o.connector != null ? ['connector', o.connector] : null;
     if (!want || none(want[1])) return { id: '', name: '', kind: want ? want[0] : null };
     const rows = want[0] === 'plugin' ? sv.plugins : sv.connectors;
-    if (!Array.isArray(rows)) return { error: 'this page could not read the station\'s ' + want[0] + 's; try again' };
+    if (!Array.isArray(rows)) return { error: 'this page could not read the farm\'s ' + want[0] + 's; try again' };
     const r = pick(rows, want[1], ['id', 'name', 'label']);
     return r ? { id: String(r.id), name: String(r.name || r.label || r.id), kind: want[0] } : { error: 'there is no ' + (want[0] === 'plugin' ? 'plugin that is on' : 'connected service') + ' called "' + String(want[1]).slice(0, 40) + '" (' + (rows.map(x => x.name || x.label || x.id).join(', ') || 'none yet') + ')' };
   }
   function planRefit(doc, ops, env) {
     const WM = env && env.WorldModel, P = env && env.Pipeline;
-    if (!WM || !P || !doc) return refuse('the station builder is not loaded on this page');
+    if (!WM || !P || !doc) return refuse('the farm builder is not loaded on this page');
     if (!Array.isArray(ops) || !ops.length) return refuse('refit is a list of edits, each { op, … } (ops: ' + REFIT_OPS + ').');
     if (ops.length > REFIT_MAX) return refuse('That is ' + ops.length + ' edits; send up to ' + REFIT_MAX + ' in one plan and the rest in the next.');
     const live = WM.create(clone(doc)), before = floorFacts(live, P), probe = WM.create(clone(doc));
@@ -1871,8 +1871,8 @@
     const strandedBefore = new Set(strandedHalls(live)), stranded = strandedHalls(probe).filter(id => !strandedBefore.has(id));
     if (stranded.length) {
       const hs = probe.rooms().filter(r => stranded.indexOf(r.id) >= 0), one = hs.length === 1;
-      return refuse('That would leave ' + (one ? 'a hallway' : hs.length + ' hallways') + ' leading nowhere (' + hs.slice(0, 6).map(h => { const B = bboxOf(h); return h.name + ' at (' + B.x1 + ', ' + B.y1 + ')'; }).join(', ') + (hs.length > 6 ? ', …' : '')
-        + '): a hallway joins two rooms. Take ' + (one ? 'it' : 'them') + ' up ({ op: "delete", hall: "' + hs[0].name + '" }) or join ' + (one ? 'it' : 'them') + ' to a room; to reshape the whole station, { rearrange: "diamond" } re-lays every room with clean hallways. Nothing was built.');
+      return refuse('That would leave ' + (one ? 'a path' : hs.length + ' paths') + ' leading nowhere (' + hs.slice(0, 6).map(h => { const B = bboxOf(h); return h.name + ' at (' + B.x1 + ', ' + B.y1 + ')'; }).join(', ') + (hs.length > 6 ? ', …' : '')
+        + '): a path joins two rooms. Take ' + (one ? 'it' : 'them') + ' up ({ op: "delete", hall: "' + hs[0].name + '" }) or join ' + (one ? 'it' : 'them') + ' to a room; to reshape the whole farm, { rearrange: "diamond" } re-lays every room with clean paths. Nothing was built.');
     }
     // nothing new stands on a desk's seat: the desk draws its own chair when an agent works it (Andrew 10-02: two chairs)
     const seatKey = b => b.piece.id + '@' + b.desk.id, seatsBefore = new Set(blockedSeats(live, env).map(seatKey)), seatHits = blockedSeats(probe, env).filter(b => !seatsBefore.has(seatKey(b)));
@@ -1912,16 +1912,16 @@
   /* UNDO THE LEAD'S OWN LAST BUILD: `last` is the page's record of the builds the lead made (newest last). Only while the
      station is exactly as that build left it, so it never takes back someone else's edit; one step, as Build mode's UNDO. */
   function planUndo(doc, last, opts) {
-    if (!doc) return refuse('the station builder is not loaded on this page');
-    if (!last) return refuse('There is nothing of the lead\'s to undo: StarNet only takes back a build the lead made on this station. The Commander can press UNDO in Build mode.');
-    if (sigOf(doc) !== last.resultSig) return refuse('The station has changed since the lead\'s last build, so StarNet will not undo it (that could take back someone else\'s edit). The Commander can press UNDO in Build mode.');
+    if (!doc) return refuse('the farm builder is not loaded on this page');
+    if (!last) return refuse('There is nothing of the lead\'s to undo: Homestead only takes back a build the lead made on this farm. The Farmer can press UNDO in Build mode.');
+    if (sigOf(doc) !== last.resultSig) return refuse('The farm has changed since the lead\'s last build, so Homestead will not undo it (that could take back someone else\'s edit). The Farmer can press UNDO in Build mode.');
     if (opts && opts.canUndo === false) return refuse('The page was reloaded since that build, so its one-step UNDO is gone. Take it back with an edit instead: a new room with { remove: room }, added pieces with { remove: { room, pieces } }, a new line with { remove: { line } }, a restaffing with { staff } as it was.');
     return { ok: true, plan: { floorSig: sigOf(doc), resultSig: last.floorSig, spec: { kind: 'undo' }, notes: [], steps: [], line: null, where: 'the undo of the last build', rooms: [],
-      summary: 'Undo the last build (' + String(last.summary || 'the lead\'s last change').replace(/\s+/g, ' ').slice(0, 260).replace(/[.\s]+$/, '') + '): the station goes back exactly as it was before it.' + (last.recruited ? ' The agents it recruited stay on the crew (DELETE AGENT in a Dossier removes one).' : '') } };
+      summary: 'Undo the last build (' + String(last.summary || 'the lead\'s last change').replace(/\s+/g, ' ').slice(0, 260).replace(/[.\s]+$/, '') + '): the farm goes back exactly as it was before it.' + (last.recruited ? ' The agents it recruited stay on the crew (DELETE AGENT in a Dossier removes one).' : '') } };
   }
   function planEdit(doc, req, env) {
     const WM = env && env.WorldModel, P = env && env.Pipeline;
-    if (!WM || !P || !doc) return refuse('the station builder is not loaded on this page');
+    if (!WM || !P || !doc) return refuse('the farm builder is not loaded on this page');
     if (!req || typeof req !== 'object' || Array.isArray(req)) return refuse(EDIT_HOW);
     const keys = Object.keys(req).filter(k => req[k] != null), extra = keys.filter(k => EDIT_KEYS.indexOf(k) < 0);
     if (extra.length) return refuse('An edit only takes one of: ' + EDIT_KEYS.join(', ') + '. Not accepted here: ' + extra.slice(0, 6).join(', ') + '. ' + EDIT_HOW);
@@ -1978,7 +1978,7 @@
       const crewName = id => { const a = (env.crew || []).find(x => x && x.id === id); return a ? a.name : 'an agent'; };
       const sized = gone.map(r => { const R = r.rects[0]; return r.name + ' (' + (R.x2 - R.x1 + 1) + ' × ' + (R.y2 - R.y1 + 1) + ')'; });
       summary = 'Remove ' + (sized.length > 1 ? sized.slice(0, -1).join(', ') + ' and ' + sized[sized.length - 1] : sized[0])
-        + (halls.length ? ', with the ' + (halls.length > 1 ? halls.length + ' hallways' : 'hallway') + ' that joined ' + (gone.length > 1 ? 'them' : 'it') : '') + '. '
+        + (halls.length ? ', with the ' + (halls.length > 1 ? halls.length + ' paths' : 'hallway') + ' that joined ' + (gone.length > 1 ? 'them' : 'it') : '') + '. '
         + (furniture.length ? (gone.length > 1 ? 'Their furniture goes with them (' : 'Its furniture goes with it (') + shortList(env, furniture) + '). ' : '')
         + (machines.length ? (intakes.length ? (intakes.length > 1 ? intakes.length + ' workflow lines go too: ' : 'A workflow line goes too: ') + intakes.map(p => p.label || lineWordFor(live, P, p)).join(', ') : machines.length + ' workflow machines go too')
           + cutSendText(sendersInto(live, env, live.props().filter(inGone).map(p => p.id))) + '. ' : '')
@@ -1992,7 +1992,7 @@
       if (isRefurnish) { const bad = Object.keys(q).filter(k => ['room', 'style', 'name'].indexOf(k) < 0); if (bad.length) return refuse('refurnish only takes room, style and name. Not accepted: ' + bad.slice(0, 6).join(', ') + '.'); }
       const t = roomNamed(live, nameOfRoom(q)); if (!t.ok) return t;
       const room = t.room;
-      if (room.rects.length > 1) return refuse(room.name + ' is not a plain rectangle, so StarNet cannot furnish it. Build a new room instead.');
+      if (room.rects.length > 1) return refuse(room.name + ' is not a plain rectangle, so Homestead cannot furnish it. Build a new room instead.');
       const old = furnitureIn(live, room.id);
       if (!isRefurnish) {
         if (!old.length) return refuse(room.name + ' has no furniture to clear (its workflow lines and agents\' desks always stay).');
@@ -2147,7 +2147,7 @@
   }
   function zoneLine(live, env, z, notes) {
     const WM = env.WorldModel, W = env.WorkflowLine;
-    if (z.purpose != null && typeof z.purpose !== 'string') return refuse('purpose is the Commander\'s own words for what the line is for, as text.');
+    if (z.purpose != null && typeof z.purpose !== 'string') return refuse('purpose is the Farmer\'s own words for what the line is for, as text.');
     const purpose = typeof z.purpose === 'string' ? z.purpose.replace(/\s+/g, ' ').trim().slice(0, 300) : '';
     const named = typeof z.name === 'string' ? z.name.replace(/\s+/g, ' ').trim().slice(0, 48) : '';
     if (z.shape != null) {
@@ -2167,7 +2167,7 @@
     if (!bp && z.line == null && purpose) {
       const s = W.suggestLineFor ? W.suggestLineFor(purpose) : null;
       bp = s ? resolveLine(WM, s.id) : null;
-      if (!bp) return refuse('StarNet picks a line from the shape of the work (research then writing, a draft and a reviewer, code with tests or a review, two takes to compare), and "'
+      if (!bp) return refuse('Homestead picks a line from the shape of the work (research then writing, a draft and a reviewer, code with tests or a review, two takes to compare), and "'
         + purpose.slice(0, 80) + '" names no such shape. Choose a line: ' + lineList(WM) + ', or give the zone a shape of its own.');
       picked = s.why;
     }
@@ -2307,7 +2307,7 @@
     if (raw === false || raw === 0 || /^(no|none|false|flush|open|door|0)$/i.test(String(raw))) return { ok: true, len: 0 };
     const n = Number(raw);
     if (Number.isInteger(n) && n >= 2 && n <= 8) return { ok: true, len: n };
-    return refuse('hallway is true (a short hallway joins the rooms), false (the rooms touch, open plan), or a length from 2 to 8.');
+    return refuse('path is true (a short path joins the rooms), false (the rooms touch, open plan), or a length from 2 to 8.');
   }
 
   /* A RECRUIT'S DESK stands in the room of the line it works: a tidy row along the room's back wall (then its front wall),
@@ -2370,7 +2370,7 @@
   // a plan's recruits, capped, each with its desk (by its line where it fits): the desks join the part that holds the line
   function seatRecruits(probe, env, spec, roomOfPart) {
     const recruits = spec.recruits || [];
-    if (recruits.length > MAX_RECRUITS) return refuse('That plan recruits ' + recruits.length + ' new agents. Recruit only when the Commander asks for new crew, and at most ' + MAX_RECRUITS + ' in one plan: staff the other steps with "lead" or a crew member, or leave agent out (the card then lists them as still to do).');
+    if (recruits.length > MAX_RECRUITS) return refuse('That plan recruits ' + recruits.length + ' new agents. Recruit only when the Farmer asks for new crew, and at most ' + MAX_RECRUITS + ' in one plan: staff the other steps with "lead" or a crew member, or leave agent out (the card then lists them as still to do).');
     const byPart = new Map();
     for (const rc of recruits) { if (!byPart.has(rc.part)) byPart.set(rc.part, []); byPart.get(rc.part).push(rc); }
     for (const [pi, list] of byPart) {
@@ -2407,7 +2407,7 @@
     for (let y = r.y1; y <= r.y2 && !id; y++) id = other(r.x1 - 1, y) || other(r.x2 + 1, y);
     if (!id) return null;
     const rm = st.rooms().find(x => x.id === id);
-    return !rm ? 'another room' : rm.kind === 'corridor' ? 'a hallway' : rm.name;
+    return !rm ? 'another room' : rm.kind === 'corridor' ? 'a path' : rm.name;
   }
 
   /* Every place a W × H room may stand on one SIDE of the room T: against T through a hallway `len` tiles long (0 = the
@@ -2436,7 +2436,7 @@
       }
       if (meets < (len ? w : 2)) { why = why || T.name + '\'s wall is not straight there'; continue; }
       // the doorway opens onto clear floor in T (open plan: only what hangs on a north wall matters)
-      const inWay = m => /^overlaps (CORRIDOR|PATH)-/i.test(m || '') ? 'a hallway is already there' : /^overlaps /.test(m || '') ? m.replace(/^overlaps /, '') + ' is in the way' : (m || 'it does not fit');
+      const inWay = m => /^overlaps (CORRIDOR|PATH)-/i.test(m || '') ? 'a path is already there' : /^overlaps /.test(m || '') ? m.replace(/^overlaps /, '') + ' is in the way' : (m || 'it does not fit');
       if (hall) { const c = st.canPlaceHallway([hall]); if (!c.ok) { why = why || inWay(c.msg); continue; } }
       const c = st.canPlaceRoom([rect], kind || 'hab');
       if (!c.ok) { why = why || inWay(c.msg); continue; }
@@ -2468,7 +2468,7 @@
     if (!(T && o.side)) per.sort((p, q) => p.score - q.score || p.order - q.order);
     const list = [].concat(...per.map(p => p.list));
     if (list.length) return { ok: true, list };
-    const size = W + ' × ' + H, hall = o.len ? ' with a hallway' : '';
+    const size = W + ' × ' + H, hall = o.len ? ' with a path' : '';
     if (!T) return refuse('There is no clear space beside any room for a ' + size + ' room' + (o.side ? ' on its ' + o.side + ' side' : '') + hall + '. Try a smaller size, or name the room and side (station.map shows what is free).');
     // nothing fits as asked: say why, and what does fit around T, or beside which other rooms it would fit
     const elsewhere = () => {
@@ -2492,12 +2492,12 @@
     let horiz;
     if (yo2 - yo1 + 1 >= 2 && (a.x2 < b.x1 || b.x2 < a.x1)) horiz = true;
     else if (xo2 - xo1 + 1 >= 2 && (a.y2 < b.y1 || b.y2 < a.y1)) horiz = false;
-    else return refuse(pair + ' do not face each other, and a hallway runs straight. Join rooms that stand side by side or one above the other (station.map shows where each room is).');
+    else return refuse(pair + ' do not face each other, and a path runs straight. Join rooms that stand side by side or one above the other (station.map shows where each room is).');
     const firstIsA = horiz ? a.x2 < b.x1 : a.y2 < b.y1, F = firstIsA ? A : Bm, S = firstIsA ? Bm : A, fb = firstIsA ? a : b, sb = firstIsA ? b : a;
     const g1 = (horiz ? fb.x2 : fb.y2) + 1, g2 = (horiz ? sb.x1 : sb.y1) - 1, gap = g2 - g1 + 1;
     if (gap < 1) return refuse(pair + ' already stand against each other: they are open to each other.');
-    if (gap < 2) return refuse(pair + ' are one tile apart, and a hallway is at least two tiles long.');
-    if (gap > 160) return refuse(pair + ' are ' + gap + ' tiles apart; a hallway runs at most 160.');
+    if (gap < 2) return refuse(pair + ' are one tile apart, and a path is at least two tiles long.');
+    if (gap > 160) return refuse(pair + ' are ' + gap + ' tiles apart; a path runs at most 160.');
     const o1 = horiz ? yo1 : xo1, o2 = horiz ? yo2 : xo2, w = Math.min(horiz ? HALL_W.east : HALL_W.south, o2 - o1 + 1), centre = o1 + ((o2 - o1 + 1 - w) >> 1);
     const offs = [centre]; for (let d = 1; d <= o2 - o1; d++) offs.push(centre - d, centre + d);
     let why = '';
@@ -2515,7 +2515,7 @@
       if (nb) { why = why || 'it would stand against ' + nb; continue; }
       return { ok: true, rect };
     }
-    return refuse('There is no clear straight run for a hallway between ' + pair + ': ' + (why || 'nothing fits') + '.');
+    return refuse('There is no clear straight run for a path between ' + pair + ': ' + (why || 'nothing fits') + '.');
   }
 
   /* A HALLWAY ROUND ONE CORNER between two rooms that stand diagonally apart: out of A's wall that faces B across one axis,
@@ -2544,7 +2544,7 @@
     for (const t of tries.slice(0, 400)) {
       const { r1, r2 } = t, len = r => Math.max(r.x2 - r.x1, r.y2 - r.y1) + 1;
       if (r1.x2 < r1.x1 || r1.y2 < r1.y1 || r2.x2 < r2.x1 || r2.y2 < r2.y1 || len(r2) < 2) continue;
-      if (len(r1) + len(r2) > 200) { why = why || 'they are too far apart (a hallway runs at most 200 tiles round a corner)'; continue; }
+      if (len(r1) + len(r2) > 200) { why = why || 'they are too far apart (a path runs at most 200 tiles round a corner)'; continue; }
       // the doorways meet each room's own wall, straight, with clear floor behind them
       const meetA = i => t.aSide === 'east' ? st.roomAt(a.x2, i) === A.id : t.aSide === 'west' ? st.roomAt(a.x1, i) === A.id : t.aSide === 'south' ? st.roomAt(i, a.y2) === A.id : st.roomAt(i, a.y1) === A.id;
       const meetB = i => t.bSide === 'north' ? st.roomAt(i, b.y1) === Bm.id : t.bSide === 'south' ? st.roomAt(i, b.y2) === Bm.id : t.bSide === 'west' ? st.roomAt(b.x1, i) === Bm.id : st.roomAt(b.x2, i) === Bm.id;
@@ -2559,7 +2559,7 @@
       if (nb) { why = why || 'it would stand against ' + nb; continue; }
       return { ok: true, rects: [r1, r2] };
     }
-    return refuse('There is no clear run for a hallway between ' + pair + ', straight or round one corner: ' + (why || 'nothing fits') + '.');
+    return refuse('There is no clear run for a path between ' + pair + ', straight or round one corner: ' + (why || 'nothing fits') + '.');
   }
   // a room's zones, checked and measured: each a style or a line, no two on the same part of the room
   function parseZones(list, env, live, notes) {
@@ -2738,9 +2738,9 @@
       let roomId = part.roomId || null, hallId = null;
       const h2 = layHall2(st, part); if (!h2.ok) return h2;
       if (part.hall) {
-        const r = st.placeHallway({ rect: part.hall }); if (!r || !r.ok) return refuse('the hallway could not be laid there' + (r && r.msg ? ' (' + r.msg + ')' : '')); hallId = r.id;
-        if (part.hallDeck) { const d = st.setDeck(hallId, part.hallDeck); if (!d || !d.ok) return refuse('the hallway floor could not be laid'); }
-        for (const p of part.hallProps || []) { const r = st.addProp({ t: p.t, x: p.x, y: p.y, w: p.w, h: p.h, r: p.r || 0, block: p.block }); if (!r || !r.ok) return refuse('the hallway could not be dressed'); }
+        const r = st.placeHallway({ rect: part.hall }); if (!r || !r.ok) return refuse('the path could not be laid there' + (r && r.msg ? ' (' + r.msg + ')' : '')); hallId = r.id;
+        if (part.hallDeck) { const d = st.setDeck(hallId, part.hallDeck); if (!d || !d.ok) return refuse('the path floor could not be laid'); }
+        for (const p of part.hallProps || []) { const r = st.addProp({ t: p.t, x: p.x, y: p.y, w: p.w, h: p.h, r: p.r || 0, block: p.block }); if (!r || !r.ok) return refuse('the path could not be dressed'); }
       }
       if (part.room) {
         const r = st.addRoom({ kind: part.room.kind, name: part.room.name, floorStyle: part.room.floorStyle, floorMat: part.room.floorMat, rect: part.room.rect });
@@ -2796,7 +2796,7 @@
       }
       if (o && part.hallId && !part.roomId) {
         const hr = probe.rooms().find(r => r.id === part.hallId), H = hr && hr.rects[0];
-        if (H && !g.path(o.x - g.origin.tx, o.y - g.origin.ty, ((H.x1 + H.x2) >> 1) - g.origin.tx, ((H.y1 + H.y2) >> 1) - g.origin.ty)) return refuse('that hallway could not be walked into');
+        if (H && !g.path(o.x - g.origin.tx, o.y - g.origin.ty, ((H.x1 + H.x2) >> 1) - g.origin.tx, ((H.y1 + H.y2) >> 1) - g.origin.ty)) return refuse('that path could not be walked into');
       }
       // an empty room must still be one the crew can walk into
       if (o && part.roomId && !part.ids.length) {
@@ -2809,12 +2809,12 @@
 
   function planBuild(doc, req, env) {
     const WM = env && env.WorldModel, P = env && env.Pipeline, W = env && env.WorkflowLine, RS = env && env.RoomStyles;
-    if (!WM || !P || !W || !doc || !env.PropSprites || !RS) return refuse('the station builder is not loaded on this page');
+    if (!WM || !P || !W || !doc || !env.PropSprites || !RS) return refuse('the farm builder is not loaded on this page');
     if (req && typeof req === 'object' && !Array.isArray(req) && req.layout != null) return planLayout(doc, req, env);
-    const HOW = 'Send { "rooms": [ … ] }: 1 to 24 rooms, each with ' + ROOM_KEYS.join(', ') + '; and/or { "hallways": [ { "from": room, "to": room } ] } to join rooms that face each other.';
+    const HOW = 'Send { "rooms": [ … ] }: 1 to 24 rooms, each with ' + ROOM_KEYS.join(', ') + '; and/or { "paths": [ { "from": room, "to": room } ] } to join rooms that face each other.';
     if (!req || typeof req !== 'object' || Array.isArray(req)) return refuse(HOW);
     const extra = Object.keys(req).filter(k => BUILD_MENU.indexOf(k) < 0);
-    if (extra.length) return refuse('StarNet computes every tile itself, so these fields are not accepted: ' + extra.slice(0, 8).join(', ') + '. ' + HOW);
+    if (extra.length) return refuse('Homestead computes every tile itself, so these fields are not accepted: ' + extra.slice(0, 8).join(', ') + '. ' + HOW);
     const reqRooms = req.rooms == null ? [] : req.rooms, reqHalls = req.hallways == null ? [] : req.hallways;
     if (!Array.isArray(reqRooms) || reqRooms.length > 24 || !Array.isArray(reqHalls) || reqHalls.length > 24 || !(reqRooms.length + reqHalls.length)) return refuse(HOW);
     const notes = [], live = WM.create(clone(doc)), before = floorFacts(live, P);
@@ -2824,7 +2824,7 @@
       const q = reqRooms[i], nth = 'Room ' + (i + 1);
       if (!q || typeof q !== 'object' || Array.isArray(q)) return refuse(HOW);
       const bad = Object.keys(q).filter(k => ROOM_KEYS.indexOf(k) < 0);
-      if (bad.length) return refuse('StarNet computes every tile itself, so a room does not take: ' + bad.slice(0, 8).join(', ') + '. A room takes: ' + ROOM_KEYS.join(', ') + '.');
+      if (bad.length) return refuse('Homestead computes every tile itself, so a room does not take: ' + bad.slice(0, 8).join(', ') + '. A room takes: ' + ROOM_KEYS.join(', ') + '.');
       const style = styleOf(WM, q); if (!style.ok) return style;
       // what goes in it: zones (by part of the room), or lines (anywhere in it), or nothing yet
       if (q.zones != null && q.lines != null) return refuse(nth + ' takes zones (what goes in each part of it) or lines (workflow lines anywhere in it), not both.');
@@ -2854,7 +2854,7 @@
 
       // an EXISTING room, furnished or filled where it stands
       if (q.into != null) {
-        if (['size', 'beside', 'side', 'hallway', 'align'].some(k => q[k] != null)) return refuse(nth + ' fills an existing room (into), so it takes no size, beside, side, hallway or align.');
+        if (['size', 'beside', 'side', 'hallway', 'align'].some(k => q[k] != null)) return refuse(nth + ' fills an existing room (into), so it takes no size, beside, side, path or align.');
         if (given) return refuse('name names a NEW room; ' + String(q.into).slice(0, 40) + ' keeps its name (plan_restyle renames a room).');
         if (!zones.length && !lines.length && !rec) return refuse(nth + ' names an existing room (into) but nothing to put in it: give a style, zones or lines.');
         const t = roomNamed(probe, q.into); if (!t.ok) return t;
@@ -2886,7 +2886,7 @@
       // a conveyor hall with no size asked is a hall: giant, with floor for the lines to come (as a layout's is)
       const hallMin = rstyle === 'works' ? SIZES.giant : minWH;
       const RW = sz.size ? sz.size[0] : Math.max(need.w, minWH[0], hallMin[0]), RH = sz.size ? sz.size[1] : Math.max(need.h, minWH[1], hallMin[1]);
-      if (RW > DESIGN_MAX[0] || RH > DESIGN_MAX[1]) return refuse('What goes in ' + (given || nth) + ' needs a ' + RW + ' × ' + RH + ' room, larger than the ' + DESIGN_MAX[0] + ' × ' + DESIGN_MAX[1] + ' StarNet builds at once. Split it into two rooms.');
+      if (RW > DESIGN_MAX[0] || RH > DESIGN_MAX[1]) return refuse('What goes in ' + (given || nth) + ' needs a ' + RW + ' × ' + RH + ' room, larger than the ' + DESIGN_MAX[0] + ' × ' + DESIGN_MAX[1] + ' Homestead builds at once. Split it into two rooms.');
       const tq = q.beside != null ? roomNamed(probe, q.beside) : { ok: true, room: null };   // no room named: beside whichever keeps the station compact
       if (!tq.ok) return tq;
       const kind = (style.type && style.type.id) || (rec && rec.kind) || 'hab';
@@ -2910,7 +2910,7 @@
       for (const cand of grid.concat(pl.ok ? pl.list : [])) {
         const cp = WM.create(clone(probe.serialize()));
         if (cand.ext) { const h0 = cp.placeHallway({ rect: cand.ext }); if (!h0 || !h0.ok) { why = why || refuse('the concourse could not be lengthened there'); continue; } cp.setDeck(h0.id, CORRIDOR_DECK); }
-        if (cand.hall) { const h = cp.placeHallway({ rect: cand.hall }); if (!h || !h.ok) { why = why || refuse('the hallway could not be laid there'); continue; } }
+        if (cand.hall) { const h = cp.placeHallway({ rect: cand.hall }); if (!h || !h.ok) { why = why || refuse('the path could not be laid there'); continue; } }
         const a = cp.addRoom(Object.assign({}, roomSpec, { rect: cand.rect }));
         if (!a || !a.ok) { why = why || refuse('the room could not be added there'); continue; }
         if (roomSpec.walls) cp.setWalls(a.id, roomSpec.walls);
@@ -2936,15 +2936,15 @@
     // hallways between rooms that already stand, or that this plan has just added
     const halls = [];
     for (const h of reqHalls) {
-      if (!h || typeof h !== 'object' || Array.isArray(h) || h.from == null || h.to == null || Object.keys(h).some(k => k !== 'from' && k !== 'to')) return refuse('Each hallway is { "from": a room, "to": another room }. StarNet lays it straight between them.');
+      if (!h || typeof h !== 'object' || Array.isArray(h) || h.from == null || h.to == null || Object.keys(h).some(k => k !== 'from' && k !== 'to')) return refuse('Each path is { "from": a room, "to": another room }. Homestead lays it straight between them.');
       const A = roomNamed(probe, h.from); if (!A.ok) return A;
       const B = roomNamed(probe, h.to); if (!B.ok) return B;
-      if (A.room.id === B.room.id) return refuse('A hallway joins two different rooms.');
+      if (A.room.id === B.room.id) return refuse('A path joins two different rooms.');
       let hb = hallBetween(probe, A.room, B.room, hangsOf(env));
       if (!hb.ok && /do not face each other/.test(hb.error)) hb = hallL(probe, A.room, B.room, hangsOf(env));   // round one corner
       if (!hb.ok) return hb;
       const rects = hb.rects || [hb.rect], ids = [];
-      for (const rc of rects) { const r = probe.placeHallway({ rect: rc }); if (!r || !r.ok) return refuse('the hallway could not be laid there'); ids.push(r.id); probe.setDeck(r.id, CORRIDOR_DECK); }
+      for (const rc of rects) { const r = probe.placeHallway({ rect: rc }); if (!r || !r.ok) return refuse('the path could not be laid there'); ids.push(r.id); probe.setDeck(r.id, CORRIDOR_DECK); }
       // a station corridor like a layout's: the deck, and planters and lights where it is long enough
       rects.forEach((rc, k) => { const d = dressHall(probe, env, ids[k], null); spec.parts.push({ hall: rc, hallDeck: CORRIDOR_DECK, room: null, roomId: null, lines: [], props: (d && d.props) || [] }); });
       halls.push({ from: A.room.name, to: B.room.name, corner: rects.length > 1, len: rects.reduce((n, rc) => n + Math.max(rc.x2 - rc.x1, rc.y2 - rc.y1) + 1, 0) });
@@ -2968,7 +2968,7 @@
     const roomText = rooms.map(r => {
       const Wd = r.R.x2 - r.R.x1 + 1, Hd = r.R.y2 - r.R.y1 + 1;
       const where = r.existing ? r.name + ' (' + Wd + ' × ' + Hd + ')'
-        : r.name + ', a new ' + Wd + ' × ' + Hd + ' room ' + r.placed.side + ' of ' + r.placed.target + (r.placed.len ? ', through a hallway' : ', open to it');
+        : r.name + ', a new ' + Wd + ' × ' + Hd + ' room ' + r.placed.side + ' of ' + r.placed.target + (r.placed.len ? ', through a path' : ', open to it');
       r.where = where;
       const order = (reqRooms[rooms.indexOf(r)].zones || []).map(z => areaOf(z.area));
       const body = r.view.slice().sort((a, b) => (a.area ? order.indexOf(a.area) : 99) - (b.area ? order.indexOf(b.area) : 99)).map(v => {
@@ -3000,7 +3000,7 @@
     });
     const equip = equipmentOf(env, equipProps), gains = gainsOf(env, equipProps);
     const blocking = [].concat(...lines.map(l => l.blocking.map(b => (lines.length > 1 ? (l.label || l.plain) + ': ' : '') + b)));
-    const hallText = halls.map(h => 'A new hallway' + (h.corner ? ', round one corner,' : '') + ' joins ' + h.from + ' and ' + h.to + '.');
+    const hallText = halls.map(h => 'A new path' + (h.corner ? ', round one corner,' : '') + ' joins ' + h.from + ' and ' + h.to + '.');
     const summary = roomText.concat(hallText).join(' ')
       + (equip.length ? ' It brings equipment: ' + equip.join(', ') + (gains.length ? '. What agents gain there: ' + gains.join('; ') : '') + '.' : '')
       + (lines.length ? ' ' + (blocking.length ? 'Still to do after building: ' + blocking.join('; ') + '.' : (lines.length > 1 ? 'Its lines will be ready to run.' : 'It will be ready to run.')) : '')
@@ -3011,7 +3011,7 @@
     for (const r of rooms) if (r.existing) { const pr = preview.rooms[fpd.order.indexOf(spec.parts[r.part].roomId)]; if (pr) pr.mine = true; }
     return { ok: true, plan: { floorSig: sigOf(doc), resultSig: sigOf(fpd), spec, summary, notes, steps, stock,
       rooms: rooms.map(r => ({ name: r.name, where: r.where, existing: r.existing })), hallways: halls,
-      where: rooms.map(r => r.where).concat(halls.map(h => 'a hallway between ' + h.from + ' and ' + h.to)).join('; '), lines, preview, line: null } };
+      where: rooms.map(r => r.where).concat(halls.map(h => 'a path between ' + h.from + ' and ' + h.to)).join('; '), lines, preview, line: null } };
   }
 
   /* ================= STATION LAYOUTS (2026-09-30): a whole station composed the way the hand-built showcases were =========
@@ -3490,7 +3490,7 @@
       const q = list[i];
       if (!q || typeof q !== 'object' || Array.isArray(q)) return refuse(HOW);
       const bad = Object.keys(q).filter(k => LAYOUT_ROOM_KEYS.indexOf(k) < 0);
-      if (bad.length) return refuse('StarNet places and furnishes every room itself, so a layout room does not take: ' + bad.slice(0, 6).join(', ') + '. It takes: ' + LAYOUT_ROOM_KEYS.join(', ') + '.');
+      if (bad.length) return refuse('Homestead places and furnishes every room itself, so a layout room does not take: ' + bad.slice(0, 6).join(', ') + '. It takes: ' + LAYOUT_ROOM_KEYS.join(', ') + '.');
       let style = null;
       if (q.style != null) { style = RS.resolveRoom(q.style); if (!style) return refuse('There is no room style "' + String(q.style).slice(0, 40) + '". Styles: ' + RS.ROOM_ORDER.join(', ') + '.'); }
       else if (typeof q.name === 'string' && q.zones == null && q.lines == null) style = RS.resolveRoom(q.name);   // "Arcade", "Conveyor Hall"
@@ -3515,7 +3515,7 @@
       const need = contentNeed(zones, lines);
       let w = sz.size ? sz.size[0] : Math.max(def[0], need.w), h = sz.size ? sz.size[1] : Math.max(def[1], need.h);
       if (sz.size && (need.hardW || need.w) > w) return refuse('Room ' + (i + 1) + ' at ' + w + ' × ' + h + ' is too small for what goes in it. Leave size out, or ask for a bigger one.');
-      if (w > DESIGN_MAX[0] || h > DESIGN_MAX[1]) return refuse('What goes in room ' + (i + 1) + ' needs more than the ' + DESIGN_MAX[0] + ' × ' + DESIGN_MAX[1] + ' StarNet builds at once.');
+      if (w > DESIGN_MAX[0] || h > DESIGN_MAX[1]) return refuse('What goes in room ' + (i + 1) + ' needs more than the ' + DESIGN_MAX[0] + ' × ' + DESIGN_MAX[1] + ' Homestead builds at once.');
       const given = typeof q.name === 'string' ? roomCut(q.name) : '';
       const taken = nm => live.rooms().some(r => r.kind !== 'corridor' && norm(r.name) === norm(nm)) || usedNames[norm(nm)];
       let name = given || (style ? AUTO_NAME[style] : 'ROOM ' + (i + 1));
@@ -3651,14 +3651,14 @@
   }
   function rearrangeOnto(st, env, opts) {
     const WM = env.WorldModel, hub = mainRoom(st), hangs = hangsOf(env);
-    if (!hub) return refuse('There is no main room to lay the station out around.');
+    if (!hub) return refuse('There is no main room to lay the farm out around.');
     const halls0 = st.rooms().filter(r => r.kind === 'corridor');
     const inHall = (x, y) => { const id = st.roomAt(x, y); return halls0.some(h => h.id === id); };
     const onHall = p => halls0.some(h => touchesRoom(p, h));
     const busy = st.props().find(p => onHall(p) && (MACHINE_T.test(p.t) || p.agentId));
-    if (busy) return refuse('A line or a desk stands in a hallway (' + pieceName(env, busy.t) + ' at (' + busy.x + ', ' + busy.y + ')), so re-laying the station would cut it. Move it into a room first.');
+    if (busy) return refuse('A line or a desk stands in a path (' + pieceName(env, busy.t) + ' at (' + busy.x + ', ' + busy.y + ')), so re-laying the farm would cut it. Move it into a room first.');
     const belt = Object.keys(st.serialize().belts || {}).find(k => { const [x, y] = k.split(',').map(Number); return inHall(x, y); });
-    if (belt) return refuse('A belt runs through a hallway at (' + belt.replace(',', ', ') + '), so re-laying the station would cut its line. Take it up or move the line into a room first.');
+    if (belt) return refuse('A belt runs through a path at (' + belt.replace(',', ', ') + '), so re-laying the farm would cut its line. Take it up or move the line into a room first.');
     // rooms joined open plan (flush, no hallway between) move as ONE, so a line or a piece across the join stays whole; the
     // rooms joined that way to the main room stay where they are, with it
     const rooms0 = st.rooms().filter(r => r.kind !== 'corridor'), groupOf = new Map(), groups = [];
@@ -3686,7 +3686,7 @@
       return { g, lead, name: g.map(r => r.name).join(' + '), B, w: B.x2 - B.x1 + 1, h: B.y2 - B.y1 + 1, d: Math.hypot((B.x1 + B.x2) / 2 - hx, (B.y1 + B.y2) / 2 - hy) };
     }).sort((a, b) => a.d - b.d || (a.lead.id < b.lead.id ? -1 : 1));
     if (!order.length) return refuse('There are no rooms besides ' + hub.name + (home.length > 1 ? ' and the rooms open to it' : '') + ' to re-lay.');
-    if (order.length > DIAMOND_ROOMS) return refuse('A diamond holds up to ' + DIAMOND_ROOMS + ' rooms round its main room; this station has ' + order.length + '.');
+    if (order.length > DIAMOND_ROOMS) return refuse('A diamond holds up to ' + DIAMOND_ROOMS + ' rooms round its main room; this farm has ' + order.length + '.');
     // the grid's cell is the station's own room size (up to 30 × 18; a bigger room, a conveyor hall, takes a wing), so a
     // station of large rooms re-lays as well as one of the default size
     const fit = order.filter(o => o.w <= 30 && o.h <= 18), cell = [Math.max(CELL[0], ...fit.map(o => o.w)), Math.max(CELL[1], ...fit.map(o => o.h))];
@@ -3698,7 +3698,7 @@
     if (!geo.ok) return refuse(String(geo.error).replace(/__R(\d+)/g, (m, i) => order[+i] ? order[+i].name : m).replace('A diamond takes up to four big rooms.', 'A diamond takes up to four rooms bigger than 30 × 18.'));
     // 1. the old hallways go, with what dressed them
     const hallPieces = st.props().filter(onHall).length;
-    for (const h of halls0) { const x = st.removeRoom(h.id); if (!x || !x.ok) return refuse('the hallway ' + h.name + ' could not be taken up (' + wmMsg(x) + ')'); }
+    for (const h of halls0) { const x = st.removeRoom(h.id); if (!x || !x.ok) return refuse('the path ' + h.name + ' could not be taken up (' + wmMsg(x) + ')'); }
     // 2. every room to its place at once (WorldModel.moveRooms checks only where they all end up: rooms passing each other,
     //    or half a station still far out while the rest has moved in, never block a sound result); rooms open to each other
     //    move by the same step
@@ -3710,7 +3710,7 @@
     // 3. the grid's corridors: the ring round the main room and one hallway in to each room
     const laid = [];
     for (const h of geo.halls) {
-      const a = st.placeHallway({ rect: h.rect }); if (!a || !a.ok) return refuse('a corridor of the new layout could not be laid (' + wmMsg(a) + '). Nothing was changed.');
+      const a = st.placeHallway({ rect: h.rect }); if (!a || !a.ok) return refuse('a path of the new layout could not be laid (' + wmMsg(a) + '). Nothing was changed.');
       st.setDeck(a.id, CORRIDOR_DECK); laid.push({ id: a.id, dress: h.dress ? (h.outer || null) : undefined });
     }
     // 4. neighbours on the grid are joined as well, where a straight hallway fits clean
@@ -3738,7 +3738,7 @@
     const WM = env.WorldModel, P = env.Pipeline;
     // { rearrange: "diamond" | "wide" | "tall" } or { rearrange: { pattern, shape, links } }: a wide station by default (it is
     // shown on a wide screen, and "too thin" is the complaint that asked for this)
-    const HOW = 'rearrange re-lays every room on the diamond grid: { rearrange: "diamond" } (wide, the default), or { rearrange: { shape: "wide" | "tall" | "even", links: false } } (links: false leaves out the hallways between neighbouring rooms).';
+    const HOW = 'rearrange re-lays every room on the diamond grid: { rearrange: "diamond" } (wide, the default), or { rearrange: { shape: "wide" | "tall" | "even", links: false } } (links: false leaves out the paths between neighbouring rooms).';
     const o = q && typeof q === 'object' && !Array.isArray(q) ? q : { pattern: q === true ? 'diamond' : q };
     const word = String(o.pattern == null ? 'diamond' : o.pattern).toLowerCase().trim();
     const shapeWord = String(o.shape == null ? (/^(wide|tall|even)$/.test(word) ? word : 'wide') : o.shape).toLowerCase().trim();
@@ -3750,44 +3750,44 @@
     if (!r.ok) return r;
     // nothing the Commander built stops working: the lines route as before, and every room can still be walked into
     const after = floorFacts(probe, P), newErr = [...after.errs].filter(e => !before.errs.has(e));
-    if (newErr.length) return refuse('Re-laying the station would leave ' + newErr.length + (newErr.length === 1 ? ' routing problem' : ' routing problems') + ' on its lines (' + [...new Set(newErr.map(e => e.split(':')[0]))].join(', ') + '), so nothing was changed.');
+    if (newErr.length) return refuse('Re-laying the farm would leave ' + newErr.length + (newErr.length === 1 ? ' routing problem' : ' routing problems') + ' on its lines (' + [...new Set(newErr.map(e => e.split(':')[0]))].join(', ') + '), so nothing was changed.');
     // a line warning a line did not have (a source cut off from its bays …), judged by machine, not by tile (every tile moved)
     const lineSig = s => { const m = {}; for (const e of (P.compileRoutingPlan(s.projectGeometry()).errors || [])) { const k = e.code + ':' + (e.propId || ''); m[k] = (m[k] || 0) + 1; } return m; };
     const sb = lineSig(live), sa = lineSig(probe), cutLines = Object.keys(sa).filter(k => sa[k] > (sb[k] || 0));
-    if (cutLines.length) return refuse('Re-laying the station would cut ' + (cutLines.length === 1 ? 'a line' : cutLines.length + ' lines') + ' (' + [...new Set(cutLines.map(k => k.split(':')[0]))].join(', ') + '), so nothing was changed.');
+    if (cutLines.length) return refuse('Re-laying the farm would cut ' + (cutLines.length === 1 ? 'a line' : cutLines.length + ' lines') + ' (' + [...new Set(cutLines.map(k => k.split(':')[0]))].join(', ') + '), so nothing was changed.');
     const wa = walkableRooms(probe), cut = probe.rooms().filter(x => x.kind !== 'corridor' && !wa.has(x.id)).map(x => x.name);
     if (cut.length) return refuse('Re-laid, ' + cut.join(', ') + (cut.length > 1 ? ' could not be' : ' could not be') + ' reached from ' + r.hub + ', so nothing was changed.');
     const lost = strandedHalls(probe);
-    if (lost.length) return refuse('Re-laid, ' + lost.length + (lost.length === 1 ? ' hallway would lead' : ' hallways would lead') + ' nowhere, so nothing was changed.');
+    if (lost.length) return refuse('Re-laid, ' + lost.length + (lost.length === 1 ? ' path would lead' : ' paths would lead') + ' nowhere, so nothing was changed.');
     const loose = probe.props().find(p => { for (let y = p.y; y < p.y + (p.h || 1); y++) for (let x = p.x; x < p.x + (p.w || 1); x++) if (!probe.roomAt(x, y)) return true; return false; });
     if (loose) return refuse('Re-laid, the ' + pieceName(env, loose.t) + ' at (' + loose.x + ', ' + loose.y + ') would stand partly outside every room, so nothing was changed. Move it wholly into one room first.');
-    const summary = 'RE-LAY the station as ' + (shape === 'even' ? 'a diamond' : 'a ' + shape + ' diamond') + ' round ' + r.hub + ': ' + (r.rooms === 1 ? 'its one room moves' : 'all ' + r.rooms + ' rooms move') + ' onto an even grid with everything in them (furniture, lines, desks and agents stay as they are'
+    const summary = 'RE-LAY the farm as ' + (shape === 'even' ? 'a diamond' : 'a ' + shape + ' diamond') + ' round ' + r.hub + ': ' + (r.rooms === 1 ? 'its one room moves' : 'all ' + r.rooms + ' rooms move') + ' onto an even grid with everything in them (furniture, lines, desks and agents stay as they are'
       + (r.stay ? '; ' + (r.stay === 1 ? 'the room' : 'the ' + r.stay + ' rooms') + ' open to ' + r.hub + ' stay with it' : '') + '), the '
-      + r.oldHalls + ' old ' + (r.oldHalls === 1 ? 'hallway is' : 'hallways are') + ' taken up' + (r.hallPieces ? ' with ' + (r.hallPieces === 1 ? 'the piece' : 'the ' + r.hallPieces + ' pieces') + ' standing in them' : '') + ' and ' + r.halls + ' new ones laid, planted and lit' + (r.links ? ', ' + r.links + ' of them joining neighbouring rooms so the station meshes' : '') + '. One UNDO in Build mode takes all of it back.';
-    return { ok: true, plan: { floorSig: sigOf(doc), resultSig: sigOf(probe.serialize()), spec: { kind: 'rearrange', opts: { links, shape } }, summary, notes: [], steps: [], line: null, where: 'the station re-laid as ' + (shape === 'even' ? 'a diamond' : 'a ' + shape + ' diamond'), rooms: [],
+      + r.oldHalls + ' old ' + (r.oldHalls === 1 ? 'path is' : 'paths are') + ' taken up' + (r.hallPieces ? ' with ' + (r.hallPieces === 1 ? 'the piece' : 'the ' + r.hallPieces + ' pieces') + ' standing in them' : '') + ' and ' + r.halls + ' new ones laid, planted and lit' + (r.links ? ', ' + r.links + ' of them joining neighbouring rooms so the farm meshes' : '') + '. One UNDO in Build mode takes all of it back.';
+    return { ok: true, plan: { floorSig: sigOf(doc), resultSig: sigOf(probe.serialize()), spec: { kind: 'rearrange', opts: { links, shape } }, summary, notes: [], steps: [], line: null, where: 'the farm re-laid as ' + (shape === 'even' ? 'a diamond' : 'a ' + shape + ' diamond'), rooms: [],
       preview: previewOf(WM, doc, probe.serialize(), [], null) } };
   }
   function planLayout(doc, req, env) {
     const WM = env.WorldModel, P = env.Pipeline, RS = env.RoomStyles;
     if (!RS || !RS.ROOMS) return refuse('the room styles are not loaded on this page');
-    const HOW = 'Send { "layout": { "pattern": "ring" or "concourse", "rooms": [ { name, style, size, lines } ] } }, and "replace": true to lay out the whole station again around its main room.';
+    const HOW = 'Send { "layout": { "pattern": "ring" or "concourse", "rooms": [ { name, style, size, lines } ] } }, and "replace": true to lay out the whole farm again around its main room.';
     const extra = Object.keys(req).filter(k => k !== 'layout' && k !== 'replace');
     if (extra.length) return refuse('A layout plans the whole floor, so leave out: ' + extra.slice(0, 6).join(', ') + '. ' + HOW);
     const L = req.layout;
     if (!L || typeof L !== 'object' || Array.isArray(L)) return refuse(HOW);
     const bad = Object.keys(L).filter(k => LAYOUT_KEYS.indexOf(k) < 0);
-    if (bad.length) return refuse('StarNet computes every tile itself, so a layout does not take: ' + bad.slice(0, 6).join(', ') + '. It takes: ' + LAYOUT_KEYS.join(', ') + '.');
+    if (bad.length) return refuse('Homestead computes every tile itself, so a layout does not take: ' + bad.slice(0, 6).join(', ') + '. It takes: ' + LAYOUT_KEYS.join(', ') + '.');
     const pattern = PATTERNS[norm(L.pattern)] || (L.pattern == null ? 'diamond' : null);
-    if (!pattern) return refuse('pattern is diamond (rooms on an even grid all round the main room, a corridor loop at its centre) or concourse (a wide corridor with rooms down both sides and a big room at the end).');
-    if (req.replace != null && typeof req.replace !== 'boolean') return refuse('replace is true (lay out the whole station again) or left out (add the layout beside what stands).');
+    if (!pattern) return refuse('pattern is diamond (rooms on an even grid all round the main room, a path loop at its centre) or concourse (a wide path with rooms down both sides and a big room at the end).');
+    if (req.replace != null && typeof req.replace !== 'boolean') return refuse('replace is true (lay out the whole farm again) or left out (add the layout beside what stands).');
     const replace = req.replace === true;
     const sd = sideOf(L.side); if (!sd.ok) return sd;
     // the floor it lands on: as it stands, or (replace) the main room alone, with everything beyond it cleared
     let base = clone(doc);
     const live0 = WM.create(clone(doc)), hubQ = L.around != null ? roomNamed(live0, L.around) : { ok: true, room: mainRoom(live0) };
     if (!hubQ.ok) return hubQ;
-    if (!hubQ.room) return refuse('There is no room to lay the station out around.');
-    if (replace && hubQ.room.id !== (mainRoom(live0) || {}).id) return refuse('replace lays the whole station out again around its main room (' + (mainRoom(live0) || {}).name + '), so leave around out.');
+    if (!hubQ.room) return refuse('There is no room to lay the farm out around.');
+    if (replace && hubQ.room.id !== (mainRoom(live0) || {}).id) return refuse('replace lays the whole farm out again around its main room (' + (mainRoom(live0) || {}).name + '), so leave around out.');
     let stripped = null;
     if (replace) {
       const cp = WM.create(clone(doc));
@@ -3805,12 +3805,12 @@
     const pr = parseLayoutRooms(L.rooms, env, live, notes, usedNames); if (!pr.ok) return pr;
     // on the diamond every room but a big one is the grid's own size, so the station reads as one consistent plan
     if (pattern === 'diamond') for (const q of pr.rooms) if (!q.big) { q.w = CELL[0]; q.h = CELL[1]; }
-    if (replace && pr.rooms.some(r => [].concat(...r.lines.map(l => l.staff || []), ...r.zones.map(z => z.staff || [])).some(s => s && /^(new|recruit)/i.test(String(s.agent || ''))))) return refuse('A layout that replaces the station cannot recruit; staff the lines with the crew you have, or recruit after it is built.');
+    if (replace && pr.rooms.some(r => [].concat(...r.lines.map(l => l.staff || []), ...r.zones.map(z => z.staff || [])).some(s => s && /^(new|recruit)/i.test(String(s.agent || ''))))) return refuse('A layout that replaces the farm cannot recruit; staff the lines with the crew you have, or recruit after it is built.');
     const hub = live.rooms().find(r => r.id === hubQ.room.id), B = bboxOf(hub);
     // a concourse that stands grows: its rooms go down it, in its next places, never into a second concourse
     const con = !replace && pattern === 'concourse' ? concourseOf(live) : null;
     if (con && con.hub.id === hub.id) {
-      if (L.side != null && L.side !== con.dir) notes.push('The station already has a concourse running ' + con.dir + ', so the new rooms go down it.');
+      if (L.side != null && L.side !== con.dir) notes.push('The farm already has a concourse running ' + con.dir + ', so the new rooms go down it.');
       const asRooms = L.rooms.map(q => { const o = {}; for (const k of ['name', 'style', 'size', 'lines', 'zones']) if (q && q[k] != null) o[k] = q[k]; return o; });
       const g = planBuild(doc, { rooms: asRooms }, env);
       if (!g.ok) return g;
@@ -3829,8 +3829,8 @@
       let fail = null;
       for (const h of geo.halls) {
         const c = probe.canPlaceHallway([h.rect]);
-        if (!c.ok) { fail = /^overlaps /.test(c.msg || '') ? c.msg.replace(/^overlaps /, '') + ' is in the way' : (c.msg || 'a corridor does not fit'); break; }
-        const a = probe.placeHallway({ rect: h.rect }); if (!a || !a.ok) { fail = 'a corridor could not be laid'; break; }
+        if (!c.ok) { fail = /^overlaps /.test(c.msg || '') ? c.msg.replace(/^overlaps /, '') + ' is in the way' : (c.msg || 'a path does not fit'); break; }
+        const a = probe.placeHallway({ rect: h.rect }); if (!a || !a.ok) { fail = 'a path could not be laid'; break; }
         probe.setDeck(a.id, CORRIDOR_DECK); hallIds.push(a.id);
       }
       for (const r of fail ? [] : geo.rooms) {
@@ -3852,7 +3852,7 @@
       laid = { geo, probe, hallIds, roomIds, dir };
       break;
     }
-    if (!laid) return refuse(why + (replace ? '' : ' Use replace: true to lay out the whole station again around ' + hub.name + (pattern === 'diamond' ? '.' : ', or the diamond pattern.')));
+    if (!laid) return refuse(why + (replace ? '' : ' Use replace: true to lay out the whole farm again around ' + hub.name + (pattern === 'diamond' ? '.' : ', or the diamond pattern.')));
     // fill every room (lines first, then its style or zones), then dress the corridors
     const probe = laid.probe, parts = [], recruits = [], view = [];
     laid.geo.halls.forEach((h, j) => parts.push({ hall: h.rect, hallDeck: CORRIDOR_DECK, room: null, roomId: null, lines: [], props: [], dress: h.dress ? h.outer || null : undefined, hallId: laid.hallIds[j] }));
@@ -3930,9 +3930,9 @@
     });
     const wasRooms = live0.rooms().filter(x => x.kind !== 'corridor').length - 1, wasProps = live0.props().length - live.props().length;
     const head = pattern === 'diamond'
-      ? (laid.geo.ring ? 'A DIAMOND around ' + hub.name + ': a corridor loop round it with a hallway in from each side, and ' + view.length + ' rooms on an even grid round the loop, each on its own planted, lit hallway. '
-        : view.length + (view.length === 1 ? ' room' : ' rooms') + ' on the diamond grid around ' + hub.name + ', each in the next free place of the grid, on its own planted, lit hallway. ')
-      : 'A CONCOURSE ' + laid.dir + ' from ' + hub.name + ': a wide corridor, planted and lit, and ' + view.length + (view.length === 1 ? ' room. ' : ' rooms. ');
+      ? (laid.geo.ring ? 'A DIAMOND around ' + hub.name + ': a path loop round it with a path in from each side, and ' + view.length + ' rooms on an even grid round the loop, each on its own planted, lit path. '
+        : view.length + (view.length === 1 ? ' room' : ' rooms') + ' on the diamond grid around ' + hub.name + ', each in the next free place of the grid, on its own planted, lit path. ')
+      : 'A CONCOURSE ' + laid.dir + ' from ' + hub.name + ': a wide path, planted and lit, and ' + view.length + (view.length === 1 ? ' room. ' : ' rooms. ');
     const blocking = [].concat(...lines.map(l => l.blocking.map(b => (lines.length > 1 ? (l.label || l.plain) + ': ' : '') + b)));
     const summary = head + (view.length > 4 && pattern === 'diamond' ? 'Every room is 18 × 11 unless it says. ' : '') + roomText.join('. ') + '.'
       + (replace ? ' It replaces everything beyond ' + hub.name + ' (' + wasRooms + (wasRooms === 1 ? ' room' : ' rooms') + ' and ' + wasProps + ' props); ' + hub.name + ', agents and conversations stay, and every agent keeps a desk' + (reseated.length ? ' (' + moves.length + (moves.length === 1 ? ' desk moves' : ' desks move') + ' to ' + reseated.join(', ') + ')' : '') + '. Your current layout is backed up: RESTORE PREVIOUS in Build → Presets brings it back.' : '')
@@ -3953,7 +3953,7 @@
   function planDesign(doc, req, env) {
     if (!req || typeof req !== 'object' || Array.isArray(req)) return refuse('Send the request as an object with: ' + DESIGN_MENU.join(', ') + '.');
     const extra = Object.keys(req).filter(k => DESIGN_MENU.indexOf(k) < 0);
-    if (extra.length) return refuse('StarNet chooses every position and piece of furniture itself, so these fields are not accepted with zones: ' + extra.slice(0, 8).join(', ') + '. Use only: ' + DESIGN_MENU.join(', ') + '.');
+    if (extra.length) return refuse('Homestead chooses every position and piece of furniture itself, so these fields are not accepted with zones: ' + extra.slice(0, 8).join(', ') + '. Use only: ' + DESIGN_MENU.join(', ') + '.');
     const into = req.where != null && !/^(a )?new( room)?$/i.test(String(req.where).trim());
     const room = { zones: req.zones };
     for (const k of ['type', 'floorStyle', 'floorMat', 'beside', 'side', 'hallway', 'size']) if (req[k] !== undefined) room[k] = req[k];
@@ -3995,7 +3995,7 @@
   }
   function mapOf(doc, env, opts) {
     const WM = env && env.WorldModel, P = env && env.Pipeline;
-    if (!WM || !doc) return refuse('the station builder is not loaded on this page');
+    if (!WM || !doc) return refuse('the farm builder is not loaded on this page');
     if (opts && opts.catalog) return env.PropSprites ? { ok: true, map: catalogOf(env) } : refuse('the piece catalog is not loaded on this page');
     if (opts && opts.room != null) return env.PropSprites ? roomDetail(WM.create(clone(doc)), env, opts.room) : refuse('the piece catalog is not loaded on this page');
     const st = WM.create(clone(doc)), all = st.rooms(), rooms = all.filter(r => r.kind !== 'corridor'), halls = all.filter(r => r.kind === 'corridor');
@@ -4009,7 +4009,7 @@
       for (const o of rooms) if (o !== r && touching(r, o)) joined.add(o.name + ' (open to it)');
       const seen = new Set(), queue = halls.filter(h => touching(r, h));
       while (queue.length) { const h = queue.shift(); if (seen.has(h)) continue; seen.add(h); for (const n of halls) if (!seen.has(n) && touching(h, n)) queue.push(n); }
-      for (const h of seen) for (const o of rooms) if (o !== r && touching(h, o)) joined.add(o.name + ' (through a hallway)');
+      for (const h of seen) for (const o of rooms) if (o !== r && touching(h, o)) joined.add(o.name + ' (through a path)');
       // each line once (a two-INBOX line is one line), by its own words or its plate's LINE <letter> (repair)
       const lineLabels = [...new Map(props.filter(p => p.t === 'intake').map(p => { const l = lineOfIntake(st, env.Pipeline, comps, p); return [l.key, l.label]; })).values()];
       const tiles = r.rects.reduce((s, q) => s + (q.x2 - q.x1 + 1) * (q.y2 - q.y1 + 1), 0), usedTiles = props.filter(p => p.block !== false).reduce((s, p) => s + (p.w || 1) * (p.h || 1), 0);
@@ -4030,8 +4030,8 @@
     const hallList = halls.map(h => { const B = bboxOf(h); return Object.assign({ name: h.name, x: B.x1, y: B.y1, w: B.x2 - B.x1 + 1, h: B.y2 - B.y1 + 1, joins: rooms.filter(o => touching(h, o)).map(o => o.name) }, nowhere.has(h.id) ? { leadsNowhere: true } : {}); });
     return { ok: true, map: { main: main ? main.name : null, rooms: out, hallways: halls.length, halls: hallList,
       sizes: 'small 12 × 8, medium 18 × 11, large 24 × 14, giant 36 × 20',
-      reading: 'x grows east, y grows south; north is the back wall (the top of the drawing). roomForANewRoom lists the sizes that fit on each side of a room, joined by a hallway.',
-      legend: rooms.map(r => letter[r.id] + ' = ' + r.name).join(', ') + (halls.length ? ', + = a hallway' : '') + (step > 1 ? ' (one character is 2 × 2 tiles)' : ''),
+      reading: 'x grows east, y grows south; north is the back wall (the top of the drawing). roomForANewRoom lists the sizes that fit on each side of a room, joined by a path.',
+      legend: rooms.map(r => letter[r.id] + ' = ' + r.name).join(', ') + (halls.length ? ', + = a path' : '') + (step > 1 ? ' (one character is 2 × 2 tiles)' : ''),
       drawing: rows } };
   }
 
@@ -4069,10 +4069,10 @@
   }
   function apply(st, pl, env) {
     const WM = env && env.WorldModel;
-    if (!WM || !env.Pipeline || !env.WorkflowLine) return refuse('the station builder is not loaded on this page');
+    if (!WM || !env.Pipeline || !env.WorkflowLine) return refuse('the farm builder is not loaded on this page');
     if (!pl || !pl.spec || !pl.floorSig || !pl.resultSig) return refuse('There is no such plan. Plan the line again.');
-    if (!st || !st.transact) return refuse('the station is not ready');
-    if (sigOf(st.serialize()) !== pl.floorSig) return refuse('Your station changed since this plan was made, so nothing was built. Plan it again.');
+    if (!st || !st.transact) return refuse('the farm is not ready');
+    if (sigOf(st.serialize()) !== pl.floorSig) return refuse('Your farm changed since this plan was made, so nothing was built. Plan it again.');
     let built = null;
     const recruited = [], recruits = pl.spec.recruits || [];
     if (recruits.length && typeof env.recruit !== 'function') return refuse('Recruiting is not available on this page, so nothing was built. Plan it again without "new".');
@@ -4080,7 +4080,7 @@
     if (pl.spec.kind === 'undo') {
       const u = st.undo();
       if (!u || !u.ok) return refuse('There was nothing to undo.');
-      if (sigOf(st.serialize()) !== pl.resultSig) { try { st.redo(); } catch (_) {} return refuse('That undo did not bring the station back exactly as it was before the build, so it was put back. The Commander can press UNDO in Build mode.'); }
+      if (sigOf(st.serialize()) !== pl.resultSig) { try { st.redo(); } catch (_) {} return refuse('That undo did not bring the farm back exactly as it was before the build, so it was put back. The Farmer can press UNDO in Build mode.'); }
       return { ok: true, kind: 'edit', summary: pl.summary, where: pl.where, rooms: [], hallways: [], lines: [], roomIds: [] };
     }
     const r = st.transact(() => {
@@ -4094,7 +4094,7 @@
         let a = null;
         const before = new Set(st.props().map(p => p.id));
         try { a = env.recruit(rc.role); } catch (_) { a = null; }
-        if (!a || !a.id) return refuse('StarNet could not recruit a ' + rc.role + ', so nothing was built.');
+        if (!a || !a.id) return refuse('Homestead could not recruit a ' + rc.role + ', so nothing was built.');
         recruited.push({ id: a.id, name: a.name || a.id, role: rc.role });
         if (rc.desk) {
           const slot = st.propAt(rc.desk.x, rc.desk.y), sp = slot ? st.propById(slot) : null;

@@ -70,7 +70,7 @@ function decodeSave(raw) {
   const doc = isObj(envelope && envelope.doc) ? envelope.doc : envelope;
   if (!isObj(doc) || doc.schema !== 'starnet.save' || !isObj(doc.agent)) return null;
   return {
-    stationName: String(doc.agent.name || doc.agent.id || 'Prior station').slice(0, 120),
+    stationName: String(doc.agent.name || doc.agent.id || 'Prior farm').slice(0, 120),
     updatedAt: Math.max(0, Number(doc.updatedAt || envelope.updatedAt || envelope.savedAt) || 0),
     saveVersion: Math.max(0, Number(doc.version) || 0)
   };
@@ -182,7 +182,7 @@ function requestRecovery(opts) {
   const candidate = (inspection.candidates || []).find(row => row.id === String(o.candidateId || '') && row.recoverable);
   if (!candidate) throw new Error('selected recovery candidate is unavailable or invalid');
   const file = requestFile(o.workspaceRoot, path);
-  if (fs.existsSync(file)) throw new Error('a station recovery request is already pending');
+  if (fs.existsSync(file)) throw new Error('a farm recovery request is already pending');
   writeJsonAtomic(file, {
     version: REQUEST_VERSION,
     candidateId: candidate.id,
@@ -318,11 +318,11 @@ function automaticRecoveryPolicy(o) {
       reason: 'the fresh-start choice could not be read safely; automatic recovery preserved this workspace. Explicit recovery remains available.' };
   }
   if (marker.erased === true) return { code: 'AUTO_RECOVERY_ERASED',
-    reason: 'ERASE EVERYTHING selected this clean generation; no prior station was imported. Explicit recovery remains available.' };
+    reason: 'ERASE EVERYTHING selected this clean generation; no prior farm was imported. Explicit recovery remains available.' };
   const roots = uniqueRoots(o.candidateRoots, path, platform);
   const candidateRoots = roots.filter(root => !marker.acknowledgedRoots.some(ack => samePath(root, ack, path, platform)));
   if (roots.length && !candidateRoots.length) return { code: 'AUTO_RECOVERY_ACKNOWLEDGED',
-    reason: 'START FRESH already acknowledged these prior roots; no prior station was imported. Explicit recovery remains available.' };
+    reason: 'START FRESH already acknowledged these prior roots; no prior farm was imported. Explicit recovery remains available.' };
   return { candidateRoots };
 }
 
@@ -379,7 +379,7 @@ function applyPendingRecovery(opts) {
   if (!attempt.ran) {
     return {
       ok: false, applied: false, lockUnavailable: true, code: 'RECOVERY_LOCK_UNAVAILABLE',
-      error: 'another StarNet process holds the workspace recovery lock'
+      error: 'another Homestead process holds the workspace recovery lock'
     };
   }
   return attempt.result;
@@ -396,7 +396,7 @@ function applyPendingRecoveryLocked(opts) {
       const scratch = scratchTargetReason(o);
       if (scratch) {
         // Loud by contract: the skip is a data-safety decision a diagnostics reader must be able to see.
-        try { console.warn('[recovery] auto station recovery SKIPPED: target workspace is a scratch root (' + current + ' is under ' + scratch.root + '); a real station is never ingested into a temp workspace. Explicit recovery (request file / CLI restore) is unaffected.'); } catch (_) {}
+        try { console.warn('[recovery] auto station recovery SKIPPED: target workspace is a scratch root (' + current + ' is under ' + scratch.root + '); a real farm is never ingested into a temp workspace. Explicit recovery (request file / CLI restore) is unaffected.'); } catch (_) {}
         return { applied: false, pending: false, autoSkipped: true, code: scratch.code, scratchRoot: scratch.root };
       }
       const policy = automaticRecoveryPolicy(o);
@@ -426,7 +426,7 @@ function applyPendingRecoveryLocked(opts) {
   };
   try {
     if (!request || request.version !== REQUEST_VERSION || !/^[a-f0-9]{24}$/.test(String(request.candidateId || ''))) {
-      throw new Error('invalid station recovery request');
+      throw new Error('invalid farm recovery request');
     }
     const active = readRootCandidate(current, { fs, path });
     if (active && active.recoverable) {

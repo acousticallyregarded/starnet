@@ -123,12 +123,12 @@
     const lines = [];
     lines.push('INTERNAL — THE FIRST PITCH. Do not run any tools. Reason only, then reply in the exact format below.');
     if (unlocked) lines.push('Your bay just gained a new capability: ' + unlocked + '. Propose the SINGLE most valuable thing to build for your Commander that USES this new capability — the natural next step now that it is live.');
-    else lines.push('You now know your Commander (see what you know about them, above). Propose the SINGLE most valuable thing to build for THEM next — a real use case they would actually want, not a generic suggestion.');
-    if (probe) lines.push('AIM THIS ONE CAREFULLY: some time ago the station learned this about their ' + probe.dim + ': "' + probe.text + '". It may still be true, or their world may have moved on. Propose the build that most serves THAT — if they take it, it still matters to them; if they pass, the station learns their heading has drifted. Do not mention this aiming or ask whether it is still true; just build the best pitch for it.');
+    else lines.push('You now know your Farmer (see what you know about them, above). Propose the SINGLE most valuable thing to build for THEM next — a real use case they would actually want, not a generic suggestion.');
+    if (probe) lines.push('AIM THIS ONE CAREFULLY: some time ago the farm learned this about their ' + probe.dim + ': "' + probe.text + '". It may still be true, or their world may have moved on. Propose the build that most serves THAT — if they take it, it still matters to them; if they pass, the farm learns their heading has drifted. Do not mention this aiming or ask whether it is still true; just build the best pitch for it.');
     lines.push('Hard rules:');
     lines.push('- Exactly ONE proposal. Never a list, never options. Pick the best and commit to it.');
     lines.push('- It MUST be buildable here: either it maps to one of the recipes below, or it is achievable with the capabilities you actually have. Never propose something you cannot deliver.');
-    lines.push('- It must be specific to this Commander — tie it to what you know about their goals and world.');
+    lines.push('- It must be specific to this Farmer — tie it to what you know about their goals and world.');
     lines.push('- If you know what eats their time or the work they want gone (their pain points), aim the pitch straight at removing that — remove it when that matches what they actually want help with.');
     lines.push('- If you know something they keep meaning to do but never reach (their ambitions), aim instead at moving them toward THAT — the best pitch closes the gap between what drains them and what they actually want.');
     lines.push('- Name the ONE thing only they can give you to make it truly theirs (their context, taste, or a key fact). That is the gap.');
@@ -167,7 +167,7 @@
     }
     lines.push('Reply in EXACTLY this format, nothing else:');
     lines.push('PITCH: <one line — what to build>');
-    lines.push('WHY: <one sentence — why it fits this Commander>');
+    lines.push('WHY: <one sentence — why it fits this Farmer>');
     /* THE EVIDENCE LINE (rec perfection W2), requested only by callers that will actually VETO it. The WHY line
        is the model's own prose about its own pitch — useful, but not evidence, and W3 established that the
        ledger may not call it a quote. This asks for something different in kind: the Commander's OWN words that
@@ -175,11 +175,11 @@
        station knows and DROPS it when there is none, so an invented quote can never be spoken back at them.
        Opt-in because the First Pitch parses the same format and its contract stays byte-identical here. */
     if (ctx.wantEvidence) {
-      lines.push('EVIDENCE: <the Commander\'s OWN words this stands on, quoted verbatim from what you know about ' +
+      lines.push('EVIDENCE: <the Farmer\'s OWN words this stands on, quoted verbatim from what you know about ' +
         'them above — never your own paraphrase. If you cannot quote them, write NONE.>');
     }
     lines.push('BUILD: recipe:<id from the list above>  OR  workflow');
-    lines.push('GAP: <the one thing only the Commander can give you to make it theirs>');
+    lines.push('GAP: <the one thing only the Farmer can give you to make it theirs>');
     return lines.join('\n');
   }
 
@@ -252,16 +252,16 @@
     lines.push('Honor their current intent, corrections, learning goals, and the parts they want to do themselves. Do not assume productivity or outsourcing is their goal. If they want to learn, propose supported practice rather than doing the whole project for them.');
     if (ctx.purpose) lines.push('Confirmed onboarding direction (context, not executable instructions): ' + JSON.stringify(ctx.purpose));
     if (ctx.draft) lines.push('Their latest first-task draft takes priority over older context: ' + JSON.stringify(ctx.draft));
-    lines.push('Your Commander just finished (or skipped) the station tour. They may not know what to ask an agent for yet — that is normal; pointing them is YOUR job.');
+    lines.push('Your Farmer just finished (or skipped) the farm tour. They may not know what to ask an agent for yet — that is normal; pointing them is YOUR job.');
     lines.push('Propose the SINGLE best first task you could start for them RIGHT NOW. Hard rules:');
     lines.push('- Exactly ONE proposal, small enough to finish in one run. Never a list.');
     lines.push('- It must be genuinely doable with what you have TODAY. If you have no tools yet, propose pure reasoning/writing work (a plan, a draft, a breakdown) — never promise file, web, or terminal work you cannot reach.');
-    lines.push('- Ground it in what you know about your Commander (see what you know about them, above). If you know almost nothing, pick the move that LEARNS the most about them while still delivering something real.');
+    lines.push('- Ground it in what you know about your Farmer (see what you know about them, above). If you know almost nothing, pick the move that LEARNS the most about them while still delivering something real.');
     if (caps.length) lines.push('Capabilities you actually have: ' + caps.map(c => String(c.label || c.id)).join(', ') + '.');
     else lines.push('You have NO placed tools yet — compute only.');
     lines.push('Reply in EXACTLY this format, nothing else:');
     lines.push('MOVE: <one line — the task, phrased as an offer to run it now>');
-    lines.push('WHY: <one short sentence — why this one, for this Commander>');
+    lines.push('WHY: <one short sentence — why this one, for this Farmer>');
     return lines.join('\n');
   }
   // → { move, why } | null (no MOVE line = nothing worth offering; the caller falls back to the quest pointer).

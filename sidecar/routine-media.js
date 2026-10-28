@@ -198,7 +198,7 @@
     const list = (Array.isArray(paths) ? paths : []).filter(Boolean);
     if (!list.length) return '';
     return 'Note: ' + (list.length === 1 ? 'this file' : 'these files') + ' could not be attached here — '
-      + list.map(p => '"' + p + '"').join(', ') + '. ' + (list.length === 1 ? 'It is' : 'They are') + ' saved in the workspace on the station.';
+      + list.map(p => '"' + p + '"').join(', ') + '. ' + (list.length === 1 ? 'It is' : 'They are') + ' saved in the workspace on the farm.';
   }
 
   /* deliveryNote(platforms) -> the system-prompt paragraph for a routine whose reply goes to a chat ('' otherwise).
@@ -211,7 +211,7 @@
     // Live finding (haiku-4.5, 2026-10-18): told only the ATTACH format, the model still called channel.targets, found
     // no listed chat and wrote "I cannot send the image to you" into a delivery that carried the image. So the note
     // says up front that the STATION delivers, and rules out the lookup as well as the send.
-    return '\n\n[DELIVERY] The station sends this routine\'s reply to the Commander\'s ' + where + ' chat for you — do not '
+    return '\n\n[DELIVERY] The farm sends this routine\'s reply to the Farmer\'s ' + where + ' chat for you — do not '
       + 'look up chat targets or call channel.send. To include a file you made (an image, chart or document in your '
       + 'workspace), end the reply with one line per file: ATTACH: <workspace-relative path> — up to ' + MAX_FILES
       + '; images arrive inline. Never write that the message or a file cannot be sent.';

@@ -651,7 +651,7 @@ const Chat = (() => {
     const ask = index => {
       if (!isActiveWs(ws) || index >= calls.length) return;
       const call = calls[index];
-      toolLine('before the restart, did ' + String(call.name || 'this action') + ' actually happen? StarNet will not run it again while the answer is uncertain.', true);
+      toolLine('before the restart, did ' + String(call.name || 'this action') + ' actually happen? Homestead will not run it again while the answer is uncertain.', true);
       choices([
         { label: 'It happened', value: 'happened' },
         { label: 'It did not happen', value: 'did_not_happen' },
@@ -685,7 +685,7 @@ const Chat = (() => {
       if (review && announce && isActiveWs(ws) && !recoveryNotices.has(review.runId)) {
         recoveryNotices.add(review.runId);
         const names = (review.uncertain || []).map(x => x.name || 'action').join(', ');
-        toolLine('recovery paused — ' + (names || 'an action') + ' may already have happened. StarNet will not repeat it; verify the outcome before continuing.', true);
+        toolLine('recovery paused — ' + (names || 'an action') + ' may already have happened. Homestead will not repeat it; verify the outcome before continuing.', true);
         offerRecoveryReview(review, ws);
       }
       return review ? 'review' : 'none';
@@ -762,7 +762,7 @@ const Chat = (() => {
     } else {
       if (degraded && degraded !== lastDegradedLine && activeWs && interruptedStreams.has(activeWs.id)) {
         lastDegradedLine = degraded;
-        toolLine('station service ' + degraded + (Harness.canRestartEngine && Harness.canRestartEngine() ? ' — restart it from LINK DOWN at the top.' : ''), true);
+        toolLine('farm service ' + degraded + (Harness.canRestartEngine && Harness.canRestartEngine() ? ' — restart it from LINK DOWN at the top.' : ''), true);
       }
       if (interruptedStreams.size) reconnectTimer = setTimeout(probeReconnect, 3000);   // still down — keep watching
     }
@@ -1452,7 +1452,7 @@ const Chat = (() => {
     if (contextIssue) {
       const model = (typeof Harness !== 'undefined' && Harness.getModel) ? Harness.getModel() : 'this model';
       const limit = (typeof U !== 'undefined' && U.tokens) ? U.tokens(contextIssue.limit) : contextIssue.limit;
-      const note = 'Paste kept — it may exceed ' + model + '\'s ' + limit + '-token context once StarNet\'s working context is included. Choose a larger-context model or split the text; nothing was sent.';
+      const note = 'Paste kept — it may exceed ' + model + '\'s ' + limit + '-token context once Homestead\'s working context is included. Choose a larger-context model or split the text; nothing was sent.';
       localLine(note);
       if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify('paste kept — selected model context is too small', 'warn');
       return;
@@ -1789,7 +1789,7 @@ const Chat = (() => {
   function agentModelText(a) {
     if (!a) return '';
     const model = a.model ? String(a.model) : '';
-    if (!model) return 'follows station default';
+    if (!model) return 'follows farm default';
     // reuse the dock's short-label vocabulary when present; else the last path segment (never invent a name)
     return (typeof ModelDock !== 'undefined' && ModelDock.labels && ModelDock.labels.short)
       ? ModelDock.labels.short(model)
@@ -2146,8 +2146,8 @@ const Chat = (() => {
     if (cronSession && !busy && !readable) next.push({
       role: 'system', sys: true, error: true, transcriptPending: true,
       content: reachable
-        ? '⚠ output has not arrived yet — StarNet will retry automatically when this session opens'
-        : '⚠ couldn\'t load the output yet — StarNet will retry automatically when this session opens'
+        ? '⚠ output has not arrived yet — Homestead will retry automatically when this session opens'
+        : '⚠ couldn\'t load the output yet — Homestead will retry automatically when this session opens'
     });
     if (JSON.stringify(next) === JSON.stringify(ws.history || [])) return reachable;
     ws.history = next;
@@ -2571,7 +2571,7 @@ const Chat = (() => {
     // a peer run no longer blocks THIS session — the status stays an honest 'online' (send is allowed) with
     // the peer named beside it; the soft #comms-agent-busy row below carries the VIEW ACTIVE RUN route.
     // ('running', not 'busy'/'working': status() classifies by substring and this session is NOT the one working.)
-    status(p ? 'awaiting your approval…' : (isBusy() ? (channelStatus || 'thinking…') : (down ? 'station unreachable' : 'online')));
+    status(p ? 'awaiting your approval…' : (isBusy() ? (channelStatus || 'thinking…') : (down ? 'farm unreachable' : 'online')));
     renderAgentBusy(peer);
     // keep the elapsed readout matched to the DISPLAYED stream — switching to a busy stream picks up its
     // live count, switching to an idle one clears it. (send() also starts it the instant a run begins.)
@@ -2797,7 +2797,7 @@ const Chat = (() => {
     // which was true while one agent owned every turn — a work line breaks that: stages 2..N are other agents
     // and labelling their work with the entry dock's name is a fabricated attribution (the same law that
     // stopped the hub writing a downstream stage's reply into the entry dock's transcript).
-    who.textContent = role === 'user' ? ((opts && opts.brief) || 'COMMANDER') : role === 'system' ? 'SYSTEM' : ((opts && opts.who) || name);
+    who.textContent = role === 'user' ? ((opts && opts.brief) || 'FARMER') : role === 'system' ? 'SYSTEM' : ((opts && opts.who) || name);
     const body = document.createElement('span'); body.className = 'body';
     // TIMESTAMP TRUTH (P0): opts.stamp is `true` for a row created LIVE (real wall-clock now), a number/Date for a
     // stored turn's REAL recorded time, or falsy for a legacy turn that carries no time — in which case we render
@@ -4044,14 +4044,14 @@ const Chat = (() => {
     }
     // THE STATION BUILDER (2026-09-29): the card IS the plan — what gets built, where, who works each step. The sidecar
     // sends the plan's own summary (its dry run on a copy of the station), never the model's words.
-    if (/^station[._]build$/.test(t)) { const plan = String(ev.argsSummary || '').split('\n')[0] || 'a planned change'; return 'build this on your station: ' + plan + (/\bUNDO\b/.test(plan) ? '' : ' One UNDO in Build mode takes it back.'); }
+    if (/^station[._]build$/.test(t)) { const plan = String(ev.argsSummary || '').split('\n')[0] || 'a planned change'; return 'build this on your farm: ' + plan + (/\bUNDO\b/.test(plan) ? '' : ' One UNDO in Build mode takes it back.'); }
     // MAKE A PROP (2026-10-01): the card names the object and what it costs in StarNet credits (the sidecar's own words)
     if (/^station[._]make_prop$/.test(t)) return 'make a new prop: ' + (String(ev.argsSummary || '').split('\n')[0] || 'a new prop');
     // TEST A LINE (2026-10-01): the card names the line and the job it will send (the sidecar's own words)
     if (/^station[._]test_line$/.test(t)) return 'test ' + (String(ev.argsSummary || '').split('\n')[0] || 'a workflow line');
     if (/^station[._]start_line$/.test(t)) return 'set what starts ' + (String(ev.argsSummary || '').split('\n')[0] || 'a workflow line');
     // STATION CONTROL (2026-10-02): a settings change asked for in chat — the sidecar's catalog sentence, never raw JSON
-    if (/^station[._](?:control|power)$/.test(t)) return String(ev.argsSummary || 'change a station setting').split('\n')[0];
+    if (/^station[._](?:control|power)$/.test(t)) return String(ev.argsSummary || 'change a farm setting').split('\n')[0];
     // ANY OTHER TOOL: its name in words and the one argument that says what it acts on — never raw JSON on the card or in a
     // toast (the card's inspect panel holds every character of the request)
     const mcp = /^mcp__(.+?)__(.+)$/.exec(t);   // a connector tool: say whose (google sheets write values: Sheet1!A1:C3)
@@ -4195,7 +4195,7 @@ const Chat = (() => {
       const rid = p.runId || ((ws && typeof Channels !== 'undefined') ? Channels.runIdOf(ws.id) : null);
       try {
         const result = await Harness.consentAnswer(rid, p.promptId, text, true);
-        if (!(result && result.ok)) throw new Error('The station did not confirm your answer. Please try again.');
+        if (!(result && result.ok)) throw new Error('The farm did not confirm your answer. Please try again.');
       } catch (e) {
         submitting = false;
         if (received && applyElsewhere) { applyElsewhere(received); return; }
@@ -4359,7 +4359,7 @@ const Chat = (() => {
       const gone = new Error('that approval is no longer waiting, so your answer was not applied'); gone.gone = true;
       throw gone;
     }
-    if (!(answer && answer.ok)) throw new Error((answer && answer.error) || 'The station did not confirm that answer. Please try again.');
+    if (!(answer && answer.ok)) throw new Error((answer && answer.error) || 'The farm did not confirm that answer. Please try again.');
     if (ws) settlePromptNotice(ws.id, p.promptId);
     const appliedDecision = (answer && answer.decision) || 'deny';
     let fullSaved = true;
@@ -5231,7 +5231,7 @@ const Chat = (() => {
       run.textContent = '⌛ the job is riding the line…';   // honest: the POST is genuinely open until the line delivers
       note.textContent = '';
       Harness.api.post('/api/routing/sample', job ? Object.assign({}, job.text ? { text: job.text } : {}, job.line ? { line: job.line } : {}) : {}).then(res => {
-        if (!res.ok) return fail(String((res.j && res.j.error) || ('the station refused (http ' + res.status + ')')));   // the server's reason, VERBATIM
+        if (!res.ok) return fail(String((res.j && res.j.error) || ('the farm refused (http ' + res.status + ')')));   // the server's reason, VERBATIM
         const j = res.j || {};
         btns.remove();
         // TRUTHFUL VERDICT: "delivered" may only be claimed for a run that finished clean ('done' is the
@@ -5270,7 +5270,7 @@ const Chat = (() => {
         acts.appendChild(done);
         note.appendChild(acts);
         autoscroll();
-      }).catch(() => fail('the station didn’t answer — is the sidecar running?'));
+      }).catch(() => fail('the farm didn’t answer — is the sidecar running?'));
     };
     autoscroll();
     sayCovered();
@@ -5333,7 +5333,7 @@ const Chat = (() => {
       }
       const url = opts.runUrl ? opts.runUrl(relPath) : '';
       const warn = (msg) => { if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify(msg, 'warn'); };
-      if (!url) { warn('could not open that — the station may be unreachable'); return; }
+      if (!url) { warn('could not open that — the farm may be unreachable'); return; }
       // Desktop (Tauri): a raw window.open silently fails under the window policy — hand the absolute
       // sidecar URL to the OS default browser and report a real failure if it doesn't open (same law as
       // stationui.js openSignIn: never pretend a tab exists). Browser: window.open, where null = popup-blocked.
@@ -5344,7 +5344,7 @@ const Chat = (() => {
       }
       let win = null;
       try { win = window.open(url, '_blank', 'noopener'); } catch (_) {}
-      if (!win) warn('your browser blocked the new tab — allow popups for the station, then try again');
+      if (!win) warn('your browser blocked the new tab — allow popups for the farm, then try again');
     };
     const r = row('agent'); r.d.classList.add('tool'); r.d.classList.add('turnin'); r.d.classList.add('workshop-return');
     try { r.d.setAttribute('data-wsrun', String(m.runId)); } catch (_) {}   // the re-present dedupe key (above)
@@ -5653,7 +5653,7 @@ const Chat = (() => {
               j = await rr.json().catch(() => null);
               if (!rr.ok || !j || j.ok === false) j = null;
             } catch (_) { j = null; }
-            if (!j) { un.disabled = false; unArmed = false; un.textContent = 'undo keep'; localLine('Could not undo this keep: the station kept the files.'); return; }
+            if (!j) { un.disabled = false; unArmed = false; un.textContent = 'undo keep'; localLine('Could not undo this keep: the farm kept the files.'); return; }
             // honest resulting state, straight from server truth.
             const nRemoved = (j.removed || []).length, nMissing = (j.missing || []).length;
             let done;
@@ -5695,21 +5695,21 @@ const Chat = (() => {
     implBtn.title = (plan && plan.action === 'apply') ? ('applies this patch to a new branch in ' + plan.root)
       : patchSaveOnly ? 'saves the .patch file only — it will NOT be applied to your project'
       : buildable ? ('has ' + who + ' BUILD what this describes — nothing is copied to a folder')
-      : ('saves the files to ' + ((plan && plan.dest) || 'your StarNet deliverables folder'));
+      : ('saves the files to ' + ((plan && plan.dest) || 'your Homestead deliverables folder'));
     // why a build can be refused, in the Commander's words — never a raw reason code.
     const implFailCopy = (reason) => {
       const r = String(reason || '');
       if (r === 'no-capability') return 'no model or key is available for unattended runs — set one in KEYS, then press ' + implLabel + ' again';
       if (r === 'source-gone') return 'this deliverable’s files are no longer on disk';
-      if (r === 'queue-refused') return 'this work was discarded before, so the station won’t rebuild it';
+      if (r === 'queue-refused') return 'this work was discarded before, so the farm won’t rebuild it';
       if (r === 'already-implemented') return 'this plan has already been built — its build is in your rail';
       if (r === 'already-an-implementation') return 'this build IS an implementation already — there is nothing further to build from it';
       if (r === 'no-manifest' || r === 'run-failed') return 'the build ran but produced nothing reviewable';
-      if (r === 'manifest-stamp-failed') return 'the files landed, but the station could not durably prove their link to this plan';
-      if (r === 'registration-failed') return 'the files landed, but the station could not durably register a reviewable build';
-      if (r === 'built-source-retire-failed') return 'the build landed, but the station could not durably retire this source plan';
-      if (r === 'unreachable' || r.indexOf('http') === 0) return 'the station couldn’t be reached';
-      return r || 'the station refused';
+      if (r === 'manifest-stamp-failed') return 'the files landed, but the farm could not durably prove their link to this plan';
+      if (r === 'registration-failed') return 'the files landed, but the farm could not durably register a reviewable build';
+      if (r === 'built-source-retire-failed') return 'the build landed, but the farm could not durably retire this source plan';
+      if (r === 'unreachable' || r.indexOf('http') === 0) return 'the farm couldn’t be reached';
+      return r || 'the farm refused';
     };
     implBtn.onclick = async () => {
       if (implBtn.disabled) return;
@@ -5746,14 +5746,14 @@ const Chat = (() => {
       let res = null; try { res = await onDecide('keep'); } catch (_) { res = { ok: false }; }
       if (!(res && res.ok)) {
         implBtn.disabled = false; implBtn.textContent = implLabel;
-        localLine('Could not implement this: ' + ((res && res.error) || 'the station refused') + '.');
+        localLine('Could not implement this: ' + ((res && res.error) || 'the farm refused') + '.');
         return;
       }
       const saved = res.applied
         ? ('✓ implemented — applied to branch ' + (res.branch || '?') + (res.root ? (' in ' + res.root) : ''))
         : res.savedOnly
-          ? ('⚠ patch file saved to ' + (res.destPath || 'your StarNet deliverables folder') + ' — NOT applied to your project')
-          : ('✓ implemented — files saved to ' + (res.destPath || 'your StarNet deliverables folder'));
+          ? ('⚠ patch file saved to ' + (res.destPath || 'your Homestead deliverables folder') + ' — NOT applied to your project')
+          : ('✓ implemented — files saved to ' + (res.destPath || 'your Homestead deliverables folder'));
       decideNote(saved); sendNote(); settle(saved, false, res.applied ? '' : (res.destPath || ''));
     };
     acts.appendChild(implBtn);
@@ -5774,7 +5774,7 @@ const Chat = (() => {
       discardBtn.disabled = true;
       let res = null; try { res = await onDecide('discard'); } catch (_) { res = { ok: false }; }
       if (res && res.ok) { const done = '✕ discarded — this idea won’t be rebuilt or re-proposed'; decideNote(done); sendNote(); settle(done, true); }
-      else { discardBtn.disabled = false; armed = false; discardBtn.textContent = 'Discard'; localLine('Could not discard this: ' + ((res && res.error) || 'the station kept it') + '.'); }
+      else { discardBtn.disabled = false; armed = false; discardBtn.textContent = 'Discard'; localLine('Could not discard this: ' + ((res && res.error) || 'the farm kept it') + '.'); }
     };
     acts.appendChild(discardBtn);
 
@@ -6375,7 +6375,7 @@ const Chat = (() => {
       const item = document.createElement('div'); item.className = 'receipt-item';
       const kind = document.createElement('span'); kind.className = 'turnin-kind'; kind.textContent = 'BRIEFING';
       const text = document.createElement('span'); text.className = 'receipt-text';
-      text.textContent = '◈ briefing updated — every agent on this station now knows your ' + label + '.';
+      text.textContent = '◈ briefing updated — every agent on this farm now knows your ' + label + '.';
       item.appendChild(kind); item.appendChild(text);
       head.body.appendChild(item);
       autoscroll();
@@ -8633,12 +8633,12 @@ const Chat = (() => {
     stopSource.delete(id);
     const alive = (typeof Harness !== 'undefined' && Harness.pingEngine) ? Promise.resolve(Harness.pingEngine()).catch(() => null) : Promise.resolve(null);
     alive.then(engineAlive => {
-      const reason = (v && v.error) || 'no answer from the station';
+      const reason = (v && v.error) || 'no answer from the farm';
       const verdict = (v && v.transport && typeof Friendly !== 'undefined')
         ? Friendly.friendlyError(new Error(reason), null, { engineAlive: engineAlive }).userMessage
         : reason;
       if (activeWs && activeWs.id === id) {
-        localLine('⚠ STOP was not confirmed by the station — the run may still be working. ' + verdict);
+        localLine('⚠ STOP was not confirmed by the farm — the run may still be working. ' + verdict);
         status(isBusy() ? 'stopping… not confirmed' : 'online'); updateControls();
       }
     });
@@ -8649,7 +8649,7 @@ const Chat = (() => {
   // Commander to answer now rather than let it silently deny.
   function consentAckFailed(ws, ev, v) {
     if (!isActiveWs(ws)) return;
-    localLine('⚠ The station did not confirm it saw this approval card (' + ((v && v.error) || 'no answer') + '). Answer it now — an unseen prompt auto-denies on a timer.');
+    localLine('⚠ The farm did not confirm it saw this approval card (' + ((v && v.error) || 'no answer') + '). Answer it now — an unseen prompt auto-denies on a timer.');
   }
 
   // TYPE-AHEAD — a message typed while the stream is busy is QUEUED, not dropped, and auto-sent in order as the
@@ -8763,9 +8763,9 @@ const Chat = (() => {
           flushQueued(id);
           return;
         }
-        back(status === 409 || status === 404 ? 'The run had already finished its work' : status === 429 ? 'The run is holding too many notes already' : 'The station did not take it');
+        back(status === 409 || status === 404 ? 'The run had already finished its work' : status === 429 ? 'The run is holding too many notes already' : 'The farm did not take it');
       })
-      .catch(() => back('The station did not answer'));
+      .catch(() => back('The farm did not answer'));
   }
   // take one sent-now line off its stream's list; false = it was no longer there (a STOP gave it back already, or the page let
   // go of it — then its disk copy is the station's to decide). true = this page decides it now (a queued pill again, or read).
@@ -8819,8 +8819,8 @@ const Chat = (() => {
     if (!back.length) return;
     const texts = back.map(e => (typeof e.text === 'string' ? e.text : '')).filter(t => t.trim()), n = texts.length;
     if (!n) return dropSentNow(id, back.map(e => e.id));   // no words to give back (a damaged entry): nothing a person typed is lost
-    giveBack(id, texts, n === 1 ? 'The station never said whether the agent read your send-now message — it is back in the message box.'
-      : 'The station never said whether the agent read ' + n + ' of your send-now messages — they are back in the message box.', back.map(e => e.id));
+    giveBack(id, texts, n === 1 ? 'The farm never said whether the agent read your send-now message — it is back in the message box.'
+      : 'The farm never said whether the agent read ' + n + ' of your send-now messages — they are back in the message box.', back.map(e => e.id));
   }
   function dropSentNow(id, ids) {
     const gone = new Set((ids || []).filter(Boolean));
@@ -8943,8 +8943,8 @@ const Chat = (() => {
     const n = by.back.length, u = by.unsure.length;
     if (n) giveBack(id, by.back.map(e => e.text), n === 1 ? 'The run ended before the agent read your send-now message — it is back in the message box.'
       : 'The run ended before the agent read ' + n + ' of your send-now messages — they are back in the message box.', by.back.map(e => e.id));
-    if (u) giveBack(id, by.unsure.map(e => e.text), u === 1 ? 'The station has no record that the agent read your send-now message before its run ended — it is back in the message box.'
-      : 'The station has no record that the agent read ' + u + ' of your send-now messages before their run ended — they are back in the message box.', by.unsure.map(e => e.id));
+    if (u) giveBack(id, by.unsure.map(e => e.text), u === 1 ? 'The farm has no record that the agent read your send-now message before its run ended — it is back in the message box.'
+      : 'The farm has no record that the agent read ' + u + ' of your send-now messages before their run ended — they are back in the message box.', by.unsure.map(e => e.id));
     // a line the station still cannot decide a day after it was sent stops waiting: back in the box, saying no answer came
     const stale = by.wait.filter(e => Date.now() - Number(e.at) > 24 * 3600 * 1000);
     if (stale.length) sentNowOverdue(id, stale);
@@ -9291,7 +9291,7 @@ const Chat = (() => {
        agent.run.end fields. Name the real limit and the real ways out. */
     if (unpriced && unpriced.model) {
       const n = Number(unpriced.capTokens) > 0 ? Number(unpriced.capTokens).toLocaleString('en-US') + '-token' : 'token';
-      return 'hit the ' + n + ' safety ceiling for ' + unpriced.model + ', a model StarNet has no price for — raising the $ spending limit does not change this; raise UNPRICED MODEL TOKEN CEILING in SETTINGS › APP & BACKUP › Runtime limits (0 = no ceiling), or pick a priced model to keep going';
+      return 'hit the ' + n + ' safety ceiling for ' + unpriced.model + ', a model Homestead has no price for — raising the $ spending limit does not change this; raise UNPRICED MODEL TOKEN CEILING in SETTINGS › APP & BACKUP › Runtime limits (0 = no ceiling), or pick a priced model to keep going';
     }
     // nor is the SUBSCRIPTION-token ceiling (loop.js maxSubscriptionTokens): a Claude Code sign-in books $0 per turn
     if (subscription && subscription.model) {
@@ -9450,14 +9450,14 @@ const Chat = (() => {
     Object.freeze({ name: 'branch', aliases: ['fork'], desc: 'fork this conversation into a new workstream', argsHint: '[title]', action: 'branch' }),
     Object.freeze({ name: 'status', desc: 'show current stream and run state', action: 'status' }),
     // no local action by design — the sidecar owns the spend ledger (dispatch:'server')
-    Object.freeze({ name: 'usage', desc: 'show real spend from the station ledger', action: 'usage' }),
+    Object.freeze({ name: 'usage', desc: 'show real spend from the farm ledger', action: 'usage' }),
     Object.freeze({ name: 'queue', aliases: ['q'], desc: 'show or add queued follow-up text', argsHint: '[message]', action: 'queue' }),
     Object.freeze({ name: 'steer', desc: 'steer the running turn (nothing to steer when idle)', argsHint: '<guidance>', action: 'steer' }),
     Object.freeze({ name: 'undo', desc: 'remove the last local exchange', action: 'undo' }),
     Object.freeze({ name: 'compress', desc: 'show context compaction status', action: 'compress' }),
     Object.freeze({ name: 'title', desc: 'show or rename the current workstream', argsHint: '[name]', action: 'title' }),
     Object.freeze({ name: 'resume', aliases: ['sessions', 'switch'], desc: 'list or switch workstreams', argsHint: '[name|number]', action: 'resume' }),
-    Object.freeze({ name: 'save', desc: 'save the current station state', action: 'save' }),
+    Object.freeze({ name: 'save', desc: 'save the current farm state', action: 'save' }),
     Object.freeze({ name: 'agents', aliases: ['tasks'], desc: 'show active agents and running streams', action: 'agents' }),
     Object.freeze({ name: 'background', aliases: ['bg', 'btw'], desc: 'run a prompt in a new background workstream', argsHint: '<prompt>', action: 'background' }),
     // /away and /routine are dispatch:'server' commands — the sidecar executes them and returns the text. They
@@ -9485,7 +9485,7 @@ const Chat = (() => {
     Object.freeze({ name: 'reload-mcp', aliases: ['reload_mcp'], desc: 'refresh configured MCP connectors', argsHint: '[connector-id]', action: 'reload-mcp' }),
     Object.freeze({ name: 'reload-skills', aliases: ['reload_skills'], desc: 'refresh the slash skill catalog', action: 'reload-skills' }),
     Object.freeze({ name: 'debug', desc: 'show chat and slash debug state', action: 'debug' }),
-    Object.freeze({ name: 'version', aliases: ['v'], desc: 'show StarNet version information', action: 'version' })
+    Object.freeze({ name: 'version', aliases: ['v'], desc: 'show Homestead version information', action: 'version' })
   ]);
   function isSlashOpen() { const p = el('chat-slash'); return !!(p && !p.hidden); }
   function copyLastReply() {
@@ -9550,7 +9550,7 @@ const Chat = (() => {
     localLine('Resumed ' + streamLabel(ws) + '.');
   }
   function saveCommand() {
-    try { if (typeof App !== 'undefined' && App.persist) { App.persist(); localLine('Saved the current station state.'); return; } } catch (_) {}
+    try { if (typeof App !== 'undefined' && App.persist) { App.persist(); localLine('Saved the current farm state.'); return; } } catch (_) {}
     localLine('Save is not available yet.');
   }
   function appAgents() {
@@ -9620,7 +9620,7 @@ const Chat = (() => {
        entry. Say so, and hand over a real door key (never a menu path) to where lasting goal loops live. A reload does not end
        the session, so the line says the goal stays WITH this session through one (P29 polish 2: 'session only … a reload keeps it'
        read as a contradiction). */
-    const set = localLine('⊙ goal set for this session only: ' + s.goal + ' (budget ' + s.maxTurns + ' turns). It works while StarNet is open and stays with this session through a reload. Working toward it…');
+    const set = localLine('⊙ goal set for this session only: ' + s.goal + ' (budget ' + s.maxTurns + ' turns). It works while Homestead is open and stays with this session through a reload. Working toward it…');
     if (set && typeof StationUI !== 'undefined' && StationUI.openTerm) {
       systemDoor(set, '▸ AUTOMATE › GOAL LOOPS', () => StationUI.openTerm('automation', 'loops'), { cls: 'goal-loops-door', lead: 'Lasting goal loops:', dest: 'automation:loops' });
     }
@@ -9897,7 +9897,7 @@ const Chat = (() => {
       }
       const st = localLine('Loop: every ' + cur.label + ', ' + cur.fired + '/' + LOOP_MAX_ITERS + ' runs done'
         + (cur.skipped ? ', ' + cur.skipped + ' tick' + (cur.skipped === 1 ? '' : 's') + ' skipped (a run, a question or another stream had the floor)' : '')
-        + ' — "' + String(cur.prompt).slice(0, 60) + '". It stops if you close StarNet; /routine makes it permanent.');
+        + ' — "' + String(cur.prompt).slice(0, 60) + '". It stops if you close Homestead; /routine makes it permanent.');
       automateDoor(st, '▸ AUTOMATE › SCHEDULES › NEW', 'routines-create');   // org P19: the lasting form of a loop is a schedule (its own label: it opens the New schedule form, not the list)
       return st;
     }
@@ -10379,7 +10379,7 @@ const Chat = (() => {
       const j = r.ok ? await r.json() : null;
       if (j) {
         const bits = [];
-        if (j.app) bits.push('StarNet ' + j.app);
+        if (j.app) bits.push('Homestead ' + j.app);
         if (j.harness && j.harness !== j.app) bits.push('harness ' + j.harness);
         if (j.node) bits.push('Node ' + j.node);
         return localLine('Version: ' + (bits.length ? bits.join(', ') : 'unknown') + '.');
@@ -10798,7 +10798,7 @@ const Chat = (() => {
     if (needsServer && slashDispatchRefusal && item.source === 'skill') {
       // a skill command the station no longer offers: it was removed, pulled, or its gear isn't placed. Say that,
       // give the typed text back, and refresh the palette so the stale entry disappears.
-      const why = slashDispatchRefusal.status === 409 ? 'its gear isn\'t placed for this agent right now' : 'that skill is no longer installed on this station';
+      const why = slashDispatchRefusal.status === 409 ? 'its gear isn\'t placed for this agent right now' : 'that skill is no longer installed on this farm';
       localLine('/' + item.name + ' can\'t be used: ' + why + '. Type "/" to see the skills you have.');
       if (input && rawInput) { input.value = rawInput; autoGrowInput(); }
       invalidateSlashCatalog(); warmSlashCatalog();
@@ -10811,7 +10811,7 @@ const Chat = (() => {
     // A dispatch:'server' command has NO local action by design. When the sidecar can't be reached it used to
     // throw on a null run() inside a bare catch — the command silently did nothing at all. Say so instead.
     if (typeof item.run !== 'function') {
-      localLine('/' + item.name + ' runs on the station, and the station did not answer just now — check the UPLINK indicator, then try again.');
+      localLine('/' + item.name + ' runs on the farm, and the farm did not answer just now — check the UPLINK indicator, then try again.');
       return;
     }
     try { item.run(args); } catch (_) {}
@@ -11120,7 +11120,7 @@ const Chat = (() => {
     const sys = system
       + (isTask ? ' If this needs real work — searching the web, reading or writing files, running a tool — do it and report the result clearly. If you can answer it directly from what you already know, just answer; don\'t reach for tools you don\'t need.' : '')
       // agents told users "this chat can't show my workspace images" and linked them instead (user reports 10-20): say how
-      + (willSpeak ? '' : ' To show the Commander an image file (a PNG, JPG, GIF, WebP or SVG you saved), put ![short caption](path) in your reply, using the relative path you saved it under — this chat shows it as the picture.')
+      + (willSpeak ? '' : ' To show the Farmer an image file (a PNG, JPG, GIF, WebP or SVG you saved), put ![short caption](path) in your reply, using the relative path you saved it under — this chat shows it as the picture.')
       + (willSpeak ? voiceModeRules() : '');
 
     const before = Object.assign({}, Harness.totals());   // COPY (totals is a mutated singleton) so the per-stream diff is real

@@ -69,7 +69,7 @@ function saveExportFile(text, opts) {
     }
     return { ok: true, path: full, file, dir, bytes: Buffer.byteLength(body, 'utf8') };
   }
-  return { ok: false, error: 'too many station backups from that day already in ' + dir, dir };
+  return { ok: false, error: 'too many farm backups from that day already in ' + dir, dir };
 }
 
 // the desktop EXPORT STATION: today's name, in the Commander's Downloads (or home)

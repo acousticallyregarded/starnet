@@ -59,7 +59,7 @@
   }
   const crewIdsHint = (crew, leadId) => {
     const ids = [...crew.keys()].filter(id => id !== leadId);
-    return ids.length ? ' Valid agentIds: ' + ids.slice(0, 12).join(', ') + (ids.length > 12 ? ', …' : '') + '.' : ' This station has no other crew yet; use team.summon to create one.';
+    return ids.length ? ' Valid agentIds: ' + ids.slice(0, 12).join(', ') + (ids.length > 12 ? ', …' : '') + '.' : ' This farm has no other crew yet; use team.summon to create one.';
   };
   // events forwarded from a child run onto the LEAD's bus — ENOUGH to animate the handoff + keep cost honest,
   // but NOT the child's tokens/tool-calls (those would clutter the lead's COMMS). The lead reads the worker's
@@ -463,7 +463,7 @@
         + 'worker, so you inherit the LEAD agent\'s approval posture, not your own: '
         + (p === 'full'
           ? 'FULL ACCESS. Run your tools directly — do not pause to ask, and never request approval in text.'
-          : 'ASK FIRST. Writes and network calls (and commands, when shell_exec is in your tool list) are shown to the Commander for approval when you call the '
+          : 'ASK FIRST. Writes and network calls (and commands, when shell_exec is in your tool list) are shown to the Farmer for approval when you call the '
             + 'tool — so still just make the tool call, but expect a pause, and carry on without it if it is declined.');
     }
     function workerSystem(base) {
@@ -471,7 +471,7 @@
       const liveContext = typeof deps.getTaskContext==='function' ? String(deps.getTaskContext() || '') : taskContext;
       if (!liveContext) return identity;
       return identity + '\n\n' + liveContext
-        + '\n\n[DELEGATED EXECUTION] Treat the task context above as settled input from the Commander. Do not ask the Commander another discovery question. If a truly blocking gap remains, report that gap to the lead agent.';
+        + '\n\n[DELEGATED EXECUTION] Treat the task context above as settled input from the Farmer. Do not ask the Farmer another discovery question. If a truly blocking gap remains, report that gap to the lead agent.';
     }
     /* LEAD CONTEXT HANDOFF (G6 closure). A worker's opening message was ONLY the prompt string: whatever the
        lead had already established — discovered file paths, findings, constraints, decisions — was lost unless
@@ -588,7 +588,7 @@
       }
       const auth = providerAuth ? providerAuth(wanted) : null;
       if (auth) return { provider: auth.provider || wanted, key: auth.key || '', baseUrl: auth.baseUrl || '', model: ownModel, note: '' };
-      return { provider, key, baseUrl, model, note: 'worker provider "' + wanted + '" has no credential on this station — ran on the lead\'s model instead' };
+      return { provider, key, baseUrl, model, note: 'worker provider "' + wanted + '" has no credential on this farm — ran on the lead\'s model instead' };
     }
     // Opt-in ceiling only. Omitted/zero means dispatch every requested worker.
     const maxWorkers = (typeof deps.maxWorkers === 'number' && isFinite(deps.maxWorkers) && deps.maxWorkers > 0) ? Math.floor(deps.maxWorkers) : 0;
@@ -678,16 +678,16 @@
       if (!wanted.length) return;
       const refuseAll = (why) => { for (const j of wanted) j.error = why(j); };
       if (!station) {
-        return refuseAll(j => 'this run cannot target sessions — no live station page is attached to resolve "'
+        return refuseAll(j => 'this run cannot target sessions — no live farm page is attached to resolve "'
           + j.session + '". Dispatch without `session` and the work runs in the current one.');
       }
       let list = null, why = '';
       try {
         const out = await station.request('station.sessions', {});
         if (out && out.ok && out.result && Array.isArray(out.result.sessions)) list = out.result.sessions;
-        else why = String((out && out.error) || 'the station did not answer');
+        else why = String((out && out.error) || 'the farm did not answer');
       } catch (e) { why = String((e && e.message) || e); }
-      if (!list) return refuseAll(j => 'could not read this station\'s session list, so "' + j.session + '" could not be resolved — ' + why);
+      if (!list) return refuseAll(j => 'could not read this farm\'s session list, so "' + j.session + '" could not be resolved — ' + why);
       const named = list.filter(s => s && String(s.title || '').trim());
       const nameList = named.map(s => String(s.title).trim());
       for (const j of wanted) {
@@ -708,7 +708,7 @@
         j.error = hits.length > 1
           ? 'more than one session matches "' + want + '" (' + hits.map(h => String(h.title || h.id)).join(', ')
             + ') — name it exactly, or pass the session id. This worker did NOT run.'
-          : 'there is no session called "' + want + '" on this station'
+          : 'there is no session called "' + want + '" on this farm'
             + (nameList.length ? '. Open sessions: ' + nameList.join(', ') : '')
             + '. Create it first, or dispatch without `session` to run in the current one. This worker did NOT run.';
       }
@@ -770,7 +770,7 @@
       if (out && out.ok) row.session = job.sessionTitle || job.streamId;
       else {
         const failure = 'The result targets the "' + (job.sessionTitle || job.streamId)
-          + '" session, but the station could not show it there: ' + String((out && out.error) || 'no answer') + '.';
+          + '" session, but the farm could not show it there: ' + String((out && out.error) || 'no answer') + '.';
         row.sessionNote = row.sessionNote ? row.sessionNote + ' ' + failure
           : failure + ' The completed run is durable and will be reconciled when that session is opened.';
       }
@@ -819,7 +819,7 @@
          chat" while dispatching. This is the description the model reads when it picks; it now says where a worker works and
          names the one call that seats crew in this chat (station.control group.add, deferred). Tightened elsewhere to pay
          for it (payload.budget: lead-with-crew tool bytes), nothing dropped. */
-      description: 'Delegate subtasks to your specialist crew, each worker in its own thread (never in this chat). Each runs its OWN real agent loop (web, files, memory) and returns its result for you to synthesize. To bring crew INTO this chat to work with the Commander, use station.control group.add instead (tool_search "group add"). Address workers by the agentId listed under YOUR TEAM. background:true starts watchable workers while you keep working. SESSIONS: a worker\'s `session` (the session\'s NAME, as the Commander says it) runs and files that subtask in that session; without it, its work is filed on this conversation\'s card. A name not on this station is REFUSED, not guessed, and that worker does not run. FILES: in a conversation scoped to a trusted project, a worker\'s RELATIVE paths (fs_write, image_generate, voice_generate) land in that project folder, where fs_read finds them by the same path; otherwise each worker saves into its OWN private workspace. After the dispatch you may fs_read EXACTLY the files a worker\'s row lists (artifacts[].abs) — never guess another path. That list proves what each worker saved; the Commander sees those files as cards. ORDER: workers run one after another, each handed the earlier ones\' results and files — list a worker that needs another\'s output AFTER it; parallel:true only for independent subtasks. COMMANDS: in ASK mode a delegated worker cannot run shell commands (shell_exec / verify_run are withheld unless that worker has Full Access, WORKBENCH or not); run them here yourself, or have the worker return the exact commands. BUILDER: builder:true lends that worker your station.map/plan/build for this job; builds follow your approval setting.',
+      description: 'Delegate subtasks to your specialist crew, each worker in its own thread (never in this chat). Each runs its OWN real agent loop (web, files, memory) and returns its result for you to synthesize. To bring crew INTO this chat to work with the Farmer, use station.control group.add instead (tool_search "group add"). Address workers by the agentId listed under YOUR TEAM. background:true starts watchable workers while you keep working. SESSIONS: a worker\'s `session` (the session\'s NAME, as the Farmer says it) runs and files that subtask in that session; without it, its work is filed on this conversation\'s card. A name not on this farm is REFUSED, not guessed, and that worker does not run. FILES: in a conversation scoped to a trusted project, a worker\'s RELATIVE paths (fs_write, image_generate, voice_generate) land in that project folder, where fs_read finds them by the same path; otherwise each worker saves into its OWN private workspace. After the dispatch you may fs_read EXACTLY the files a worker\'s row lists (artifacts[].abs) — never guess another path. That list proves what each worker saved; the Farmer sees those files as cards. ORDER: workers run one after another, each handed the earlier ones\' results and files — list a worker that needs another\'s output AFTER it; parallel:true only for independent subtasks. COMMANDS: in ASK mode a delegated worker cannot run shell commands (shell_exec / verify_run are withheld unless that worker has Full Access, WORKBENCH or not); run them here yourself, or have the worker return the exact commands. BUILDER: builder:true lends that worker your station.map/plan/build for this job; builds follow your approval setting.',
       schema: {
         type: 'object', required: ['workers'], properties: {
           workers: {
@@ -881,7 +881,7 @@
           if (!contract.ok) return { agentId: aid, error: 'invalid result contract: ' + contract.error };
           // a lend never widens: a lead whose own run cannot build gets this worker refused, not silently sent toolless
           const builder = !!(w && w.builder === true);
-          if (builder && !canLendBuilder(ctx)) return { agentId: aid, error: 'builder:true needs the station builder in YOUR run, and it is not granted here: dispatch this worker without builder, or do the floor change yourself' };
+          if (builder && !canLendBuilder(ctx)) return { agentId: aid, error: 'builder:true needs the farm builder in YOUR run, and it is not granted here: dispatch this worker without builder, or do the floor change yourself' };
           return { agentId: aid, prompt: String((w && w.prompt) || ''), context: handoffContext(w && w.context), ident: crew.get(aid), session: session, resultSchema: contract.schema, builder };
         });
         markBatchQuality(jobs);
@@ -1026,7 +1026,7 @@
             if (child) child.detach();
           }
           if (timedOut) return finish(timeoutRow(result));   // keep whatever partial text the aborted run did produce
-          if (!result) return finish({ agentId: job.agentId, reason: 'refused', result: 'worker could not start — the station\'s concurrent-agent cap was full at that instant, or a provider sign-in is needed. A parallel dispatch already runs in waves sized to the free capacity and retries a refusal once, so a refusal that survives means the cap is genuinely saturated: raise MAX_CONCURRENT_AGENTS in SETTINGS, or dispatch these workers in a follow-up call.', usd: 0 });
+          if (!result) return finish({ agentId: job.agentId, reason: 'refused', result: 'worker could not start — the farm\'s concurrent-agent cap was full at that instant, or a provider sign-in is needed. A parallel dispatch already runs in waves sized to the free capacity and retries a refusal once, so a refusal that survives means the cap is genuinely saturated: raise MAX_CONCURRENT_AGENTS in SETTINGS, or dispatch these workers in a follow-up call.', usd: 0 });
           const firstText = lastAssistant(result.messages) || '(the worker returned no text)';
           const contract = await enforceStructured(job.resultSchema, firstText, async (errors) => {
             const spent = Number(result.usd) || 0;
@@ -1394,7 +1394,7 @@
       timeoutMs: 180000,
       name: 'team.summon', capability: 'orchestrator', scope: 'write', requiresConsent: true,
       briefExempt: true,   // hiring is station setup, not the deliverable: never held behind the Task Brief (taskbrief-policy canMutate)
-      description: 'Summon a NEW specialist agent onto the crew for the Commander, live — as the Recruitment Bay does. Use it when the specialist you need does not exist yet; one already under YOUR TEAM takes work through team.dispatch. Pick a class with specId (one of: ' + SPEC_IDS + ') or describe a custom one with name + purpose. The station places the new agent\'s workstation with it, so never tell the Commander to go build it a desk. Returns the new agentId: bring it INTO this chat with station.control group.add, or hand it work with team.dispatch. In APPROVAL mode the Commander confirms the summon first.',
+      description: 'Summon a NEW specialist agent onto the crew for the Farmer, live — as the Recruitment Bay does. Use it when the specialist you need does not exist yet; one already under YOUR TEAM takes work through team.dispatch. Pick a class with specId (one of: ' + SPEC_IDS + ') or describe a custom one with name + purpose. The farm places the new agent\'s workstation with it, so never tell the Farmer to go build it a desk. Returns the new agentId: bring it INTO this chat with station.control group.add, or hand it work with team.dispatch. In APPROVAL mode the Farmer confirms the summon first.',
       schema: {
         type: 'object', required: ['name'], properties: {
           name: { type: 'string' },        // the new agent's display name (e.g. "RESEARCHER")
@@ -1405,7 +1405,7 @@
         }
       },
       run: async (args, ctx) => {
-        if (!ctx || typeof ctx.summon !== 'function') return { content: 'Summoning is only available on the live station (an interactive run). Ask the Commander to summon this agent from the Recruitment Bay.', summary: 'unavailable' };
+        if (!ctx || typeof ctx.summon !== 'function') return { content: 'Summoning is only available on the live farm (an interactive run). Ask the Farmer to summon this agent from the Recruitment Bay.', summary: 'unavailable' };
         const a = args || {};
         const spec = {
           name: String(a.name || '').trim().slice(0, 40),
@@ -1422,7 +1422,7 @@
         const newId = (ack && typeof ack === 'object') ? ack.agentId : ack;
         const desk = (ack && typeof ack === 'object' && ack.desk) ? String(ack.desk) : '';
         // said to the Commander in the second person: the model echoes a result's wording ("The Commander declined …", rc walk 10-14)
-        if (!newId) return { content: 'No agent was created: the summon was declined on its card, or the station did not respond. If you mention it, say it to the Commander as "you".', summary: 'declined' };
+        if (!newId) return { content: 'No agent was created: the summon was declined on its card, or the farm did not respond. If you mention it, say it to the Farmer as "you".', summary: 'declined' };
         // DESK: a summoned specialist needs a workstation to sit and work at, so the station sorts its desk as
         // part of THIS summon. Reported only when the station named a room — never assumed, so the reply can't
         // promise furniture the floor doesn't have (and can't tell the Commander to go build a second one).
@@ -1432,7 +1432,7 @@
         /* NEXT: the two things a new hire is for, by the Commander's words (rc walk 10-14: "bring two crew in to help me write
            a launch post" summoned two, then background-dispatched them — the chat never got them). In this chat with the
            Commander = station.control group.add; a job in its own thread = team.dispatch. */
-        out.next = 'to work IN this chat with the Commander: station.control {"action": "group.add", "args": {"agents": [' + JSON.stringify(out.name) + ']}}; a job in its own thread: team.dispatch';
+        out.next = 'to work IN this chat with the Farmer: station.control {"action": "group.add", "args": {"agents": [' + JSON.stringify(out.name) + ']}}; a job in its own thread: team.dispatch';
         // revealTools: a crewless lead holds team.dispatch DEFERRED (index.js ZERO-CREW DIET) and every lead holds station.control
         // deferred — the agent it just summoned must be one call away for either, not one search away. A no-op wherever a
         // name is already advertised or not granted (loop.js reveal).
@@ -1446,7 +1446,7 @@
        current run, or by an earlier run recorded under this lead's agentId. A dispatch still in flight is recorded
        when its worker ends, so "not found" says that instead of implying the work never happened. */
     function verifyDelegatedRun(runId, leadId, ctx) {
-      if (!runRecord) return { content: 'The station\'s run history is not reachable from this run, so run ' + runId + ' cannot be checked here.', summary: 'unavailable' };
+      if (!runRecord) return { content: 'The farm\'s run history is not reachable from this run, so run ' + runId + ' cannot be checked here.', summary: 'unavailable' };
       const read = (id) => { try { return runRecord(id) || null; } catch (_) { return null; } };
       const row = read(runId);
       const parentId = row && String(row.parentRunId || '');
@@ -1454,7 +1454,7 @@
       const byThisLead = row && row.delegatedBy ? row.delegatedBy === leadId
         : !!parentId && ((ctx && parentId === ctx.runId) || ((read(parentId) || {}).agentId === leadId));
       if (!row || !byThisLead) return {
-        content: 'No run ' + runId + ' that you delegated is in this station\'s run history. A worker is recorded when its run ends,'
+        content: 'No run ' + runId + ' that you delegated is in this farm\'s run history. A worker is recorded when its run ends,'
           + ' so a background worker still running is not here yet (check it with team.subagents by id).',
         summary: 'not found'
       };
@@ -1470,8 +1470,8 @@
 
     const subagentsTool = {
       name: 'team.subagents', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'List or inspect your BACKGROUND subagents (team.dispatch with background:true, and team.spawn). Pass id for one worker, or omit id to list recent workers for this lead. Returned records include the current generation, status, event tail, result, steering history, and whether they can be interrupted or resumed. Use the returned id + generation for team.steer. A normal (foreground) team.dispatch is NEVER in this list — to confirm one really ran, pass runId (from its dispatch result) and the station\'s run history answers.',
-      schema: { type: 'object', properties: { id: { type: 'string' }, agentId: { type: 'string' }, status: { type: 'string' }, runId: { type: 'string', description: 'A worker runId from a team.dispatch result: look it up in the station\'s durable run history.' } } },
+      description: 'List or inspect your BACKGROUND subagents (team.dispatch with background:true, and team.spawn). Pass id for one worker, or omit id to list recent workers for this lead. Returned records include the current generation, status, event tail, result, steering history, and whether they can be interrupted or resumed. Use the returned id + generation for team.steer. A normal (foreground) team.dispatch is NEVER in this list — to confirm one really ran, pass runId (from its dispatch result) and the farm\'s run history answers.',
+      schema: { type: 'object', properties: { id: { type: 'string' }, agentId: { type: 'string' }, status: { type: 'string' }, runId: { type: 'string', description: 'A worker runId from a team.dispatch result: look it up in the farm\'s durable run history.' } } },
       run: async (args, ctx) => {
         const leadId = (ctx && ctx.agentId) || 'agent';
         if (args && args.runId) return verifyDelegatedRun(String(args.runId), leadId, ctx);

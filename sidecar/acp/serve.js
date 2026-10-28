@@ -72,7 +72,7 @@ let cachedToken = CFG.token || '';
 let tokenPromise = null;
 function invalidateToken(why) {
   if (TOKEN_IS_EXPLICIT || !cachedToken) return false;
-  log('token rejected (' + why + ') — re-discovering; the station was probably restarted');
+  log('token rejected (' + why + ') — re-discovering; the farm was probably restarted');
   cachedToken = '';
   return true;
 }
@@ -144,7 +144,7 @@ function openRun(opts) {
   const o = opts || {};
   return new Promise((resolve, reject) => {
     discoverToken().then(async (token) => {
-      if (!token) return reject(new Error('StarNet is not running (or its API token could not be read) at ' + BASE_LABEL + ' — start StarNet and try again'));
+      if (!token) return reject(new Error('Homestead is not running (or its API token could not be read) at ' + BASE_LABEL + ' — start Homestead and try again'));
 
       let info = await rawRequest('GET', '/api/runtime/agent', null, true, token);
       // A rejected token means the station restarted. Re-scrape the live one and retry ONCE, rather than telling
@@ -153,13 +153,13 @@ function openRun(opts) {
         const fresh = await discoverToken();
         if (fresh && fresh !== token) { token = fresh; info = await rawRequest('GET', '/api/runtime/agent', null, true, token); }
       }
-      if (!info.ok) return reject(new Error('StarNet is not reachable at ' + BASE_LABEL + ': ' + (info.error || 'connection failed')));
-      if (info.status === 401 || info.status === 403) return reject(new Error('StarNet rejected this bridge\'s API token — restart the editor so it re-reads the station token'));
+      if (!info.ok) return reject(new Error('Homestead is not reachable at ' + BASE_LABEL + ': ' + (info.error || 'connection failed')));
+      if (info.status === 401 || info.status === 403) return reject(new Error('Homestead rejected this bridge\'s API token — restart the editor so it re-reads the farm token'));
       const rt = info.json || {};
       if (!rt.configured) {
-        return reject(new Error('StarNet has no runnable model configured'
+        return reject(new Error('Homestead has no runnable model configured'
           + (rt.model ? '' : ' (no default model set)')
-          + ' — open the station and set a provider key + model first'));
+          + ' — open the farm and set a provider key + model first'));
       }
 
       const body = {
@@ -203,7 +203,7 @@ function openRun(opts) {
           if (res.statusCode !== 200) {
             const chunks = [];
             res.on('data', d => chunks.push(d));
-            res.on('end', () => finish(reject, new Error('StarNet refused the run (HTTP ' + res.statusCode + '): ' + Buffer.concat(chunks).toString('utf8').slice(0, 300))));
+            res.on('end', () => finish(reject, new Error('Homestead refused the run (HTTP ' + res.statusCode + '): ' + Buffer.concat(chunks).toString('utf8').slice(0, 300))));
             return;
           }
           res.setEncoding('utf8');
@@ -244,7 +244,7 @@ function openRun(opts) {
         // A cancel destroys the socket on purpose; that surfaces here as ECONNRESET/aborted. Treating it as a
         // transport failure is what produced "could not complete this turn: aborted" on a user-requested stop.
         if (cancelRequested) return finish(resolve, { reason: 'cancelled' });
-        finish(reject, new Error('StarNet run stream failed: ' + ((e && e.message) || e)));
+        finish(reject, new Error('Homestead run stream failed: ' + ((e && e.message) || e)));
       });
       if (typeof o.onCancel === 'function') {
         /* GRACEFUL FIRST. POST /api/cancel is the stop the station understands: it aborts the run's controller,
@@ -357,6 +357,6 @@ process.stdin.on('data', chunk => {
 process.stdin.on('end', () => process.exit(0));
 process.stdin.on('close', () => process.exit(0));
 
-log('StarNet ACP agent ready on stdio → ' + BASE_LABEL + (cachedToken ? ' (token from env/flag)' : ' (token via page scrape)'));
+log('Homestead ACP agent ready on stdio → ' + BASE_LABEL + (cachedToken ? ' (token from env/flag)' : ' (token via page scrape)'));
 
 module.exports = { readConfig, _internals: { discoverToken, callSidecar, openRun } };

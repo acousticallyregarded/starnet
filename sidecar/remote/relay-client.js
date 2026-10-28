@@ -179,7 +179,7 @@ function makeRelayClient(d) {
     clearTimers();
     for (const conn of Array.from(conns.keys())) drop(conn);
     const s = ws; ws = null;
-    if (s) { try { s.close(1000, 'station stopped'); } catch (e) { note('remote.relay-client.s.close', e); } }
+    if (s) { try { s.close(1000, 'farm stopped'); } catch (e) { note('remote.relay-client.s.close', e); } }
     set('off', null);
   }
   function info() { return { state, url: url || null, rid, since, lastError, phones: conns.size, retryInMs: state === 'offline' && retryTimer ? retryMs / 2 : null }; }

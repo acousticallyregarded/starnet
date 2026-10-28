@@ -563,7 +563,7 @@
       const last = job.lastRunAt ? Date.parse(job.lastRunAt) : NaN;
       if (isFinite(last) && last >= startedAt) return job;
       return Object.assign({}, job, { lastRunId: runId, lastRunAt: iso(startedAt), lastStatus: 'error', lastReason: 'interrupted',
-        lastError: String(info.error || 'interrupted: StarNet stopped before this run finished'), state: job.enabled === false ? job.state : 'error' });
+        lastError: String(info.error || 'interrupted: Homestead stopped before this run finished'), state: job.enabled === false ? job.state : 'error' });
     });
   }
 

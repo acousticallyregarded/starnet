@@ -26,7 +26,7 @@ const GUIDE = [
   '- WINDOW (ui/*.html): the station kit is injected automatically. The page is transparent (the window glass is its background). Build with kit classes, not your own chrome: sn-stack · sn-row-flex · sn-grid · sn-panel · sn-card · sn-sect (▮ header strip) + sn-list/sn-item rows · sn-stats/sn-stat · sn-table · sn-badge · dot ok|warn|bad · sn-btn (.primary .danger .xs) · sn-input · sn-select · sn-tabs/sn-tab · sn-empty · sn-error. Colours only via var(--ph), rgba(var(--ph-rgb),.2), var(--ok)/--bad/--warn. No white backgrounds, no other fonts, no glows.',
   '- BRIDGE in the page: await starnet.ready; starnet.store.get/set(key, json) (durable, shared with the code); starnet.ui.toast(text); starnet.ui.setTitle(text); starnet.ui.openLink("https://…"); starnet.backend.call(name, args).',
   '- CODE (index.js, "main"; optional — delete both for a window-only plugin): register(api) { api.tool({ name, description, parameters, readOnly, run(args) }); api.handle(name, fn); api.every(ms, fn); api.store.get/set }. Secrets and non-CORS APIs belong here, never in the page.',
-  '- Then plugin.check → plugin.preview (ask the Commander how it looks) → plugin.submit. Submitted means installed OFF: the Commander approves it in ABILITIES → EXTENSIONS. Never say it is on before that.'
+  '- Then plugin.check → plugin.preview (ask the Farmer how it looks) → plugin.submit. Submitted means installed OFF: the Farmer approves it in ABILITIES → EXTENSIONS. Never say it is on before that.'
 ].join('\n');
 
 function makePluginAuthorTools(deps) {
@@ -107,10 +107,10 @@ function makePluginAuthorTools(deps) {
       if (!fileSet.has(s.entry)) continue;
       const html = await fsp.readFile(P.join(base, ...s.entry.split('/')), 'utf8');
       const css = html + ' ' + (await Promise.all(files.filter(f => /\.css$/i.test(f.path)).map(f => fsp.readFile(P.join(base, ...f.path.split('/')), 'utf8')))).join(' ');
-      if (/background(?:-color)?\s*:\s*(?:#fff\b|#ffffff\b|white\b|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))/i.test(css)) warnings.push(s.entry + ': a white background — the station look is the window\'s glass (leave the page transparent)');
-      if (/font-family\s*:\s*(?![^;]*VT323)(?![^;]*var\(--sn-font\))[^;]*(?:arial|helvetica|inter|roboto|segoe|sans-serif)/i.test(css)) warnings.push(s.entry + ': a font other than the station\'s VT323 (use var(--sn-font), or leave font-family to the kit)');
-      if (/(?:box|text)-shadow\s*:[^;]*\b0\s+0\s+\d{2,}px/i.test(css)) warnings.push(s.entry + ': a glow shadow — the station is matte (edges and light, no glows)');
-      if (!/class="[^"]*\bsn-/.test(html)) warnings.push(s.entry + ': uses no kit classes (sn-*) — it will not look like the rest of the station');
+      if (/background(?:-color)?\s*:\s*(?:#fff\b|#ffffff\b|white\b|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))/i.test(css)) warnings.push(s.entry + ': a white background — the farm look is the window\'s glass (leave the page transparent)');
+      if (/font-family\s*:\s*(?![^;]*VT323)(?![^;]*var\(--sn-font\))[^;]*(?:arial|helvetica|inter|roboto|segoe|sans-serif)/i.test(css)) warnings.push(s.entry + ': a font other than the farm\'s VT323 (use var(--sn-font), or leave font-family to the kit)');
+      if (/(?:box|text)-shadow\s*:[^;]*\b0\s+0\s+\d{2,}px/i.test(css)) warnings.push(s.entry + ': a glow shadow — the farm is matte (edges and light, no glows)');
+      if (!/class="[^"]*\bsn-/.test(html)) warnings.push(s.entry + ': uses no kit classes (sn-*) — it will not look like the rest of the farm');
     }
     const total = files.reduce((n, f) => n + f.bytes, 0);
     return { ok: problems.length === 0, problems, warnings, files: files.length, bytes: total, main: main || null, screens: sc.screens };
@@ -119,7 +119,7 @@ function makePluginAuthorTools(deps) {
   const tools = [
     {
       name: 'plugin.draft_start',
-      description: 'Start a StarNet plugin DRAFT (a plugin is the Commander\'s own app/dashboard/tool inside StarNet: windows built from the station kit, plus optional code with crew tools). '
+      description: 'Start a Homestead plugin DRAFT (a plugin is the Farmer\'s own app/dashboard/tool inside Homestead: windows built from the farm kit, plus optional code with crew tools). '
         + 'Starts from a working template (a window with a notes list + a KIT reference tab, and code with two example tools). To change an INSTALLED plugin use plugin.draft_from_installed instead. '
         + 'Drafts never run. Then edit with plugin.draft_write, check with plugin.check, show with plugin.preview, and install with plugin.submit.',
       schema: { type: 'object', required: ['id'], properties: {
@@ -151,7 +151,7 @@ function makePluginAuthorTools(deps) {
     },
     {
       name: 'plugin.draft_from_installed',
-      description: 'Copy an INSTALLED plugin into a draft so you can change it (asks the Commander first: it reads that plugin\'s code). Then edit with plugin.draft_write and plugin.submit it — the installed plugin turns off until the Commander approves the new version.',
+      description: 'Copy an INSTALLED plugin into a draft so you can change it (asks the Farmer first: it reads that plugin\'s code). Then edit with plugin.draft_write and plugin.submit it — the installed plugin turns off until the Farmer approves the new version.',
       schema: { type: 'object', required: ['id'], properties: {
         id: { type: 'string', description: 'the installed plugin\'s folder id' },
         replace: { type: 'boolean', description: 'discard an existing draft with this id first' }
@@ -228,21 +228,21 @@ function makePluginAuthorTools(deps) {
     },
     {
       name: 'plugin.preview',
-      description: 'Open a plugin draft\'s window on the Commander\'s screen as a DRAFT window, so they (and you, from their reply) can see it. The page runs sandboxed with no network, a throwaway store and no backend. Open it again after edits to show the new version.',
+      description: 'Open a plugin draft\'s window on the Farmer\'s screen as a DRAFT window, so they (and you, from their reply) can see it. The page runs sandboxed with no network, a throwaway store and no backend. Open it again after edits to show the new version.',
       schema: { type: 'object', required: ['id'], properties: { id: { type: 'string' }, screen: { type: 'string', description: 'screen id (default: the first)' } } },
       run: async (a) => {
         const id = idOf(a);
         const r = await check(id);
         if (!r.screens || !r.screens.length) throw new Error('this draft has no windows to preview' + (r.problems.length ? ': ' + r.problems.join('; ') : ''));
-        if (!preview) throw new Error('previews need the StarNet window open');
+        if (!preview) throw new Error('previews need the Homestead window open');
         const out = await preview(id, a.screen ? String(a.screen) : r.screens[0].id);
-        if (!out || !out.ok) throw new Error((out && out.error) || 'the station could not open the preview');
-        return { content: 'The DRAFT window "' + (out.title || id) + '" is open on the Commander\'s screen. Ask them how it looks; edit and preview again as needed, then plugin.submit.', summary: 'previewed ' + id };
+        if (!out || !out.ok) throw new Error((out && out.error) || 'the farm could not open the preview');
+        return { content: 'The DRAFT window "' + (out.title || id) + '" is open on the Farmer\'s screen. Ask them how it looks; edit and preview again as needed, then plugin.submit.', summary: 'previewed ' + id };
       }
     },
     {
       name: 'plugin.submit',
-      description: 'Install a checked plugin draft into StarNet. It is installed OFF: the Commander switches it on in ABILITIES → EXTENSIONS after reviewing its code (you cannot approve it). Replacing an installed plugin turns it off until they approve the new code.',
+      description: 'Install a checked plugin draft into Homestead. It is installed OFF: the Farmer switches it on in ABILITIES → EXTENSIONS after reviewing its code (you cannot approve it). Replacing an installed plugin turns it off until they approve the new code.',
       schema: { type: 'object', required: ['id'], properties: { id: { type: 'string' } } },
       run: async (a) => {
         const id = idOf(a);
@@ -259,7 +259,7 @@ function makePluginAuthorTools(deps) {
         await fsp.rename(staging, dst);
         await afterInstall(id);
         return {
-          content: (replacing ? 'Replaced' : 'Installed') + ' the "' + id + '" plugin — it is OFF until the Commander approves it: CONNECT › ABILITIES › EXTENSIONS → APPROVE & ENABLE. '
+          content: (replacing ? 'Replaced' : 'Installed') + ' the "' + id + '" plugin — it is OFF until the Farmer approves it: CONNECT › ABILITIES › EXTENSIONS → APPROVE & ENABLE. '
             + 'Tell them that, and what it does. Once on, its window opens from EXTENSIONS' + (r.main ? ', and any tools reach agents through its PLUGIN TERMINAL (placed automatically in the lead\'s room)' : '') + '.',
           summary: (replacing ? 'replaced' : 'installed') + ' plugin ' + id + ' (awaiting approval)'
         };

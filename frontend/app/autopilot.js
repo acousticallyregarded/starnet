@@ -254,7 +254,7 @@
   function pushThreadsBlock(lines, threads) {
     const list = Array.isArray(threads) ? threads.filter(Boolean) : [];
     if (!list.length) return false;
-    lines.push('OPEN THREADS — ideas the Commander raised before but never acted on. PREFER these: if one fits, propose it and cite its tag (e.g. [t1]) in GROUNDS:');
+    lines.push('OPEN THREADS — ideas the Farmer raised before but never acted on. PREFER these: if one fits, propose it and cite its tag (e.g. [t1]) in GROUNDS:');
     list.forEach((t, i) => {
       const title = String((t && t.title) || '').replace(/\s+/g, ' ').trim().slice(0, 140);
       const spec = String((t && t.spec) || '').replace(/\s+/g, ' ').trim().slice(0, 140);
@@ -341,7 +341,7 @@
     const eligible = (Array.isArray(ctx.eligible) && ctx.eligible.length) ? ctx.eligible : ARCHETYPES;
     const max = Number.isFinite(ctx.max) ? ctx.max : CANDIDATE_MAX;
     const lines = [];
-    lines.push('INTERNAL — SELF-DIRECTED WORK. The Commander is away. Do not run any tools. Reason only, then reply in the exact format below.');
+    lines.push('INTERNAL — SELF-DIRECTED WORK. The Farmer is away. Do not run any tools. Reason only, then reply in the exact format below.');
     const hasFocus = pushFocusBlock(lines, ctx.focusHeader);
     lines.push('Propose up to ' + max + ' small jobs you could do RIGHT NOW, unattended, to help them — then you will be asked to do the single best one and leave a draft on their desk.');
     const hasThreads = pushThreadsBlock(lines, ctx.threads);
@@ -385,7 +385,7 @@
     + 'worked work working last touched today yesterday ago git repo read patch recent run runs point points open thread '
     + 'threads raised never acted quest quests beat advance slate active goal arc done next step confirmed north star '
     + 'asked ask focus outranks picked pick tonight night times time separate day days workflow keep keeps seen '
-    + 'commander because would could should about every other thing things stuff really around').split(/\s+/).forEach(w => { if (w) FOCUS_STOP[w] = 1; });
+    + 'farmer because would could should about every other thing things stuff really around').split(/\s+/).forEach(w => { if (w) FOCUS_STOP[w] = 1; });
   function focusStem(w) { return (w.length > 4 && w.endsWith('s') && !w.endsWith('ss')) ? w.slice(0, -1) : w; }
   function focusTokens(s) {
     const out = {};
@@ -508,7 +508,7 @@
   function buildDoDirective(selected, ctx) {
     selected = selected || {}; ctx = ctx || {};
     const lines = [];
-    lines.push('INTERNAL — SELF-DIRECTED WORK. The Commander is away. Do not run any tools. Reason only, then reply in the exact format below.');
+    lines.push('INTERNAL — SELF-DIRECTED WORK. The Farmer is away. Do not run any tools. Reason only, then reply in the exact format below.');
     pushFocusBlock(lines, ctx.focusHeader);
     pushContinueBlock(lines, ctx.continueFrom, '');
     lines.push('Do this ONE job now and leave a finished draft on their desk:');
@@ -555,7 +555,7 @@
     const eligible = (Array.isArray(ctx.eligible) && ctx.eligible.length) ? ctx.eligible : ARCHETYPES;
     const max = Number.isFinite(ctx.max) ? ctx.max : CANDIDATE_MAX;
     const lines = [];
-    lines.push('INTERNAL — SELF-DIRECTED WORK. The Commander is away and has cleared you to BUILD in your private sandbox. Reason first, then reply in the exact format below.');
+    lines.push('INTERNAL — SELF-DIRECTED WORK. The Farmer is away and has cleared you to BUILD in your private sandbox. Reason first, then reply in the exact format below.');
     const hasFocus = pushFocusBlock(lines, ctx.focusHeader);
     lines.push('Propose up to ' + max + ' small jobs you could do RIGHT NOW, unattended, that each end in a REAL, reviewable artifact left in your workshop — then you will be asked to build the single best one.');
     const hasThreads = pushThreadsBlock(lines, ctx.threads);
@@ -570,11 +570,11 @@
     lines.push('Hard rules:');
     if (hasFocus) lines.push('- STAY ON FOCUS: the single best job MUST advance TONIGHT\'S FOCUS above.');
     if (hasPrior) lines.push('- NO REBUILDS: never propose a job that re-makes one of the ALREADY BUILT items above. To work on one, title the job "Continue: <its title>" and say in SPEC what you will improve. Prefer continuing the newest UNDECIDED build over starting something new.');
-    if (hasSnapshot) lines.push('- PATCH THE REAL PROJECT: base your change on the PROJECT SNAPSHOT above. Your artifact for a code change is a UNIFIED-DIFF .patch file (git-apply-able from the repo root) plus a one-line "howToUse" — the Commander applies it to a new branch on Keep. Set the manifest "kind":"patch" and include "targetRoot":"<the project root path shown in the snapshot header>".');
+    if (hasSnapshot) lines.push('- PATCH THE REAL PROJECT: base your change on the PROJECT SNAPSHOT above. Your artifact for a code change is a UNIFIED-DIFF .patch file (git-apply-able from the repo root) plus a one-line "howToUse" — the Farmer applies it to a new branch on Keep. Set the manifest "kind":"patch" and include "targetRoot":"<the project root path shown in the snapshot header>".');
     if (hasThreads) lines.push('- PREFER AN OPEN THREAD: if any thread above fits, build it and cite its tag in GROUNDS (e.g. GROUNDS: [t1] ...). A grounded open thread beats a fresh idea. If none fit, improvise a grounded idea as below.');
     if (hasActivity) lines.push('- CONTINUE THEIR WORK: prefer a job that directly advances, unblocks, or extends something in "What they worked on recently" above — that beats a generic idea. But stay HONEST: only cite work that is actually listed; never invent activity.');
     lines.push('- GROUNDED: every job must aim at a SPECIFIC thing above (an open thread / a real recent job / goal / pain / etc). Quote the exact thing in GROUNDS. If you cannot ground it in something you actually know or they actually did, do not propose it.');
-    lines.push('- BUILDABLE NOW, UNATTENDED, LOCAL: it must finish as a FILE or small self-contained tool you write into your workshop folder. You MAY read/research with your tools first. You may NOT send, publish, spend, message, or touch anything outside your sandbox — the artifact stays local for the Commander to review.');
+    lines.push('- BUILDABLE NOW, UNATTENDED, LOCAL: it must finish as a FILE or small self-contained tool you write into your workshop folder. You MAY read/research with your tools first. You may NOT send, publish, spend, message, or touch anything outside your sandbox — the artifact stays local for the Farmer to review.');
     lines.push(finishRuleFor(ctx.initiative));
     lines.push('- HONEST CONFIDENCE: rate how sure you are it is genuinely useful AND that you can build it well now (high/medium/low). Low is fine — better than padding.');
     lines.push('Reply with one block PER job, EXACTLY this format, nothing else:');
@@ -617,13 +617,13 @@
 
   function planRuleFor(initiative) {
     return String(initiative || '') === 'free'
-      ? '- FINISH IT, DO NOT PLAN IT. The Commander is at FREE (fully autonomous) — they want the WORKING THING, not a document about it. NEVER deliver a backlog, roadmap, spec, plan, proposal, checklist, or "next steps" write-up as the artifact. If the job is too big for one shift, build the SMALLEST COMPLETE WORKING PIECE of it and say in the summary what it covers and what is left. At this level a plan is not a deliverable — it is a failed shift, and it will be refused. (Answering a question with a findings doc is NOT a plan; that is still fine.)'
-      : '- If the job is genuinely too big to finish now, a short plan the Commander can act on IS an acceptable deliverable — set "planOnly": true so they are offered a one-click build of it. Prefer finishing something small over describing something large.';
+      ? '- FINISH IT, DO NOT PLAN IT. The Farmer is at FREE (fully autonomous) — they want the WORKING THING, not a document about it. NEVER deliver a backlog, roadmap, spec, plan, proposal, checklist, or "next steps" write-up as the artifact. If the job is too big for one shift, build the SMALLEST COMPLETE WORKING PIECE of it and say in the summary what it covers and what is left. At this level a plan is not a deliverable — it is a failed shift, and it will be refused. (Answering a question with a findings doc is NOT a plan; that is still fine.)'
+      : '- If the job is genuinely too big to finish now, a short plan the Farmer can act on IS an acceptable deliverable — set "planOnly": true so they are offered a one-click build of it. Prefer finishing something small over describing something large.';
   }
   function planOnlyFieldFor(initiative) {
     return String(initiative || '') === 'free'
       ? '    "planOnly": false,   <-- MUST be false at this autonomy level; a plan-shaped deliverable is refused (see the rule above),'
-      : '    "planOnly": <true ONLY if this deliverable DESCRIBES work to be done (a plan, backlog, spec, proposal) rather than BEING the finished thing; false for anything the Commander can open and use as-is, including a research answer>,';
+      : '    "planOnly": <true ONLY if this deliverable DESCRIBES work to be done (a plan, backlog, spec, proposal) rather than BEING the finished thing; false for anything the Farmer can open and use as-is, including a research answer>,';
   }
 
   function buildDoDirectiveV2(selected, ctx) {
@@ -631,7 +631,7 @@
     const dir = String(ctx.dir || ('workshop/' + (ctx.runId || 'run')));
     const backlogId = String(ctx.backlogId || '');
     const lines = [];
-    lines.push('INTERNAL — SELF-DIRECTED WORK. The Commander is away and cleared you to build in your private sandbox. Build this ONE job now and leave a real, reviewable artifact.');
+    lines.push('INTERNAL — SELF-DIRECTED WORK. The Farmer is away and cleared you to build in your private sandbox. Build this ONE job now and leave a real, reviewable artifact.');
     pushFocusBlock(lines, ctx.focusHeader);
     lines.push('- JOB: ' + String(selected.title || '').trim());
     if (selected.grounds) lines.push('- WHY IT MATTERS TO THEM: ' + String(selected.grounds).trim());
@@ -640,7 +640,7 @@
     const hasSnap = pushSnapshotBlock(lines, ctx.projectSnapshot);
     lines.push('RULES:');
     if (hasSnap && String(ctx.targetRoot || '').trim()) {
-      lines.push('- THIS IS A PROJECT PATCH: write a UNIFIED-DIFF file (e.g. "' + dir + '/change.patch") that applies cleanly with `git apply` from the repo root ' + String(ctx.targetRoot).trim() + '. Base every hunk on the PROJECT SNAPSHOT above; do not invent files or lines that aren\'t there. In the manifest set "kind":"patch" and "targetRoot":"' + String(ctx.targetRoot).trim() + '", and list the .patch file in "files". The Commander applies it to a NEW branch on Keep — you never touch their repo yourself.');
+      lines.push('- THIS IS A PROJECT PATCH: write a UNIFIED-DIFF file (e.g. "' + dir + '/change.patch") that applies cleanly with `git apply` from the repo root ' + String(ctx.targetRoot).trim() + '. Base every hunk on the PROJECT SNAPSHOT above; do not invent files or lines that aren\'t there. In the manifest set "kind":"patch" and "targetRoot":"' + String(ctx.targetRoot).trim() + '", and list the .patch file in "files". The Farmer applies it to a NEW branch on Keep — you never touch their repo yourself.');
     }
     lines.push(planRuleFor(ctx.initiative));
     lines.push('- MATCH THE FORMAT TO THE ASK — build the SIMPLEST thing that fully serves it, never the most impressive: a question/research ask -> a short findings doc (answer first, sources after); a draft ask -> the draft file itself; a comparison/decision -> a short ranked write-up, recommendation on top. ONLY build an interactive SINGLE-FILE HTML tool (all CSS/JS inline, no build step, named index.html) when the ask genuinely needs interaction the Commander will use repeatedly — NEVER default to a dashboard unless the ask is literally to watch several changing numbers in one place.');
@@ -659,8 +659,8 @@
     lines.push(planOnlyFieldFor(ctx.initiative));
     lines.push('    "summary": "<2-3 SHORT plain sentences a busy person absorbs in ten seconds: what it IS and what it does for them. NEVER an inventory — no inline lists of categories, failure modes, or counts, and no sentence over ~25 words; the deliverable itself holds the detail>",');
     lines.push('    "files": [{ "path": "<relative to ' + dir + '>", "bytes": <number> }],');
-    lines.push('    "howToUse": "<ONE short sentence — at most the single run command. The station gives the Commander an Open link and a one-click Implement action (a patch is applied for them), so NEVER write multi-step setup or git instructions here>",');
-    lines.push('    "notVerified": ["<up to 5 items, each ONE short check written FOR the Commander — a concrete thing THEY can do in a minute. NEVER your run diagnostics: no tool budgets, byte counts, or what this shift could not execute — turn every limitation into the check it implies>"] }');
+    lines.push('    "howToUse": "<ONE short sentence — at most the single run command. The farm gives the Farmer an Open link and a one-click Implement action (a patch is applied for them), so NEVER write multi-step setup or git instructions here>",');
+    lines.push('    "notVerified": ["<up to 5 items, each ONE short check written FOR the Farmer — a concrete thing THEY can do in a minute. NEVER your run diagnostics: no tool budgets, byte counts, or what this shift could not execute — turn every limitation into the check it implies>"] }');
     lines.push('- The manifest MUST list the real files you wrote (paths relative to "' + dir + '/"). A shift with no manifest is discarded.');
     return lines.join('\n');
   }
@@ -692,7 +692,7 @@
   function buildCritiqueDirective(deliverable, selected, ctx) {
     deliverable = deliverable || {}; selected = selected || {}; ctx = ctx || {};
     const lines = [];
-    lines.push('INTERNAL — SELF-REVIEW. Before this draft reaches the Commander, review it adversarially and honestly.');
+    lines.push('INTERNAL — SELF-REVIEW. Before this draft reaches the Farmer, review it adversarially and honestly.');
     lines.push('The job: ' + String(selected.title || '').trim() + (selected.spec ? ' — done when: ' + String(selected.spec).trim() : ''));
     if (ctx.style) lines.push('Their working style: ' + ctx.style);
     if (ctx.standingOrders) lines.push('Their standing orders (must respect): ' + ctx.standingOrders);

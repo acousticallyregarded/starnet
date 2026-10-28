@@ -140,7 +140,7 @@
        file as-is, with none of the JSON escaping that broke big writes. <tool_call> blocks are still understood. */
     return [
       '# Tools',
-      'You cannot execute anything yourself; StarNet runs tools for you. To call tools, end your reply with a block exactly like:',
+      'You cannot execute anything yourself; Homestead runs tools for you. To call tools, end your reply with a block exactly like:',
       '<function_calls>',
       '<invoke name="TOOL_NAME">',
       '<parameter name="PARAM_NAME">value</parameter>',

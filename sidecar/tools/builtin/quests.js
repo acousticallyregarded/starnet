@@ -61,13 +61,13 @@
 
     const questUpdateTool = {
       name: 'quest.update', capability: 'quest', scope: 'write', requiresConsent: false, timeoutMs: 8000,
-      description: 'Act on your STATION QUESTS (listed in your prompt). op:"start" binds the named run quest to '
+      description: 'Act on your FARM QUESTS (listed in your prompt). op:"start" binds the named run quest to '
         + 'this run; use it before doing that quest so an unrelated run can never complete it. op:"progress" ticks a named step of a quest '
         + '(pass id, stepKey, and a short note on what you did) — progress is display only and never completes a '
         + 'quest. op:"attest_complete" PROPOSES a quest is done (pass id and concrete evidence of what was '
-        + 'accomplished); this NEVER marks it complete — the Commander must confirm. Quests that complete '
+        + 'accomplished); this NEVER marks it complete — the Farmer must confirm. Quests that complete '
         + 'mechanically (a run finishing, a capability going live, a deliverable existing) cannot be attested — leave '
-        + 'them to the harness. op:"mint" creates a NEW personalized quest for the Commander (pass title, a completion '
+        + 'them to the harness. op:"mint" creates a NEW personalized quest for the Farmer (pass title, a completion '
         + 'contract, domain, and groundedIn citing the dossier/memory fact that motivated it); every quest MUST declare a '
         + 'contract. Never claim a quest done in prose — use this tool.',
       schema: {
@@ -104,7 +104,7 @@
         // ---- start: explicitly bind the named mechanical run quest to THIS run ----
         if (op === 'start') {
           const id = str(args.id);
-          if (!id) return { content: 'Pass the quest id to start (from your STATION QUESTS list).', summary: 'noop' };
+          if (!id) return { content: 'Pass the quest id to start (from your FARM QUESTS list).', summary: 'noop' };
           if (!runId) return { content: 'Starting a run quest needs the current run. No live runId was available.', summary: 'noop' };
           const mine = store.openForAgent(agentId, now()).find(q => q.id === id);
           if (!mine) return { content: 'Quest ' + id + ' is not one of your open quests. Only quests listed for you can be started.', summary: 'not yours' };
@@ -118,7 +118,7 @@
         if (op === 'progress') {
           const id = str(args.id);
           const stepKey = str(args.stepKey);
-          if (!id) return { content: 'Pass the quest id to progress (from your STATION QUESTS list).', summary: 'noop' };
+          if (!id) return { content: 'Pass the quest id to progress (from your FARM QUESTS list).', summary: 'noop' };
           if (!stepKey) return { content: 'Pass the stepKey of the step to tick.', summary: 'noop' };
           // AGENT SCOPING: only a quest OPEN FOR THIS agent (its own or station-wide) can be progressed here.
           const mine = store.openForAgent(agentId, now()).find(q => q.id === id);
@@ -138,7 +138,7 @@
         if (op === 'attest_complete') {
           const id = str(args.id);
           const evidence = str(args.evidence);
-          if (!id) return { content: 'Pass the quest id to attest complete (from your STATION QUESTS list).', summary: 'noop' };
+          if (!id) return { content: 'Pass the quest id to attest complete (from your FARM QUESTS list).', summary: 'noop' };
           if (!evidence) return { content: 'attest_complete needs concrete evidence of what was accomplished — attesting without proof is not allowed.', summary: 'noop' };
           // AGENT SCOPING (mirrors op:"progress"): only a quest OPEN FOR THIS agent (its own or station-wide —
           // openForAgent, the store's own visibility rule) may be attested. Quest ids are sequential and guessable;
@@ -149,7 +149,7 @@
           if (!attestable) return { content: 'Quest ' + id + ' is not one of your open quests. Only quests listed for you can be attested.', summary: 'not yours' };
           const r = await store.attest(id, { agentId: agentId, runId: runId, evidence: evidence }, now());
           if (!r || r.ok === false) return { content: (r && r.error) ? r.error : 'could not attest ' + id, summary: 'rejected' };
-          return { content: 'Completion proposed for ' + id + ' — awaiting the Commander\'s confirmation. It is NOT complete yet.', summary: 'attest proposed' };
+          return { content: 'Completion proposed for ' + id + ' — awaiting the Farmer\'s confirmation. It is NOT complete yet.', summary: 'attest proposed' };
         }
 
         // ---- mint: create a new personalized quest (contract-enforced by the store) ----
@@ -158,7 +158,7 @@
           // of quests in a single pass, independent of the prompt doctrine. Only SUCCESSFUL mints consume the budget
           // (a rejected contract/dup/cap doesn't burn it — the agent can fix and retry).
           if (runId && (mintsByRun.get(runId) || 0) >= MINTS_PER_RUN) {
-            return { content: 'one quest per run — the Commander\'s log is not a backlog dump. You already minted a quest this run.', summary: 'mint cap' };
+            return { content: 'one quest per run — the Farmer\'s log is not a backlog dump. You already minted a quest this run.', summary: 'mint cap' };
           }
           let activeGoal = null;
           try { activeGoal = typeof deps.activeGoal === 'function' ? deps.activeGoal() : null; } catch (_) { activeGoal = null; }

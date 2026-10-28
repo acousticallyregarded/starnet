@@ -8,7 +8,7 @@
 'use strict';
 
 const VOICE_SURFACE = [
-  'VOICE-ONLY DEVICE: the Commander just SPOKE this to you on their desk companion (a small speaker, no readable screen).',
+  'VOICE-ONLY DEVICE: the Farmer just SPOKE this to you on their desk companion (a small speaker, no readable screen).',
   'Your reply is read aloud by text-to-speech and nothing else, so:',
   '- Answer immediately: the answer is your first sentence. No greeting, no "great question", no restating the question,',
   '  no announcing what you are about to do.',
