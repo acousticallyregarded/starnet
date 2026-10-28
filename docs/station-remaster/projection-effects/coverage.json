@@ -4,7 +4,7 @@
   "catalogTypes": 160,
   "views": 184,
   "effectTypes": 88,
-  "quietTypes": 159,
+  "quietTypes": 160,
   "records": [
     {
       "id": "industrial_locker",
@@ -3757,9 +3757,9 @@
       "reason": "Source-specific local state or decorative mechanism.",
       "inCurrentDemo": false,
       "image": "frontend/assets/industrial/projection-correction/research_corelens.png",
-      "sourceWidth": 272,
-      "sourceHeight": 363,
-      "sha256": "7682006af5dda549c4ac55fe2810290f1c55ae1df54e477931a3fc98b165f47a",
+      "sourceWidth": 560,
+      "sourceHeight": 656,
+      "sha256": "330b0e8e42d07d425f5b615ceb2938658efb40b3661bf0146db590723f910958",
       "regions": [
         {
           "kind": "scan",

@@ -33,7 +33,16 @@ The props above are done with `node dev/farm-props.mjs` (generate into `dev/farm
 (redrawn props are listed as quiet there until their effects are drawn for the farm art). The prop ids stay; only the
 sprites change, so every grant keeps working.
 
-Only `research_corelens` (the microscope) is still station art: its farm drawing had a black block under it.
+All 160 catalog props are farm art. The microscope (`research_corelens`) is its drawing with the black block under the
+table cut off.
+
+**Swapping in your own picture** (from ChatGPT or anywhere, no API key needed): save a PNG with a transparent
+background as `dev/farm-art/<prop id>.png` for the front view, or `<prop id>-n.png` / `-w.png` / `-e.png` for the others.
+Then run `node dev/farm-props.mjs --install <prop id>`. Nothing installs from the folder until you run that command.
+Rebuild the two derived records as above, run `npm run sync:website`, and commit. The install trims the picture,
+puts it on the shared pixel grid and fits it into the prop's box. A picture close to the old sprite's
+width-to-height ratio fills its tile; a different shape draws smaller.
+
 A sprite is fitted inside its station box, so a drawing of a different shape renders small. The generator now tells the
 model the reference's width-to-height ratio. These props still draw noticeably smaller than their box and are worth
 redrawing with that hint (for the ones from the first batch, generate from the station sprite in git history, not the

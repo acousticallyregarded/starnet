@@ -879,14 +879,14 @@
     },
     "research_corelens:s": {
       "image": "research_corelens.png",
-      "width": 272,
-      "height": 363,
-      "sha256": "7682006af5dda549c4ac55fe2810290f1c55ae1df54e477931a3fc98b165f47a",
+      "width": 560,
+      "height": 656,
+      "sha256": "330b0e8e42d07d425f5b615ceb2938658efb40b3661bf0146db590723f910958",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 272,
-        "height": 363
+        "width": 560,
+        "height": 656
       }
     },
     "research_trendpillar:s": {

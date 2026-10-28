@@ -1936,8 +1936,8 @@
       "views": {
         "s": {
           "image": "research_corelens.png",
-          "sourceWidth": 272,
-          "sourceHeight": 363,
+          "sourceWidth": 560,
+          "sourceHeight": 656,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1953,7 +1953,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9917355371900827
+            "y": 1
           },
           "effects": false
         }
