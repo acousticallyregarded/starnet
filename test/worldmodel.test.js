@@ -143,7 +143,7 @@ A.eq(g6.baseColorOf(pid, lx6, ly6), s6.FLOOR_STYLES.crimson.base, 'floorPaint su
 /* ---- name-counter determinism + canStep same-zone ---- */
 const s7 = WM.create();
 const a7 = s7.addRoom({ kind: 'lab', rect: { x1: 20, y1: 0, x2: 28, y2: 6 } });
-A.eq(s7.roomById(a7.id).name, 'LAB-02', 'auto-name uses the deterministic doc id counter');
+A.eq(s7.roomById(a7.id).name, 'GREENHOUSE-02', 'auto-name uses the deterministic doc id counter');
 const g7 = s7.projectGeometry(), hz = g7.zones[s7.spawnRoomId()];
 A.ok(g7.canStep(hz.x1, hz.y1, hz.x1 + 1, hz.y1), 'canStep true within the same zone');
 
@@ -1011,7 +1011,8 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
     A.eq(restored.roomById(id).floorMat, mid, mid + ' existing saved ID is retained');
     A.eq(restored.matOfRoom(id), mid, mid + ' existing save keeps its effective material');
   }
-  const defaults = { hab: 'spine', bridge: 'panel', lab: 'tile', factory: 'tread', quarters: 'soft', storage: 'tread', corridor: 'spine' };
+  // the farm's decks (the remaster moved every kind's default on purpose; catalog growth must not move them again)
+  const defaults = { hab: 'plank', bridge: 'parquet', lab: 'turf', factory: 'basalt', quarters: 'soft', storage: 'plank', corridor: 'plank' };
   for (const [kind, mid] of Object.entries(defaults)) {
     const doc = WM.defaultDoc(1), id = doc.meta.spawnRoomId;
     doc.rooms[id].kind = kind; doc.rooms[id].floorMat = null;

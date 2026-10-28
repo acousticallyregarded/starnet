@@ -213,6 +213,8 @@ const WorldModel = (() => {
     // drives the DOMINANT channel hardest, its lifts run toward pure green rather than the
     // yellow-green of a lawn. Raising red and dropping blue is what buys the olive.
     meadow:   { base: '#374024', label: 'MEADOW' },
+    // BARN RED — the farm's own colour, for a barn's siding. Deep enough to sit in the shell band unclamped.
+    barn:     { base: '#5a2620', label: 'BARN RED' },
     // value poles — the bright + near-black ends of the range (stark, deliberate)
     bone:     { base: '#e7e3d9', label: 'BONE' },
     /* WHITE — bone's neutral twin, added 2026-08-05 for the SHELL axis (Andrew: "lets add white as a
@@ -359,14 +361,19 @@ const WorldModel = (() => {
      every station already built — floorMat is null on all of them — because the default deck is the
      one surface every player sees. `plate` stays in the palette, so the old look is still choosable
      and nothing is destroyed. It also means the Guardian goldens all shift. */
+  /* THE FARM (remaster): the kind ids stay — saves, capability scopes and the sidecar all key on them — but
+     every kind is now a farm building. `wall`, `hull` and `shell` are the materials and shell hue a NEW room
+     of that kind is built with; they are written onto the room at addRoom, so a room built before the farm
+     keeps the null ("bulkhead" / "station") it was saved with and renders exactly as it did. `was` is the
+     kind's station-era name, still accepted wherever a type is asked for by name (agents and old plans use it). */
   const ROOM_KINDS = {
-    hab:      { label: 'HAB',      floor: 'hull',     mat: 'spine' },
-    bridge:   { label: 'BRIDGE',   floor: 'cobalt',   mat: 'panel' },
-    lab:      { label: 'LAB',      floor: 'sterile',  mat: 'tile'  },
-    factory:  { label: 'FOUNDRY',  floor: 'rust',     mat: 'tread' },
-    quarters: { label: 'QUARTERS', floor: 'verdant',  mat: 'soft'  },
-    storage:  { label: 'STORAGE',  floor: 'rust',     mat: 'tread' },
-    corridor: { label: 'CORRIDOR', floor: 'corridor', mat: 'spine' },
+    hab:      { label: 'BARN',       was: 'HAB',      floor: 'oak',    mat: 'plank',   wall: 'wainscot', hull: 'clapboard', shell: 'barn' },
+    bridge:   { label: 'FARMHOUSE',  was: 'BRIDGE',   floor: 'walnut', mat: 'parquet', wall: 'wainscot', hull: 'clapboard', shell: 'white' },
+    lab:      { label: 'GREENHOUSE', was: 'LAB',      floor: 'meadow', mat: 'turf',    wall: 'wainscot', hull: 'curtain',   shell: null },
+    factory:  { label: 'WORKSHOP',   was: 'FOUNDRY',  floor: 'ash',    mat: 'basalt',  wall: 'wainscot', hull: 'brick',     shell: null },
+    quarters: { label: 'COTTAGE',    was: 'QUARTERS', floor: 'oak',    mat: 'soft',    wall: 'wainscot', hull: 'stone',     shell: null },
+    storage:  { label: 'GRANARY',    was: 'STORAGE',  floor: 'amber',  mat: 'plank',   wall: 'wainscot', hull: 'timber',    shell: null },
+    corridor: { label: 'PATH',       was: 'CORRIDOR', floor: 'ash',    mat: 'plank',   wall: null,       hull: 'shingle',   shell: null },
   };
   // a room's effective deck material: explicit override, else the kind default, else plate.
   const matOfRoom = rm => (rm && FLOOR_MATERIALS[rm.floorMat]) ? rm.floorMat
@@ -439,16 +446,16 @@ const WorldModel = (() => {
   function freshDoc(createdAt) {
     const doc = {
       schema: 'starnet.station', version: STATION_VERSION, _nid: 1,
-      meta: { name: 'STARNET STATION', createdAt: createdAt || stationId(), tier: 0, spawnRoomId: null, trunkRoomId: null },
+      meta: { name: 'THE FARM', createdAt: createdAt || stationId(), tier: 0, spawnRoomId: null, trunkRoomId: null },
       rooms: {}, order: [], props: [], belts: {}, edges: []
     };
     // seed the shabby starter HAB (18×11 floor — the v7 / world.js starter room), so a new
     // station is never empty and the builder has something to extend from.
     const id = 'r' + (doc._nid++);
     doc.rooms[id] = {
-      id, kind: 'hab', name: 'HAB-01',
+      id, kind: 'hab', name: 'BARN-01',
       rects: [{ x1: 0, y1: 0, x2: 17, y2: 10 }],
-      floorStyle: 'hull', floorMat: null, wallStyle: null, wallMat: null, hullStyle: null, hullMat: null, tier: 0, floorPaint: {}
+      floorStyle: 'oak', floorMat: null, wallStyle: null, wallMat: 'wainscot', hullStyle: 'barn', hullMat: 'clapboard', tier: 0, floorPaint: {}
     };
     doc.order.push(id);
     doc.meta.spawnRoomId = id;
@@ -1284,9 +1291,14 @@ const WorldModel = (() => {
       // and a room built before the material axis existed serialize (and render) identically.
       const floorMat = FLOOR_MATERIALS[opts.floorMat] ? opts.floorMat : null;
       const label = ROOM_KINDS[kind].label;
+      // the farm building this kind is: its walls and siding (see ROOM_KINDS) — explicit, so the old null
+      // defaults keep meaning what they meant for rooms saved before the farm
+      const K = ROOM_KINDS[kind];
+      const hullMat = HULL_MATERIALS[K.hull] ? K.hull : null;
+      const hullStyle = FLOOR_STYLES[K.shell] && K.shell !== (HULL_MATERIALS[hullMat || 'station'] || {}).suggest ? K.shell : null;
       doc.rooms[id] = {
         id, kind, name: opts.name || (label + '-' + pad2(doc._nid - 1)),
-        rects, floorStyle, floorMat, wallStyle: null, wallMat: null, hullStyle: null, hullMat: null, tier: 0, floorPaint: {}
+        rects, floorStyle, floorMat, wallStyle: null, wallMat: WALL_MATERIALS[K.wall] ? K.wall : null, hullStyle, hullMat, tier: 0, floorPaint: {}
       };
       doc.order.push(id);
       if (!doc.meta.spawnRoomId && kind !== 'corridor') doc.meta.spawnRoomId = id;
@@ -5093,9 +5105,11 @@ const WorldModel = (() => {
       const room = doc.rooms[doc.meta.spawnRoomId];
       room.rects = [{ x1: 0, y1: 0, x2: 17, y2: 10 }];
       room.name = 'HOME';
-      room.floorMat = 'resin';
-      room.wallMat = 'panelled';
-      room.hullStyle = 'bone';
+      room.floorStyle = 'oak';
+      room.floorMat = 'plank';
+      room.wallMat = 'wainscot';
+      room.hullMat = 'clapboard';
+      room.hullStyle = 'white';
       doc.props = [
         // The five essentials are real floor grants. Keep the desk unassigned so
         // ensureWorkstation adopts it for the new Commander on the normal boot path.

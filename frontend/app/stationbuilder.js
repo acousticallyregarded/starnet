@@ -765,7 +765,7 @@
     let type = null;
     if (req.type != null) {
       const K = WM.ROOM_KINDS || {}, order = (WM.KIND_ORDER || Object.keys(K)).filter(k => k !== 'corridor' && K[k]), v = norm(req.type);
-      const k = order.find(id => norm(id) === v || norm(K[id].label) === v);
+      const k = order.find(id => norm(id) === v || norm(K[id].label) === v || (K[id].was && norm(K[id].was) === v));
       if (!k) return refuse('type must be one of: ' + order.map(id => K[id].label).join(', ') + '.');
       type = { id: k, label: K[k].label, floor: K[k].floor, mat: K[k].mat };
     }
@@ -1586,7 +1586,7 @@
         if (!rects.length || rects.some(r => !r)) return refuse('a ' + op + ' is { x, y, w, h } in tiles' + (op === 'room' ? ', or rects: [ { x, y, w, h }, … ] for an L or U' : ''));
         if (op === 'hall') { if (rects.length > 1) return refuse('a hall is one straight run; give several hall edits for a turning one'); const r = st.placeHallway({ rect: rects[0] }); if (!r || !r.ok) return refuse(wmMsg(r)); st.setDeck(r.id, CORRIDOR_DECK); if (o.as) names[o.as] = r.id; const R = rects[0]; return { ok: true, text: 'a ' + (R.x2 - R.x1 + 1) + ' × ' + (R.y2 - R.y1 + 1) + ' hallway at ' + at(R.x1, R.y1) }; }
         const kind = o.kind == null ? 'hab' : String(o.kind).toLowerCase(), K = WM.ROOM_KINDS || {};
-        const kid = K[kind] ? kind : Object.keys(K).find(k => K[k].label && K[k].label.toLowerCase() === kind);
+        const kid = K[kind] ? kind : Object.keys(K).find(k => (K[k].label && K[k].label.toLowerCase() === kind) || (K[k].was && K[k].was.toLowerCase() === kind));
         if (!kid || kid === 'corridor') return refuse('kind is one of ' + Object.keys(K).filter(k => k !== 'corridor').join(', ') + ' (use hall for a hallway)');
         const name = typeof o.name === 'string' && o.name.trim() ? roomCut(o.name) : null;
         if (name && st.rooms().some(r => r.kind !== 'corridor' && norm(r.name) === norm(name))) return refuse('a room is already called ' + name);
@@ -1597,7 +1597,7 @@
       }
       case 'resize': { const t = roomRef(o.room); if (!t.ok) return t; const R = tileRect(o); if (!R) return refuse('resize is { room, x, y, w, h }: its whole new footprint'); return did(st.resizeRoom ? st.resizeRoom(t.room.id, R) : refuse('this page cannot resize rooms; reload it'), t.room.name + ' resized to ' + (R.x2 - R.x1 + 1) + ' × ' + (R.y2 - R.y1 + 1) + ' at ' + at(R.x1, R.y1)); }
       case 'rename': { const t = roomRef(o.room); if (!t.ok) return t; const n2 = roomCut(o.name || ''); if (!n2) return refuse('rename needs a name'); if (st.rooms().some(r => r.id !== t.room.id && r.kind !== 'corridor' && norm(r.name) === norm(n2))) return refuse('a room is already called ' + n2); const was = t.room.name; return did(st.renameRoom(t.room.id, n2), was + ' renamed ' + n2); }
-      case 'type': { const t = roomRef(o.room); if (!t.ok) return t; const K = WM.ROOM_KINDS || {}, k = String(o.kind || '').toLowerCase(), kid = K[k] ? k : Object.keys(K).find(q => K[q].label && K[q].label.toLowerCase() === k); if (!kid) return refuse('kind is one of ' + Object.keys(K).filter(q => q !== 'corridor').join(', ')); return did(st.setRoomKind ? st.setRoomKind(t.room.id, kid) : refuse('this page cannot change a room type; reload it'), t.room.name + ' becomes a ' + ((K[kid] || {}).label || kid) + ' room'); }
+      case 'type': { const t = roomRef(o.room); if (!t.ok) return t; const K = WM.ROOM_KINDS || {}, k = String(o.kind || '').toLowerCase(), kid = K[k] ? k : Object.keys(K).find(q => (K[q].label && K[q].label.toLowerCase() === k) || (K[q].was && K[q].was.toLowerCase() === k)); if (!kid) return refuse('kind is one of ' + Object.keys(K).filter(q => q !== 'corridor').join(', ')); return did(st.setRoomKind ? st.setRoomKind(t.room.id, kid) : refuse('this page cannot change a room type; reload it'), t.room.name + ' becomes a ' + ((K[kid] || {}).label || kid) + ' room'); }
       case 'floor': case 'walls': case 'hull': { const t = roomRef(o.room); if (!t.ok) return t; const v = {}; if (o.style != null) v.style = o.style; if (o.mat != null) v.mat = o.mat; if (!Object.keys(v).length) return refuse(op + ' needs a style and/or a mat'); const fn = op === 'floor' ? 'setDeck' : op === 'walls' ? 'setWalls' : 'setHull'; return did(st[fn](t.room.id, v), t.room.name + '\'s ' + (op === 'floor' ? 'floor' : op) + ' ' + [v.style, v.mat].filter(Boolean).join(' ')); }
       case 'paint': { const t = roomRef(o.room); if (!t.ok) return t; const tiles = (Array.isArray(o.tiles) ? o.tiles : []).map(tileOf).filter(Boolean).map(q => [q.x, q.y]); if (!tiles.length) return refuse('paint needs tiles: [[x, y], …]'); return did(st.paintTiles(t.room.id, tiles, o.style), tiles.length + ' tiles of ' + t.room.name + ' painted ' + o.style); }
       case 'style': { const t = roomRef(o.room); if (!t.ok) return t; const sid = env.RoomStyles && env.RoomStyles.resolveRoom ? env.RoomStyles.resolveRoom(o.style) : null; if (!sid) return refuse('style is one of ' + env.RoomStyles.ROOM_ORDER.join(', '));
@@ -1669,7 +1669,7 @@
         if (S.facings && S.facings(t.p.t).indexOf(r) < 0) return refuse('a ' + nm(t.p.t) + ' cannot face ' + ['south', 'west', 'north', 'east'][r] + ' (it faces ' + S.facings(t.p.t).map(k => ['south', 'west', 'north', 'east'][k]).join(', ') + ')'); const box = S.footprintAt ? S.footprintAt(t.p.t, r) : null; return did(st.faceProp(t.p.id, r, box || undefined), 'the ' + nm(t.p.t) + ' at ' + at(t.p.x, t.p.y) + ' turned to face ' + ['south', 'west', 'north', 'east'][r]); }
       case 'mirror': { const t = propRef(o.prop); if (!t.ok) return t; if (S.canMirror && !S.canMirror(t.p.t)) return refuse('a ' + nm(t.p.t) + ' does not flip'); return did(st.mirrorProp(t.p.id), 'the ' + nm(t.p.t) + ' at ' + at(t.p.x, t.p.y) + ' flipped'); }
       case 'delete': {
-        // a hallway by the name a refusal or station.map gives it ("CORRIDOR-1117"), by an `as`, or by a tile on it
+        // a hallway by the name a refusal or station.map gives it ("PATH-1117", or "CORRIDOR-1117" before the farm), by an `as`, or by a tile on it
         const hallOf = ref => { if (ref == null) return null; const tt = tileOf(ref), onTile = tt ? st.roomAt(tt.x, tt.y) : null;
           return st.rooms().find(r => r.kind === 'corridor' && (r.id === ref || r.id === onTile || names[ref] === r.id || (typeof ref === 'string' && norm(r.name) === norm(ref)))) || null; };
         const hall = o.hall != null ? hallOf(o.hall) : hallOf(o.room);
@@ -2436,7 +2436,7 @@
       }
       if (meets < (len ? w : 2)) { why = why || T.name + '\'s wall is not straight there'; continue; }
       // the doorway opens onto clear floor in T (open plan: only what hangs on a north wall matters)
-      const inWay = m => /^overlaps CORRIDOR/i.test(m || '') ? 'a hallway is already there' : /^overlaps /.test(m || '') ? m.replace(/^overlaps /, '') + ' is in the way' : (m || 'it does not fit');
+      const inWay = m => /^overlaps (CORRIDOR|PATH)-/i.test(m || '') ? 'a hallway is already there' : /^overlaps /.test(m || '') ? m.replace(/^overlaps /, '') + ' is in the way' : (m || 'it does not fit');
       if (hall) { const c = st.canPlaceHallway([hall]); if (!c.ok) { why = why || inWay(c.msg); continue; } }
       const c = st.canPlaceRoom([rect], kind || 'hab');
       if (!c.ok) { why = why || inWay(c.msg); continue; }

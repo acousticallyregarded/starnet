@@ -164,10 +164,13 @@ const brightestOf = (mid, base) => Math.max(...sample(mid, base, 4, 40)
   .map(o => luma(o[5])));
 
 A.ok(!!WorldModel.FLOOR_STYLES.white, 'WHITE is in the palette');
+// The farm stands in daylight, so the band sits higher than the old vacuum one (peak < 90 then). The law is
+// unchanged: an ordinary hue stays clearly under the bright pole, and under a hard ceiling.
 const ordinary = ['rust', 'cobalt', 'walnut', 'verdant'];
+const whitePeak = brightestOf('stucco', WorldModel.FLOOR_STYLES.white.base);
 for (const sid of ordinary) {
   const peak = brightestOf('stucco', WorldModel.FLOOR_STYLES[sid].base);
-  A.ok(peak < 90, 'an ordinary hue (' + sid + ') is clamped into the shell band — peak ' + Math.round(peak));
+  A.ok(peak < 140 && peak < whitePeak * 0.8, 'an ordinary hue (' + sid + ') is clamped into the shell band — peak ' + Math.round(peak) + ' vs white ' + Math.round(whitePeak));
 }
 for (const sid of ['white', 'bone']) {
   const peak = brightestOf('stucco', WorldModel.FLOOR_STYLES[sid].base);
@@ -217,8 +220,10 @@ const room = st.addRoom({ kind: 'lab', rect: { x1: 22, y1: 0, x2: 35, y2: 9 } })
 A.ok(room.ok, 'test room placed');
 const R = room.id;
 
-A.eq(st.hullMatOfRoom(R), 'station', 'a fresh room wears the station shell');
-A.eq(st.projectGeometry().hullBaseOf(R), null, '...at the shell’s own tone — null, not a stand-in colour');
+// a fresh room is built as its kind's farm building (ROOM_KINDS): a GREENHOUSE is glass, at glass's own tone
+A.eq(st.hullMatOfRoom(R), 'curtain', 'a fresh greenhouse is clad in glass');
+A.eq(st.doc().rooms[R].hullStyle, null, '...at the material’s own tone — not pinned');
+A.eq(st.projectGeometry().hullBaseOf(R), WorldModel.FLOOR_STYLES[WorldModel.HULL_MATERIALS.curtain.suggest].base, '...which the bake receives as the hue');
 
 A.ok(st.setHull(R, { mat: 'timber' }).ok, 'setHull clads a room in timber');
 A.eq(st.hullMatOfRoom(R), 'timber', 'the material stuck');
@@ -241,7 +246,7 @@ const seq = st.canUndo();
 A.ok(st.setHull(R, { mat: 'brick', style: 'crimson' }).ok, 'shell re-clad, hue and material together');
 A.eq(st.hullMatOfRoom(R), 'brick', 'brick took');
 A.ok(st.undo().ok !== false, 'undo runs');
-A.eq(st.hullMatOfRoom(R), 'station', 'ONE undo reverses BOTH axes — never half a re-clad');
+A.eq(st.hullMatOfRoom(R), 'station', 'ONE undo reverses BOTH axes — never half a re-clad');   // back to the station clad above
 A.ok(seq === seq, 'undo availability unchanged in shape');
 
 // a no-op must not burn an undo slot (the trap every mutator here has had at least once)
@@ -256,8 +261,8 @@ A.eq(JSON.stringify(st.doc().rooms[R]), before, '...and changes nothing');
 const other = st.addRoom({ kind: 'factory', rect: { x1: 0, y1: 14, x2: 15, y2: 22 } });
 A.ok(other.ok, 'neighbour placed');
 st.setHull(R, { mat: 'curtain' });
-A.eq(st.hullMatOfRoom(other.id), 'station', 'the neighbour keeps its own shell');
-A.eq(st.projectGeometry().hullMatOf(other.id), 'station', '...all the way through to the bake');
+A.eq(st.hullMatOfRoom(other.id), 'brick', 'the neighbour keeps its own shell (a WORKSHOP is brick)');
+A.eq(st.projectGeometry().hullMatOf(other.id), 'brick', '...all the way through to the bake');
 
 /* legacy docs: a room written before this axis carries no hull keys at all and must deserialize
    as the station shell rather than as an unknown material */

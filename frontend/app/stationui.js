@@ -110,12 +110,12 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   /* ---------- persistence (user-owned UI state) ---------- */
   // themeHue/themeSat drive the CUSTOM phosphor derivation (theme:'custom'); themeGlow (0–150%) is an
   // independent bloom dial that also tames the hand-tuned presets. 100 = the shipped look, untouched.
-  // `backdrop` is what the station floats in (SpaceBG's registry). 'void' is the shipped sky, so
-  // every save that predates this key merges to the exact look it already had.
+  // `backdrop` is where the farm stands (Terrain's grounds, or a SpaceBG sky). 'farm' is the shipped
+  // ground — fields, hedges and pasture; every save that predates this key merges to it.
   // panelBright (−100…100, default 0) is the tube's BRIGHTNESS knob: above 0 it lifts the panel glass's black
   // level toward the phosphor colour (never toward white); below 0 it takes the panels DOWN toward true black
   // (Andrew 10-01: "it doesnt get dark enough"). 0 = the shipped look, untouched.
-  function defaults() { return { theme: 'amber', themeHue: 35, themeSat: 100, themeGlow: 100, panelBright: 0, roomLighting: 0, textScale: 0, flicker: true, crtGlass: 'full', staticLevel: 100, sound: true, hints: true, backdrop: 'void', sessionRow: 'compact', keepComputerAwake: false, notifyPrefs: notifyDefaults() }; }
+  function defaults() { return { theme: 'amber', themeHue: 35, themeSat: 100, themeGlow: 100, panelBright: 0, roomLighting: 0, textScale: 0, flicker: true, crtGlass: 'full', staticLevel: 100, sound: true, hints: true, backdrop: 'farm', sessionRow: 'compact', keepComputerAwake: false, notifyPrefs: notifyDefaults() }; }
   // ROOM LIGHT is a 0–100 slider (Andrew 10-10: "maybe we should have adjustable lighting setting?").
   // 0 is the approved station, untouched, and the default. Ambient alone barely moved the screen (the old
   // HIGH chip measured +3% over LOW, 10-10 player report: "high lighting but still too dark"): WorldLight's
@@ -8109,7 +8109,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         .concat(SpaceBG.list())
         .concat(typeof Terrain === 'undefined' || !Terrain.list ? [] : Terrain.list())
         .map(b => {
-        const on = (s.backdrop || 'void') === b.id;
+        const on = (s.backdrop || 'farm') === b.id;
         return '<button class="set-bd' + (on ? ' sel' : '') + '" aria-pressed="' + (on ? 'true' : 'false') + '" data-bd="' + esc(b.id) + '" title="' + esc(b.blurb) + '">' +
           '<canvas class="set-bd-cv" width="112" height="63" aria-hidden="true"></canvas>' +
           '<span class="set-bd-name">' + esc(b.label) + '</span></button>';
@@ -8550,7 +8550,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         step();
       };
       const syncBackdrop = () => bdChips.forEach(x => {
-        const on = x.dataset.bd === (s.backdrop || 'void');
+        const on = x.dataset.bd === (s.backdrop || 'farm');
         x.classList.toggle('sel', on);
         x.setAttribute('aria-pressed', on ? 'true' : 'false');
       });

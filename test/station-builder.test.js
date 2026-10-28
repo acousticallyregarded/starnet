@@ -346,12 +346,12 @@ for (const c of T.catalog.filter(c => T.presetKits(c.id).length)) {
 /* restyle: the one cosmetic change, one undo, refusals */
 {
   const st = fresh(), before = snap(st);
-  const r = SB.planRestyle(st.serialize(), { room: 'home', floorStyle: 'Walnut', floorMat: 'plank', name: 'quarters' }, renv);
-  A.ok(r.ok && /^Restyle HOME: floor .* → walnut, material .* → plank, renamed to QUARTERS\. Nothing is added, moved or removed\.$/.test(r.plan.summary), 'a restyle plans plainly: ' + (r.error || r.plan.summary));
+  const r = SB.planRestyle(st.serialize(), { room: 'home', floorStyle: 'Walnut', floorMat: 'parquet', name: 'quarters' }, renv);
+  A.ok(r.ok && /^Restyle HOME: floor .* → walnut, material .* → parquet, renamed to QUARTERS\. Nothing is added, moved or removed\.$/.test(r.plan.summary), 'a restyle plans plainly: ' + (r.error || r.plan.summary));
   const a = SB.apply(st, r.plan, renv);
   A.ok(a.ok, 'and applies');
   const h = st.rooms()[0];
-  A.eq([h.name, h.floorStyle, h.floorMat], ['QUARTERS', 'walnut', 'plank'], 'the room is restyled');
+  A.eq([h.name, h.floorStyle, h.floorMat], ['QUARTERS', 'walnut', 'parquet'], 'the room is restyled');
   A.eq(st.props().length, M.create(JSON.parse(before)).props().length, 'nothing is added or removed');
   A.ok(st.undo().ok); A.eq(snap(st), before, 'one undo restores the style and the name');
   for (const [req, re] of [[{ room: 'HOME' }, /Nothing would change/], [{ room: 'Mars', name: 'X' }, /There is no room called "Mars"/], [{ room: 'HOME', floorStyle: 'lava' }, /floorStyle must be one of/], [{ room: 'HOME', props: 1 }, /only changes a room's floor, material or name/]])
@@ -361,15 +361,15 @@ for (const c of T.catalog.filter(c => T.presetKits(c.id).length)) {
 {
   const st = fresh(), before = snap(st);
   const r = SB.planRestyle(st.serialize(), { room: 'HOME', type: 'Foundry' }, renv);
-  A.ok(r.ok && /^Restyle HOME with the FOUNDRY floor: floor \w+ → rust, material \w+ → tread\. Nothing is added, moved or removed\.$/.test(r.plan.summary), 'a room type restyles the floor and material: ' + (r.error || r.plan.summary));
-  A.ok(SB.apply(st, r.plan, renv).ok && st.rooms()[0].floorStyle === 'rust' && st.rooms()[0].floorMat === 'tread', 'and applies them');
+  A.ok(r.ok && /^Restyle HOME with the WORKSHOP floor: floor \w+ → ash, material \w+ → basalt\. Nothing is added, moved or removed\.$/.test(r.plan.summary), 'a room type restyles the floor and material: ' + (r.error || r.plan.summary));
+  A.ok(SB.apply(st, r.plan, renv).ok && st.rooms()[0].floorStyle === 'ash' && st.rooms()[0].floorMat === 'basalt', 'and applies them');
   st.undo(); A.eq(snap(st), before, 'one undo');
   const both = SB.planRestyle(st.serialize(), { room: 'HOME', type: 'lab', floorStyle: 'teal' }, renv);
-  A.ok(both.ok && /floor \w+ → teal, material \w+ → tile/.test(both.plan.summary), 'a floorStyle given with a type wins over the type\'s own');
+  A.ok(both.ok && /floor \w+ → teal, material \w+ → turf/.test(both.plan.summary), 'a floorStyle given with a type wins over the type\'s own');
   const bad = SB.planRestyle(st.serialize(), { room: 'HOME', type: 'castle' }, renv);
-  A.ok(!bad.ok && /^type must be one of: HAB, BRIDGE, LAB, FOUNDRY, QUARTERS, STORAGE\.$/.test(bad.error), 'an unknown type lists the types: ' + bad.error);
+  A.ok(!bad.ok && /^type must be one of: BARN, FARMHOUSE, GREENHOUSE, WORKSHOP, COTTAGE, GRANARY\.$/.test(bad.error), 'an unknown type lists the types: ' + bad.error);
   const kit = SB.planRoom(st.serialize(), { kit: 'LIBRARY', type: 'lab' }, renv);
-  A.ok(kit.ok && SB.apply(st, kit.plan, renv).ok && st.rooms().find(x => x.name === 'LIBRARY').floorMat === 'tile', 'a new room takes a type too');
+  A.ok(kit.ok && SB.apply(st, kit.plan, renv).ok && st.rooms().find(x => x.name === 'LIBRARY').floorMat === 'turf', 'a new room takes a type too');
 }
 /* the camera is told which room to show */
 {
@@ -923,7 +923,7 @@ for (const c of T.catalog) {
       [{ rooms: [{ side: 'up-left' }] }, /^side is north, south, east or west/],
       [{ rooms: [{ hallway: 40 }] }, /^hallway is true/],
       [{ rooms: [{ align: 'diagonal' }] }, /^align is center, start or end/],
-      [{ rooms: [{ type: 'castle' }] }, /^type must be one of: HAB, BRIDGE, LAB, FOUNDRY, QUARTERS, STORAGE\./],
+      [{ rooms: [{ type: 'castle' }] }, /^type must be one of: BARN, FARMHOUSE, GREENHOUSE, WORKSHOP, COTTAGE, GRANARY\./],
       [{ rooms: [{ name: 'Home' }] }, /A room is already called HOME/],
       [{ rooms: [{ name: 'Twin' }, { name: 'twin' }] }, /A room is already called TWIN/],
       [{ rooms: [{ into: 'LOUNGE' }] }, /names an existing room \(into\) but nothing to put in it/],
@@ -1505,7 +1505,7 @@ for (const c of T.catalog) {
       { op: 'stamp', line: 'build_test', x: 26, y: 13 }
     ].concat(turnable ? [{ op: 'place', t: turnable, x: 46, y: 2, r: 3, as: 'turned' }] : []);
     const p = SB.planEdit(st.serialize(), { refit: ops }, E);
-    A.ok(p.ok && new RegExp('^BUILD MODE, ' + ops.length + ' edits, in order: 1\\. a 6 × 3 hallway at \\(18, 4\\); 2\\. a new 30 × 22 LAB room STUDIO at \\(24, 0\\); ').test(p.plan.summary) && /the bay at \(31, 8\) is told: "Write it up in 200 words\."/.test(p.plan.summary) && /One UNDO in Build mode takes all of it back\.$/.test(p.plan.summary), 'a refit plans every edit, in order, in words (briefs quoted): ' + (p.error || p.plan.summary.slice(0, 200)));
+    A.ok(p.ok && new RegExp('^BUILD MODE, ' + ops.length + ' edits, in order: 1\\. a 6 × 3 hallway at \\(18, 4\\); 2\\. a new 30 × 22 GREENHOUSE room STUDIO at \\(24, 0\\); ').test(p.plan.summary) && /the bay at \(31, 8\) is told: "Write it up in 200 words\."/.test(p.plan.summary) && /One UNDO in Build mode takes all of it back\.$/.test(p.plan.summary), 'a refit plans every edit, in order, in words (briefs quoted): ' + (p.error || p.plan.summary.slice(0, 200)));
     A.eq(snap(st), before, 'planning changes nothing');
     if (p.ok) {
       const a = SB.apply(st, p.plan, E);
@@ -1576,12 +1576,12 @@ for (const c of T.catalog) {
     const named = n => st.rooms().find(r => r.name === n), Bof = r => { const R = r.rects[0]; return R; };
     const lib = named('LIBRARY'), arc = named('ARCADE');
     const mess = SB.planEdit(st.serialize(), { refit: [{ op: 'move', room: 'LIBRARY', x: Bof(lib).x1 - 30, y: Bof(lib).y1 - 40 }, { op: 'move', room: 'ARCADE', x: Bof(arc).x1 + 40, y: Bof(arc).y1 + 30 }] }, E);
-    A.ok(!mess.ok && /^That would leave (a hallway|\d+ hallways) leading nowhere \(CORRIDOR-\d+ at \(-?\d+, -?\d+\)/.test(mess.error) && /\{ op: "delete", hall: "CORRIDOR-\d+" \}/.test(mess.error) && /\{ rearrange: "diamond" \}/.test(mess.error), 'a refit that strands hallways is refused, naming them and both ways out: ' + (mess.error || 'NOT REFUSED').slice(0, 160));
+    A.ok(!mess.ok && /^That would leave (a hallway|\d+ hallways) leading nowhere \(PATH-\d+ at \(-?\d+, -?\d+\)/.test(mess.error) && /\{ op: "delete", hall: "PATH-\d+" \}/.test(mess.error) && /\{ rearrange: "diamond" \}/.test(mess.error), 'a refit that strands hallways is refused, naming them and both ways out: ' + (mess.error || 'NOT REFUSED').slice(0, 160));
     // a station already left that way (rooms moved by hand before this guard)
     A.ok(st.transact(() => { const a = st.moveRoom(lib.id, -30, -40); return a.ok ? st.moveRoom(arc.id, 40, 30) : a; }).ok, 'two rooms moved away, their corridors left behind');
     const mapMess = SB.mapOf(st.serialize(), E, {});
     const lost = mapMess.ok ? mapMess.map.halls.filter(h => h.leadsNowhere) : [];
-    A.ok(mapMess.ok && lost.length >= 1 && mapMess.map.halls.every(h => /^CORRIDOR-\d+$/.test(h.name) && h.w >= 1 && Array.isArray(h.joins)), 'station.map lists every hallway by name and marks the ones leading nowhere (' + lost.map(h => h.name).join(', ') + ')');
+    A.ok(mapMess.ok && lost.length >= 1 && mapMess.map.halls.every(h => /^PATH-\d+$/.test(h.name) && h.w >= 1 && Array.isArray(h.joins)), 'station.map lists every hallway by name and marks the ones leading nowhere (' + lost.map(h => h.name).join(', ') + ')');
     const take = SB.planEdit(st.serialize(), { refit: [{ op: 'delete', hall: lost[0] && lost[0].name }] }, E);
     A.ok(take.ok && new RegExp('the hallway ' + (lost[0] && lost[0].name) + ' at \\(-?\\d+, -?\\d+\\) taken up').test(take.plan.summary), 'a hallway is taken up by the name the map gives it: ' + (take.ok ? take.plan.summary.slice(0, 120) : take.error));
     const before = snap(st), contents = {}, byRoom = s => { const o = {}; for (const r of s.rooms().filter(r => r.kind !== 'corridor')) o[r.id] = s.props().filter(p => s.roomAt(p.x, p.y) === r.id).map(p => p.id + ':' + p.t + ':' + (p.agentId || '')).sort().join(','); return o; };
