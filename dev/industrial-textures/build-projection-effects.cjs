@@ -15,6 +15,7 @@ group('bar','Serving counter has no per-instance dispensing/order state in rende
 group('couch bunk stool chair sidetable lowtable glasstable dinertable booth dinerchair podchair loungetable longtable beanbag recliner recliner_r','Seating/table body remains untouched; occupancy, sleep and mounting stay with existing body/foreground/surface owners.');
 group('quarters_pooltable pokertable pinball_unused','No per-instance game/ball state is available. Static approved playfield avoids invented shots, cards or wins.');
 delete quiet.pinball_unused;
+group('comms_dish gigs_servercart war_intelcab workbench studio','Redrawn as farm art (dev/farm-props.mjs); the station effect regions described the old picture and do not fit this one. Quiet until its effects are drawn for the farm art.');
 group('gachapon','No purchase/turn/dispense state is provided. Painted capsules remain static; no invented vend.');
 group('telescope telescope_r weaponrack weaponrack_r punchbag punchbag_r benchpress benchpress_r','Passive instrument/equipment pose. No backend aim, firing, strike or repetition state is available.');
 const bindings=Object.fromEntries(Object.entries(m.props).map(([id,p])=>[id,Object.fromEntries(Object.entries(p.views).map(([view,s])=>[view,{image:s.image,width:s.sourceWidth,height:s.sourceHeight}]))]));

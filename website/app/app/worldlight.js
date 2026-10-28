@@ -211,7 +211,7 @@ const WorldLight = (() => {
     // key/keyProps/keyReach/shadeCool drive the KEY buffer: an overlay-composited
     // light map (neutral .5 = unchanged, above = gain up to 2x). The dark film can
     // only remove darkness; this is the one pass that puts light ON a surface.
-    let config = Object.assign({ ambient: 0.82, wallAmbient: 0.28, fixtureTint: 0.17,
+    let config = Object.assign({ ambient: 0.1, wallAmbient: 0.28, fixtureTint: 0.17,
       emission: 1, propLift: 0.65, propTint: 1, atmosphere: 0.25, shafts: 1, sampleCacheLimit: 512,
       key: 0, keyProps: 1, keyReach: 0.62, keyPropReach: 1.2, shadeCool: 0, cut: 1 }, options);
     let geo = null, geometryOptions = {}, segments = [], width = 1, height = 1, ratio = 1;

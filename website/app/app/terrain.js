@@ -1314,15 +1314,14 @@ const Terrain = (typeof document === 'undefined') ? { active: () => false } : ((
      A field's crop is TILES (TILE px, three by three inside a HEADLAND of grass) so the rows
      carry straight across a field without a seam; every crop texture wraps on its own tile.
 
-     KEY: mid, warm, slightly muted. The farm sits under the station's dark amber chrome and its
-     props must still read on top of it, so nothing here goes near white and the greens stay
-     earthy. Same sun as every ground (top-left), same hard-pixel law (hardEdge on every sprite
+     KEY: a bright summer day. Saturated greens, golden grain, warm light soil; shadows are green, not
+     black. Nothing goes to pure white, so props and the crew still read on top of it. Same sun as every ground (top-left), same hard-pixel law (hardEdge on every sprite
      that stands up), same scale (an agent body ~35 world px, one world pixel ~5cm). */
 
   const FARM = {
     label: 'FARM',
     blurb: 'Set down among the fields. Crops in rows, hedges and fences, sheep in the pasture.',
-    base: '#4a6a2c',
+    base: '#78a843',
     PATCH: 512,
     FIELD: 768,                        // world px per field
     HEAD: 48,                          // grass headland round the crop inside a field
@@ -1331,24 +1330,24 @@ const Terrain = (typeof document === 'undefined') ? { active: () => false } : ((
     YARD: 160,                         // grass yard kept clear of crops round the farm's footprint
 
     LIGHT: {
-      GRASS: [[50, 76, 32], [58, 87, 36], [67, 98, 40], [77, 110, 44], [88, 121, 48], [100, 132, 54], [114, 143, 62]],
-      DRY: [[96, 104, 50], [112, 118, 56], [128, 130, 64]],
-      CLOVER: [[42, 80, 40], [54, 96, 46], [66, 110, 52]],
-      FLOWERS: [[214, 208, 186], [220, 188, 70], [168, 120, 176], [206, 112, 92]],
-      SOIL: [[56, 38, 25], [68, 47, 30], [82, 57, 36], [96, 68, 43], [110, 80, 51], [124, 93, 60]],
-      WHEAT: [[118, 88, 38], [142, 110, 46], [166, 134, 56], [188, 156, 68], [208, 178, 88], [224, 198, 116]],
-      BARLEY: [[132, 116, 58], [154, 138, 70], [174, 158, 84], [194, 178, 102], [210, 196, 124]],
-      CORN: [[30, 54, 22], [40, 70, 26], [52, 88, 32], [66, 106, 38], [84, 124, 46], [104, 142, 56]],
-      CABBAGE: [[40, 78, 54], [56, 102, 68], [76, 126, 84], [100, 150, 104], [128, 172, 124]],
-      SPROUT: [[60, 104, 40], [80, 128, 50], [102, 150, 62]],
-      PUMPKIN: [[142, 64, 18], [182, 90, 24], [214, 122, 38], [234, 154, 66]],
-      VINE: [[36, 62, 26], [48, 80, 32], [62, 98, 38], [78, 116, 46]],
-      LEAF: [[20, 38, 18], [28, 52, 24], [38, 68, 30], [50, 86, 36], [64, 104, 44], [80, 122, 52], [98, 140, 60], [120, 158, 70]],
-      HEDGE: [[16, 32, 16], [24, 44, 22], [34, 58, 28], [46, 74, 34], [60, 90, 40], [76, 106, 48]],
+      GRASS: [[78, 128, 46], [90, 144, 52], [102, 158, 58], [116, 172, 64], [130, 186, 72], [146, 198, 82], [164, 210, 96]],
+      DRY: [[168, 170, 92], [186, 184, 104], [204, 198, 120]],
+      CLOVER: [[66, 128, 58], [80, 146, 66], [96, 162, 76]],
+      FLOWERS: [[248, 246, 232], [252, 214, 70], [196, 140, 214], [240, 120, 104]],
+      SOIL: [[110, 76, 46], [126, 88, 54], [142, 102, 64], [158, 116, 74], [172, 130, 86], [186, 146, 100]],
+      WHEAT: [[176, 136, 56], [200, 160, 66], [220, 182, 80], [236, 202, 98], [246, 220, 124], [252, 234, 160]],
+      BARLEY: [[184, 168, 92], [204, 188, 108], [220, 206, 126], [234, 222, 148], [244, 236, 172]],
+      CORN: [[50, 96, 34], [64, 118, 40], [80, 140, 48], [98, 160, 56], [120, 180, 66], [146, 198, 80]],
+      CABBAGE: [[64, 124, 84], [84, 150, 100], [108, 174, 120], [136, 196, 144], [168, 216, 170]],
+      SPROUT: [[96, 160, 60], [120, 184, 72], [148, 204, 88]],
+      PUMPKIN: [[196, 92, 24], [230, 122, 32], [248, 154, 50], [252, 186, 90]],
+      VINE: [[58, 104, 40], [74, 126, 48], [92, 148, 56], [112, 168, 66]],
+      LEAF: [[34, 70, 30], [46, 90, 38], [60, 112, 46], [76, 134, 54], [94, 156, 62], [114, 176, 72], [136, 194, 84], [162, 212, 100]],
+      HEDGE: [[30, 62, 28], [42, 80, 36], [56, 100, 44], [72, 120, 52], [90, 140, 60], [110, 158, 70]],
       FRUIT: [[150, 34, 28], [196, 54, 38], [226, 92, 56]],
-      WOOD: [[50, 34, 22], [74, 52, 33], [100, 74, 47], [128, 98, 63], [152, 120, 80]],
-      TRACK: [[96, 76, 50], [112, 90, 60], [128, 104, 70], [142, 118, 80]],
-      STONE: [[70, 70, 64], [92, 92, 84], [116, 114, 104], [140, 138, 126]],
+      WOOD: [[86, 60, 38], [116, 84, 54], [146, 110, 72], [176, 138, 94], [204, 166, 118]],
+      TRACK: [[168, 136, 92], [186, 154, 106], [202, 170, 122], [216, 186, 140]],
+      STONE: [[120, 120, 112], [146, 146, 136], [172, 170, 158], [198, 196, 184]],
       WOOL: [[132, 128, 114], [164, 160, 144], [194, 190, 174], [218, 214, 198], [234, 230, 214]],
       HIDE: [[116, 112, 100], [158, 152, 138], [196, 190, 176], [222, 218, 204]],
       PATCHES: [[18, 16, 15], [30, 27, 25], [44, 40, 37], [60, 55, 50]],
@@ -1356,7 +1355,7 @@ const Terrain = (typeof document === 'undefined') ? { active: () => false } : ((
       HAY: [[136, 106, 44], [166, 134, 58], [192, 160, 76], [214, 184, 100]],
       WATER: [[38, 66, 84], [52, 88, 108], [74, 114, 132]],
       HEN: [[176, 170, 152], [210, 204, 186], [232, 228, 212]], COMB: [184, 46, 36], DARK: [34, 28, 24],
-      SHADOW: [36, 52, 24],
+      SHADOW: [62, 104, 40],
     },
 
     /* ---- THE PATCH: pasture grass. Dithered three-octave base, dry swathes, clover clumps, a

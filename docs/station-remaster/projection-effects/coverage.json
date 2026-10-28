@@ -4,7 +4,7 @@
   "catalogTypes": 160,
   "views": 184,
   "effectTypes": 88,
-  "quietTypes": 72,
+  "quietTypes": 77,
   "records": [
     {
       "id": "industrial_locker",
@@ -18,7 +18,7 @@
       "sha256": "f0fc82eceb252214514cab0e0f8a7cae98e2034c06a9b9d99d6df4c2efadcac2",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10536",
+        "frontend/app/propsprites.js:10559",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -36,7 +36,7 @@
       "sha256": "08a63725cd07518d2a361d9e9685338c53d8a6301049a71d7e846dfd16efff52",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10552",
+        "frontend/app/propsprites.js:10575",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -54,7 +54,7 @@
       "sha256": "6a8ce03fab3f30500646a190490f4f13d8a60666f809d1489d757abcd57106f5",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10559",
+        "frontend/app/propsprites.js:10582",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -72,7 +72,7 @@
       "sha256": "fcb4942d0b6f95d1efcab6c94232474381e458032d14edb29d89aebc088e065c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10569",
+        "frontend/app/propsprites.js:10592",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -90,7 +90,7 @@
       "sha256": "7a6750513a004087da2f9a73bf61598c6222ecf031beb0c08a21f3b900d86a76",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10575",
+        "frontend/app/propsprites.js:10598",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -108,7 +108,7 @@
       "sha256": "0324da4693382cef5699f7cf406240e89f33e935aff15b60448c0f4fc07b99d8",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10584",
+        "frontend/app/propsprites.js:10607",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -126,7 +126,7 @@
       "sha256": "a2d731f1a2d76ed98706d6d9097b0e2cad588fe0a0f712ed5a5fbe08d338c2bb",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10584",
+        "frontend/app/propsprites.js:10607",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -144,7 +144,7 @@
       "sha256": "b24d0e04f2e21a8631910ef8f3a8453c62a72720c4ca57e316352a633d93a08e",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10584",
+        "frontend/app/propsprites.js:10607",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -162,7 +162,7 @@
       "sha256": "9fce4522d701e77c81a7feb8993c1b0901772958d2ffc05db1ec45792be17a8e",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10609",
+        "frontend/app/propsprites.js:10632",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -180,7 +180,7 @@
       "sha256": "d3dbac6f8c95df5f3db87b8ba327c427a33d1953560315bfe4e40a2b0aaccfce",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10623",
+        "frontend/app/propsprites.js:10646",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -226,7 +226,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10638",
+        "frontend/app/propsprites.js:10661",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -249,7 +249,7 @@
       "sha256": "54ed31b46af45244c3421df9d0b948c2c392c935cda2c44af6462ce3c1010e1c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10646",
+        "frontend/app/propsprites.js:10669",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -267,7 +267,7 @@
       "sha256": "1f2ed30538c55eaaa1b76df0212c4588dacf26baf9c80f25f16fee2ce8103efe",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10653",
+        "frontend/app/propsprites.js:10676",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -285,7 +285,7 @@
       "sha256": "68fa45018c20c5a71a3ae8f3566ca7f52b2fe8ac4af913ed42f0e7608e4f304b",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10658",
+        "frontend/app/propsprites.js:10681",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -298,12 +298,12 @@
       "reason": "Accepted workstation screen/occupancy renderer remains authoritative, including compact native fallback and separately authored facings. No added effects.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/desk.png",
-      "sourceWidth": 1207,
-      "sourceHeight": 804,
-      "sha256": "ab17bcf9ff336e27e299c2dda54b9c63e916a761328ceaa00b083c15c719d657",
+      "sourceWidth": 1064,
+      "sourceHeight": 976,
+      "sha256": "bdbed666ad4b73f6818137dd84572759b459b475a803c5c80d7d5095e5a3e121",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1327",
+        "frontend/app/propsprites.js:1345",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -316,12 +316,12 @@
       "reason": "Accepted workstation screen/occupancy renderer remains authoritative, including compact native fallback and separately authored facings. No added effects.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/desk-w.png",
-      "sourceWidth": 128,
-      "sourceHeight": 190,
-      "sha256": "8302a63ef00bc673e46c074dae162a48de9260ea323ee89fec943959053a8de1",
+      "sourceWidth": 504,
+      "sourceHeight": 552,
+      "sha256": "bb0c21fd084208268a21733be614be693a3e3f55835da33037d7d1b5166bdc73",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1327",
+        "frontend/app/propsprites.js:1345",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -334,12 +334,12 @@
       "reason": "Accepted workstation screen/occupancy renderer remains authoritative, including compact native fallback and separately authored facings. No added effects.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/desk-n.png",
-      "sourceWidth": 597,
-      "sourceHeight": 469,
-      "sha256": "aba5a15e71fff142c85a8350b1247593b1f0ce26a754d96ff5f15a071988de54",
+      "sourceWidth": 1120,
+      "sourceHeight": 1008,
+      "sha256": "60fe2388600f200d5834aea51865c3431b73a60d9f7d53bb694ddde307e28468",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1327",
+        "frontend/app/propsprites.js:1345",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -352,12 +352,12 @@
       "reason": "Accepted workstation screen/occupancy renderer remains authoritative, including compact native fallback and separately authored facings. No added effects.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/desk-e.png",
-      "sourceWidth": 138,
-      "sourceHeight": 190,
-      "sha256": "6560272282713dd12238be0eb9924906a3f5f314c86802f8c7d2e0c528fad99f",
+      "sourceWidth": 504,
+      "sourceHeight": 552,
+      "sha256": "314c98bcca46da8973e709425e8a35b39a2f01088b3f3833754a5f3ffed236a5",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1327",
+        "frontend/app/propsprites.js:1345",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -375,7 +375,7 @@
       "sha256": "604ba83c2a3291b537f511ff33e7c61eec1116b717a2f0cc3459efcaa72bf9c8",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1425",
+        "frontend/app/propsprites.js:1443",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -393,7 +393,7 @@
       "sha256": "19891fd748e67a8ed889cdfde3cbca03c317178483a415a84daa7ba6af8f39e5",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1425",
+        "frontend/app/propsprites.js:1443",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -411,7 +411,7 @@
       "sha256": "5912f0113b485d4c92e76edc428a652ba2be637c02674e3ee4a84167b9ff256e",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1425",
+        "frontend/app/propsprites.js:1443",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -429,7 +429,7 @@
       "sha256": "75e098f51985cffc05a07d362626f5879e6d11faf3b8de626066293215058929",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1425",
+        "frontend/app/propsprites.js:1443",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -476,7 +476,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2396",
+        "frontend/app/propsprites.js:2414",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -556,7 +556,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:782",
+        "frontend/app/propsprites.js:800",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -608,7 +608,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1490",
+        "frontend/app/propsprites.js:1508",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -688,7 +688,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1248",
+        "frontend/app/propsprites.js:1266",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -706,9 +706,9 @@
       "reason": "Source-specific local state or decorative mechanism.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/workbench.png",
-      "sourceWidth": 1515,
-      "sourceHeight": 909,
-      "sha256": "52c33e1e5697ae01fac5a868993c7efb0f3b45e5de96b4075922ab628065104d",
+      "sourceWidth": 840,
+      "sourceHeight": 520,
+      "sha256": "1d1f4fc844b73964783c59cc74f9a3df929e3fce7e95e0d95eb03bce9ba3145b",
       "regions": [
         {
           "kind": "screen",
@@ -767,7 +767,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7691",
+        "frontend/app/propsprites.js:7714",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -845,7 +845,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2860",
+        "frontend/app/propsprites.js:2878",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -896,7 +896,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3612",
+        "frontend/app/propsprites.js:3630",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -947,7 +947,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3440",
+        "frontend/app/propsprites.js:3458",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1052,7 +1052,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3483",
+        "frontend/app/propsprites.js:3501",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1157,7 +1157,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3404",
+        "frontend/app/propsprites.js:3422",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1262,7 +1262,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3525",
+        "frontend/app/propsprites.js:3543",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1340,7 +1340,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3569",
+        "frontend/app/propsprites.js:3587",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1418,7 +1418,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2941",
+        "frontend/app/propsprites.js:2959",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1510,7 +1510,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7666",
+        "frontend/app/propsprites.js:7684",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1528,9 +1528,9 @@
       "reason": "Source-specific local state or decorative mechanism.",
       "inCurrentDemo": false,
       "image": "frontend/assets/industrial/projection-correction/comms_dish.png",
-      "sourceWidth": 777,
-      "sourceHeight": 1039,
-      "sha256": "4c16b96d5f74172865523b0653082d41fca8dc1187d33dea1f130a575ad8de47",
+      "sourceWidth": 560,
+      "sourceHeight": 1128,
+      "sha256": "7556075c2d873ee6906659e91cb6de5fc433ba4504e606925be696ab458bc181",
       "regions": [
         {
           "kind": "screen",
@@ -1562,7 +1562,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7397",
+        "frontend/app/propsprites.js:7415",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1641,7 +1641,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7547",
+        "frontend/app/propsprites.js:7565",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1692,7 +1692,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7612",
+        "frontend/app/propsprites.js:7630",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1710,9 +1710,9 @@
       "reason": "Source-specific local state or decorative mechanism.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/war_intelcab.png",
-      "sourceWidth": 950,
-      "sourceHeight": 930,
-      "sha256": "4f388de58644cf145e098098baaf81956c1a731ae13a2dbf7039378620064266",
+      "sourceWidth": 480,
+      "sourceHeight": 624,
+      "sha256": "5450e46ba0d30328ce71ce80e7fc09d2e1c60941f00ae2fc94bb7899944fc893",
       "regions": [
         {
           "kind": "screen",
@@ -1744,7 +1744,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8521",
+        "frontend/app/propsprites.js:8544",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1767,7 +1767,7 @@
       "sha256": "dfd6210a38a37761b813147a0aa1cb9605fc224b240048ad19c97e8fde98b0d7",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4074",
+        "frontend/app/propsprites.js:4092",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1785,7 +1785,7 @@
       "sha256": "c2a75370627461a72ce0c20427da75c85bd33a4710996c48180eb6b8362c5f9c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:3913",
+        "frontend/app/propsprites.js:3931",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1885,7 +1885,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1140",
+        "frontend/app/propsprites.js:1158",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1908,7 +1908,7 @@
       "sha256": "8dd277c093df622440d84c2a43073d0886f29210e297eb55a90828b21d42e2b7",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4617",
+        "frontend/app/propsprites.js:4635",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1981,7 +1981,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:4590",
+        "frontend/app/propsprites.js:4608",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -1999,9 +1999,9 @@
       "reason": "Source-specific local state or decorative mechanism.",
       "inCurrentDemo": false,
       "image": "frontend/assets/industrial/projection-correction/gigs_servercart.png",
-      "sourceWidth": 1071,
-      "sourceHeight": 1004,
-      "sha256": "c5f4fd180edb503b05ba8ece2d6907ac6473e565ec4227104873a1286d69e23f",
+      "sourceWidth": 448,
+      "sourceHeight": 560,
+      "sha256": "088f2bc7bac70a6fda3f1e802d82f3f3a8574189ce164c850cbf3f417b431149",
       "regions": [
         {
           "kind": "screen",
@@ -2088,7 +2088,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8100",
+        "frontend/app/propsprites.js:8123",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2247,7 +2247,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:6974",
+        "frontend/app/propsprites.js:6992",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2265,9 +2265,9 @@
       "reason": "Source-specific local state or decorative mechanism.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/studio.png",
-      "sourceWidth": 1422,
-      "sourceHeight": 856,
-      "sha256": "8dc7919e209f47a7cd73f476b8529131d1f2b9d1d5cd02639bbb9b3c310f86cf",
+      "sourceWidth": 816,
+      "sourceHeight": 840,
+      "sha256": "c0561afb1cf5849f4e39c7a9bf7121b878af15f2b32611c16defb070b789b06d",
       "regions": [
         {
           "kind": "screen",
@@ -2326,7 +2326,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3043",
+        "frontend/app/propsprites.js:3061",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2381,7 +2381,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9463",
+        "frontend/app/propsprites.js:9486",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2432,7 +2432,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3204",
+        "frontend/app/propsprites.js:3222",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2483,7 +2483,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3315",
+        "frontend/app/propsprites.js:3333",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2591,7 +2591,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10681",
+        "frontend/app/propsprites.js:10704",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2659,7 +2659,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10682",
+        "frontend/app/propsprites.js:10705",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2710,7 +2710,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10683",
+        "frontend/app/propsprites.js:10706",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2733,7 +2733,7 @@
       "sha256": "911d1ba2e047c25ccbd52c112c337691c048fdbd868a629a592cff03c0f46651",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10684",
+        "frontend/app/propsprites.js:10707",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2780,7 +2780,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:678",
+        "frontend/app/propsprites.js:696",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2832,7 +2832,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:863",
+        "frontend/app/propsprites.js:881",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2940,7 +2940,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:941",
+        "frontend/app/propsprites.js:959",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -2999,7 +2999,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1010",
+        "frontend/app/propsprites.js:1028",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3022,7 +3022,7 @@
       "sha256": "6d3426755f8b2677f11f2dc9d0370a4e09c0f9bb9b7cbe2e70bb8107609e55cb",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1070",
+        "frontend/app/propsprites.js:1088",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3069,7 +3069,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:4014",
+        "frontend/app/propsprites.js:4032",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3177,7 +3177,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:4252",
+        "frontend/app/propsprites.js:4270",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3229,7 +3229,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:4336",
+        "frontend/app/propsprites.js:4354",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3252,7 +3252,7 @@
       "sha256": "6fe303ec73c92c37d0536e606c1beb5b58386e283f6b5ebff585f1dbb548add6",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4434",
+        "frontend/app/propsprites.js:4452",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3299,7 +3299,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:6903",
+        "frontend/app/propsprites.js:6921",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3350,7 +3350,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7042",
+        "frontend/app/propsprites.js:7060",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3458,7 +3458,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7102",
+        "frontend/app/propsprites.js:7120",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3509,7 +3509,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8447",
+        "frontend/app/propsprites.js:8470",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3560,7 +3560,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8597",
+        "frontend/app/propsprites.js:8620",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3611,7 +3611,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2553",
+        "frontend/app/propsprites.js:2571",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3670,7 +3670,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2632",
+        "frontend/app/propsprites.js:2650",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3693,7 +3693,7 @@
       "sha256": "b333e5a51b9b501eaed5a0ebf8bce0bec111035e6aa5489aef3578583c781906",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:2708",
+        "frontend/app/propsprites.js:2726",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3739,7 +3739,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:4497",
+        "frontend/app/propsprites.js:4515",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3817,7 +3817,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7185",
+        "frontend/app/propsprites.js:7203",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3869,7 +3869,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7242",
+        "frontend/app/propsprites.js:7260",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3920,7 +3920,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7306",
+        "frontend/app/propsprites.js:7324",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3943,7 +3943,7 @@
       "sha256": "6ad820ce2adeb21a10dd3dd6d5da83894b306f294b1ae9180600a2b4224485ea",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:7353",
+        "frontend/app/propsprites.js:7371",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -3989,7 +3989,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7765",
+        "frontend/app/propsprites.js:7788",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4048,7 +4048,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7816",
+        "frontend/app/propsprites.js:7839",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4099,7 +4099,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7887",
+        "frontend/app/propsprites.js:7910",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4177,7 +4177,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7962",
+        "frontend/app/propsprites.js:7985",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4336,7 +4336,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1193",
+        "frontend/app/propsprites.js:1211",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4359,7 +4359,7 @@
       "sha256": "ae75dd079239dda02ac680b40add65544e79e5de02147e207905fb805fb19495",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:2485",
+        "frontend/app/propsprites.js:2503",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4377,7 +4377,7 @@
       "sha256": "7782bddbfb84ac0878a98516698a13d231d554e6ee8330d00abacccdb7deacb3",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:3740",
+        "frontend/app/propsprites.js:3758",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4395,7 +4395,7 @@
       "sha256": "fb3e10ed65d6f5e5b0315349f8e43c39b31038240b09dfd3bfc782c452648320",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4181",
+        "frontend/app/propsprites.js:4199",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4413,7 +4413,7 @@
       "sha256": "3cecb553e23d27870d7db21936407bedd6c14986911b2be5aa40b8278f00649b",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:8143",
+        "frontend/app/propsprites.js:8166",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4460,7 +4460,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8261",
+        "frontend/app/propsprites.js:8284",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4511,7 +4511,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8323",
+        "frontend/app/propsprites.js:8346",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4619,7 +4619,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2308",
+        "frontend/app/propsprites.js:2326",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4727,7 +4727,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:7476",
+        "frontend/app/propsprites.js:7494",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4835,7 +4835,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8042",
+        "frontend/app/propsprites.js:8065",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4886,7 +4886,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8203",
+        "frontend/app/propsprites.js:8226",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4937,7 +4937,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8679",
+        "frontend/app/propsprites.js:8702",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -4988,7 +4988,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8768",
+        "frontend/app/propsprites.js:8791",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5066,7 +5066,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8834",
+        "frontend/app/propsprites.js:8857",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5089,7 +5089,7 @@
       "sha256": "569055b8af4063a3f1c69a512919300d931a7459a91ca6072a887982dac08333",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:8903",
+        "frontend/app/propsprites.js:8926",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5136,7 +5136,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8975",
+        "frontend/app/propsprites.js:8998",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5188,7 +5188,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3784",
+        "frontend/app/propsprites.js:3802",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5239,7 +5239,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:3876",
+        "frontend/app/propsprites.js:3894",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5262,7 +5262,7 @@
       "sha256": "01c68e030bc796dc9575531e589f238d5ac1845717ab718bd32e55819d68f49c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4741",
+        "frontend/app/propsprites.js:4759",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5309,7 +5309,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:4893",
+        "frontend/app/propsprites.js:4911",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5332,7 +5332,7 @@
       "sha256": "c802cfc380ee9b173e0a1be75c17dd01471bd4cfed4071fab8369cae3ae0fd97",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4964",
+        "frontend/app/propsprites.js:4982",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5406,7 +5406,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:5131",
+        "frontend/app/propsprites.js:5149",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5485,7 +5485,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:5227",
+        "frontend/app/propsprites.js:5245",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5591,7 +5591,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:5305",
+        "frontend/app/propsprites.js:5323",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5614,7 +5614,7 @@
       "sha256": "f74a4246d439d09837daac1f23571cb65027a14987aae2bf4123a4a47c01d185",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5427",
+        "frontend/app/propsprites.js:5445",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5632,7 +5632,7 @@
       "sha256": "6fca3b889d28186dc4cc20bd7634628d3fa06cb4bfb1db226f5d68f8adab872d",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9122",
+        "frontend/app/propsprites.js:9145",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5678,7 +5678,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9232",
+        "frontend/app/propsprites.js:9255",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5701,7 +5701,7 @@
       "sha256": "ee94e36598847f9ef394b0571f47bc8f1bfc9278dc242ea9d24bf925af38be8c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9317",
+        "frontend/app/propsprites.js:9340",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5747,7 +5747,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9409",
+        "frontend/app/propsprites.js:9432",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5803,7 +5803,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1570",
+        "frontend/app/propsprites.js:1588",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5821,12 +5821,12 @@
       "reason": "Quiet painted foliage/colony. Old ambient sway or spores were decorative, not a live process; omitted intentionally.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/plant.png",
-      "sourceWidth": 640,
-      "sourceHeight": 1412,
-      "sha256": "cd139153fd94f1b9ecf64aabd7d90b492798d3e4d7df92ee78caa2f2398a8bdf",
+      "sourceWidth": 280,
+      "sourceHeight": 632,
+      "sha256": "71153ae5b86f4f25896d8c8801f744e9f24adc502c77e0370a3b69b7ffd26cd2",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1611",
+        "frontend/app/propsprites.js:1629",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5844,7 +5844,7 @@
       "sha256": "0d0acf0d0b733bf51df5f00aaf45148ee1a64a5d7e7c3742da99d7a0f2eb76ad",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5513",
+        "frontend/app/propsprites.js:5531",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5862,7 +5862,7 @@
       "sha256": "b8d1e86b67b547b92d9e5f9c8efa4496095ec89eee373468838317da4905a398",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5574",
+        "frontend/app/propsprites.js:5592",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5880,7 +5880,7 @@
       "sha256": "a01f54025662613c7d1e9adc0bb21d88a21700aa8e24288eb85d959a7cbcf6f8",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5637",
+        "frontend/app/propsprites.js:5655",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5931,7 +5931,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:8390",
+        "frontend/app/propsprites.js:8413",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -5990,7 +5990,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9053",
+        "frontend/app/propsprites.js:9076",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6013,7 +6013,7 @@
       "sha256": "5d543cbbd15eb062099f71a914b1a0f5929473974c3b3e44d0a5ec6b589cca60",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9084",
+        "frontend/app/propsprites.js:9107",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6031,7 +6031,7 @@
       "sha256": "83b51f81da85db8ce4d0b35f2d0e1942734f087c77d1f85abe5cbc450b65e050",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:4859",
+        "frontend/app/propsprites.js:4877",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6044,12 +6044,12 @@
       "reason": "Seating/table body remains untouched; occupancy, sleep and mounting stay with existing body/foreground/surface owners.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/chair.png",
-      "sourceWidth": 457,
-      "sourceHeight": 683,
-      "sha256": "865ff5517c06c037b6ead2e7a76ac9c990849a9738768b5acfacef261086e072",
+      "sourceWidth": 336,
+      "sourceHeight": 616,
+      "sha256": "e38dfae17aee340828baddfa5c0a76e5477eae314697df9a258dba7c35a76261",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5740",
+        "frontend/app/propsprites.js:5758",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6062,12 +6062,12 @@
       "reason": "Seating/table body remains untouched; occupancy, sleep and mounting stay with existing body/foreground/surface owners.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/chair-w.png",
-      "sourceWidth": 107,
-      "sourceHeight": 172,
-      "sha256": "9d3914b87a9c4f416b428c09ce805ff1ac4c39cc16a29a998e91b99928f2d614",
+      "sourceWidth": 280,
+      "sourceHeight": 512,
+      "sha256": "aa5401c5a23067b5e52272b88f28478c0339b8407e097740c68d6fd966f9e7b2",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5740",
+        "frontend/app/propsprites.js:5758",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6080,12 +6080,12 @@
       "reason": "Seating/table body remains untouched; occupancy, sleep and mounting stay with existing body/foreground/surface owners.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/chair-n.png",
-      "sourceWidth": 111,
-      "sourceHeight": 167,
-      "sha256": "3e6c87bc7d18e82b013203664fd970fdc584101edfcaf29673af65f4c739c832",
+      "sourceWidth": 336,
+      "sourceHeight": 632,
+      "sha256": "1a44d662026f811fd47801a1bd7ad685c271875ba63813492441db1e671e7abc",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5740",
+        "frontend/app/propsprites.js:5758",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6098,12 +6098,12 @@
       "reason": "Seating/table body remains untouched; occupancy, sleep and mounting stay with existing body/foreground/surface owners.",
       "inCurrentDemo": true,
       "image": "frontend/assets/industrial/projection-correction/chair-e.png",
-      "sourceWidth": 108,
-      "sourceHeight": 171,
-      "sha256": "9ee819732cc08490975cc2335f1eb3379f5201d70589ca0b17d89dba0656bb6d",
+      "sourceWidth": 280,
+      "sourceHeight": 512,
+      "sha256": "f8d784a32dd01202d400e241e8ad5d6406233f67e524bcf430ba596a0bad93fd",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5740",
+        "frontend/app/propsprites.js:5758",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6121,7 +6121,7 @@
       "sha256": "521647f8007b07f0b3d8898ed4cadc371bb6a9a430a35f5261a529b65bc13616",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5943",
+        "frontend/app/propsprites.js:5961",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6139,7 +6139,7 @@
       "sha256": "3e57d6b5616290b256b8bd0f84eaffe5b3bd6dab13a15e3ccb939b4458738402",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6166",
+        "frontend/app/propsprites.js:6184",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6157,7 +6157,7 @@
       "sha256": "5f9f9f47e802e02ff697625dee3136f556793672113ea40c8c98a4ab1b9c559c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6166",
+        "frontend/app/propsprites.js:6184",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6175,7 +6175,7 @@
       "sha256": "50560a0302b315f5b20be73527289c8625140843996efeb54437cadc5c955a7d",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6265",
+        "frontend/app/propsprites.js:6283",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6193,7 +6193,7 @@
       "sha256": "d654a7882d3576a721393d15156b6ec6c6f94e97ae72de9fce95d534a8476903",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6265",
+        "frontend/app/propsprites.js:6283",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6211,7 +6211,7 @@
       "sha256": "362375703cea48e3dfad67015b64767b39fbac4409e3756308ed269a1e8ce007",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6430",
+        "frontend/app/propsprites.js:6448",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6229,7 +6229,7 @@
       "sha256": "14c374b59da0f9dd71e6ee29611ea02e581c772d437ac0d92953c511b875fe85",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6430",
+        "frontend/app/propsprites.js:6448",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6247,7 +6247,7 @@
       "sha256": "ea691650d04e6f82593a82fc4c39fad0269b190e9bda46424b8020e0d377d625",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6835",
+        "frontend/app/propsprites.js:6853",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6265,7 +6265,7 @@
       "sha256": "357b75e172ae7e7fb8cf46c5e00bc276f2949c5c66aea010f9ad79c60a7d4cef",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6732",
+        "frontend/app/propsprites.js:6750",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6283,7 +6283,7 @@
       "sha256": "bb7afdb1978254c1bb059f83b3a5e5ed58f2affb87cc3b04e00563e5ee87aa92",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6732",
+        "frontend/app/propsprites.js:6750",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6301,7 +6301,7 @@
       "sha256": "3fc3d0d83a7203ca55b5f61abfc50cfecf03ce98d169997c5d28ecfe90fe5e71",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6732",
+        "frontend/app/propsprites.js:6750",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6319,7 +6319,7 @@
       "sha256": "aaed440b4f9e3eec27ab2a22315e57c517639dd67858be632631344157c97e11",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6498",
+        "frontend/app/propsprites.js:6516",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6337,7 +6337,7 @@
       "sha256": "83f592249092cb694cb0ec1abd000bc59e90df71f649f0172c37d34d55c9feb8",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6498",
+        "frontend/app/propsprites.js:6516",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6355,7 +6355,7 @@
       "sha256": "78aa189e9907408bd7383110a8d4e2edf4a8874337baeb3ad0d6dfe34a218f5e",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6498",
+        "frontend/app/propsprites.js:6516",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6373,7 +6373,7 @@
       "sha256": "9103e5f07187377da58478c180ced662a185f2c31a1e0ced5f63e36de6756abf",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6498",
+        "frontend/app/propsprites.js:6516",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6391,7 +6391,7 @@
       "sha256": "706927fb51caaf597e79fbd95d2ac872c118e7e08873b571ea00ed8ccc6590a3",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6619",
+        "frontend/app/propsprites.js:6637",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6409,7 +6409,7 @@
       "sha256": "0b15c34125f3cb6645828920eb133f6b5f3160870aba2b1c30c42fe9229ceb6f",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6619",
+        "frontend/app/propsprites.js:6637",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6427,7 +6427,7 @@
       "sha256": "55696264d747b83de6248233388704f5465dd77aa268808a9a5bb5e87b3a4c69",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6619",
+        "frontend/app/propsprites.js:6637",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6445,7 +6445,7 @@
       "sha256": "97d288fe7d695a482dbce1fe8598a147ecb285fc5d548fc1a77f6c6a8d5609cd",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6619",
+        "frontend/app/propsprites.js:6637",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6463,7 +6463,7 @@
       "sha256": "2104dd6a98ecb975013c27cb2769d8ecf51c34d83515686f296b325f42bdb304",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5975",
+        "frontend/app/propsprites.js:5993",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6481,7 +6481,7 @@
       "sha256": "dfc0e872bfd9106d12ead90f28660e1dd71cc3020a3fb40e352573099fcdadea",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5975",
+        "frontend/app/propsprites.js:5993",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6499,7 +6499,7 @@
       "sha256": "eecab611ec1f48ede26e0acba7b47b55f982fdc756ad19bd8900dc15c6a34acb",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6015",
+        "frontend/app/propsprites.js:6033",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6517,7 +6517,7 @@
       "sha256": "f36d4e137d8f68318958a25c1beb45db28ceda5079abfb5976dc07d76fc1927f",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:6015",
+        "frontend/app/propsprites.js:6033",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6589,7 +6589,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1652",
+        "frontend/app/propsprites.js:1670",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6669,7 +6669,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1684",
+        "frontend/app/propsprites.js:1702",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6692,7 +6692,7 @@
       "sha256": "f949a26e4d9c8a4129656b401625e93369eb63c5ab88e95dc0aa1a460d8ae3fe",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1717",
+        "frontend/app/propsprites.js:1735",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6710,7 +6710,7 @@
       "sha256": "91e997a13856176ec829f99569b46bdbd45bbc4199c71922c4bb17f336f428c6",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1751",
+        "frontend/app/propsprites.js:1769",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6728,7 +6728,7 @@
       "sha256": "4c82c40a0b12ec78455654e4b894345eb0ec64d4f8a7da6cba24e6ab1dd4b1c1",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1783",
+        "frontend/app/propsprites.js:1801",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6746,7 +6746,7 @@
       "sha256": "ec8e6377e836116f7a9796a032ae98126568b7d9452ae0dfa7e5c347fa61547b",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1824",
+        "frontend/app/propsprites.js:1842",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6792,7 +6792,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1857",
+        "frontend/app/propsprites.js:1875",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6863,7 +6863,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:1889",
+        "frontend/app/propsprites.js:1907",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6886,7 +6886,7 @@
       "sha256": "64f11bf3520ac9bf38f9ed8ac880de3cbd1a29a840c39f58b2c1c868b8f4b342",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1925",
+        "frontend/app/propsprites.js:1943",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6904,7 +6904,7 @@
       "sha256": "3c6a11b106d73cb925173f09a7959f373a51b5f2ebf8bfe2afe4d015794e9c4d",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:1969",
+        "frontend/app/propsprites.js:1987",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6922,7 +6922,7 @@
       "sha256": "cc9bfb852adf47e8af6192de7b61f9c91ef731ec22aaac1d6708bc56fab40b2c",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9538",
+        "frontend/app/propsprites.js:9561",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6940,7 +6940,7 @@
       "sha256": "4bd337b6527a80c7620aee89d2ba85f1655d4c3f13d8816b3f6607bbf6a56bdf",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9563",
+        "frontend/app/propsprites.js:9586",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -6990,7 +6990,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9582",
+        "frontend/app/propsprites.js:9605",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7041,7 +7041,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9607",
+        "frontend/app/propsprites.js:9630",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7064,7 +7064,7 @@
       "sha256": "e384c75cce8ce56139256a8f1ccd4f36b69599efa6879bfc00a6c180be0c622d",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9628",
+        "frontend/app/propsprites.js:9651",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7082,7 +7082,7 @@
       "sha256": "e69a5da955ddfc32793411f3532f71d70a6fda6487efb3eacc63e54a170e29fc",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9649",
+        "frontend/app/propsprites.js:9672",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7129,7 +7129,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9668",
+        "frontend/app/propsprites.js:9691",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7152,7 +7152,7 @@
       "sha256": "b58b1ec847aa770718dcc3fe387fd7764a343a3ef30398fbe67335fd9e510421",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9692",
+        "frontend/app/propsprites.js:9715",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7203,7 +7203,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10501",
+        "frontend/app/propsprites.js:10524",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7318,7 +7318,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:2005",
+        "frontend/app/propsprites.js:2023",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7341,7 +7341,7 @@
       "sha256": "e05a20907b7bf17b357a65c6d77ee74202608a852b41dfd8cbd3f119e7d890be",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:2144",
+        "frontend/app/propsprites.js:2162",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7359,7 +7359,7 @@
       "sha256": "3503eaa38f6b606bf82b15dedc3c894f6d1abc3b25a70e36514d46dba2949aa7",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9731",
+        "frontend/app/propsprites.js:9754",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7377,7 +7377,7 @@
       "sha256": "d1413f0f35659effcc7d56c36a491732996b18c62653c2ac3cec2be279a65f2d",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:9844",
+        "frontend/app/propsprites.js:9867",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7451,7 +7451,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10418",
+        "frontend/app/propsprites.js:10441",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7502,7 +7502,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9892",
+        "frontend/app/propsprites.js:9915",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7571,7 +7571,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:9945",
+        "frontend/app/propsprites.js:9968",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7594,7 +7594,7 @@
       "sha256": "7c5d3c5df92c09015b4be5e0ca40f983ab3364305cdc085e0444bd52fd9ef290",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10043",
+        "frontend/app/propsprites.js:10066",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7612,7 +7612,7 @@
       "sha256": "8056a91ccaf95812463c7bd1144fe28de6e962ae31262c7167f490a40ba04d33",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10105",
+        "frontend/app/propsprites.js:10128",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7658,7 +7658,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10107",
+        "frontend/app/propsprites.js:10130",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7709,7 +7709,7 @@
         }
       ],
       "evidence": [
-        "frontend/app/propsprites.js:10162",
+        "frontend/app/propsprites.js:10185",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7732,7 +7732,7 @@
       "sha256": "1e1de681322449c53cabf53a9f4203faae8370772e30ec55a634bc5ebe231e84",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10277",
+        "frontend/app/propsprites.js:10300",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7750,7 +7750,7 @@
       "sha256": "6fbcb30b5647c8337722cad4599c3f2fe647c727839f1e168e44f0a94f1020dc",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10386",
+        "frontend/app/propsprites.js:10409",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7768,7 +7768,7 @@
       "sha256": "253310ae004a8a5d942cbdad8a98ec42d7ee788a5401dc9233c1d068275995e1",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10164",
+        "frontend/app/propsprites.js:10187",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7786,7 +7786,7 @@
       "sha256": "c7a97d2106af6e1d2880d78fbaf46cb7ae76101a4f960caa95f9cc7b75cf0159",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10216",
+        "frontend/app/propsprites.js:10239",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7804,7 +7804,7 @@
       "sha256": "46e9d93e54e34178502a6dd81c55c51a1437542b51be690734ae409bcb3be28d",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10218",
+        "frontend/app/propsprites.js:10241",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7822,7 +7822,7 @@
       "sha256": "ff8e5e79a32b921091e57bb1e26ef6ba2c0e0ed0c5e00e5c971fd837966a0c1e",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:10275",
+        "frontend/app/propsprites.js:10298",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7840,7 +7840,7 @@
       "sha256": "0f7e7d44ff021cb05b59f9079ffdc0b2fb0adc150c3e93a8c739101b5fcf24d1",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5050",
+        "frontend/app/propsprites.js:5068",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],
@@ -7858,7 +7858,7 @@
       "sha256": "fd08e3155b6958eddf2279ec6d2abcf5903f69ec7237a805e742019c7c7f73f5",
       "regions": [],
       "evidence": [
-        "frontend/app/propsprites.js:5124",
+        "frontend/app/propsprites.js:5142",
         "frontend/app/propsprites.js:11296",
         "frontend/app/propremaster.js:285"
       ],

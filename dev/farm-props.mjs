@@ -51,9 +51,26 @@ const FILES = {
   'console-bank.png': 'a long low farmhouse dresser in oak with three old wooden-cased radios and a small amber-screen monitor on top',
 };
 /* the agent's workstation is drawn under its own work light (world.js drawLitProp), tuned for dark metal: warm oak
-   under the same light reads hot orange, so these files are installed a step darker and less saturated */
-const TONE = { 'workstation.png': 0.62, 'workstation-compact.png': 0.62, 'remaster/workstation-n.png': 0.62,
-  'remaster/workstation-compact-n.png': 0.62, 'remaster/workstation-e.png': 0.62 };
+   under the same light reads hot orange, so these files are installed a touch darker and less saturated */
+const TONE = { 'workstation.png': 0.92, 'workstation-compact.png': 0.92, 'remaster/workstation-n.png': 0.92,
+  'remaster/workstation-compact-n.png': 0.92, 'remaster/workstation-e.png': 0.92 };
+/* SURFACES: the floor, wall and wall-top textures every room is painted with. Redrawn from the station texture (so the
+   layout carries over: a wainscot keeps its panel-over-boards split), made seamless, installed at the original size.
+   They are SUNNY farm surfaces — light, warm, daylit — because the room tint keeps a texture's own brightness. */
+const SURFACE = 'Redraw this tiling game texture as {WHAT}. Seen straight from above, flat and evenly lit by bright summer daylight, ' +
+  'light and warm in tone, chunky pixel art with clear dark outlines between pieces, the same layout and scale as the reference. ' +
+  'No metal plates, no bolts or rivets, no sci-fi parts. Fill the whole square edge to edge; no border, no shadow, no vignette.';
+const TEXTURES = {
+  'remaster/floors/plank.png': 'a floor of long honey-coloured oak floorboards in staggered rows, with visible wood grain and small dark nail heads',
+  'remaster/floors/parquet.png': 'a light oak herringbone parquet floor',
+  'remaster/floors/turf.png': 'short bright green summer grass with a few clover leaves and small daisies, growing over soft soil',
+  'remaster/floors/soft-v2.png': 'a woven rag rug floor covering in faded cream, sage and barn-red stripes',
+  'remaster/floors/basalt-v2.png': 'a floor of pale sandstone flagstones with mortar joints',
+  'remaster/walls/wainscot.png': 'a farmhouse interior wall: whitewashed plaster above, a band of honey oak wainscot boards below with a moulded rail between them',
+  'remaster/crown.png': 'the top edge of a wall: a long honey oak beam with a moulded edge, seen from above',
+};
+// the plank came back cartoon-yellow; under the room's oak tint a little less saturation reads as real honey oak
+const TEX_SATURATION = { 'remaster/floors/plank.png': 0.72 };
 const fileOut = f => 'file-' + f.replace(/[\/]/g, '__');
 
 const STYLE = 'Redraw this game prop as {WHAT}. Keep exactly the art style of the reference image: chunky pixel art with thick dark outlines, ' +
@@ -141,6 +158,44 @@ async function pixelate(from, gridW, up) {
   return sharp(snapped).resize(gridW * up, gridH * up, { kernel: 'nearest' }).png().toBuffer({ resolveWithObject: true });
 }
 
+async function generateTexture(f) {
+  if (!TEXTURES[f]) throw new Error(f + ': no surface brief yet (add one to TEXTURES)');
+  if (!KEY) throw new Error('no ChatGPT_API_KEY / OPENAI_API_KEY in the environment');
+  const meta = await require('sharp')(path.join(ART, f)).metadata();
+  const form = new FormData();
+  form.append('model', MODEL);
+  form.append('image[]', new Blob([fs.readFileSync(path.join(ART, f))], { type: 'image/png' }), path.basename(f));
+  form.append('prompt', SURFACE.replace('{WHAT}', TEXTURES[f]));
+  form.append('size', sizeFor(meta.width, meta.height));
+  form.append('quality', 'high');
+  form.append('output_format', 'png');
+  const res = await fetch('https://api.openai.com/v1/images/edits', { method: 'POST', headers: { Authorization: 'Bearer ' + KEY }, body: form });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(f + ': ' + res.status + ' ' + ((body.error && body.error.message) || 'image request failed'));
+  fs.mkdirSync(REVIEW, { recursive: true });
+  fs.writeFileSync(path.join(REVIEW, fileOut(f)), Buffer.from(body.data[0].b64_json, 'base64'));
+  console.log(f + ' -> dev/farm-art/' + fileOut(f));
+}
+
+/* SEAMLESS: blend in a copy rolled by half its size wherever the original is near an edge. The rolled copy is continuous
+   across the edges (they were its middle), the original carries the middle, so the tile wraps without a visible seam. */
+async function installTexture(f) {
+  const sharp = require('sharp');
+  const meta = await sharp(path.join(ART, f)).metadata();
+  const W = meta.width, H = meta.height;
+  const a = await sharp(path.join(REVIEW, fileOut(f))).resize(W, H).removeAlpha().raw().toBuffer();
+  const out = Buffer.alloc(W * H * 3), band = Math.round(Math.min(W, H) * 0.18);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const d = Math.min(x, W - 1 - x, y, H - 1 - y), t = Math.min(1, d / band), wa = t * t * (3 - 2 * t);
+    const i = (y * W + x) * 3, j = (((y + H / 2) % H) * W + ((x + W / 2) % W)) * 3;
+    for (let c = 0; c < 3; c++) out[i + c] = Math.round(a[i + c] * wa + a[j + c] * (1 - wa));
+  }
+  let img = sharp(out, { raw: { width: W, height: H, channels: 3 } });
+  if (TEX_SATURATION[f]) img = img.modulate({ saturation: TEX_SATURATION[f] });
+  await img.png().toFile(path.join(ART, f));
+  console.log(f + ' installed (seamless) at ' + W + 'x' + H);
+}
+
 async function installFile(f) {
   const sharp = require('sharp');
   const from = path.join(REVIEW, fileOut(f));
@@ -173,12 +228,13 @@ const args = process.argv.slice(2);
 if (args.includes('--list')) { console.log(Object.keys(FARM).concat(Object.keys(FILES).map(f => '--file ' + f)).join('\n')); process.exit(0); }
 const ids = args.filter(a => !a.startsWith('--'));
 let results;
-const fileMode = args.includes('--file');
+const fileMode = args.includes('--file'), texMode = args.includes('--texture');
 if (args.includes('--install')) {   // one at a time: every install rewrites the shared manifest
   results = [];
-  for (const id of ids) results.push(await (fileMode ? installFile : install)(id).then(v => ({ status: 'fulfilled', value: v }), reason => ({ status: 'rejected', reason })));
+  const run = texMode ? installTexture : fileMode ? installFile : install;
+  for (const id of ids) results.push(await run(id).then(v => ({ status: 'fulfilled', value: v }), reason => ({ status: 'rejected', reason })));
 } else {
-  results = await Promise.allSettled(ids.map(fileMode ? generateFile : generate));
+  results = await Promise.allSettled(ids.map(texMode ? generateTexture : fileMode ? generateFile : generate));
 }
 let failed = 0;
 for (const r of results) if (r.status === 'rejected') { failed++; console.error('FAILED ' + r.reason.message); }

@@ -56,7 +56,7 @@ for (const level of [25, 50, 75, 100]) {
   assert.equal(rebakes, count, 'the same value does not rebake again');
 }
 assert.equal(rebakes, 4, 'every committed change reaches the renderer');
-assert.deepEqual(api.knobs(100), { ambient: 0.3, cut: 2.4, key: 2, film: 0.26 }, '100 is the brightest tuned look');
+assert.deepEqual(api.knobs(100), { ambient: 0, cut: 1.6, key: 1, film: 0.26 }, '100 is the brightest tuned look (noon on the farm)');
 
 // A DRAG never rebakes: World.rebake is a full StationBake (~2.5 s frozen on a big station), so even a pause
 // mid-drag must not pay it. Film and ambient move at once; the release pays the one rebake the drag owed

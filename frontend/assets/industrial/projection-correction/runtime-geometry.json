@@ -171,50 +171,50 @@
     },
     "desk:s": {
       "image": "desk.png",
-      "width": 1207,
-      "height": 804,
-      "sha256": "ab17bcf9ff336e27e299c2dda54b9c63e916a761328ceaa00b083c15c719d657",
+      "width": 1064,
+      "height": 976,
+      "sha256": "bdbed666ad4b73f6818137dd84572759b459b475a803c5c80d7d5095e5a3e121",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 1207,
-        "height": 804
+        "width": 1064,
+        "height": 976
       }
     },
     "desk:w": {
       "image": "desk-w.png",
-      "width": 128,
-      "height": 190,
-      "sha256": "8302a63ef00bc673e46c074dae162a48de9260ea323ee89fec943959053a8de1",
+      "width": 504,
+      "height": 552,
+      "sha256": "bb0c21fd084208268a21733be614be693a3e3f55835da33037d7d1b5166bdc73",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 128,
-        "height": 190
+        "width": 504,
+        "height": 552
       }
     },
     "desk:n": {
       "image": "desk-n.png",
-      "width": 597,
-      "height": 469,
-      "sha256": "aba5a15e71fff142c85a8350b1247593b1f0ce26a754d96ff5f15a071988de54",
+      "width": 1120,
+      "height": 1008,
+      "sha256": "60fe2388600f200d5834aea51865c3431b73a60d9f7d53bb694ddde307e28468",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 597,
-        "height": 469
+        "width": 1120,
+        "height": 1000
       }
     },
     "desk:e": {
       "image": "desk-e.png",
-      "width": 138,
-      "height": 190,
-      "sha256": "6560272282713dd12238be0eb9924906a3f5f314c86802f8c7d2e0c528fad99f",
+      "width": 504,
+      "height": 552,
+      "sha256": "314c98bcca46da8973e709425e8a35b39a2f01088b3f3833754a5f3ffed236a5",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 138,
-        "height": 190
+        "width": 504,
+        "height": 552
       }
     },
     "desk2:s": {
@@ -315,14 +315,14 @@
     },
     "workbench:s": {
       "image": "workbench.png",
-      "width": 1515,
-      "height": 909,
-      "sha256": "52c33e1e5697ae01fac5a868993c7efb0f3b45e5de96b4075922ab628065104d",
+      "width": 840,
+      "height": 520,
+      "sha256": "1d1f4fc844b73964783c59cc74f9a3df929e3fce7e95e0d95eb03bce9ba3145b",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 1515,
-        "height": 909
+        "width": 840,
+        "height": 520
       }
     },
     "intake:s": {
@@ -435,14 +435,14 @@
     },
     "comms_dish:s": {
       "image": "comms_dish.png",
-      "width": 777,
-      "height": 1039,
-      "sha256": "4c16b96d5f74172865523b0653082d41fca8dc1187d33dea1f130a575ad8de47",
+      "width": 560,
+      "height": 1128,
+      "sha256": "7556075c2d873ee6906659e91cb6de5fc433ba4504e606925be696ab458bc181",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 777,
-        "height": 1039
+        "width": 560,
+        "height": 1128
       }
     },
     "comms_uplink:s": {
@@ -471,14 +471,14 @@
     },
     "war_intelcab:s": {
       "image": "war_intelcab.png",
-      "width": 950,
-      "height": 930,
-      "sha256": "4f388de58644cf145e098098baaf81956c1a731ae13a2dbf7039378620064266",
+      "width": 480,
+      "height": 624,
+      "sha256": "5450e46ba0d30328ce71ce80e7fc09d2e1c60941f00ae2fc94bb7899944fc893",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 950,
-        "height": 930
+        "width": 472,
+        "height": 616
       }
     },
     "safe:s": {
@@ -543,14 +543,14 @@
     },
     "gigs_servercart:s": {
       "image": "gigs_servercart.png",
-      "width": 1071,
-      "height": 1004,
-      "sha256": "c5f4fd180edb503b05ba8ece2d6907ac6473e565ec4227104873a1286d69e23f",
+      "width": 448,
+      "height": 560,
+      "sha256": "088f2bc7bac70a6fda3f1e802d82f3f3a8574189ce164c850cbf3f417b431149",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 1071,
-        "height": 1004
+        "width": 448,
+        "height": 560
       }
     },
     "bridge_relaystack:s": {
@@ -567,14 +567,14 @@
     },
     "studio:s": {
       "image": "studio.png",
-      "width": 1422,
-      "height": 856,
-      "sha256": "8dc7919e209f47a7cd73f476b8529131d1f2b9d1d5cd02639bbb9b3c310f86cf",
+      "width": 816,
+      "height": 840,
+      "sha256": "c0561afb1cf5849f4e39c7a9bf7121b878af15f2b32611c16defb070b789b06d",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 1422,
-        "height": 856
+        "width": 816,
+        "height": 840
       }
     },
     "airlock:s": {
@@ -1335,14 +1335,14 @@
     },
     "plant:s": {
       "image": "plant.png",
-      "width": 640,
-      "height": 1412,
-      "sha256": "cd139153fd94f1b9ecf64aabd7d90b492798d3e4d7df92ee78caa2f2398a8bdf",
+      "width": 280,
+      "height": 632,
+      "sha256": "71153ae5b86f4f25896d8c8801f744e9f24adc502c77e0370a3b69b7ffd26cd2",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 640,
-        "height": 1412
+        "width": 280,
+        "height": 632
       }
     },
     "rug:s": {
@@ -1431,50 +1431,50 @@
     },
     "chair:s": {
       "image": "chair.png",
-      "width": 457,
-      "height": 683,
-      "sha256": "865ff5517c06c037b6ead2e7a76ac9c990849a9738768b5acfacef261086e072",
+      "width": 336,
+      "height": 616,
+      "sha256": "e38dfae17aee340828baddfa5c0a76e5477eae314697df9a258dba7c35a76261",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 457,
-        "height": 683
+        "width": 336,
+        "height": 616
       }
     },
     "chair:w": {
       "image": "chair-w.png",
-      "width": 107,
-      "height": 172,
-      "sha256": "9d3914b87a9c4f416b428c09ce805ff1ac4c39cc16a29a998e91b99928f2d614",
+      "width": 280,
+      "height": 512,
+      "sha256": "aa5401c5a23067b5e52272b88f28478c0339b8407e097740c68d6fd966f9e7b2",
       "crop": {
         "x": 0,
-        "y": 0,
-        "width": 107,
-        "height": 172
+        "y": 8,
+        "width": 280,
+        "height": 504
       }
     },
     "chair:n": {
       "image": "chair-n.png",
-      "width": 111,
-      "height": 167,
-      "sha256": "3e6c87bc7d18e82b013203664fd970fdc584101edfcaf29673af65f4c739c832",
+      "width": 336,
+      "height": 632,
+      "sha256": "1a44d662026f811fd47801a1bd7ad685c271875ba63813492441db1e671e7abc",
       "crop": {
         "x": 0,
         "y": 0,
-        "width": 111,
-        "height": 167
+        "width": 336,
+        "height": 632
       }
     },
     "chair:e": {
       "image": "chair-e.png",
-      "width": 108,
-      "height": 171,
-      "sha256": "9ee819732cc08490975cc2335f1eb3379f5201d70589ca0b17d89dba0656bb6d",
+      "width": 280,
+      "height": 512,
+      "sha256": "f8d784a32dd01202d400e241e8ad5d6406233f67e524bcf430ba596a0bad93fd",
       "crop": {
         "x": 0,
-        "y": 0,
-        "width": 108,
-        "height": 171
+        "y": 8,
+        "width": 280,
+        "height": 504
       }
     },
     "sidetable:s": {

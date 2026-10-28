@@ -277,7 +277,10 @@ const StationBake = (() => {
      `reach` together take it to mean 44 / 7% lit / chroma 22 with the SAME crushed-black floor:
      contrast and colour, not a global lift (ambient itself moved 0.82 -> 0.80 only). A/B the whole
      thing with the CRT LAB's "Light: pre-09-02" preset before relitigating any single value. */
-  const LIGHT = { ambient: 0.82, ambR: 7, ambG: 5, ambB: 3, pool: 0.85, room: 0.46, corridor: 0.34, door: 0.4, floor: 0.24, crown: 0.45, pitch: 8, reach: 1.3, falloff: 0.85, cool: 0.45, warm: 0.16, spill: 0.7 };   // floor 0.26→0.3, warm 0.14→0.3 (2026-09-03 overhaul: the film is what puts light ON the deck under a lamp; measured lounge sd 28.8→35+, crushed 4%→2%) · crown = how far the ambient gives way over a wall's lit top surface (0 = off, the old inversion)
+  /* SUMMER DAYLIGHT (farm remaster): the station's 0.82 ambient plate made every room a lamp-lit night interior. A
+     farm is lit by the sun through its windows, so the plate drops to a thin 0.1 and the room reads at its own colours;
+     the lamp pools still lift what stands under them. */
+  const LIGHT = { ambient: 0.1, ambR: 7, ambG: 5, ambB: 3, pool: 0.85, room: 0.46, corridor: 0.34, door: 0.4, floor: 0.24, crown: 0.45, pitch: 8, reach: 1.3, falloff: 0.85, cool: 0.45, warm: 0.16, spill: 0.7 };   // floor 0.26→0.3, warm 0.14→0.3 (2026-09-03 overhaul: the film is what puts light ON the deck under a lamp; measured lounge sd 28.8→35+, crushed 4%→2%) · crown = how far the ambient gives way over a wall's lit top surface (0 = off, the old inversion)
   // Live-lab calibration shared by the saved station and catalog rooms.
   // Interior area lights carry the occupied deck; exterior cladding recedes.
   if(projectionPresentation){Object.assign(WALL,{hullLit:.95,hullVoid:.62});Object.assign(LIGHT,{room:.60,pool:.96,reach:1.5});}

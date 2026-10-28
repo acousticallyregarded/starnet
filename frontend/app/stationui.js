@@ -122,8 +122,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   // deck film, the pool cut, the KEY light and the CRT density film all set what reaches the eye, so the
   // slider drives all of them together. `film` scales the renderer's own CRT.film (the classic world's 0 stays 0).
   // 100 = the brightest tuned look (hab mean luma 15.9 at 0 → 28.5 at 100). Old LOW/MEDIUM/HIGH saves map to 0/15/30.
-  const ROOM_LIGHTING_MIN = { ambient: 0.82, cut: 1, key: 0, film: 1 };
-  const ROOM_LIGHTING_MAX = { ambient: 0.3, cut: 2.4, key: 2, film: 0.26 };
+  // The farm is daylit by default (ambient 0.1): 0 is that sunny room, 100 is noon with every pool and key up.
+  const ROOM_LIGHTING_MIN = { ambient: 0.1, cut: 1, key: 0, film: 1 };
+  const ROOM_LIGHTING_MAX = { ambient: 0, cut: 1.6, key: 1, film: 0.26 };
   const ROOM_LIGHTING_LEGACY = { low: 0, medium: 15, high: 30 };
   let roomLightingFilm = null;   // the renderer's CRT.film before the slider touched it
   let roomLightingBaked = null, roomLightingTimer = 0;   // the ambient/cut/key the station was last baked with
