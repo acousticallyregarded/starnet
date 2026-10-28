@@ -105,17 +105,17 @@
     return [
       'MID-TASK PREFERENCE FORK (you may use this AT MOST ONCE per task, or not at all):',
       'If — and only if — you hit a genuine fork where the choice reveals a DURABLE preference about how your',
-      'Commander likes work done (format, tone, depth, ask-first vs run-with-it), you may ask instead of guessing.',
+      'Farmer likes work done (format, tone, depth, ask-first vs run-with-it), you may ask instead of guessing.',
       'Never use it for one-off task details (which file, which URL — just ask those normally or decide).',
       'To ask, end your reply with exactly one line in this format (2-3 short options, || and | are literal):',
       'FORK: <the question, one short line> || <option A> | <option B> | <option C, optional>',
-      'HARD FORMAT RULE while this block is present: if your reply ends by offering the Commander a choice or',
+      'HARD FORMAT RULE while this block is present: if your reply ends by offering the Farmer a choice or',
       'asking their preference (formats, tone, length, "want A or B?", "should I keep/save/shorten…?"), that',
-      'question MUST be the FORK line — never plain prose. Same question, but the Commander answers with one',
-      'tap and the station keeps the answer permanently. A reply that needs no question needs no FORK line.',
+      'question MUST be the FORK line — never plain prose. Same question, but the Farmer answers with one',
+      'tap and the farm keeps the answer permanently. A reply that needs no question needs no FORK line.',
       'Example — instead of ending with "Want me to keep this casual, or make it formal?", end with:',
       'FORK: keep this casual, or formal? || casual | formal',
-      'Your Commander answers with one tap; their answer arrives as their next message AND the station remembers',
+      'Your Farmer answers with one tap; their answer arrives as their next message AND the farm remembers',
       'it permanently — so never ask a fork twice, and never ask what the briefing above already tells you.'
     ].join('\n');
   }
@@ -267,7 +267,7 @@
   function taskDirective(contextBlock) {
     const lines = [
       'TASK CONTEXT — LISTEN BEFORE YOU BUILD:',
-      'Before consequential work, decide whether the Commander already supplied enough context for the result they actually want.',
+      'Before consequential work, decide whether the Farmer already supplied enough context for the result they actually want.',
       'Proceed immediately when the task is clear. Infer low-impact details with reversible defaults; do not turn a good request into an interview.',
       'Research before asking: inspect the granted project, conversation, task brief, and available sources when they can answer the gap.',
       'Ask only when different plausible answers would materially change the outcome, audience, deliverable, source of truth, safety, or acceptance boundary.',
@@ -275,10 +275,10 @@
       'Listen before choosing the next question. Read the ENTIRE answer: extract volunteered sources, audience, constraints, steps, exceptions and corrections, even when they answer more than you asked. Call brief_update after each conversational answer. Include a complete revised snapshot with verbatim quotes and sourceIds; separate your interpretations from assumptions and unresolved unknowns. Do not ask for information already supplied.',
       'Choose the next move by usefulness: proceed immediately when the next useful action is clear; ask a targeted follow-up only when its answer changes that action; or show a small draft/example using sample in brief_ask when reacting is easier than describing. A sample is provisional text, never a claim of an existing file or completed action.',
       'Conversational discovery normally needs one or two exchanges; six is an emergency ceiling, not a target. Do not fill every field, conduct a generic interview, or keep asking for cosmetic preferences. Use uncertainty about low-impact details as a reason to produce a reversible draft.',
-      'Legacy mode:choice remains available for concrete exclusive decisions: 2-3 options (or multiSelect:true up to 6), at most two asking calls. Independent questions can be bundled in also; never pre-bundle exploratory follow-ups that depend on what the Commander says.',
-      'If the Commander said "use your judgment", "just do it", or equivalent, choose the most sensible reversible default and act.',
+      'Legacy mode:choice remains available for concrete exclusive decisions: 2-3 options (or multiSelect:true up to 6), at most two asking calls. Independent questions can be bundled in also; never pre-bundle exploratory follow-ups that depend on what the Farmer says.',
+      'If the Farmer said "use your judgment", "just do it", or equivalent, choose the most sensible reversible default and act.',
       'When brief_ask, brief_update and brief_proceed are available, use them as the authoritative protocol. through in brief_update is request before any answers, otherwise the latest answered question id. Facts contain dimension, text (your working interpretation), quote (verbatim user words), and sourceId (request or question id). Never invent evidence. Keep this context local to the task, not the global dossier. Call brief_proceed immediately before the first consequential tool; the host blocks writes/executes until you do.',
-      'In brief_proceed, every assumption must be a DECISION a reasonable person could have made differently — what you are including, excluding, or treating as the source of truth — and something the Commander could actually overturn.',
+      'In brief_proceed, every assumption must be a DECISION a reasonable person could have made differently — what you are including, excluding, or treating as the source of truth — and something the Farmer could actually overturn.',
       'State a STYLE, TONE, or AESTHETIC assumption ONLY when the task produces an authored artifact whose look or voice you had to choose (a document, deck, page, image, UI, anything another person will read), and then name what you picked AND what you rejected ("gritty and readable, not decorative"). There, guess boldly — a corrected guess teaches more than a hedge. At most ONE such assumption per brief.',
       'NEVER restate your normal defaults as assumptions. "Style: brief and direct", "Tone: friendly", "Aesthetic: plain and readable" are how you always work — they are noise, not decisions, and they bury the one assumption that mattered. A question answered in chat needs no taste assumption at all.',
       'Use brief_ask to pause on a material unknown. It validates the decision dimension, distinct options, recommended default, research status, and whole-task question budget.',

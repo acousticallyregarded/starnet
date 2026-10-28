@@ -291,7 +291,7 @@ function parsePages(buf) {
     const snr = 10 * Math.log10(s2s / e2);
     A.ok(snr > 20, 'ADPCM keeps a speech-band tone clean: SNR ' + snr.toFixed(1) + ' dB');
 
-    A.eq(splitSentences('Doing well. The station is up and nothing looks broken. Want a status rundown?'), ['Doing well. The station is up and nothing looks broken. Want a status rundown?'],
+    A.eq(splitSentences('Doing well. The farm is up and nothing looks broken. Want a status rundown?'), ['Doing well. The farm is up and nothing looks broken. Want a status rundown?'],
       'a short spoken reply is synthesised in one breath, never sentence by sentence');
     const chunks = splitSentences(LONG_REPLY);
     A.eq(chunks.length, 3, 'a long reply is cut at sentence ends into chunks under 240 characters');
@@ -364,7 +364,7 @@ function parsePages(buf) {
     A.ok(!noCtx.ok, 'no session device, no voice');
     const bare = makeGateway({ host: {}, approvals: { size: () => 0 }, now: () => 1 });
     const none = await bare.call({ verb: 'hear', args: {} }, { deviceId: 'devA' });
-    A.ok(!none.ok && /cannot do voice/.test(none.error), 'a station without voice says so');
+    A.ok(!none.ok && /cannot do voice/.test(none.error), 'a farm without voice says so');
   }
 
   /* ---------- 5. a question spoken on a voice-only device gets a reply shaped to be heard ---------- */
@@ -387,7 +387,7 @@ function parsePages(buf) {
     // voice-remote-channels-02: the per-reply engine pin (synthOne's { provider }) must reach the station voice, or a model
     // that finishes loading mid-reply answers sentence 2 in another engine and the reply is cut short
     const indexSrc = fs.readFileSync(require('path').join(__dirname, '../sidecar/index.js'), 'utf8');
-    A.ok(indexSrc.includes('synthesize: (text, o) => media.synthesizeStationVoice(text, o)'), 'the sidecar passes the per-reply engine pin through to the station voice');
+    A.ok(indexSrc.includes('synthesize: (text, o) => media.synthesizeStationVoice(text, o)'), 'the sidecar passes the per-reply engine pin through to the farm voice');
   }
 
   A.report('remote-voice');

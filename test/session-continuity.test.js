@@ -51,7 +51,7 @@ async function campaign(root, seed) {
   // race, 2026-10-15). The bounded wait and its honest refusal: test/history-restore-boot-race.test.js.
   const retry=api.ensureHistoryReady(w,new AbortController().signal);
   for(let n=0;n<20&&requests.length<4;n++) await new Promise(r=>setImmediate(r));
-  assert.equal(requests.length,4,'the send asked the station again');
+  assert.equal(requests.length,4,'the send asked the farm again');
   reply(3,freshRows);await retry;
   const removed=api.loadServerHistory(w,5);sessions.delete('a');reply(4,freshRows);assert.equal(await removed,false);
   assert.equal(saves,1,'removed session cannot be persisted by late response');

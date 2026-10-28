@@ -118,7 +118,7 @@
     const kcFailed = Array.isArray(v.keychainFailed) ? v.keychainFailed : [];
     const lines = [];
     lines.push('Deleted ' + removed.length + ' Homestead data location' + (removed.length === 1 ? '' : 's') + ' on this computer.');
-    if (failed.length) lines.push('Could NOT delete ' + failed.length + ': ' + failed.map(f => f.path + ' (' + f.error + ')').join('; ') + '. Quit StarNet and delete ' + (failed.length === 1 ? 'it' : 'them') + ' by hand.');
+    if (failed.length) lines.push('Could NOT delete ' + failed.length + ': ' + failed.map(f => f.path + ' (' + f.error + ')').join('; ') + '. Quit Homestead and delete ' + (failed.length === 1 ? 'it' : 'them') + ' by hand.');
     if (kcFailed.length) lines.push('Could NOT remove ' + kcFailed.length + ' saved credential' + (kcFailed.length === 1 ? '' : 's') + ' from the system keychain: ' + kcFailed.join('; ') + '.');
     else lines.push('Removed Homestead\'s saved keys and tokens from the system keychain.');
     if (v.autostartDisabled === false) lines.push('Launch at login could not be turned off; turn it off in your system settings.');

@@ -66,7 +66,7 @@ const TOOLS = [
     inputSchema: {
       type: 'object',
       properties: {
-        platform: { type: 'string', description: 'Filter by platform (only "homestead" matches runs today).' },
+        platform: { type: 'string', description: 'Filter by platform (only "starnet" matches runs today).' },
         limit: { type: 'integer', description: 'Max conversations to return (default 50).' },
         search: { type: 'string', description: 'Filter conversations whose title/agent/key contains this text.' }
       }

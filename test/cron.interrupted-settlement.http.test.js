@@ -62,7 +62,7 @@ const NEXT_AT = NOW + 30 * 60000;         // advance-before-run already persiste
 
 function seed(ws) {
   const sched = cron.parseSchedule('every 1h', NOW);
-  const base = (id, extra) => Object.assign(cronStore.makeJob({ name: id, prompt: 'Summarize the station.', schedule: sched, agentId: 'agent' }, { id, now: PREV_AT }), extra);
+  const base = (id, extra) => Object.assign(cronStore.makeJob({ name: id, prompt: 'Summarize the farm.', schedule: sched, agentId: 'agent' }, { id, now: PREV_AT }), extra);
   const jobs = [
     // fired at INT_AT, process died before markRun — must be honestly marked interrupted
     base('hourly', { lastRunAt: iso(PREV_AT), lastRunId: 'prev-ok', lastStatus: 'ok', lastReason: 'done', nextRunAt: iso(NEXT_AT), repeat: { times: null, completed: 4 } }),
@@ -73,11 +73,11 @@ function seed(ws) {
   const dir = path.join(ws, '.run-journal');
   let tick = INT_AT;
   const j = makeRunJournal({ dir, clock: { now: () => (tick += 1000) } });
-  const msgs = [{ role: 'system', content: 'Fixture system' }, { role: 'user', content: 'Summarize the station.' }];
-  j.begin({ runId: 'cron-int', agentId: 'agent', streamId: 'cron-cron-int', trigger: 'schedule', model: 'test/model', provider: 'openrouter', surface: 'autonomous', userTitle: 'Summarize the station.', startedAt: INT_AT, cronJobId: 'hourly', cronJobName: 'hourly' });
+  const msgs = [{ role: 'system', content: 'Fixture system' }, { role: 'user', content: 'Summarize the farm.' }];
+  j.begin({ runId: 'cron-int', agentId: 'agent', streamId: 'cron-cron-int', trigger: 'schedule', model: 'test/model', provider: 'openrouter', surface: 'autonomous', userTitle: 'Summarize the farm.', startedAt: INT_AT, cronJobId: 'hourly', cronJobName: 'hourly' });
   j.checkpoint('cron-int', { phase: 'initial', turn: 0, messages: msgs });
   tick = NOW - 40 * 60000;
-  j.begin({ runId: 'cron-old', agentId: 'agent', streamId: 'cron-cron-old', trigger: 'schedule', model: 'test/model', provider: 'openrouter', surface: 'autonomous', userTitle: 'Summarize the station.', startedAt: NOW - 40 * 60000, cronJobId: 'later', cronJobName: 'later' });
+  j.begin({ runId: 'cron-old', agentId: 'agent', streamId: 'cron-cron-old', trigger: 'schedule', model: 'test/model', provider: 'openrouter', surface: 'autonomous', userTitle: 'Summarize the farm.', startedAt: NOW - 40 * 60000, cronJobId: 'later', cronJobName: 'later' });
   j.checkpoint('cron-old', { phase: 'initial', turn: 0, messages: msgs });
 }
 

@@ -144,11 +144,11 @@ A.ok(/vsyncMs/.test(frameSrc) && /pace - Math\.max\(1, Math\.min\(vsyncMs/.test(
 A.ok(/renderPace,/.test(code), 'World.renderPace() is exported for live verification');
 A.ok(/finally \{\s*if \(cache === bakedBefore\) \{\s*noteDrawCost\(performance\.now\(\) - drawStart\);\s*noteStrain\(performance\.now\(\) - drawStart\);/.test(frameSrc)
   && frameSrc.indexOf('const drawStart = performance.now(), bakedBefore = cache') < frameSrc.indexOf('frameBody(now)'),
-  'every draw that did not bake the station (a throwing one included) reports its real cost to the frame budget and the strain band');
+  'every draw that did not bake the farm (a throwing one included) reports its real cost to the frame budget and the strain band');
 
 // ---- 3. compositor: no infinite full-screen flicker; decorative loops rest while unfocused --------------------
 const appCode = strip(appCss);
-A.ok(!/#screen-game\.active\s*\{[^}]*animation:[^}]*infinite/.test(appCode), 'the station screen carries no infinite animation');
+A.ok(!/#screen-game\.active\s*\{[^}]*animation:[^}]*infinite/.test(appCode), 'the farm screen carries no infinite animation');
 A.ok(/body:not\(\.no-flicker\) #screen-game\.active \{ isolation: isolate; \}/.test(appCode), 'flicker-on keeps the stacking context the running animation always made');
 A.ok(/#screen-game\.active\.flick-dip \{ animation: flick-dip 280ms 1; \}/.test(appCode), 'the dip is a one-shot');
 A.ok(/@keyframes flick-dip \{ 0%,100% \{ opacity: 1; \} 25% \{ opacity: 0\.84; \} 50% \{ opacity: 0\.95; \} \}/.test(styleCss), 'flick-dip is the old 96..100% tail (same opacities)');
@@ -170,7 +170,7 @@ A.ok(/armFlickerClock\(\); armMotionRest\(\);/.test(ui), 'applySettings arms bot
   const run = (n, full, lite) => { let probes = 0; for (let i = 0; i < n; i++) { const st = W.strain(), ms = st.strained && !st.strainProbe ? lite : full; if (st.strained && st.strainProbe) probes++; W.noteDrawCost(ms); W.noteStrain(ms); } return probes; };
   W.resetBudget();
   run(200, 14, 14);
-  A.eq(W.strain().strained, false, 'a healthy station (14 ms a draw) never sheds detail');
+  A.eq(W.strain().strained, false, 'a healthy farm (14 ms a draw) never sheds detail');
   A.ok(S.STRAIN_ENTER_MS > 20 && S.STRAIN_ENTER_MS < 33, 'strain begins where the budget would hold the floor under ~25-30 fps');
   run(10, 120, 50);
   A.eq(W.strain().strained, true, 'a weak machine (120 ms a draw) sheds detail');
@@ -193,7 +193,7 @@ A.ok(/armFlickerClock\(\); armMotionRest\(\);/.test(ui), 'applySettings arms bot
 // the 19.6 ms exit line) never earned its way back: crew lost walk frames, pose dissolve and body light for the session.
 // The real frame() and rebake() run here against a clock the stubs advance.
 const rebakeSrc = A.fnBody(code, 'function rebake()');
-A.ok(rebakeSrc && /StationBake\.bake\(geo\)/.test(rebakeSrc), 'rebake() is the one place the station bake runs');
+A.ok(rebakeSrc && /StationBake\.bake\(geo\)/.test(rebakeSrc), 'rebake() is the one place the farm bake runs');
 // a floor whose every draw (full detail, lite or probe) costs clk.drawMs, and whose station bake costs 2.5 s
 function floorSim() {
   const clk = { now: 0, drawMs: 22 };
@@ -203,7 +203,7 @@ function floorSim() {
   vm.createContext(sb);
   vm.runInContext('let frameCapMs = 0, lastDrawnAt = 0, running = true, raf = 0, renderFaults = 0, lastFaultMsg = "", reviewParts = null, reviewStamp = 0;\n' +
     'const RENDER_FAULT_LIMIT = 30, reviewPerformance = { enabled: false, samples: [] };\n' +
-    'let station = {}, geo = {}, cache = null, geoDirty = false, bakeDirty = true, bakedAnchorKey = null, handedBake = null;\n' +
+    'let farm = {}, geo = {}, cache = null, geoDirty = false, bakeDirty = true, bakedAnchorKey = null, handedBake = null;\n' +
     'function buildHoldsFloor() { return false; } function rederive() {} function fixtureAnchorKey() { return ""; } function recordBakeProbe() {} function drawRenderFault() {}\n' +
     'function frameBody(now) { if (bakeDirty || !cache) rebake(); clk.now += clk.drawMs; }\n' +
     world.slice(from, to) + '\n' + rebakeSrc + '\n' + frameSrc +
@@ -214,7 +214,7 @@ function floorSim() {
 {
   const { clk, F, draw } = floorSim();
   draw(1);
-  A.ok(F.cost() < 30, 'the boot frame that baked the station does not seed the frame budget (' + F.cost().toFixed(1) + ' ms)');
+  A.ok(F.cost() < 30, 'the boot frame that baked the farm does not seed the frame budget (' + F.cost().toFixed(1) + ' ms)');
   draw(200);
   A.eq(F.strained(), false, 'a 22 ms floor after a 2.5 s boot bake keeps full detail');
   A.ok(Math.abs(F.cost() - 22) < 0.5, '...and its budget is its real draw cost');
@@ -257,7 +257,7 @@ function floorSim() {
   A.eq(Y.yieldWait(1000), 0, 'no hold asked: the floor draws on its normal pace');
   Y.yieldToUi();
   A.eq(Y.yieldWait(1000), Y.max, 'a window opening holds the floor for YIELD_MAX_MS');
-  A.ok(Y.max > 0 && Y.max <= 300, 'the hold is a moment (the rise of the sheet), never long enough to read as a frozen station');
+  A.ok(Y.max > 0 && Y.max <= 300, 'the hold is a moment (the rise of the sheet), never long enough to read as a frozen farm');
   A.eq(Y.yieldWait(1000, true), 0, 'a forced draw (a resize blanked the bitmap) still draws during a hold');
   ye.now = 1100; Y.yieldToUi(5000);
   A.eq(Y.yieldWait(1100), Y.max, 'a second window extends the hold from now, capped: no caller can freeze the floor');

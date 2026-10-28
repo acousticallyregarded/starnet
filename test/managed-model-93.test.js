@@ -109,8 +109,8 @@ module.exports = (async () => {
     const sp = (picks.match(/\n    starnet: \[[\s\S]*?\n    \],/) || [''])[0];
     const fIds = (sf.match(/'([^']+)'/g) || []).map(s => s.slice(1, -1));
     const pIds = (sp.match(/id: '([^']+)'/g) || []).map(s => s.slice(5, -1));
-    A.ok(fIds.length > 0 && pIds.length > 0, 'STARNET has its own FALLBACK_MODELS + MODEL_PICKS entries');
-    A.ok(fIds.concat(pIds).every(id => /^[a-z0-9-]+\/[^/]+$/.test(id)), 'every STARNET default is a vendor/model id: ' + fIds.concat(pIds).join(', '));
+    A.ok(fIds.length > 0 && pIds.length > 0, 'HOMESTEAD has its own FALLBACK_MODELS + MODEL_PICKS entries');
+    A.ok(fIds.concat(pIds).every(id => /^[a-z0-9-]+\/[^/]+$/.test(id)), 'every HOMESTEAD default is a vendor/model id: ' + fIds.concat(pIds).join(', '));
     A.eq(pIds[0], fIds[0], 'the first pick (the genesis default) matches defaultModelFor(starnet)');
   }
 
@@ -143,8 +143,8 @@ module.exports = (async () => {
     try {
       const rows = await t.dock.catalog({ force: true });
       const managed = rows.filter(m => m.provider === 'starnet');
-      if (linked) A.ok(managed.some(m => m.id === 'openai/gpt-5.5'), 'a linked station offers STARNET MANAGED rows in the per-agent picker even when the focused agent runs elsewhere');
-      else A.eq(managed.length, 0, 'an unlinked station shows no STARNET MANAGED rows (providerEnabled gates it)');
+      if (linked) A.ok(managed.some(m => m.id === 'openai/gpt-5.5'), 'a linked farm offers STARNET MANAGED rows in the per-agent picker even when the focused agent runs elsewhere');
+      else A.eq(managed.length, 0, 'an unlinked farm shows no STARNET MANAGED rows (providerEnabled gates it)');
     } finally { t.restore(); }
   }
 
@@ -167,13 +167,13 @@ module.exports = (async () => {
       const order = rows.map(m => m.provider).filter((p, i, a) => a.indexOf(p) === i);
       A.ok(order.includes('starnet') && order.includes('claude-cli'), label + ': both catalogs are listed');
       A.eq(t.dock.starnetDry(), dry, label + ': starnetDry reads the reported balance only');
-      if (dry) A.eq(order[order.length - 1], 'starnet', label + ': STARNET sinks below every other provider');
-      else A.eq(order[0], 'starnet', label + ': STARNET keeps its place (an unknown balance never buries a funded account)');
+      if (dry) A.eq(order[order.length - 1], 'starnet', label + ': HOMESTEAD sinks below every other provider');
+      else A.eq(order[0], 'starnet', label + ': HOMESTEAD keeps its place (an unknown balance never buries a funded account)');
     } finally { t.restore(); }
   }
   {
     const dock = read('frontend', 'app', 'modeldock.js');
-    A.ok(/starnetDry\(\)\) \{\s*\n\s*const dry = document\.createElement\('i'\);[\s\S]{0,120}' · NO CREDITS'/.test(dock), 'the dock labels a dry STARNET group NO CREDITS');
+    A.ok(/starnetDry\(\)\) \{\s*\n\s*const dry = document\.createElement\('i'\);[\s\S]{0,120}' · NO CREDITS'/.test(dock), 'the dock labels a dry HOMESTEAD group NO CREDITS');
     A.ok(/p === 'starnet' && M\.starnetDry && M\.starnetDry\(\)\) return M\.labels\.provider\(p\) \+ ' · NO CREDITS'/.test(read('frontend', 'app', 'modelpicker.js')), 'the per-agent picker labels it the same way');
   }
 
@@ -208,7 +208,7 @@ module.exports = (async () => {
       const H = vm.runInNewContext(src, ctx);
       await H.init();
       A.ok(fetched.some(u => String(u).indexOf('/api/credits') === 0), label + ': boot probes /api/credits');
-      A.eq(H.configured('starnet'), true, label + ': a linked station stays configured for STARNET after a desktop boot');
+      A.eq(H.configured('starnet'), true, label + ': a linked farm stays configured for HOMESTEAD after a desktop boot');
       A.eq(H.configured('anthropic'), keychain, label + ': the keychain answer still lands for key providers');
     }
   }

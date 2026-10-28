@@ -58,7 +58,7 @@ A.eq(S.compose(builtins[1]).purpose, builtins[1].purpose, 'compose() accepts a s
    saveCustom/fromAgent pass persona through verbatim without validating it against PRESETS, so these double
    as back-compat coverage that an old persona id survives the round-trip (it resolves via personas.js ALIASES). */
 A.eq(S.customs().length, 0, 'no customs at first (node has no localStorage)');
-const saved = S.saveCustom({ name: 'Night Owl', emoji: '🦉', tagline: 'after-hours ops', purpose: 'Run things while the Commander sleeps.', manual: '- Be quiet.', persona: 'deadpan-bot' });
+const saved = S.saveCustom({ name: 'Night Owl', emoji: '🦉', tagline: 'after-hours ops', purpose: 'Run things while the Farmer sleeps.', manual: '- Be quiet.', persona: 'deadpan-bot' });
 A.ok(saved.id.indexOf('custom-') === 0, 'a saved custom gets a custom- id: ' + saved.id);
 A.eq(saved.custom, true, 'a saved custom is flagged custom=true');
 A.ok(saved.tags && Object.keys(saved.tags).length >= 1, 'a saved custom carries ranking tags (classified in-browser; general fallback under node)');

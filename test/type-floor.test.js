@@ -135,7 +135,7 @@ A.eq(TF.pass(root, view), 0, 'a second pass over the same text marks nothing new
   const shown = new Set();
   const vis = n => { n.checkVisibility = () => shown.has(n); return n; };
   const card = el('DIV', { cls: 'sk-card', style: { size: 16 } }, []);
-  const body = vis(el('P', { cls: 'sk-attr', style: { size: 12 } }, ['Shared with: this station']));
+  const body = vis(el('P', { cls: 'sk-attr', style: { size: 12 } }, ['Shared with: this farm']));
   card.childNodes.push(body); body.parent = card; Object.defineProperty(body, 'parentElement', { get: () => card });
   const onScreen = vis(el('SPAN', { cls: 'cc-badge', style: { size: 12 } }, ['official'])); shown.add(onScreen);
   const host = el('DIV', { style: { size: 16 } }, [card, onScreen]);

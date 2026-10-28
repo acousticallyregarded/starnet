@@ -69,7 +69,7 @@ function stationTakes(name, st, geo, L) {
   for (const b of st.belts()) laid[key(b.x, b.y)] = true;
   for (const p of geo.props) { const at = L.nodes[p.id], v = st.canPlaceProp(p.t, at.x, at.y, p.w || 1, p.h || 1); if (!v.ok) errs.push(p.t + ' ' + v.error); }
   for (const b of L.belts) { const v = st.canPlaceBeltRun({ tx: b.x, ty: b.y }, { tx: b.x, ty: b.y }); if (!v.ok || laid[key(b.x, b.y)]) errs.push('belt ' + key(b.x, b.y) + ' ' + (v.error || 'ON_BELT')); }
-  A.eq(errs.slice(0, 4), [], name + ': the station itself takes it (every machine and belt passes its own placement check)');
+  A.eq(errs.slice(0, 4), [], name + ': the farm itself takes it (every machine and belt passes its own placement check)');
 }
 function sane(name, geo, L, floor) {
   const foot = {}, errs = [];
@@ -287,12 +287,12 @@ for (const bp of WM.BLUEPRINTS) {
       A.ok(L.error === 'NO_ROOM' && L.needs, bp.id + ': too big for the starter room, it says how big a room it needs');
       // MAKE ROOM's rule (build.js makeRoomFor): the line's size plus a tile of walking room round it, touching the station
       const W = L.needs.w + 2, H = L.needs.h + 2, b = st.bounds(), r = st.addRoom({ kind: 'hab', rect: { x1: b.maxTx + 1, y1: b.minTy, x2: b.maxTx + W, y2: b.minTy + H - 1 } });
-      A.ok(r.ok, bp.id + ': a ' + W + '×' + H + ' room beside the station is legal');
+      A.ok(r.ok, bp.id + ': a ' + W + '×' + H + ' room beside the farm is legal');
       floor = floorOf(st); L = LL.layout(graph, floor);
       grown.push(bp.id);
     }
     A.ok(L.ok, bp.id + ': lays out in the starter room or the room grown for it');
-    if (L.ok) { sane(bp.id + ' (starter station)', geo, L, floor); stationTakes(bp.id, st, geo, L); }
+    if (L.ok) { sane(bp.id + ' (starter farm)', geo, L, floor); stationTakes(bp.id, st, geo, L); }
   }
   // …and the engine packs lines at least as tightly as the hand-drawn blueprints: no fewer fit a fresh starter room
   const handFit = WM.BLUEPRINTS.filter(bp => { const st = WM.create(WM.starterDoc()), z = st.rooms()[0].rects[0]; for (let y = z.y1; y <= z.y2; y++) for (let x = z.x1; x <= z.x2; x++) if (st.canPlaceBlueprint(bp.id, x, y).ok) return true; return false; }).length;

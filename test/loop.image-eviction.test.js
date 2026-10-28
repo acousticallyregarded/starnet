@@ -105,7 +105,7 @@ const shotIds = (msgs) => pixelTurns(msgs).map(m => m.content.find(p => p.type =
     const attachment = { role: 'user', content: [{ type: 'text', text: 'here is the mockup' }, { type: 'image_url', image_url: { url: 'data:image/png;base64,' + PNG } }] };
     const { requests } = await run({ shots: 4, prefix: [attachment] });
     const last = requests[requests.length - 1];
-    A.ok(last[0] === attachment, 'the Commander attachment rides untouched (same object) in every request');
+    A.ok(last[0] === attachment, 'the Farmer attachment rides untouched (same object) in every request');
     A.eq(pixelTurns(last).length, 3, 'attachment + the newest two captures carry pixels');
   }
 

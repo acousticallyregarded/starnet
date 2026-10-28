@@ -149,7 +149,7 @@ const attestContract = () => ({ type: 'attest', key: '' });
     A.ok((await s.attest(r.id, { agentId: 'hero', evidence: 'short' }, 4)).ok === false, 'attest with too-short evidence is rejected');
     const a1 = await s.attest(r.id, { agentId: 'hero', runId: 'run-1', evidence: 'Shipped the report and linked it in COMMS.' }, 5);
     A.ok(a1.ok, 'a valid attest sets a pending attest');
-    A.eq(s.get(r.id).status, 'open', 'attesting does NOT complete the quest (Commander confirm required)');
+    A.eq(s.get(r.id).status, 'open', 'attesting does NOT complete the quest (Farmer confirm required)');
     A.eq(s.get(r.id).attest.confirmed, null, 'the attest is pending');
     // a second attest while one is pending is rejected
     A.ok((await s.attest(r.id, { agentId: 'hero', evidence: 'trying again with new evidence' }, 6)).ok === false, 'a second attest while one is pending is rejected');
@@ -195,7 +195,7 @@ const attestContract = () => ({ type: 'attest', key: '' });
   {
     const s = freshStore();
     const mine = await s.mint({ title: 'mine', contract: attestContract(), agentId: 'hero' }, 1);
-    const station = await s.mint({ title: 'station wide', contract: attestContract() }, 2);  // agentId null
+    const station = await s.mint({ title: 'farm wide', contract: attestContract() }, 2);  // agentId null
     const theirs = await s.mint({ title: 'theirs', contract: attestContract(), agentId: 'other' }, 3);
     await s.dismiss(theirs.id, 4);
     const open = s.openForAgent('hero').map(q => q.id).sort();
@@ -287,10 +287,10 @@ const attestContract = () => ({ type: 'attest', key: '' });
     A.ok(!restarted.openForAgent(null, 599).some(q => q.id === ids[1]), 'snooze hides until due');
     A.ok(restarted.openForAgent(null, 600).some(q => q.id === ids[1]), 'snooze becomes actionable exactly when due');
     A.ok(!(await restarted.reportCompletion(ids[0], 'done', 700)).ok, 'empty accomplishment report rejected');
-    A.ok((await restarted.reportCompletion(ids[0], 'I attended my first class today', 700)).ok, 'Commander report completes real-world action');
+    A.ok((await restarted.reportCompletion(ids[0], 'I attended my first class today', 700)).ok, 'Farmer report completes real-world action');
     const done = freshStore(fs).get(ids[0]);
     A.eq(done.attest.source, 'commander', 'direct user report retains provenance after restart');
-    A.eq(done.attest.confirmed, true, 'report is explicitly Commander confirmed');
+    A.eq(done.attest.confirmed, true, 'report is explicitly Farmer confirmed');
     A.eq(done.completedBy, null, 'life action is not attributed to an agent');
     const mech = await restarted.mint({ title: 'Machine work', contract: runContract('r-life') }, 800);
     A.ok(!(await restarted.reportCompletion(mech.id, 'I say this finished successfully', 900)).ok, 'reports cannot bypass mechanical contracts');

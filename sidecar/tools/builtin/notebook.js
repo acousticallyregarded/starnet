@@ -81,7 +81,7 @@
     // Only the source may lose standing/time framing to prove a weaker paraphrase. Never erase a
     // qualifier from the note: that would let an ordinary preference attest an invented always/now.
     if (weaken) t = t.replace(/^(?:from now on|going forward|by default|in (?:the )?future)[\s,:]+/, '').replace(/\s+now$/, '');
-    t = t.replace(/^(?:i|we|(?:the )?(?:user|commander))\s+(always\s+)?prefers?\s+/, '$1prefer ');
+    t = t.replace(/^(?:i|we|(?:the )?(?:user|commander|farmer))\s+(always\s+)?prefers?\s+/, '$1prefer ');
     t = t.replace(/^(always\s+)?use\s+/, '$1prefer ');
     if (weaken) t = t.replace(/^always (?=prefer )/, '');
     return t.replace(/\binstead of\b/g, 'over').replace(/\s+/g, ' ');

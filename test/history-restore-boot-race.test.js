@@ -105,7 +105,7 @@ async function bootRaceSendsOnce(root) {
   await h.advance(1000);
   assert.equal(s.error ? s.error.message : undefined, undefined, root + ': the first send does not fail on the open-time read that timed out');
   assert.equal(s.settled, false, root + ': nothing is admitted before the history has arrived');
-  assert.equal(h.requests.length, 2, root + ': the send asks the station again (one fresh read)');
+  assert.equal(h.requests.length, 2, root + ': the send asks the farm again (one fresh read)');
   h.respond(h.requests[1], 200, h.serverRows);
   await h.advance(10);
   assert.ok(s.settled && s.ok && !s.error, root + ': the send is admitted once the history arrives');
@@ -127,7 +127,7 @@ async function slowBootAnswerStillSends(root) {
   assert.equal(await opened, false, root + ': the open-time read gave up at 8 s');
   const s = h.send(new AbortController().signal);
   await pump(40000);
-  assert.ok(s.settled && s.ok && !s.error, root + ': a station that answers in 12 s still gets the message sent (' + (s.error && s.error.message) + ')');
+  assert.ok(s.settled && s.ok && !s.error, root + ': a farm that answers in 12 s still gets the message sent (' + (s.error && s.error.message) + ')');
   assert.equal(sends(h.w), 1, root + ': exactly once');
   assert.ok(h.w.history.some(m => m.content === 'routine report while you were away'), root + ': the server history is merged before admission');
 }
@@ -154,7 +154,7 @@ async function stopEndsTheWait(root) {
   const ac = new AbortController();
   const s = h.send(ac.signal);
   await h.advance(3000);
-  assert.equal(s.settled, false, root + ': still waiting for the station');
+  assert.equal(s.settled, false, root + ': still waiting for the farm');
   ac.abort();
   await h.flush();
   assert.ok(s.settled && s.error && /changed before sending/.test(s.error.message), root + ': STOP ends the wait at once');
@@ -181,7 +181,7 @@ async function answeredRefusalIsFinal(root) {
   assert.equal(await h.api.loadServerHistory(h.w, 3), false);
   const s = h.send(new AbortController().signal);
   await h.advance(60000);
-  assert.ok(s.settled && s.error && s.error.code === 'HISTORY_UNAVAILABLE', root + ': a refusal the station answered is final');
+  assert.ok(s.settled && s.error && s.error.code === 'HISTORY_UNAVAILABLE', root + ': a refusal the farm answered is final');
   assert.ok(h.requests.length <= 2, root + ': no retry loop on a deliberate refusal (' + h.requests.length + ' reads)');
 }
 
@@ -196,10 +196,10 @@ async function serverErrorRefusesAtOnce(root) {
   const before = JSON.stringify(h.w.history.concat([{ role: 'user', content: SEND_TEXT }]).map(m => [m.role, m.content]));
   const s = h.send(new AbortController().signal);
   await h.advance(1000);
-  assert.ok(s.settled, root + ': a station that answers 503 is refused at once, not after the 45 s unanswered-read bound');
+  assert.ok(s.settled, root + ': a farm that answers 503 is refused at once, not after the 45 s unanswered-read bound');
   assert.ok(s.error && s.error.code === 'HISTORY_UNAVAILABLE', root + ': with the honest refusal');
   assert.match(s.error.message, /history could not be restored/, root + ': worded as before');
-  assert.equal(h.requests.length, 2, root + ': the send asked the station exactly once more (' + h.requests.length + ' reads)');
+  assert.equal(h.requests.length, 2, root + ': the send asked the farm exactly once more (' + h.requests.length + ' reads)');
   assert.equal(JSON.stringify(h.w.history.map(m => [m.role, m.content])), before, root + ': the message is kept, nothing erased');
   const ev = h.events();
   assert.ok(ev.includes('send-held-history-unavailable') && !ev.includes('history-loaded') && !ev.includes('send-history-ready'), root + ': never claims a restore that did not happen');
@@ -217,10 +217,10 @@ async function staleServerErrorAsksAgain(root) {
   const s = h.send(new AbortController().signal);
   await h.advance(10);
   assert.equal(s.settled, false, root + ': nothing is admitted before the history has arrived');
-  assert.equal(h.requests.length, 2, root + ': the send asks the station again at once');
+  assert.equal(h.requests.length, 2, root + ': the send asks the farm again at once');
   h.respond(h.requests[1], 200, h.serverRows);
   await h.advance(10);
-  assert.ok(s.settled && s.ok && !s.error, root + ': admitted once the recovered station answered (' + (s.error && s.error.message) + ')');
+  assert.ok(s.settled && s.ok && !s.error, root + ': admitted once the recovered farm answered (' + (s.error && s.error.message) + ')');
   assert.equal(sends(h.w), 1, root + ': exactly once');
 }
 
@@ -228,7 +228,7 @@ async function staleServerErrorAsksAgain(root) {
   for (const root of ['frontend/app', 'website/app/app']) {
     for (const [name, fn] of [['boot race: the first send asks again and goes once', bootRaceSendsOnce],
       ['slow boot (12 s answers) still sends', slowBootAnswerStillSends],
-      ['a station that never answers ends honestly', neverAnswersIsHonest],
+      ['a farm that never answers ends honestly', neverAnswersIsHonest],
       ['STOP ends the wait', stopEndsTheWait],
       ['a removed conversation ends the wait', removedConversationEndsTheWait],
       ['an answered refusal is final', answeredRefusalIsFinal],

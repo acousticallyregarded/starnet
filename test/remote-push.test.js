@@ -88,7 +88,7 @@ function decrypt(body, ua) {
   A.eq(claims.sub, 'https://starnetos.com', 'a contact subject');
   A.ok(claims.exp > t / 1000 && claims.exp <= t / 1000 + 24 * 3600, 'expires within a day');
   const key = crypto.createPublicKey({ key: { kty: 'EC', crv: 'P-256', x: b64u(unb64u(pub).subarray(1, 33)), y: b64u(unb64u(pub).subarray(33, 65)) }, format: 'jwk' });
-  A.ok(crypto.verify('sha256', Buffer.from(h + '.' + c), { key, dsaEncoding: 'ieee-p1363' }, unb64u(s)), 'the token verifies against the station push key (ES256)');
+  A.ok(crypto.verify('sha256', Buffer.from(h + '.' + c), { key, dsaEncoding: 'ieee-p1363' }, unb64u(s)), 'the token verifies against the farm push key (ES256)');
 
   // 4. only subscribed phones, and a dropped subscription is forgotten
   A.eq(await push.send(['nobody'], { title: 'x' }), [], 'a phone without a subscription gets nothing');
@@ -102,7 +102,7 @@ function decrypt(body, ua) {
   reply = 410;
   const gone = await push.send(null, { title: 'x' });
   A.eq(gone, [{ deviceId: 'd1', ok: false, status: 410 }], 'the push service says the subscription is gone');
-  A.eq(push.has('d1'), false, 'so the station forgets it');
+  A.eq(push.has('d1'), false, 'so the farm forgets it');
   reply = 201;
   push.subscribe('d2', ok);
   const down = makePush({ fs, path, file, now: () => t, fetch: async () => { throw new Error('offline'); } });
@@ -143,7 +143,7 @@ function decrypt(body, ua) {
     fs.writeFileSync(file2, JSON.stringify(st));
     const p3 = makePush({ fs, path, file: file2, now: () => t, fetch: async (url, o) => { sent2.push({ url, o }); return { status: 201 }; } });
     await p3.send(['old', 'good'], { title: 'x', body: 'y' });
-    A.ok(!sent2.some(s => /attacker\.example/.test(s.url)), 'the station never POSTs to a stored address that is not a browser push service');
+    A.ok(!sent2.some(s => /attacker\.example/.test(s.url)), 'the farm never POSTs to a stored address that is not a browser push service');
     A.ok(sent2.some(s => /fcm\.googleapis\.com/.test(s.url) && s.o.redirect === 'manual'), 'a real one still gets its push, and a redirect is never followed');
     fs.rmSync(dir2, { recursive: true, force: true });
   }

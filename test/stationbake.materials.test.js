@@ -122,7 +122,7 @@ A.eq(wallSample('no-such-wall', 4).join('|'), wsigs.plating, 'an unknown wall ma
    must not appear in any other material (a stray clearRect would punch the station open). */
 const cuts = mat => wallSample(mat, 4).filter(o => o.startsWith('c ')).length;
 A.ok(cuts('viewport') > 0, 'viewport cuts glass out of the wall');
-for (const mat of WALLS) if (mat !== 'viewport') A.eq(cuts(mat), 0, 'wall ' + mat + ' never cuts a hole in the station');
+for (const mat of WALLS) if (mat !== 'viewport') A.eq(cuts(mat), 0, 'wall ' + mat + ' never cuts a hole on the farm');
 
 /* the shared foot: every recipe must seat itself on the floor line, or the wall floats */
 for (const mat of WALLS) {

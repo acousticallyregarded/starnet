@@ -82,7 +82,7 @@ function checkEnv(env, label) {
 
   // ---- agent commands: sanitizeChildEnv is the shared strip PLUS the blanket secret-name strip ----
   const agent = sanitizeChildEnv(process.env);
-  A.ok(JSON.stringify(agent).indexOf('CANARY') < 0, 'sanitizeChildEnv: no planted station secret survives');
+  A.ok(JSON.stringify(agent).indexOf('CANARY') < 0, 'sanitizeChildEnv: no planted farm secret survives');
   A.ok(!('INNOCENT_LOOKING' in agent), 'sanitizeChildEnv: a held value under an innocent name is stripped');
   A.ok(!('NPM_TOKEN' in agent), 'sanitizeChildEnv: agent commands stay stricter (secret-shaped user names stripped too)');
   A.eq(agent.MY_USER_VAR, 'user-value-keep-me', 'sanitizeChildEnv: ordinary user vars kept');

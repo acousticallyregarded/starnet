@@ -43,7 +43,7 @@ const { makeStationBridge } = require('../sidecar/station-bridge.js');
     const out = await p;
     assert.equal(out.ok, false);
     assert.equal(out.unattended, true);
-    assert.match(out.error, /no station page answered/);
+    assert.match(out.error, /no farm page answered/);
     assert.equal(bridge.inFlight(), 0);
   }
 

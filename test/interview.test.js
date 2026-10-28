@@ -57,9 +57,9 @@ A.eq(I.beliefFromAnswer(null, 'x'), null, 'no question yields no belief');
 
 /* a belief from the interview actually lands in the right dossier dimension (end-to-end with the engine) */
 const dossier = D.fresh();
-const belief = I.beliefFromAnswer(I.questionFor('goals'), 'Ship the Commander Dossier');
+const belief = I.beliefFromAnswer(I.questionFor('goals'), 'Ship the Farmer Dossier');
 D.upsert(dossier, belief.dim, { text: belief.text, source: belief.source }, 1);
-A.eq(dossier.dims.goals[0].text, 'Ship the Commander Dossier', 'an interview answer upserts into its dossier dimension');
+A.eq(dossier.dims.goals[0].text, 'Ship the Farmer Dossier', 'an interview answer upserts into its dossier dimension');
 A.eq(dossier.dims.goals[0].source, 'interview', 'the dossier records the interview provenance');
 
 /* ---------- a TYPED skip is a skip, never a belief (bug-sweep P0) ----------

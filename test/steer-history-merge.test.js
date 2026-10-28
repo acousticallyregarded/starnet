@@ -156,7 +156,7 @@ A.ok(/classList\.add\('tool', 'steer-echo'\)/.test(rh), 'a replayed steering not
     // a station row with no run (and a row of another run) keeps the old placement
     const plain = fn([{ role: 'user', content: 'go', sourceRunId: 'rC', rowId: 1 }, { role: 'system', sys: true, content: '⚒ built while you were away' }],
       [{ role: 'user', content: 'go', sourceRunId: 'rC', rowId: 1 }, { role: 'user', content: 'next', sourceRunId: 'rD', rowId: 2 }]);
-    A.eq(plain.map(m => m.content), ['go', 'next', '⚒ built while you were away'], who + ': a station row without a run keeps its old place');
+    A.eq(plain.map(m => m.content), ['go', 'next', '⚒ built while you were away'], who + ': a farm row without a run keeps its old place');
   }
   // the real renderHistory over that row
   const made = [], toolLines = [];
@@ -167,11 +167,11 @@ A.ok(/classList\.add\('tool', 'steer-echo'\)/.test(rh), 'a replayed steering not
     turnFileRefs: () => [], renderProse: (b, t) => { b.text = t; }, replayableDeliverables: () => [], replayDeliverableRow: () => {},
     offerTryAgain: () => {}, offerRetry: () => {}, isBusy: () => false
   });
-  require('vm').runInContext(rh + ';\nrenderHistory([{ role: "user", content: "go" }, { role: "system", sys: true, steerEcho: true, content: "[steering] use the blue folder", sourceRunId: "r9", ts: 4 }, { role: "assistant", sys: true, content: "■ a station line" }, { role: "assistant", sys: true, steerEcho: true, content: "[steering] an earlier draft row", sourceRunId: "r8", ts: 5 }]);', ctx);
+  require('vm').runInContext(rh + ';\nrenderHistory([{ role: "user", content: "go" }, { role: "system", sys: true, steerEcho: true, content: "[steering] use the blue folder", sourceRunId: "r9", ts: 4 }, { role: "assistant", sys: true, content: "■ a farm line" }, { role: "assistant", sys: true, steerEcho: true, content: "[steering] an earlier draft row", sourceRunId: "r8", ts: 5 }]);', ctx);
   const echoRows = made.filter(r => r.d.cls.includes('steer-echo'));
   A.eq(echoRows.map(r => [r.cls, r.body.textContent, r.o.stamp]), [['agent', '[steering] use the blue folder', 4], ['agent', '[steering] an earlier draft row', 5]],
     'a filed read note (the station-row shape, role system + sys) replays as the dim steer-echo row, stamped when it was sent — a row filed in the first draft shape (role assistant) too');
-  A.eq(toolLines, ['■ a station line'], 'and never as a plain station line (other station rows are unchanged)');
+  A.eq(toolLines, ['■ a farm line'], 'and never as a plain farm line (other farm rows are unchanged)');
 }
 
 A.report('steer-history-merge.test');

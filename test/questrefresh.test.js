@@ -51,7 +51,7 @@ A.ok(dirNS.indexOf('CURRENT NORTH STAR') >= 0 && dirNS.indexOf('full-time creato
 A.ok(R.buildDirective({ propKeys: PROPS }).indexOf('NO NORTH STAR IS KNOWN YET') >= 0, 'a cold state asks for the inference');
 // PROGRESSION + RELEVANCE blocks
 const dirProg = R.buildDirective({ goalNote: 'Current goal: Launch.', interestsBlock: '• davinci color grading (asked 4x)', completedQuests: [{ title: 'Publish episode 3' }], propKeys: PROPS });
-A.ok(dirProg.indexOf('RECURRING INTERESTS THE STATION OBSERVED') >= 0 && dirProg.indexOf('davinci color grading') >= 0, 'the interest histogram rides the directive');
+A.ok(dirProg.indexOf('RECURRING INTERESTS THE FARM OBSERVED') >= 0 && dirProg.indexOf('davinci color grading') >= 0, 'the interest histogram rides the directive');
 A.ok(dirProg.indexOf('RECENTLY COMPLETED') >= 0 && dirProg.indexOf('Publish episode 3') >= 0, 'completed quests ride as the progression anchor');
 A.ok(dirProg.indexOf('NEXT step along the same path') >= 0, 'the directive commands progression, not a reshuffle');
 A.ok(R.buildDirective({ goalNote: 'g', propKeys: PROPS }).indexOf('RECENTLY COMPLETED') < 0, 'no completed quests -> no empty progression block');
@@ -147,7 +147,7 @@ A.eq(st.northStar.text, 'Ship the product', 'setNorthStar lands');
 A.eq(st.northStar.source, 'model', 'inferred stars carry source model');
 st = R.setNorthStar(st, { text: '', source: 'goal' }, { now: T0 + 1 });
 A.eq(st.northStar.text, 'Ship the product', 'an empty star never blanks an existing one');
-st = R.setNorthStar(st, { text: 'The Commander goal', source: 'goal' }, { now: T0 + 2 });
+st = R.setNorthStar(st, { text: 'The Farmer goal', source: 'goal' }, { now: T0 + 2 });
 A.eq(st.northStar.source, 'goal', 'a Commander-goal star carries source goal');
 /* ---------- north star PROPOSE-AND-CONFIRM (QUEST V3 slice 3): inferences are proposed, never silently adopted ---------- */
 let n = R.fresh();
@@ -175,7 +175,7 @@ A.eq(R.proposeNorthStar(nd, { text: 'Grow the channel to a living', source: 'mod
 A.eq(R.proposeNorthStar(nd, { text: 'Ship a SaaS product', source: 'model' }, { now: T0 + 50 }).proposedNorthStar.text, 'Ship a SaaS product', 'a different inference still proposes after a decline');
 // a Commander GOAL always outranks + SUPERSEDES a pending proposal (adopted silently, proposal dropped)
 let ng = R.setNorthStar(R.proposeNorthStar(R.fresh(), { text: 'a guess', source: 'model' }, { now: T0 }), { text: 'Launch the app', source: 'goal' }, { now: T0 + 1 });
-A.eq(ng.proposedNorthStar, null, 'a Commander goal supersedes a pending inference proposal');
+A.eq(ng.proposedNorthStar, null, 'a Farmer goal supersedes a pending inference proposal');
 A.eq(ng.northStar.source, 'goal', 'the goal is the adopted star');
 A.eq(ng.northStar.status, 'adopted', 'a goal star is adopted, never proposed');
 // no-op verdicts when nothing pends
@@ -199,7 +199,7 @@ A.eq(R.clearPendingQuests(nsq).pendingQuests, [], 'pending quests have an explic
 A.eq(R.normalize(null).ledger, [], 'normalize(null) is a fresh state');
 A.eq(R.normalize({ northStar: { text: '' }, ledger: 'junk', lastCycleAt: 'x' }).northStar, null, 'junk hydrates safely');
 const roundTrip = R.normalize(JSON.parse(JSON.stringify(st)));
-A.eq(roundTrip.northStar.text, 'The Commander goal', 'state survives a JSON round-trip');
+A.eq(roundTrip.northStar.text, 'The Farmer goal', 'state survives a JSON round-trip');
 
 const changedBase = R.stampCycle(R.fresh(), { now: T0, contextKey: 'before' });
 A.ok(!R.decide(changedBase, { now: T0 + R.MATERIAL_CHANGE_GAP_MS - 1, openCount: 2, contextKey: 'after' }).fire, 'progress changes coalesce under a cost debounce');
@@ -222,7 +222,7 @@ for (const change of [{ id: 'new' }, { text: 'Learn music' }, { milestoneId: 'm2
   const H = 3600000, t0 = 5e12;
   const idle = R.stampCycle(R.fresh(), { now: t0, contextKey: 'same' });
   for (const h of [1.01, 6, 23.9]) A.eq(R.decide(idle, { now: t0 + h * H, openCount: 0, contextKey: 'same' }).fire, false, 'idle + unchanged + empty slate does not re-plan at ' + h + 'h');
-  A.eq(R.decide(idle, { now: t0 + 24.01 * H, openCount: 0, contextKey: 'same' }).why, 'daily', 'the daily cadence still refreshes an idle station once a day');
+  A.eq(R.decide(idle, { now: t0 + 24.01 * H, openCount: 0, contextKey: 'same' }).why, 'daily', 'the daily cadence still refreshes an idle farm once a day');
   A.eq(R.decide(idle, { now: t0 + 0.2 * H, openCount: 0, contextKey: 'moved' }).fire, true, 'real progress (the context moved) still earns a cycle');
 }
 A.report();

@@ -47,7 +47,7 @@ A.ok(parsed.messages.some(m => m.content === 'safe visible answer'), 'JSON expor
 A.ok(parsed.messages.every(m => m.role === 'user' || m.role === 'assistant'), 'round-trip contains dialogue roles only');
 const md = W.exportConversation('s17', 'markdown', { exportedAt: 123 });
 A.ok(md && md.mime === 'text/markdown' && /^# Orchid launch notes/m.test(md.text), 'Markdown export has heading and MIME');
-A.ok(/## Commander[\s\S]*## Agent/.test(md.text), 'Markdown labels both visible speakers');
+A.ok(/## Farmer[\s\S]*## Agent/.test(md.text), 'Markdown labels both visible speakers');
 A.ok(!/HIDDEN-SYSTEM|LOCAL-MARKER/.test(md.text), 'Markdown excludes hidden/system rows too');
 
 /* clear checkpoints only the active transcript; another session and memory-shaped metadata stay intact */

@@ -146,7 +146,7 @@ const StationBake = (() => {
                 each footprint plus exactly `pad`, so a crown wider than that hangs OUTSIDE the
                 mask and renders at its raw baked tone against the starfield — a blazing line
                 down the sides while the north crown sits under 0.77 ambient. */
-  const WALL = { up: 30, corUp: 30, skirt: 40, side: 7, capH: 4, sideCap: 5, hullLit: 0.70, hullVoid: 0.34 };   // hullLit/hullVoid = the exterior's exposure at the deck line / at the skirt's foot (2026-09-06, the shell fade — see the EXTERIOR EXPOSURE note)   // corUp 16→30, skirt 32→40 (2026-09-05, Andrew: the south wall read shorter than the north, hallways "way shorter" than rooms — a hallway is the room's construction now, and the skirt matches the north face's visible height)   // up 22→30, corUp 12→16 (2026-09-03, depth pass): a room is a box you are inside, and height is the only cue a top-down view has for it   // up 9→14 (2026-07-24): the wall materials need surface to live on · corUp 0→8 (2026-07-28): a hallway stands too, just lower than a hall · up 14→22, corUp 8→12, capH 3→4 (2026-08-08): at 14 the standing face was ~1/8 of a room's frame against 130+px of deck, so the room read as a TRAY seen from above rather than a box you are inside. Height is the only cue a top-down view has for "interior"; the ratio of visible WALL to visible FLOOR is what sells it, and that ratio scales with `up`. 22 is inside the range 'Towering' (32) already exercised, and corUp rises with it so the hallway↔hall difference is preserved
+  const WALL = { up: 30, corUp: 30, skirt: 40, side: 7, capH: 4, sideCap: 5, hullLit: 0.95, hullVoid: 0.62 };   // hullLit/hullVoid = the exterior's exposure at the deck line / at the skirt's foot (2026-09-06, the shell fade — see the EXTERIOR EXPOSURE note)   // corUp 16→30, skirt 32→40 (2026-09-05, Andrew: the south wall read shorter than the north, hallways "way shorter" than rooms — a hallway is the room's construction now, and the skirt matches the north face's visible height)   // up 22→30, corUp 12→16 (2026-09-03, depth pass): a room is a box you are inside, and height is the only cue a top-down view has for it   // up 9→14 (2026-07-24): the wall materials need surface to live on · corUp 0→8 (2026-07-28): a hallway stands too, just lower than a hall · up 14→22, corUp 8→12, capH 3→4 (2026-08-08): at 14 the standing face was ~1/8 of a room's frame against 130+px of deck, so the room read as a TRAY seen from above rather than a box you are inside. Height is the only cue a top-down view has for "interior"; the ratio of visible WALL to visible FLOOR is what sells it, and that ratio scales with `up`. 22 is inside the range 'Towering' (32) already exercised, and corUp rises with it so the hallway↔hall difference is preserved
   /* VIEWPORT holes punched by the wall pass this bake. buildLightMap cuts the ambient mask over
      them — without that the sky behind a window renders at the interior's 23% and reads as a
      black pane. Reset per bake alongside the wall palette cache. */
@@ -280,7 +280,7 @@ const StationBake = (() => {
   const LIGHT = { ambient: 0.82, ambR: 7, ambG: 5, ambB: 3, pool: 0.85, room: 0.46, corridor: 0.34, door: 0.4, floor: 0.24, crown: 0.45, pitch: 8, reach: 1.3, falloff: 0.85, cool: 0.45, warm: 0.16, spill: 0.7 };   // floor 0.26→0.3, warm 0.14→0.3 (2026-09-03 overhaul: the film is what puts light ON the deck under a lamp; measured lounge sd 28.8→35+, crushed 4%→2%) · crown = how far the ambient gives way over a wall's lit top surface (0 = off, the old inversion)
   // Live-lab calibration shared by the saved station and catalog rooms.
   // Interior area lights carry the occupied deck; exterior cladding recedes.
-  if(projectionPresentation){Object.assign(WALL,{hullLit:.52,hullVoid:.24});Object.assign(LIGHT,{room:.60,pool:.96,reach:1.5});}
+  if(projectionPresentation){Object.assign(WALL,{hullLit:.95,hullVoid:.62});Object.assign(LIGHT,{room:.60,pool:.96,reach:1.5});}
   const POOL_RGB = '246,224,188';   // warm-neutral tungsten — the deck pools (locked by simulation-lighting.test.js)
   const LAMP_RGB = '255,192,104';   // the film's tungsten — a touch more saturated than the deck pool, it sits ON things
   const STAR_RGB = '150,186,255';   // the sky through the glass
@@ -398,7 +398,11 @@ const StationBake = (() => {
      change, which is the honest model for "this surface gets no light". The floor lifts near-black
      hues (ONYX) so a shell never goes pure void, and the cap is what keeps BONE from painting a
      blazing white building — the same standing law that killed light mode three times. */
-  const HULL_LUMA_CAP = 28, HULL_LUMA_FLOOR = 13;
+  /* THE FARM IS OUT IN DAYLIGHT (farm remaster). Everything above was written for a hull hanging in
+     vacuum, lit by starlight alone. A farmhouse stands in a field with the sky over it, so its siding
+     catches real light: the band a chosen hue is clamped into is lifted from 28 to 66, and the bright
+     pole (a whitewashed wall) from 85 to 150. Still a clamp — a shell never out-shines its lamps. */
+  const HULL_LUMA_CAP = 66, HULL_LUMA_FLOOR = 13;
   /* ...EXCEPT AT THE BRIGHT POLE. The clamp above exists to stop a hue picked as a FLOOR SUBSTRATE
      from accidentally glowing when it is used on the one surface ambient never touches. But BONE and
      WHITE are not accidents — they are the palette's deliberate bright end, and nobody lands on them
@@ -408,7 +412,7 @@ const StationBake = (() => {
      higher ceiling instead. A white building then really is the brightest thing outside — above the
      lit wall crown at 79, below the ceiling lamps at 127 — which is exactly what a whitewashed wall
      looks like at night, and it stays strictly OPT-IN: you have to go and choose it. */
-  const HULL_BRIGHT_POLE = 150, HULL_BRIGHT_CAP = 85;
+  const HULL_BRIGHT_POLE = 150, HULL_BRIGHT_CAP = 150;
   const vacuum = hex => {
     const n = parseInt(String(hex).slice(1), 16);
     const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
@@ -427,7 +431,7 @@ const StationBake = (() => {
      wrong for restating the SAME material at a different brightness, which is what a shell ramp is.
      Ceiling: nothing on the exterior may out-shine the lit wall crown by much — see the vacuum note
      — so a lift is scaled back if it would carry the result past it. */
-  const HULL_LIFT_CEIL = 115;
+  const HULL_LIFT_CEIL = 175;
   const lift = (hex, k) => {
     const n = parseInt(String(hex).slice(1), 16);
     let r = ((n >> 16) & 255) * k, g = ((n >> 8) & 255) * k, b = (n & 255) * k;
@@ -1041,7 +1045,7 @@ const StationBake = (() => {
      point: the default deck is the one surface every player sees and it had aged. */
   // FALLBACK ONLY — projected geometry always carries matOf, so this map is not what you see in
   // game. WorldModel.ROOM_KINDS[kind].mat is the authority; keep the two in step.
-  const MAT_BY_KIND = { hab: 'spine', corridor: 'spine', bridge: 'panel', lab: 'tile', factory: 'tread', storage: 'tread', quarters: 'soft' };
+  const MAT_BY_KIND = { hab: 'plank', corridor: 'plank', bridge: 'parquet', lab: 'turf', factory: 'basalt', storage: 'plank', quarters: 'soft' };
   const MAT_PITCH = { alloy: [4, 3], plate: [2, 2], panel: [4, 1], tile: [2, 2], tread: [2, 2], soft: [3, 2], grate: [1, 1], hex: [1, 1], plank: [5, 1], turf: [1, 1], spine: [4, 3], diamond: [1, 1], resin: [4, 4], ceramic: [3, 3], cargo: [3, 2], runner: [2, 2], treadway: [3, 2], meshway: [3, 3], basalt: [3, 2], parquet: [3, 3], rubber: [2, 2], slotted: [3, 2], terrazzo: [4, 4], octile: [2, 2], flightdeck: [2, 2], lunar: [4, 2], maggrid: [2, 2], habitat: [2, 2] };
   const MAT_NO_WEAR = { tile: 1, grate: 1, turf: 1, ceramic: 1, resin: 1 };   // gloss, open mesh, growth, and a poured or glazed floor take no boot scuffs   // gloss, open mesh and growth don't take boot scuffs
   // the room's deck material — the model's per-room choice when it has one, else the kind default

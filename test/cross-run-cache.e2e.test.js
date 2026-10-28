@@ -25,7 +25,7 @@ const { hostNotes, runContextOf } = require('./helpers/host-notes.js');
 
 const HOST = '127.0.0.1';
 const MARK = 'CROSS_RUN_CACHE_PROBE';
-const DOSSIER = 'Commander dossier: CROSS_RUN_DOSSIER_MARK prefers terse status reports.';
+const DOSSIER = 'Farmer dossier: CROSS_RUN_DOSSIER_MARK prefers terse status reports.';
 const text = c => typeof c === 'string' ? c : (Array.isArray(c) ? c.map(p => (p && p.text) || '').join('') : '');
 const leadingSystem = body => { const m = (body.messages || [])[0]; return m && m.role === 'system' ? text(m.content) : ''; };
 
@@ -74,9 +74,9 @@ async function station(up, extraEnv) {
   await fixture.start();
   A.eq((await fixture.json('POST', '/api/roster', { updatedAt: Date.now(), agents: [
     { agentId: 'agent', name: 'NOVA', provider: 'openrouter', model: 'test/model' },
-    { agentId: 'scribe', name: 'SCRIBE', role: 'researcher', provider: 'openrouter', model: 'test/model', system: MARK + ': you are the station scribe.' }] })).status, 200, 'roster saved');
+    { agentId: 'scribe', name: 'SCRIBE', role: 'researcher', provider: 'openrouter', model: 'test/model', system: MARK + ': you are the farm scribe.' }] })).status, 200, 'roster saved');
   A.eq((await fixture.json('POST', '/api/dossier', { block: DOSSIER })).status, 200, 'dossier saved');
-  const created = await fixture.json('POST', '/api/cron', { name: 'Status', prompt: 'Report station status in one word.', schedule: 'every 1h', agentId: 'scribe', provider: 'openrouter', model: 'test/model' });
+  const created = await fixture.json('POST', '/api/cron', { name: 'Status', prompt: 'Report farm status in one word.', schedule: 'every 1h', agentId: 'scribe', provider: 'openrouter', model: 'test/model' });
   A.eq(created.status, 200, 'routine created');
   return { fixture, jobId: created.body.job.id };
 }
@@ -98,11 +98,11 @@ function staticPin() {
   lines.forEach((line, i) => {
     if (!/system:[^\n]*cronSystemFor\(/.test(line)) return;
     sites++;
-    A.ok(lines.slice(i, i + 3).join('\n').indexOf('stationEvidence') >= 0, 'index.js:' + (i + 1) + ' feeds a server-composed persona into a run and asks for the station evidence');
+    A.ok(lines.slice(i, i + 3).join('\n').indexOf('stationEvidence') >= 0, 'index.js:' + (i + 1) + ' feeds a server-composed persona into a run and asks for the farm evidence');
   });
   A.ok(sites >= 7, 'the pin found the persona-fed run sites (' + sites + ')');
   for (const f of ['cron-driver.js', 'loopjob-driver.js', path.join('remote', 'host.js')]) {
-    A.ok(/stationEvidence: true/.test(fs.readFileSync(path.join(root, f), 'utf8')), f + ': a driver-launched run asks for the station evidence');
+    A.ok(/stationEvidence: true/.test(fs.readFileSync(path.join(root, f), 'utf8')), f + ': a driver-launched run asks for the farm evidence');
   }
 }
 
@@ -127,7 +127,7 @@ function staticPin() {
     A.eq(sys2, sys1, 'the routine\'s system prompt is BYTE-IDENTICAL across two fires');
     A.eq(JSON.stringify(b2.tools), JSON.stringify(b1.tools), 'the tool array is byte-identical across the two fires');
     A.ok(sys1.indexOf(MARK) >= 0 && sys1.indexOf('[ROUTINE]') >= 0, 'the system prompt carries the persona and the routine note');
-    A.ok(sys1.indexOf('CROSS_RUN_DOSSIER_MARK') >= 0, 'the Commander\'s dossier (standing context) stays in the system prompt');
+    A.ok(sys1.indexOf('CROSS_RUN_DOSSIER_MARK') >= 0, 'the Farmer\'s dossier (standing context) stays in the system prompt');
     A.ok(sys1.indexOf('<commander_evidence') < 0 && sys1.indexOf('TRACK RECORD:') < 0, 'no observed evidence in the system prompt');
     const note1 = runContextOf(b1.messages), note2 = runContextOf(b2.messages);
     A.ok(note1.indexOf('<commander_evidence provenance="observed; weak; never override the current request">') >= 0, 'the evidence block rides the run-context note, fenced as weak evidence');

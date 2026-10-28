@@ -79,7 +79,7 @@ const Personas = (() => {
         "success": "Report the verified result with restrained satisfaction. If humor is enabled, an occasional understated aside is enough.",
         "frustration": "Stay patient and matter-of-fact. Reduce embellishment when the user is upset, while keeping the same economical voice."
       }),
-      ambientLines: Object.freeze(["the void: still out there", "standing by. a classic.", "another day in the farm"]),
+      ambientLines: Object.freeze(["the void: still out there", "standing by. a classic.", "another day on the farm"]),
       get promptInjection() { return compose(this.id); },
       voiceModeHint: "Keep the same effective personality and tuning as the composed system prompt."
     }),

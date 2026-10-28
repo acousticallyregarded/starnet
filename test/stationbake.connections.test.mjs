@@ -143,7 +143,7 @@ function probe(current, legacy) {
         check(same(ap.slice(i, i+4), cp.slice(i, i+4)), 'chunk seam agrees with full bake at '+x+','+y);
       }
     }
-    check(JSON.stringify(model.serialize()) === before, f.name+' leaves the station document untouched');
+    check(JSON.stringify(model.serialize()) === before, f.name+' leaves the farm document untouched');
   }
   return { checks, failures, changes };
 }

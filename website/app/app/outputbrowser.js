@@ -165,7 +165,7 @@
     ui.fwd.onclick = () => liveNav('forward');
     ui.follow.onclick = () => setFollow(!state.follow);
     ui.out.onclick = openOutside;
-    ui.front.onclick = () => { postJson('/api/browser/view/front', {}).then(r => { if (r.status !== 200) setNote('Could not raise the browser window: ' + ((r.body && r.body.error) || 'the station did not answer') + '.'); }).catch(() => setNote('Could not raise the browser window.')); };
+    ui.front.onclick = () => { postJson('/api/browser/view/front', {}).then(r => { if (r.status !== 200) setNote('Could not raise the browser window: ' + ((r.body && r.body.error) || 'the farm did not answer') + '.'); }).catch(() => setNote('Could not raise the browser window.')); };
     ui.recent.addEventListener('click', ev => {
       const b = ev.target && ev.target.closest ? ev.target.closest('button[data-k]') : null;
       if (!b) return;
@@ -210,7 +210,7 @@
     const win = station().visible ? ' It is open in its own window too (SHOW WINDOW).' : '';
     if (d && d.signIn) return 'Sign in here: click the page and type. The agent is waiting and never sees what you type. Click Done in COMMS when you have finished.';
     if (d) return agentLabel(d.agentId) + ' is using the browser. You can click and type in it too.' + win;
-    return 'The station browser, shared by you and your agents.' + (station().visible ? ' Use it in its own window, or click this live view to type in it.' : ' Click the page to type in it.') + (station().remembered ? ' Sign-ins are saved.' : '');
+    return 'The farm browser, shared by you and your agents.' + (station().visible ? ' Use it in its own window, or click this live view to type in it.' : ' Click the page to type in it.') + (station().remembered ? ' Sign-ins are saved.' : '');
   }
   function setDriver(d) {
     const was = state.driver ? state.driver.runId + (state.driver.signIn ? '+' : '') : '', is = d ? d.runId + (d.signIn ? '+' : '') : '';
@@ -252,7 +252,7 @@
     const ui = state.ui, parts = [], st = station();
     if (st.open || st.driver) {
       const d = st.driver;
-      parts.push('<button type="button" class="ob-chip ob-livechip' + (state.mode === 'live' ? ' on' : '') + '" data-k="live" title="' + esc(d ? agentLabel(d.agentId) + ' is driving the station browser' : 'The station browser') + '">'
+      parts.push('<button type="button" class="ob-chip ob-livechip' + (state.mode === 'live' ? ' on' : '') + '" data-k="live" title="' + esc(d ? agentLabel(d.agentId) + ' is driving the farm browser' : 'The farm browser') + '">'
         + (d ? '<span class="ob-dot' + (st.handoff ? ' ask' : '') + '" aria-hidden="true"></span>' + esc(agentLabel(d.agentId).toUpperCase()) + (st.handoff ? ' · NEEDS YOU' : ' · DRIVING') : 'BROWSER') + '</button>');
     }
     (state.live.agents || []).forEach((a, i) => {
@@ -279,7 +279,7 @@
     stopStreams(); stage('empty');
     state.ui.root.dataset.state = closedWhy ? 'ended' : 'empty';
     state.ui.empty.innerHTML = (closedWhy ? '<p>' + esc(closedWhy) + '</p>' : '<p>Type an address above to open the browser.</p>')
-      + '<p class="ob-dim">This is the station\'s browser. When an agent browses, it drives this one and you watch it here. When no agent is using it, it\'s yours.</p>';
+      + '<p class="ob-dim">This is the farm\'s browser. When an agent browses, it drives this one and you watch it here. When no agent is using it, it\'s yours.</p>';
     setNote('');
     paintBar(true);
   }
@@ -311,7 +311,7 @@
     const url = pageUrl(t);
     if (!url) {
       stage('empty');
-      ui.empty.innerHTML = '<p>The station isn\'t reachable, so this page can\'t be shown right now.</p>';
+      ui.empty.innerHTML = '<p>The farm isn\'t reachable, so this page can\'t be shown right now.</p>';
       ui.root.dataset.state = 'missing'; setNote('');
       return;
     }
@@ -427,7 +427,7 @@
         try { ui.url.blur(); } catch (_) { /* focus is best-effort */ }
         refreshLive().then(() => { if (!mounted()) return; if (state.mode !== 'live') showLive(); paintBar(true); setNote(why); });
         setNote(why);
-      } else setNote('Could not open that: ' + ((r.body && r.body.error) || 'the station did not answer') + '.');
+      } else setNote('Could not open that: ' + ((r.body && r.body.error) || 'the farm did not answer') + '.');
       paintBar();
       return;
     }
@@ -446,7 +446,7 @@
     const r = await postJson('/api/browser/view/nav', { action }).catch(() => ({ status: 0, body: {} }));
     if (op !== state.opSeq) return;
     state.busy = false;
-    if (r.status !== 200) setNote('Could not go ' + action + ': ' + ((r.body && r.body.error) || 'the station did not answer') + '.');
+    if (r.status !== 200) setNote('Could not go ' + action + ': ' + ((r.body && r.body.error) || 'the farm did not answer') + '.');
     paintBar();
   }
   function reload() {
@@ -457,12 +457,12 @@
     let url = '';
     if (state.mode === 'page' && state.target) url = pageUrl(state.target);
     else if ((state.mode === 'watch' || state.mode === 'live') && state.page && /^https?:/i.test(state.page.url || '')) url = state.page.url;
-    if (!url) { notify('could not open that — the station may be unreachable'); return; }
+    if (!url) { notify('could not open that — the farm may be unreachable'); return; }
     const core = tauriCore();
     if (core && core.invoke) { Promise.resolve(core.invoke('open_external_url', { url })).catch(() => notify('could not open your browser')); return; }
     let win = null;
     try { win = root.open(url, '_blank', 'noopener'); } catch (_) { win = null; }
-    if (!win) notify('your browser blocked the new tab — allow popups for the station, then try again');
+    if (!win) notify('your browser blocked the new tab — allow popups for the farm, then try again');
   }
 
   function setFollow(on) {
@@ -659,7 +659,7 @@
      chrome. The live line under it says what is RUNNING now, from the station — never just what was clicked. */
   const MODE_TEXT = {
     window: 'A real Chrome window on your desktop that you and your agents share. Sign in, type and paste in it like any browser; the BROWSER window follows it.',
-    builtin: 'Hidden inside StarNet: nothing opens on your desktop. The BROWSER window shows the page.',
+    builtin: 'Hidden inside Homestead: nothing opens on your desktop. The BROWSER window shows the page.',
     chrome: 'Your own Chrome, with your logins. Agents ask before acting on each site. Needs the StarNet extension in your Chrome.'
   };
   function mountSettings(el, arrange) {
@@ -680,21 +680,21 @@
       desc.textContent = MODE_TEXT[(s && s.mode) || 'window'];
       const lines = [];
       const fallback = s && s.effective === 'window' ? 'uses a Chrome window' : 'browses built-in';
-      if (s && s.mode === 'chrome' && !s.chromeAvailable) lines.push('The StarNet extension is not paired with your Chrome yet, so the station ' + fallback + ' until it is.');
-      if (s && s.mode === 'window' && s.effective === 'builtin') lines.push('No Chrome window can open here (no screen, or no Chrome, Edge or Chromium installed), so the station browses built-in.');
+      if (s && s.mode === 'chrome' && !s.chromeAvailable) lines.push('The StarNet extension is not paired with your Chrome yet, so the farm ' + fallback + ' until it is.');
+      if (s && s.mode === 'window' && s.effective === 'builtin') lines.push('No Chrome window can open here (no screen, or no Chrome, Edge or Chromium installed), so the farm browses built-in.');
       if (s && s.running && s.running !== s.effective) lines.push('The browser that is open now keeps its old mode until an agent finishes with it; it switches after that.');
       else if (s && s.running) lines.push('Running now: ' + (s.running === 'window' ? 'a Chrome window' : 'built-in') + '.');
       stateLine.textContent = lines.join(' ');
     };
-    getJson('/api/browser/settings').then(r => { if (r.status === 200 && r.body && r.body.ok) paint(r.body); else stateLine.textContent = 'Could not read the browser setting from the station.'; }).catch(() => { stateLine.textContent = 'Could not read the browser setting from the station.'; });
+    getJson('/api/browser/settings').then(r => { if (r.status === 200 && r.body && r.body.ok) paint(r.body); else stateLine.textContent = 'Could not read the browser setting from the farm.'; }).catch(() => { stateLine.textContent = 'Could not read the browser setting from the farm.'; });
     wrap.addEventListener('click', ev => {
       const b = ev.target && ev.target.closest ? ev.target.closest('[data-mode]') : null;
       if (!b || (current && current.mode === b.dataset.mode)) return;
       stateLine.textContent = 'Saving…';
       postJson('/api/browser/settings', { mode: b.dataset.mode }).then(r => {
         if (r.status === 200 && r.body && r.body.ok) { paint(r.body); refreshLive(); }
-        else stateLine.textContent = 'Could not save: ' + ((r.body && r.body.error) || 'the station did not answer') + '.';
-      }).catch(() => { stateLine.textContent = 'Could not save: the station did not answer.'; });
+        else stateLine.textContent = 'Could not save: ' + ((r.body && r.body.error) || 'the farm did not answer') + '.';
+      }).catch(() => { stateLine.textContent = 'Could not save: the farm did not answer.'; });
     });
   }
 

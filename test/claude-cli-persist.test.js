@@ -198,7 +198,7 @@ const tick = ms => new Promise(r => setTimeout(r, ms || 0));
     A.eq(spawns[1].args.filter(a => !/starnet-claude-cli-/.test(a)), spawns[0].args.filter(a => !/starnet-claude-cli-/.test(a)), 'with the same flags (its own system prompt file)');
     const r1 = reply(t1); msgs.push(r1, ...results(r1, 'real contents'));
     await collect(p, req(msgs));
-    A.ok(spawns.length === 2 && textIn(spawns[1].inputs[0]).startsWith('<user>\nRead a.txt.') && textIn(spawns[1].inputs[0]).includes('real contents'), 'the next turn starts on the warm child, from StarNet\'s whole history');
+    A.ok(spawns.length === 2 && textIn(spawns[1].inputs[0]).startsWith('<user>\nRead a.txt.') && textIn(spawns[1].inputs[0]).includes('real contents'), 'the next turn starts on the warm child, from Homestead\'s whole history');
     A.eq(p.persistStats().fresh.warm, 1, 'stats: the warm child was used');
     p.release('run-3');
     A.ok(spawns[1].treeKilled, 'run end kills it like any child');

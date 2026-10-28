@@ -4,7 +4,7 @@ const AuthoredSurfaceCalibration = {
   "version": 1,
   "coordinateSpace": "export-normalized",
   "cornerOrder": "TL,TR,BR,BL in screen coordinates before mirroring",
-  "qualification": "Measured painted tabletop support regions. Root owns live station acceptance.",
+  "qualification": "Measured painted tabletop support regions. Root owns live farm acceptance.",
   "props": {
     "industrial_roundtable": {
       "canMirror": true,

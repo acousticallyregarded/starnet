@@ -30,7 +30,7 @@ for (const raw of [
   A.ok(/running fine/i.test(v.userMessage), raw + ' reassures the user their install is healthy');
 }
 // …and the browser-side wordings must NOT be captured by the upstream bucket (they really are local transport).
-for (const raw of ['Failed to fetch', 'cannot reach the STARNET sidecar', 'terminated', 'Load failed']) {
+for (const raw of ['Failed to fetch', 'cannot reach the HOMESTEAD sidecar', 'terminated', 'Load failed']) {
   A.eq(friendlyError(new Error(raw)).kind, 'network', raw + ' stays a LOCAL transport verdict');
 }
 
@@ -68,7 +68,7 @@ for (const raw of [
 ]) {
   const v = friendlyError(new Error(raw));
   A.eq(v.kind, 'network', raw + ' classifies as a transport disconnect');
-  A.eq(v.retryable, true, raw + ' remains retryable after the station returns');
+  A.eq(v.retryable, true, raw + ' remains retryable after the farm returns');
   A.ok(/try again/i.test(v.userMessage), raw + ' still gives a concrete next step');
   // the regression guard: unprobed, it must not blame (or absolve) the local engine.
   A.eq(v.engineAlive, null, raw + ' unprobed => engineAlive null');
@@ -108,10 +108,10 @@ for (const raw of [
 }
 // ---- the service REFUSED the station's link: relink, never top up ----
 {
-  const v = friendlyError("Managed credits are unavailable — your StarNet account refused this station's link (it was unlinked, or belongs to another account). Relink it under SETTINGS → AI & MODELS → STARNET MANAGED (or use your own provider key).");
+  const v = friendlyError("Managed credits are unavailable — your StarNet account refused this farm's link (it was unlinked, or belongs to another account). Relink it under SETTINGS → AI & MODELS → STARNET MANAGED (or use your own provider key).");
   A.eq(v.kind, 'managed_credit_link', 'a refused link is its own kind');
   A.ok(/relink/i.test(v.userMessage) && !/out of|top up/i.test(v.userMessage), 'it points at relinking, never at a top-up: ' + v.userMessage);
-  A.eq(v.action, 'store', 'the door is AI & MODELS, where the STARNET card relinks');
+  A.eq(v.action, 'store', 'the door is AI & MODELS, where the HOMESTEAD card relinks');
   A.eq(v.retryable, false, 'a refused link does not fix itself on retry');
 }
 
@@ -195,7 +195,7 @@ for (const raw of [
   A.eq(v.kind, 'stale_session', 'a sidecar 403 classifies as stale_session, not auth');
   A.eq(v.action, 'reload', 'the door is a reload, never the provider-key field');
   A.eq(v.retryable, false, 'a stale token is not fixed by a blind retry');
-  A.ok(/restart/i.test(v.userMessage) && /reload/i.test(v.userMessage), 'the copy says the station restarted and to reload');
+  A.ok(/restart/i.test(v.userMessage) && /reload/i.test(v.userMessage), 'the copy says the farm restarted and to reload');
   const btn = actionButton(v);
   A.ok(btn && /reload/i.test(btn.label) && typeof btn.run === 'function', 'actionButton yields a RELOAD door');
   A.ok(!/key/i.test(btn.label), 'the label never offers "Add a key" for a stale session');
@@ -214,13 +214,13 @@ for (const raw of [
 // The sidecar withholds the key when it cannot prove this browser runs as its own OS user; every keyed call then 403s
 // exactly like a stale page, but a reload re-runs the same check — "the station restarted — reload" is false and a dead door.
 {
-  const NOTICE = 'StarNet could not confirm this browser runs as your own user account (the ownership check timed out or failed), so it won’t take commands from this page. TEST NOTICE';
+  const NOTICE = 'Homestead could not confirm this browser runs as your own user account (the ownership check timed out or failed), so it won’t take commands from this page. TEST NOTICE';
   const withheldHarness = { tokenWithheld: () => 'lookup-failed', tokenWithheldNotice: () => NOTICE };
   globalThis.Harness = withheldHarness;
   try {
     for (const [err, status] of [[new Error('sidecar HTTP 403 — forbidden token')], [new Error('sidecar HTTP 403')], [new Error('forbidden token'), 403]]) {
       const v = friendlyError(err, status);
-      A.eq(v.userMessage, NOTICE, 'a withheld page leads with the station\'s own withheld notice: ' + err.message);
+      A.eq(v.userMessage, NOTICE, 'a withheld page leads with the farm\'s own withheld notice: ' + err.message);
       A.ok(!/restart|reload/i.test(v.userMessage), 'a withheld page never claims a restart or offers a reload');
       A.eq(v.action, null, 'a withheld page gets no RELOAD door (a reload re-runs the same check)');
       A.eq(actionButton(v), null, 'actionButton offers no door for a withheld page');
@@ -354,7 +354,7 @@ for (const raw of [
   // StarNet's OWN spend-ledger errors name 'the spending limits you set'; they are not a provider out of credit
   // (sidecar/loop.js stopForSpend, one line per cause: an interrupted run, a failed save, an unreadable record)
   for (const own of ['An earlier run was interrupted before its spend was recorded, so the spending limits you set can’t be checked. Settle it in SETTINGS › SPENDING LIMITS.',
-    'Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart StarNet to recover it.',
+    'Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart Homestead to recover it.',
     'Spend history could not be read, so the spending limits you set can’t be checked. See SETTINGS › SPENDING LIMITS.']) {
     A.ok(kindOf(own).kind !== 'billing', 'BROWSER: a local spend-ledger error is not told to top up the provider: ' + own.slice(0, 40));
     // its own kind on BOTH paths: a truthful headline, the SPENDING LIMITS door, and no doomed RETRY chip
@@ -403,7 +403,7 @@ for (const raw of [
     A.eq(v.kind, 'provider_server_error', raw + ' is the PROVIDER\'s server fault (delegate path)');
     A.eq(kindFromRaw(raw.toLowerCase(), null), 'provider_server_error', raw + ' — BROWSER ladder agrees');
     A.eq(v.retryable, true, raw + ' is retryable (load spikes pass)');
-    A.ok(!/local .*service|starnet service/i.test(v.userMessage) || /StarNet itself is fine/i.test(v.userMessage),
+    A.ok(!/local .*service|starnet service/i.test(v.userMessage) || /Homestead itself is fine/i.test(v.userMessage),
       raw + ' must NEVER blame the local service');
     A.ok(/provider/i.test(v.userMessage), raw + ' names the provider\'s servers');
     A.ok(/fine/i.test(v.userMessage), raw + ' reassures the user their install is healthy');
@@ -487,14 +487,14 @@ for (const raw of [
 {
   const interrupted = friendlyError('An earlier run was interrupted before its spend was recorded, so the spending limits you set can’t be checked. Settle it in SETTINGS › SPENDING LIMITS.');
   A.eq(interrupted.kind, 'spend_unknown', 'the interrupted-run refusal is spend_unknown');
-  A.ok(/earlier run stopped before StarNet recorded what it spent/.test(interrupted.userMessage) && /Settle that run in SETTINGS › SPENDING LIMITS/.test(interrupted.userMessage),
+  A.ok(/earlier run stopped before Homestead recorded what it spent/.test(interrupted.userMessage) && /Settle that run in SETTINGS › SPENDING LIMITS/.test(interrupted.userMessage),
     'the interrupted cause names the run and the SETTLE fix (got: ' + interrupted.userMessage + ')');
-  const unsaved = friendlyError('Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart StarNet to recover it.');
-  A.ok(/Restart StarNet/.test(unsaved.userMessage) && !/Settle/.test(unsaved.userMessage), 'a failed save says restart, never settle (got: ' + unsaved.userMessage + ')');
+  const unsaved = friendlyError('Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart Homestead to recover it.');
+  A.ok(/Restart Homestead/.test(unsaved.userMessage) && !/Settle/.test(unsaved.userMessage), 'a failed save says restart, never settle (got: ' + unsaved.userMessage + ')');
   // d688ea20: the loop's damaged-line cause (sidecar/loop.js) is spend_unknown, names the damaged line and keeps the SETTLE door
   const damagedLine = friendlyError('A line of the spend record is damaged, so what it recorded is unknown and the spending limits you set can’t be checked. Settle it in SETTINGS › SPENDING LIMITS.');
   A.eq(damagedLine.kind, 'spend_unknown', 'the damaged-line refusal is spend_unknown');
-  A.ok(/line of StarNet's spend record is damaged/.test(damagedLine.userMessage) && /Settle it in SETTINGS › SPENDING LIMITS/.test(damagedLine.userMessage) && !/earlier run/.test(damagedLine.userMessage),
+  A.ok(/line of Homestead's spend record is damaged/.test(damagedLine.userMessage) && /Settle it in SETTINGS › SPENDING LIMITS/.test(damagedLine.userMessage) && !/earlier run/.test(damagedLine.userMessage),
     'the damaged cause is never called an interrupted run (got: ' + damagedLine.userMessage + ')');
   const unread = friendlyError('Spend history could not be read, so the spending limits you set can’t be checked. See SETTINGS › SPENDING LIMITS.');
   A.eq(unread.userMessage, KINDS.spend_unknown.msg, 'an unreadable record gets the cause-neutral headline');
@@ -512,7 +512,7 @@ for (const raw of [
   A.eq(JSON.stringify(opened), JSON.stringify([['settings', 'budget']]), 'the door opens SETTINGS › SPENDING LIMITS (section budget)');
   // not swallowed: provider billing and the generic unknown stay what they were
   A.eq(friendlyError(Object.assign(new Error('openai http 429 - insufficient_quota'), { status: 429 })).kind, 'billing', 'provider billing is untouched');
-  A.eq(friendlyError('the spending limit on your OpenAI account was reached').kind !== 'spend_unknown', true, 'a provider spending-limit sentence is not StarNet\'s ledger');
+  A.eq(friendlyError('the spending limit on your OpenAI account was reached').kind !== 'spend_unknown', true, 'a provider spending-limit sentence is not Homestead\'s ledger');
 }
 
 // GH#111: the OLLAMA card pointed at LM Studio. The adapter's sentence names the server and the card that speaks to it;
@@ -557,14 +557,14 @@ const wrongServerCase = (async () => {
     A.eq(verdict.kind, 'local_model_memory', 'local allocation failure has its own actionable UI kind');
     A.eq(verdict.retryable, false, 'no blind retry button on an exhausted local runtime');
     A.ok(/Close other local models/.test(verdict.userMessage) && /smaller model/.test(verdict.userMessage), 'the memory remedy names actual choices');
-    A.ok(/restart StarNet after freeing memory/.test(verdict.userMessage), 'restart guidance is conditional on a blank/disconnected station and freed memory');
+    A.ok(/restart Homestead after freeing memory/.test(verdict.userMessage), 'restart guidance is conditional on a blank/disconnected farm and freed memory');
     A.eq(verdict.raw, raw, 'raw runtime allocation detail stays available for diagnostics');
   }
   // Review providers-tools-05: a remote model server's allocation failure keeps the memory kind, and its words.
   const remoteRaw = 'The model server at ollama.lan ran out of memory. Free memory on that machine, or choose a smaller model from the model picker in COMMS before trying again. [http 500 - failed to allocate CUDA0 buffer]';
   const remote = friendlyError(Object.assign(new Error(remoteRaw), { status: 500, localModelMemory: true }));
   A.eq(remote.kind, 'local_model_memory', 'a remote allocation failure has the memory kind');
-  A.ok(/^The model server at ollama\.lan ran out of memory\./.test(remote.userMessage) && !/Close other local models|restart StarNet/.test(remote.userMessage), 'and says which machine, never local advice: ' + remote.userMessage);
+  A.ok(/^The model server at ollama\.lan ran out of memory\./.test(remote.userMessage) && !/Close other local models|restart Homestead/.test(remote.userMessage), 'and says which machine, never local advice: ' + remote.userMessage);
   A.eq(require('../frontend/app/friendlyerror.js')._internals.kindFromRaw(remoteRaw, 500), 'local_model_memory', 'the browser fallback reads the remote prefix too');
   A.eq(require('../frontend/app/friendlyerror.js')._internals.kindFromRaw(raw, 500), 'local_model_memory',
     'browser fallback does not mistake the runtime termination for a network loss or generic 500');

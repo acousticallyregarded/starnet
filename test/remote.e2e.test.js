@@ -284,18 +284,18 @@ function startMockModel() {
     A.ok(recent.body.runs.some(r => r.runId === cont.data.runId && r.streamId === 'ws_desk_launch' && r.live === false && r.endedAt), 'the desk can see the phone run and its session');
     A.ok(recent.body.runs.some(r => r.streamId === streamId && /remote shell proof|slow reply/.test(r.title)), 'and the phone-started conversation, titled with what was said');
     const tr = await fx.json('GET', '/api/transcript?agent=forge&stream=ws_desk_launch&limit=50');
-    A.ok((tr.body.turns || []).some(t => t.role === 'assistant' && /CODEWORD_HELIX_SEEN/.test(String(t.content))), 'the turn is in the station transcript under the desk session id (the desk merges it on open)');
+    A.ok((tr.body.turns || []).some(t => t.role === 'assistant' && /CODEWORD_HELIX_SEEN/.test(String(t.content))), 'the turn is on the farm transcript under the desk session id (the desk merges it on open)');
 
     // 10. the station picture
     const want0 = await fx.json('GET', '/api/remote/view');
-    A.eq([want0.body.enabled, want0.body.at], [true, null], 'the desk is told Remote is on and that the station has no picture yet');
+    A.eq([want0.body.enabled, want0.body.at], [true, null], 'the desk is told Remote is on and that the farm has no picture yet');
     const noPic = await client.call('view', {});
     A.ok(noPic.ok && noPic.data.none === true, 'a phone asking before any picture exists is told there is none');
     const want1 = await fx.json('GET', '/api/remote/view');
     A.eq(want1.body.want, true, 'and its asking is what makes the desk start drawing');
     const pic = Buffer.concat([Buffer.from('RIFF'), Buffer.from([0, 0, 0, 0]), Buffer.from('WEBPVP8 '), Buffer.alloc(3000, 9)]);
     const bad = await fx.json('POST', '/api/remote/view', { w: 640, h: 480, data: Buffer.from('not a picture').toString('base64') });
-    A.eq(bad.status, 400, 'the station refuses something that is not a picture');
+    A.eq(bad.status, 400, 'the farm refuses something that is not a picture');
     const putPic = await fx.json('POST', '/api/remote/view', { w: 640, h: 480, bodies: [{ agentId: 'forge', x: 320, y: 200 }], data: pic.toString('base64') });
     A.ok(putPic.status === 200 && putPic.body.ok, 'the desk page hands over a still: ' + JSON.stringify(putPic.body).slice(0, 120));
     const got = await client.call('view', {});
@@ -320,14 +320,14 @@ function startMockModel() {
 
     // 11. notifications
     const pk = await client.call('pushKey');
-    A.ok(pk.ok && /^[A-Za-z0-9_-]{80,90}$/.test(pk.data.key) && pk.data.on === false, 'the phone reads the station push key; not subscribed yet');
+    A.ok(pk.ok && /^[A-Za-z0-9_-]{80,90}$/.test(pk.data.key) && pk.data.on === false, 'the phone reads the farm push key; not subscribed yet');
     const nodeCrypto = require('crypto');
     const ecdh = nodeCrypto.createECDH('prime256v1'); ecdh.generateKeys();
     const bsub = { endpoint: 'https://127.0.0.1:9/push/abc', keys: { p256dh: ecdh.getPublicKey().toString('base64url'), auth: nodeCrypto.randomBytes(16).toString('base64url') } };
     A.eq((await client.call('pushOn', { endpoint: 'http://127.0.0.1:9/x', keys: bsub.keys })).ok, false, 'a plain-http push address is refused');
     A.eq((await client.call('pushOn', { endpoint: 'https://evil.example/collect', keys: bsub.keys })).ok, false, 'a push address that is not a real push service is refused');
     A.eq((await client.call('pushOn', bsub)).ok, true, 'the phone subscribes');
-    A.eq((await client.call('pushKey')).data.on, true, 'and the station says so');
+    A.eq((await client.call('pushKey')).data.on, true, 'and the farm says so');
     const tp = await client.call('pushTest');
     A.eq(tp.ok, false, 'a push that cannot be delivered is reported as not sent: ' + JSON.stringify(tp).slice(0, 120));
     A.eq((await client.call('pushOff')).ok, true, 'the phone unsubscribes');
@@ -335,7 +335,7 @@ function startMockModel() {
 
     // 7. the LAN door is not the API; revoke cuts a phone off
     A.eq((await fetch(lan + '/api/remote')).status, 404, 'the LAN door serves no /api route');
-    A.eq((await fetch(lan + '/')).status, 404, 'nor the station page');
+    A.eq((await fetch(lan + '/')).status, 404, 'nor the farm page');
 
     // a second phone, to carry through the restart
     const pr2 = await fx.json('POST', '/api/remote/pair', { name: 'Tablet' });
@@ -358,7 +358,7 @@ function startMockModel() {
     A.eq(after.body.listening, true, 'the LAN door reopened on boot');
     A.eq(after.body.devices.map(d => d.name), ['Tablet'], 'the paired phone survived the restart');
     const c3 = Phone.connect({ base: lan, deviceId: paired2.deviceId, stationPub: pr2.body.stationPub, key: key2 });
-    A.eq((await c3.call('status')).ok, true, 'the phone reconnects after a restart with the same station key');
+    A.eq((await c3.call('status')).ok, true, 'the phone reconnects after a restart with the same farm key');
 
     await checkDispatchPhone(c3, 'after restart', 'Continue the accepted phone result');
     const restartText = 'Continue the accepted phone result after restart';
@@ -376,7 +376,7 @@ function startMockModel() {
     A.eq(held.ok, true, 'a held phone task started');
     await waitUntil(() => !!llm.gate.held, 20000, 'model holding the phone task');
     const snap = await fx.json('GET', '/api/state/snapshot');
-    A.ok(snap.body.runs.some(r => r.runId === held.data.runId && r.agentId === 'forge' && r.source === 'remote'), 'the phone run is in the station snapshot: ' + JSON.stringify(snap.body.runs).slice(0, 200));
+    A.ok(snap.body.runs.some(r => r.runId === held.data.runId && r.agentId === 'forge' && r.source === 'remote'), 'the phone run is on the farm snapshot: ' + JSON.stringify(snap.body.runs).slice(0, 200));
     const halt = await fx.json('POST', '/api/halt', {});
     A.ok(halt.status === 200 && halt.body.halted >= 1, 'E-STOP counts the phone run: ' + JSON.stringify(halt.body).slice(0, 160));
     await waitUntil(async () => (await fx.json('GET', '/api/remote/recent')).body.runs.some(r => r.runId === held.data.runId && r.live === false), 10000, 'phone run ended by E-STOP');

@@ -54,7 +54,7 @@ function threeWrites() {
       model: 'replay/model', agentId: 'a', runId: 'r', tools: [], limits: { maxIters: 5, grace: false }, signal: ac.signal,
       dispatch: (c, ctx) => reg.dispatch(c, ctx), capCtx: openCtx({ signal: ac.signal }), clock: { now: () => Date.now() }
     });
-    A.eq(ran, ['f0'], 'ONLY the first write executed after the Commander stopped the run');
+    A.eq(ran, ['f0'], 'ONLY the first write executed after the Farmer stopped the run');
     const tm = toolMsgs(res);
     A.eq(tm.map(m => m.tool_call_id), ['c0', 'c1', 'c2'], 'every requested call still has its paired transcript result');
     A.eq(tm[0].content, 'wrote f0', 'the call that ran before the stop keeps its real result');

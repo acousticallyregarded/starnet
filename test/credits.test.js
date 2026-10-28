@@ -77,7 +77,7 @@ function fakeFetch(seed) {
         ? { ok: true, status: 200, json: async () => ({ error: 'unexpected success shape' }) }
       : { ok: false, status, json: async () => ({ error: status === 401 ? 'unauthorized' : 'down' }) };
     const c = makeCredits({ url: 'https://credits.example', accountId: 'acct', fetch: fetchImpl });
-    A.eq(await c.refresh('acct'), 0, 'precondition: the linked station cached a real $0 response');
+    A.eq(await c.refresh('acct'), 0, 'precondition: the linked farm cached a real $0 response');
     A.eq(c.snapshot().balanceUsd, 0, 'the real zero is cached while the credential is valid');
     status = 401;
     A.eq(await c.refresh('acct'), null, 'the remotely revoked bearer no longer yields a balance');
@@ -476,7 +476,7 @@ function fakeFetch(seed) {
 
   {
     const c = makeCredits({ url: '', emit: () => { throw new Error('must never be called'); } });
-    A.eq(c.configured(), false, 'an unconfigured (BYOK) station stays inert');
+    A.eq(c.configured(), false, 'an unconfigured (BYOK) farm stays inert');
     A.eq(c.snapshot().balanceUsd, null, 'and has no balance to warn about');
   }
 

@@ -42,7 +42,7 @@ A.ok(/setTrophyCount/.test(worldSrc), 'world.js feeds the live earned-trophy cou
 const appSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/app.js'), 'utf8');
 A.ok(/setOnTrophyCase/.test(appSrc) && /openTerm\('trophies'\)/.test(appSrc), 'app.js routes the case click to the TROPHY surface panel');
 A.ok(/SeedReuseStore\.init/.test(appSrc), 'app.js arms the seed-reuse aggregate store');
-A.ok(/SeedReuseStore\.reset/.test(appSrc), '…and resets it on new-hero (a fresh Commander inherits no tool-usage tally)');
+A.ok(/SeedReuseStore\.reset/.test(appSrc), '…and resets it on new-hero (a fresh Farmer inherits no tool-usage tally)');
 
 const psSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/propsprites.js'), 'utf8');
 A.ok(/setTrophyCount/.test(psSrc) && /F\.trophycase\s*=/.test(psSrc), 'propsprites carries the trophy feed + the case sprite');

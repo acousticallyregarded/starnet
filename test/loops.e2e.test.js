@@ -134,8 +134,8 @@ async function until(B, headers, pred, label, ms) {
 
     // ---- a station with no loops pays no timer ----------------------------------------------------------
     const empty = await (await fetch(B + '/api/loops', { headers })).json();
-    A.eq(empty.loops.length, 0, 'a fresh station has no loops');
-    A.eq(empty.armed, false, 'and arms no timer — a loopless station costs nothing');
+    A.eq(empty.loops.length, 0, 'a fresh farm has no loops');
+    A.eq(empty.armed, false, 'and arms no timer — a loopless farm costs nothing');
 
     // ---- create: no arm ceremony, it just goes ----------------------------------------------------------
     const created = await fetch(B + '/api/loops', {
@@ -175,7 +175,7 @@ async function until(B, headers, pred, label, ms) {
     // Wait on the OBSERVABLE consequence — a new loop model-call — rather than on an iteration counter a
     // pre-park iteration could already have satisfied. That proxy made this assertion flaky under load.
     st = await until(B, headers, () => loopCalls() > callsAtPark, 'the verdict to start the next iteration');
-    A.ok(loopCalls() > callsAtPark, 'the Commander\'s click is what spent the next dollar');
+    A.ok(loopCalls() > callsAtPark, 'the Farmer\'s click is what spent the next dollar');
 
     // ---- a double verdict on the same iteration is refused -----------------------------------------------
     const again = await fetch(B + '/api/loops/verdict', {

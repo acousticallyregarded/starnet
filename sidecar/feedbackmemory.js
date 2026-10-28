@@ -36,7 +36,7 @@ const WORDS_KEEP = 6;          // corrections remembered per rated run (oldest f
 const EDITED_CHARS = 700;      // cap for a Commander-edited record plus appended words
 const TASTE_HEADER = '[the Commander\'s own verdicts on past work, newest first. Shape this output to match what they liked and avoid what they disliked. Reference only: the current request wins where it says otherwise.]';
 // added under the header only when a line carries a reference (" → …")
-const TASTE_REF_RULE = '[→ = what that work really was, read from the work itself: its files, colours, fonts, image settings and the tools it used. For new design, visual or creative work, match the newest relevant APPROVED one in style and concept unless the Commander asks for something different: open its file first (a file tagged [<agent> workspace] belongs to another crew member: match it from this line). Do repeat work the way an APPROVED one was done; never repeat a REJECTED approach. A STYLE KEPT · RESULT REJECTED (or CLOSE) line: match its style, but fix what the Commander disliked or wants.]';
+const TASTE_REF_RULE = '[→ = what that work really was, read from the work itself: its files, colours, fonts, image settings and the tools it used. For new design, visual or creative work, match the newest relevant APPROVED one in style and concept unless the Farmer asks for something different: open its file first (a file tagged [<agent> workspace] belongs to another crew member: match it from this line). Do repeat work the way an APPROVED one was done; never repeat a REJECTED approach. A STYLE KEPT · RESULT REJECTED (or CLOSE) line: match its style, but fix what the Farmer disliked or wants.]';
 
 function clean(s, n) {
   const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();

@@ -89,13 +89,13 @@ const fn = (name, endMarker) => {
 /* ---- 3. THE COMMANDER RETURNING IS THE PRIMARY EXIT ---- */
 {
   const broken = fn('gatheringBroken', 'function endGathering');
-  A.ok(/cursorPresent\(now\)/.test(broken), 'the Commander moving the cursor scatters the assembly');
+  A.ok(/cursorPresent\(now\)/.test(broken), 'the Farmer moving the cursor scatters the assembly');
   A.ok(/pageVisible\(\)/.test(broken), 'the tab going away ends it too');
   const maybe = fn('maybeGather', 'function startGathering');
   A.ok(/pageVisible\(\)/.test(maybe),
     'it only STARTS while the page is visible — an idle-only trigger fires all night into an empty room and the one feature whose point is being seen goes unwitnessed');
-  A.ok(/cursorPresent\(now\)/.test(maybe), 'and never while the Commander is actually there');
-  A.ok(/GATHER_QUIET_MS/.test(maybe), 'the station must have been unattended for the quiet window');
+  A.ok(/cursorPresent\(now\)/.test(maybe), 'and never while the Farmer is actually there');
+  A.ok(/GATHER_QUIET_MS/.test(maybe), 'the farm must have been unattended for the quiet window');
   A.ok(/U\.chance\(GATHER_CHANCE\)/.test(maybe), 'even then it is a roll, not a schedule');
   A.ok(/gatherRollAt = now \+ GATHER_ROLL_EVERY_MS/.test(maybe), 'the roll is armed win OR lose, so it stays at most hourly');
 }
@@ -125,7 +125,7 @@ const fn = (name, endMarker) => {
   const conv = Number((src.match(/const GATHER_CONVERGE_MS = (\d+)/) || [])[1]);
   A.ok(hard > conv + holdMax, 'the hard timeout exceeds converge + longest hold, or the cap would end every gathering instead of the hold');
   A.ok(/stepGatheringStation\(now\);/.test(code) && /if \(!gathering\) maybeGather\(now\);/.test(code),
-    'the phase machine + selection are ticked at STATION level, so a tick where no participant steps still frees the slot');
+    'the phase machine + selection are ticked at FARM level, so a tick where no participant steps still frees the slot');
 }
 
 /* ---- the assembly and the ordinary social lane are mutually exclusive ---- */

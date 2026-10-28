@@ -173,7 +173,7 @@ for (const states of [{ 'settings': sig(0) }, {}]) {
   A.eq(empty.result, 'opened:NOTIFS', 'fresh empty notification store reaches the fixture list');
   A.eq(empty.list && empty.list.innerHTML, populated.list && populated.list.innerHTML,
     'empty and populated notification stores capture identical fixture rows');
-  A.ok(!!empty.list && /Station layout saved/.test(empty.list.innerHTML), 'notification fixture is actually rendered');
+  A.ok(!!empty.list && /Farm layout saved/.test(empty.list.innerHTML), 'notification fixture is actually rendered');
   A.eq(captureNotifs(0, true).result, 'DRIVE_ERR:notification-list-missing',
     'broken notification renderer fails capture instead of producing a false green');
 }

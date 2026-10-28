@@ -81,7 +81,7 @@ async function run(turns, dispatch, limits) {
   // The Commander explicitly denied the action: no workaround pressure may override that authority.
   {
     const out = await run([
-      toolTurn('primary_tool', 'c1'), textTurn('The Commander declined that action, so I stopped.')
+      toolTurn('primary_tool', 'c1'), textTurn('The Farmer declined that action, so I stopped.')
     ], async () => ({ ok: false, isError: true, content: 'The action was not performed.', summary: 'denied' }));
     const nudges = out.messages.filter(m => m.role === 'system' && /<failure_recovery>/.test(String(m.content)));
     A.eq(nudges.length, 0, 'the consent broker\'s denied summary is an irreducible terminal decision, not a recovery target');
@@ -92,7 +92,7 @@ async function run(turns, dispatch, limits) {
   {
     const out = await run([
       toolTurn('primary_tool', 'c1'), textTurn('That capability is not granted, so I stopped.')
-    ], async () => ({ ok: false, isError: true, content: 'Capability is not granted for this station.', summary: 'capdenied' }));
+    ], async () => ({ ok: false, isError: true, content: 'Capability is not granted for this farm.', summary: 'capdenied' }));
     const nudges = out.messages.filter(m => m.role === 'system' && /<failure_recovery>/.test(String(m.content)));
     A.eq(nudges.length, 0, 'capability denial stays a terminal safety boundary');
     A.eq(out.res.reason, 'done', 'capability denial can be reported without a forced bypass attempt');

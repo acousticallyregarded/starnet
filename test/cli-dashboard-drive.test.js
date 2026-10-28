@@ -206,8 +206,8 @@ const UP = '\x1b[A', DOWN = '\x1b[B', ESC = '\x1b';
     const d = await boot({ refuse: b => /session goal/i.test(b.messages[0].content) && refused++ === 0 });
     const at = d.mark();
     await d.keys('/goal ship the thing\r', 800);
-    A.eq(refused, 1, 'refused: the station answered the first step 402');
-    A.ok(/session goal paused: the last step was refused \(HTTP 402: spend cap reached\)/.test(d.since(at)), 'refused: the goal pauses and says the station\'s reason');
+    A.eq(refused, 1, 'refused: the farm answered the first step 402');
+    A.ok(/session goal paused: the last step was refused \(HTTP 402: spend cap reached\)/.test(d.since(at)), 'refused: the goal pauses and says the farm\'s reason');
     await d.keys('/goal status\r', 300);
     A.ok(/session goal \(paused/.test(d.since(at)), 'refused: /goal status says paused, never active');
     await d.keys('/goal resume\r', 2500);
@@ -422,21 +422,21 @@ const UP = '\x1b[A', DOWN = '\x1b[B', ESC = '\x1b';
     const d = await boot({ approval: (b, roster) => {
       if (mode === 'unconfirmed') {   // the page applied it (its roster push landed) but did not confirm within the 6 s
         roster.agents[0].approvalMode = 'full';
-        return { status: 409, body: { error: 'the StarNet app did not confirm in time — it may still be applying the change', pageOpen: true, unanswered: true, station: { approvalMode: 'full' } } };
+        return { status: 409, body: { error: 'the Homestead app did not confirm in time — it may still be applying the change', pageOpen: true, unanswered: true, station: { approvalMode: 'full' } } };
       }
       roster.agents[0].approvalMode = b.mode;
-      return { status: 200, body: { ok: true, agentId: b.agentId, mode: b.mode, via: 'roster', save: 'not-saved', saveError: 'the station save is damaged' } };
+      return { status: 200, body: { ok: true, agentId: b.agentId, mode: b.mode, via: 'roster', save: 'not-saved', saveError: 'the farm save is damaged' } };
     } });
     const at = d.mark();
     await d.keys('/yolo\r', 600);
     const said = d.since(at).replace(/\s+/g, ' ');
-    A.ok(/did not confirm in time/.test(said) && /The station's roster says ULTRON will run without prompts right now/.test(said), 'yolo: unconfirmed, it says what the station holds now: ' + (said.match(/The StarNet app.{0,200}/) || [''])[0]);
+    A.ok(/did not confirm in time/.test(said) && /The farm's roster says ULTRON will run without prompts right now/.test(said), 'yolo: unconfirmed, it says what the farm holds now: ' + (said.match(/The Homestead app.{0,200}/) || [''])[0]);
     A.ok(!/still will ask first/.test(said), 'yolo: never "still will ask first" while the roster says full');
     mode = 'roster';
     const at2 = d.mark();
     await d.keys('/yolo off\r', 600);
     const said2 = d.since(at2).replace(/\s+/g, ' ');
-    A.ok(/the app's save did not take it \(the station save is damaged\), so the app may give ULTRON its own saved setting back when it opens/.test(said2), 'yolo off: a save that did not take it is said, never "it stays when the app opens": ' + (said2.match(/Approval mode.{0,300}/) || [''])[0]);
+    A.ok(/the app's save did not take it \(the farm save is damaged\), so the app may give ULTRON its own saved setting back when it opens/.test(said2), 'yolo off: a save that did not take it is said, never "it stays when the app opens": ' + (said2.match(/Approval mode.{0,300}/) || [''])[0]);
     await d.done();
   }
 

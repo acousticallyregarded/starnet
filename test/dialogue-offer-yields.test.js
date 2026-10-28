@@ -165,7 +165,7 @@ const settle = async () => { for (let n = 0; n < 40; n++) await new Promise(r =>
     s.D.open({ name: 'NOVA', offer: { notNow: () => { notNow++; }, stepAside() {} } });
     void s.D.say('does this look right?');
     s.key('Escape', s.elsewhere);
-    A.eq(notNow, 0, 'an Esc typed in a station field (another surface) is that field’s');
+    A.eq(notNow, 0, 'an Esc typed on a farm field (another surface) is that field’s');
     s.key('Escape', s.menuKey);
     A.eq(notNow, 0, 'an Esc on a key in another surface (a dock menu) belongs to that surface');
     s.key('Escape', s.input, true);
@@ -294,7 +294,7 @@ const settle = async () => { for (let n = 0; n < 40; n++) await new Promise(r =>
     const p = t.ctx.offerArc('manual:1');
     await settle();
     t.ctx.noteDeliveryLanding(); await settle();
-    A.eq(t.s.D.isOpen(), true, 'a delivery leaves a panel the Commander opened themselves (unchanged)');
+    A.eq(t.s.D.isOpen(), true, 'a delivery leaves a panel the Farmer opened themselves (unchanged)');
     if (t.ctx.noteAskLanding) t.ctx.noteAskLanding();
     await Promise.race([p, settle()]);
     A.eq(t.s.D.isOpen(), false, 'an approval landing steps even an asked-for panel aside: a waiting ask is never covered');
@@ -332,9 +332,9 @@ const settle = async () => { for (let n = 0; n < 40; n++) await new Promise(r =>
     const t = arc();
     const p = t.ctx.offerArc('run-5');
     await settle();
-    A.eq(step(t.s.D, 'turn'), true, 'the Commander sending a turn hands the moment back');
+    A.eq(step(t.s.D, 'turn'), true, 'the Farmer sending a turn hands the moment back');
     await Promise.race([p, settle()]);
-    A.eq(t.s.D.isOpen(), false, 'the panel steps aside for the Commander’s own turn');
+    A.eq(t.s.D.isOpen(), false, 'the panel steps aside for the Farmer’s own turn');
     A.eq(t.log.decline, 0, 'unanswered, not declined');
   }
   // (6) never offered while an ask waits: a card on screen, a run's question, or any ask the station holds open
@@ -346,11 +346,11 @@ const settle = async () => { for (let n = 0; n < 40; n++) await new Promise(r =>
   }
 
   /* ---------- E. chat.js hands the moment back wherever an ask reaches the Commander, and on their own turn ---------- */
-  A.ok(/U\.bus\.on\('permission\.prompt', noteAskLanding\)/.test(chat), 'every approval / question the station raises (permission.prompt, a worker’s and a group’s too) steps an offer aside');
+  A.ok(/U\.bus\.on\('permission\.prompt', noteAskLanding\)/.test(chat), 'every approval / question the farm raises (permission.prompt, a worker’s and a group’s too) steps an offer aside');
   A.ok(/function revealCard\(el\) \{\s*\n\s*noteAskLanding\(\);/.test(chat), 'a live approval / question card shown in COMMS (incl. a session re-opened on one) steps an offer aside');
   A.ok(/function revealAsk\(promptId\) \{[\s\S]{0,900}?if \(!card\) return false;\s*\n\s*noteAskLanding\(\);/.test(chat), 'NEEDS YOU › Review / Answer steps an offer aside before it shows the card');
   A.ok(/function offerTaskQuestion\(tq\) \{[\s\S]{0,400}?noteAskLanding\(\);/.test(chat), 'a run that ends on a question steps an offer aside');
-  A.ok(/stepOfferAside\('turn'\);[^\n]*\n\s*stick = true;/.test(chat), 'the Commander’s own turn (send) steps an offer aside');
+  A.ok(/stepOfferAside\('turn'\);[^\n]*\n\s*stick = true;/.test(chat), 'the Farmer’s own turn (send) steps an offer aside');
   A.ok(/Dialogue\.open\(\{ name: \(name \|\| 'AGENT'\), offer: \{/.test(chat), 'the goal-path panel opens as an offer');
 
   A.report('dialogue-offer-yields.test');

@@ -58,7 +58,7 @@ async function run(o) {
     A.eq(imgTurns.length, 1, 'a screenshot result puts one image turn into the transcript');
     const parts = imgTurns[0].content;
     A.eq(parts[0].type, 'text', 'the image is introduced by a label');
-    A.eq(parts[1].image_url.url, 'data:image/png;base64,' + PNG, 'the pixels ride as a data: image_url — the SAME shape Commander attachments use');
+    A.eq(parts[1].image_url.url, 'data:image/png;base64,' + PNG, 'the pixels ride as a data: image_url — the SAME shape Farmer attachments use');
     // Ordering is load-bearing: the image must follow the tool result, not precede it.
     A.ok(messages.indexOf(imgTurns[0]) > messages.findIndex(m => m.role === 'tool'), 'the image turn follows the tool result');
 

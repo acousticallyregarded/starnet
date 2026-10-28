@@ -108,7 +108,7 @@ const NeedsYou = (() => {
     }
     refreshFeeds(false, now);
     // no time: the sidecar's pending lists carry none, so the row shows no age rather than a guessed one
-    if (feeds.extensions > 0) out.push({ key: 'extensions', kind: 'extension', who: 'STATION', what: 'has ' + plural(feeds.extensions, 'extension', 'extensions') + ' awaiting your approval', where: 'EXTENSIONS', since: 0 });
+    if (feeds.extensions > 0) out.push({ key: 'extensions', kind: 'extension', who: 'FARM', what: 'has ' + plural(feeds.extensions, 'extension', 'extensions') + ' awaiting your approval', where: 'EXTENSIONS', since: 0 });
     for (const m of (feeds.builds || [])) {
       out.push({ key: 'build:' + m.runId, kind: 'build', build: m, who: nameOf(m.agentId), aid: m.agentId, what: 'built "' + String(m.title || 'a build') + '": keep or discard it',
         rail: { verb: 'keep or discard', text: String(m.title || 'a build') }, where: buildPlace(m), since: Number(m.builtAt) || 0 });
@@ -522,7 +522,7 @@ const NeedsYou = (() => {
         // detached: the rerun is the routine's own job. Its lines ride the page's ONE run stream (Harness.streamPost), never a
         // connection of their own held for the whole run — a few Retries must not leave Approve/Deny without one.
         const r = await Harness.streamPost('/api/cron/run', { id: i.routineId, detach: true });
-        if (!r.ok) throw new Error((r.j && r.j.error) || (r.status ? 'HTTP ' + r.status : 'the station could not be reached'));
+        if (!r.ok) throw new Error((r.j && r.j.error) || (r.status ? 'HTTP ' + r.status : 'the farm could not be reached'));
         if (typeof Workstreams !== 'undefined' && Workstreams.markRead) Workstreams.markRead(i.wsId);   // the new run is what counts now
         if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify('Running ' + i.what.replace(/ failed$/, '') + ' again', 'good');
       } catch (e) {

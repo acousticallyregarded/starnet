@@ -26,7 +26,7 @@ const { QuestStore } = require('../frontend/app/queststore.js');
 
 /* ---------- the join ---------- */
 const v = QuestStore.view();
-A.ok(v.meter && v.meter.level >= 1, 'view() carries the station meter (Xp.compute of the rollup)');
+A.ok(v.meter && v.meter.level >= 1, 'view() carries the farm meter (Xp.compute of the rollup)');
 A.ok(v.quests.length > 0, 'view() builds a quest list');
 A.eq(v.quests[0].kind, 'idea', 'a pending idea leads the list');
 A.eq(v.quests.find(q => q.id === 'dim:goals').status, 'done', 'a known dossier dimension → a done quest');
@@ -42,7 +42,7 @@ pending = false;
 A.eq(QuestStore.view().quests.some(q => q.kind === 'idea'), false, 'no idea quest when none is due');
 
 /* ---------- the STATION ARC joins from live floor counts (World) + crew size (App) ---------- */
-A.eq(QuestStore.view().quests.some(q => q.kind === 'station'), false, 'no World → no station arc (never an arc claiming a floor we cannot read)');
+A.eq(QuestStore.view().quests.some(q => q.kind === 'station'), false, 'no World → no farm arc (never an arc claiming a floor we cannot read)');
 global.World = { stationCounts: () => ({ belts: 2, connectors: 0, liveRoute: 2 }) };
 global.App = { crewCount: () => 2 };
 const withArc = QuestStore.view();

@@ -107,14 +107,14 @@ async function call(env, verb, args) {
   A.eq(out.result.session, 'research', 'and reports which session it went into');
   const h = env.W.get(ws.id).history;
   A.eq(h.length, 2, 'two turns: the framing marker and the real answer');
-  A.eq(h[0].sys, true, 'the delegated instruction is a sys marker, not a user turn the Commander never typed');
+  A.eq(h[0].sys, true, 'the delegated instruction is a sys marker, not a user turn the Farmer never typed');
   A.ok(/delegated to researcher/.test(h[0].content), 'the marker names who it went to');
   A.eq(h[1].role, 'assistant', "the worker's answer is real dialogue");
   A.eq(h[1].content, 'X in three points…', 'delivered verbatim');
   A.eq(h[1].agentId, 'researcher', 'attributed to the WORKER, so renderHistory names the right speaker');
   A.ok(env.W.get(ws.id).runIds.indexOf('run-1') >= 0, 'the run is filed onto that session');
   A.eq(env.W.get(ws.id).lane, 'active', 'a real run advances the lane (hybrid-honest)');
-  A.ok(env.W.unread(ws.id), 'the rail flags it unread — the Commander has genuinely not seen this yet');
+  A.ok(env.W.unread(ws.id), 'the rail flags it unread — the Farmer has genuinely not seen this yet');
   A.ok(env.page.rail > before && env.page.persisted > 0, 'the rail re-renders and the save is written');
   A.eq(env.page.loaded.length, 0, 'a session that is NOT open is not force-rendered');
 }
@@ -140,7 +140,7 @@ async function call(env, verb, args) {
   A.eq(home.result.session, 'General', 'the General home is still "General"');
   const listed = (await call(env, 'station.sessions', {})).result.sessions.find(s => s.id === blank.id);
   A.ok(listed && listed.title !== 'General', 'the session list never calls the untitled session "General"');
-  A.ok(!/\btitle \|\| 'General'|title != null \? \w+\.title : 'General'/.test(src), 'no station result falls back to "General" for an untitled session');
+  A.ok(!/\btitle \|\| 'General'|title != null \? \w+\.title : 'General'/.test(src), 'no farm result falls back to "General" for an untitled session');
 }
 
 // A foreground worker's text is not proof of completion: keep the actual terminal reason live and after recovery.
@@ -378,7 +378,7 @@ for (const text of ['', 'Older partial work.']) {
   });
   A.eq(out.ok, true, 'split-brain delivery succeeds by stable title');
   A.eq(out.result.resolvedBy, 'title', 'the ack says the id mismatch was healed by title');
-  A.eq(env.W.get(local.id).history[1].content, 'three sourced ideas', 'the page the Commander is viewing receives the answer');
+  A.eq(env.W.get(local.id).history[1].content, 'three sourced ideas', 'the page the Farmer is viewing receives the answer');
   A.ok(env.W.get(local.id).runIds.indexOf('split-1') >= 0, 'the local session records the durable run id');
 }
 
@@ -393,7 +393,7 @@ for (const text of ['', 'Older partial work.']) {
   A.eq(started.ok, true, 'dispatch start is acknowledged');
   A.ok(env.C.isBusy(ws.id), 'the target session is visibly busy');
   A.eq(env.C.runIdOf(ws.id), 'live-1', 'its status is backed by the real worker run id');
-  A.eq(env.W.activeId(), env.W.generalId(), 'marking the target busy does not steal the Commander from General');
+  A.eq(env.W.activeId(), env.W.generalId(), 'marking the target busy does not steal the Farmer from General');
   const settled = await call(env, 'station.dispatch_end', {
     streamId: ws.id, sessionTitle: 'research', agentId: 'researcher', runId: 'live-1'
   });
@@ -470,7 +470,7 @@ for (const text of ['', 'Older partial work.']) {
   await call(env, 'station.deliver', { streamId: ws.id, agentId: 'researcher', runId: 'run-1', text: 'delegated result' });
   const h = env.W.get(ws.id).history;
   A.eq(h.length, 3, 'the existing conversation survives');
-  A.eq(h[0].content, 'my own question', 'the Commander\'s first turn is untouched');
+  A.eq(h[0].content, 'my own question', 'the Farmer\'s first turn is untouched');
   A.eq(h[2].content, 'delegated result', 'the delegated answer is appended after it');
 }
 
@@ -497,7 +497,7 @@ for (const text of ['', 'Older partial work.']) {
   A.eq(env.W.get(ws.id).history.length, 0, 'and nothing was written');
   const unknown = await call(env, 'station.nonsense', {});
   A.eq(unknown.ok, false, 'an unknown verb fails instead of resolving true');
-  A.ok(/unknown station verb/.test(unknown.error), 'naming the verb it could not run');
+  A.ok(/unknown farm verb/.test(unknown.error), 'naming the verb it could not run');
 }
 
 // station.status refuses honestly when the view is not up yet (rather than inventing an empty station)
@@ -524,17 +524,17 @@ for (const text of ['', 'Older partial work.']) {
   const env = boot({ agents: () => [{ id: 'researcher', name: 'RESEARCHER' }] });
   const out = await call(env, 'station.new_session', { title: 'research', agentId: 'researcher' });
   A.eq(out.ok, true, 'a named session is created');
-  A.eq(out.result.title, 'research', 'with the title the Commander said');
+  A.eq(out.result.title, 'research', 'with the title the Farmer said');
   A.eq(out.result.agentId, 'researcher', 'bound to the named crew member');
   A.eq(out.result.focused, false, 'not focused unless asked');
   A.ok(env.W.list().some(w => w.title === 'research'), 'and it exists in the real session store');
-  A.eq(env.W.activeId(), env.W.generalId(), 'a background create never steals what the Commander is looking at');
+  A.eq(env.W.activeId(), env.W.generalId(), 'a background create never steals what the Farmer is looking at');
   A.ok(env.page.rail > 0 && env.page.persisted > 0, 'the rail re-rendered and the save was written');
 
   // focus:true is the explicit "open it" ask — active session moves, thread renders
   const f = await call(env, 'station.new_session', { title: 'billing', focus: true });
   A.eq(f.ok, true, 'a focused create succeeds');
-  A.eq(env.W.activeId(), f.result.id, 'and the Commander is now looking at it');
+  A.eq(env.W.activeId(), f.result.id, 'and the Farmer is now looking at it');
   A.eq(env.page.loaded[env.page.loaded.length - 1], f.result.id, 'the thread rendered');
 }
 
@@ -562,7 +562,7 @@ for (const text of ['', 'Older partial work.']) {
   env.W.switch(env.W.generalId());
   const out = await call(env, 'station.switch_session', { session: 'research' });
   A.eq(out.ok, true, 'an exact title switches');
-  A.eq(env.W.activeId(), r.id, 'the Commander is now looking at it');
+  A.eq(env.W.activeId(), r.id, 'the Farmer is now looking at it');
   A.eq(env.page.loaded[env.page.loaded.length - 1], r.id, 'and the thread rendered');
   const part = await call(env, 'station.switch_session', { session: 'billing' });
   A.eq(part.ok, true, 'a unique substring resolves');
@@ -601,8 +601,8 @@ for (const text of ['', 'Older partial work.']) {
   A.eq(out.ok, true, 'a named session can be read');
   A.eq(out.result.title, 'research', 'with its real title');
   A.eq(out.result.turns.length, 3, 'visible turns only — hidden/internal rows never leak');
-  A.eq(out.result.turns[0].speaker, 'commander', 'the Commander\'s turns are labeled');
-  A.eq(out.result.turns[1].speaker, 'station', 'sys markers are labeled as the station, not as speech');
+  A.eq(out.result.turns[0].speaker, 'commander', 'the Farmer\'s turns are labeled');
+  A.eq(out.result.turns[1].speaker, 'station', 'sys markers are labeled as the farm, not as speech');
   A.eq(out.result.turns[2].speaker, 'researcher', 'delegated work is attributed to the worker who did it');
   A.ok(/Phobos/.test(out.result.turns[2].text), 'and carries the real content');
   A.eq(out.result.busy, false, 'busy state rides along so "still working" is answerable');
@@ -636,9 +636,9 @@ for (const text of ['', 'Older partial work.']) {
     { role: 'assistant', content: 'Drafted the hero.' }
   );
   const out = await call(env, 'station.read_session', { session: 'launch' });
-  A.eq(out.result.turns.map(t => t.speaker), ['commander', 'station', 'station', 'agent'], 'goal steps (current + pre-org-pass head) read as the station');
+  A.eq(out.result.turns.map(t => t.speaker), ['commander', 'station', 'station', 'agent'], 'goal steps (current + pre-org-pass head) read as the farm');
   A.eq(out.result.turns[1].text, 'Goal step: ship the landing page', '…naming the goal, never the internal prompt');
-  A.eq(out.result.turns[1].sys, true, '…flagged as a station line');
+  A.eq(out.result.turns[1].sys, true, '…flagged as a farm line');
   A.eq(out.result.turns[2].text, 'Goal step: old goal', 'an old saved step too');
 }
 
@@ -685,7 +685,7 @@ for (const text of ['', 'Older partial work.']) {
   }
   for (const file of ['orchestration.js', 'station.js']) {
     const src = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'tools', 'builtin', file), 'utf8');
-    for (const m of src.match(/(?:station|ask)\('(station\.[^']+)'/g) || []) {
+    for (const m of src.match(/(?:farm|ask)\('(station\.[^']+)'/g) || []) {
       const verb = /'([^']+)'/.exec(m)[1];
       A.ok(verbs.indexOf(verb) >= 0, file + ' asks for ' + verb + ', and the page can answer it');
     }

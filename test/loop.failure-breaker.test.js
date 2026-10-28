@@ -138,7 +138,7 @@ function realRegistry() {
   {
     const provider = scripted(repeat(15, i => [{ name: 'net_get', args: { url: 'https://h' + i + '.invalid/' } }]));
     const { res, seq, messages } = await run(provider, { dispatch: alwaysFail, limits: { maxIters: 12, grace: false } });
-    A.eq(res.reason, 'max_iters', 'interactive: the streak never hard-stops (runs to the Commander\'s own ceiling)');
+    A.eq(res.reason, 'max_iters', 'interactive: the streak never hard-stops (runs to the Farmer\'s own ceiling)');
     A.eq(provider.callCount(), 12, 'all 12 permitted turns ran');
     A.eq(errors(seq).length, 0, 'no loop-breaker error on a watched run');
     const nudges = sys(messages, 'failure_streak');

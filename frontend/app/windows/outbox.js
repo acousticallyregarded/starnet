@@ -237,7 +237,7 @@
         const lastReply = (hand && Pipeline.stripVerdictLine) ? Pipeline.stripVerdictLine(rawReply) : rawReply;
         if (!rw.routine && users.length) row.querySelector('.ob-title b').textContent = firstLine(hand ? hand.original : users[0].content, 64);
         desc.textContent = lastReply ? firstLine(plain(lastReply), 150)
-          : (turns === null ? 'couldn’t read the result — is the station running?'
+          : (turns === null ? 'couldn’t read the result — is the farm running?'
             : (turns && turns.length ? 'the run finished with nothing to report.' : 'no transcript recorded for this run. Open the session for older work without run attribution.'));
         // the line a handed-on job came FROM — said in the floor's words once the job's record is read (below); the frame's own
         // name only when there is no record (an unnamed line's frame carries none: it read 'another line' beside FROM LINE N)
@@ -309,7 +309,7 @@
         wfb.disabled = true;
         const ok = (typeof WorkflowsWindow !== 'undefined' && WorkflowsWindow.openByStream) ? await WorkflowsWindow.openByStream(rw.streamId, 'deliverables') : false;
         wfb.disabled = false;
-        if (!ok) notify('this job’s workflow record is not on the station any more — ↗ OPEN SESSION still reads it', 'warn');
+        if (!ok) notify('this job’s workflow record is not on the farm any more — ↗ OPEN SESSION still reads it', 'warn');
       });
       // ⊕ NEW SESSION — dedicate a fresh chat (same agent) to expanding on this work; the composer
       // is prefilled naming the task so the follow-up ask writes itself. No fabricated turns.

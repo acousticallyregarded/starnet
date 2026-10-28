@@ -159,7 +159,7 @@ const Tutorial = (() => {
   /* ================= THE FIRST COMMAND ================= */
   // The file task is offered when the actual floor has file equipment. The real
   // preflight, permission settings and run events govern what happens next.
-  const TASK = 'create a new file called starnet-welcome.txt containing "homestead online", then read it back and show me. If that file already exists, read it without changing it.';
+  const TASK = 'create a new file called starnet-welcome.txt containing "starnet online", then read it back and show me. If that file already exists, read it without changing it.';
 
   // the capability gear the kit-out walks through, in order. `grant` is the power-word grantLabelForProp returns
   // when its prop lands; `prop` is the catalog id we point at. The display LABEL and the CATEGORY tab are resolved

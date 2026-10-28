@@ -144,7 +144,7 @@ const noted = tag => failopen.counts()[tag] || 0;
     A.ok(stuck && stuck.ok === false && stuck.since === nowMs && stuck.failures === 2, 'health reports the new failing streak: ' + JSON.stringify(stuck));
     A.ok(/index\.lock/.test(stuck && stuck.lastFailure && stuck.lastFailure.reason), 'the reason names what blocked it: ' + JSON.stringify(stuck && stuck.lastFailure));
     A.ok(!new RegExp(root.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&').replace(/\\\\/g, '[\\\\/]'), 'i').test(stuck.lastFailure.reason),
-      'the reason does not print the station directory path');
+      'the reason does not print the farm directory path');
     nowMs += 60000;
     const stillBlocked = await store.snapshot(aid, { runId: 'r6', turn: 6, label: 'still blocked' });
     A.eq(stillBlocked, null, 'still blocked on the next turn');

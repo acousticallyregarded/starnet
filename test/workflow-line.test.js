@@ -348,15 +348,15 @@ const nameOf = a => String(a).toUpperCase();
   const x = read(stamp('research_line', true));
   const away = W.readiness(x.flow, x.comp, { hasCompute: () => true, briefOf: () => 'x', labelOf: c => 'L:' + c,
     errors: [{ code: 'CHAIN_CYCLE', agents: ['zz'], propId: 'p999' }, { code: 'CYCLE', tile: { x: 999, y: 999 } }] });
-  A.eq(away.blocking.slice(0, 2).map(b => b.what), ['routing is off for the whole station until this is fixed: L:CHAIN_CYCLE', 'routing is off for the whole station until this is fixed: L:CYCLE'],
+  A.eq(away.blocking.slice(0, 2).map(b => b.what), ['routing is off for the whole farm until this is fixed: L:CHAIN_CYCLE', 'routing is off for the whole farm until this is fixed: L:CYCLE'],
     'blocking findings elsewhere come FIRST: the router refuses every line while one stands');
-  A.ok(/^\d+ TO FIX · ROUTING IS OFF FOR THE WHOLE STATION/.test(W.pillText(away)), 'and the pill says so');
+  A.ok(/^\d+ TO FIX · ROUTING IS OFF FOR THE WHOLE FARM/.test(W.pillText(away)), 'and the pill says so');
   const seen = [];
   const per = W.readiness(x.flow, x.comp, { hasCompute: (aid, pid) => { seen.push([aid, pid]); return pid !== x.flow.order[1]; }, errors: [], briefOf: () => 'x' });
   A.eq(seen.map(s => s[1]), x.flow.order, 'the compute gate is asked PER BAY (agent + dock), in run order');
   A.eq(per.blocking.map(b => b.what), ['BAY 2 (WRITER) needs a workstation'], 'only the Bay whose run has no computer is blocked');
   const crew = W.readiness(x.flow, x.comp, { hasCompute: () => true, errors: [], briefOf: () => 'x', isCrew: aid => aid !== 'a2' });
-  A.ok(crew.hints.some(h => /^BAY 2 \(WRITER\)'s agent "a2" is not on the crew: its runs use the station's default identity/.test(h.what)), 'an agent off the crew is named, and what that means');
+  A.ok(crew.hints.some(h => /^BAY 2 \(WRITER\)'s agent "a2" is not on the crew: its runs use the farm's default identity/.test(h.what)), 'an agent off the crew is named, and what that means');
   A.ok(crew.ready, 'it still runs (on the default identity), so it is a hint, not a blocker');
 }
 // the LOOP's ESCALATION lane: its own column, conditional in the sentence, dead without a pass condition
@@ -389,7 +389,7 @@ const nameOf = a => String(a).toUpperCase();
   A.ok(x.flow.cyclic, 'the flow knows the floor has a belt CYCLE');
   A.ok(!x.flow.cols.some(c => c.detached) && x.flow.order.length === 1, 'its dock sits where the belts meet it, not "not connected"');
   const r = W.readiness(x.flow, x.comp, { hasCompute: () => true, errors: x.plan.errors, briefOf: () => 'x', labelOf: c => c });
-  A.eq(r.blocking.map(b => b.what), ['routing is off for the whole station until this is fixed: CYCLE'], 'the loop is the one blocker — no "not connected", no "connect the last step"');
+  A.eq(r.blocking.map(b => b.what), ['routing is off for the whole farm until this is fixed: CYCLE'], 'the loop is the one blocker — no "not connected", no "connect the last step"');
   A.ok(/^\[a belt LOOP on the floor stops all routing/.test(W.sentenceText(W.howItRuns(x.flow, { nameOf }))), 'and the sentence says it');
 }
 // the panel host checks compute PER BAY too (the Workflow panel + the REFIT NO-COMPUTE overlay)

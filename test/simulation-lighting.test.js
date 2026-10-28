@@ -18,10 +18,10 @@ const lab = read('crtlab.js');
 const appCss = fs.readFileSync(path.join(__dirname, '..', 'frontend/css/app.css'), 'utf8');
 const stageRule = appCss.match(/#stage\s*\{([^}]+)\}/)[1];
 A.ok(/filter:\s*saturate\(1\.14\) contrast\(1\.08\) brightness\(0\.94\)/.test(stageRule),
-  'station preserves the approved grade independently of theme saturation and hue');
-A.ok(!stageRule.includes('--cam-grade'), 'custom UI grade cannot desaturate the live station');
+  'farm preserves the approved grade independently of theme saturation and hue');
+A.ok(!stageRule.includes('--cam-grade'), 'custom UI grade cannot desaturate the live farm');
 A.eq(appCss, fs.readFileSync(path.join(__dirname, '..', 'website/app/css/app.css'), 'utf8'),
-  'website and packaged station use the same colour treatment');
+  'website and packaged farm use the same colour treatment');
 
 const srgb = v => {
   v /= 255;
@@ -38,12 +38,12 @@ const oldGlow = [240, 230, 206], glow = [238, 218, 184];
 // moves to the constant; the two pool sites must still draw through it.
 A.ok(/const POOL_RGB = '246,224,188'/.test(bake), 'the warm-neutral pool color is the one POOL_RGB constant');
 A.eq((bake.match(/falloffStops\((?:gw|g), POOL_RGB, LIGHT\.floor(?: \* ROOM_FIXTURE_GAIN)?\)/g) || []).length, 2,
-  'room and corridor pools both paint POOL_RGB along the shared falloff curve');
+  'room and path pools both paint POOL_RGB along the shared falloff curve');
 A.ok(!/rgba\(246,224,188,' \+ LIGHT\.floor/.test(bake), 'no pool still hand-rolls its own stop list');
 A.ok(!/rgba\(250,236,206/.test(bake), 'the near-white floor-pool color no longer ships');
 A.ok(!world.includes('drawOverhead('), 'no ceiling pendants are drawn over the room');
 A.ok(!bake.includes("b.fillStyle = '#6a6253'"), 'no room lamp mount bars are painted');
-A.ok(!bake.includes('// fixture caps +'), 'no corridor ceiling lamp caps are painted');
+A.ok(!bake.includes('// fixture caps +'), 'no path ceiling lamp caps are painted');
 A.ok(bake.includes("const LAMP_RGB = '255,192,104'"), 'room glow uses saturated golden light');
 A.ok(/f\.rgb \|\| '238,218,184'/.test(world), 'simulation uses fixture temperature with the warm fallback');
 A.ok(/f\.rgb \|\| '238,218,184'/.test(build), 'REFIT uses the same fixture temperature and fallback');

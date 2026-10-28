@@ -110,12 +110,12 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   /* ---------- persistence (user-owned UI state) ---------- */
   // themeHue/themeSat drive the CUSTOM phosphor derivation (theme:'custom'); themeGlow (0–150%) is an
   // independent bloom dial that also tames the hand-tuned presets. 100 = the shipped look, untouched.
-  // `backdrop` is what the station floats in (SpaceBG's registry). 'void' is the shipped sky, so
-  // every save that predates this key merges to the exact look it already had.
+  // `backdrop` is where the farm stands (Terrain's grounds, or a SpaceBG sky). 'farm' is the shipped
+  // ground — fields, hedges and pasture; every save that predates this key merges to it.
   // panelBright (−100…100, default 0) is the tube's BRIGHTNESS knob: above 0 it lifts the panel glass's black
   // level toward the phosphor colour (never toward white); below 0 it takes the panels DOWN toward true black
   // (Andrew 10-01: "it doesnt get dark enough"). 0 = the shipped look, untouched.
-  function defaults() { return { theme: 'amber', themeHue: 35, themeSat: 100, themeGlow: 100, panelBright: 0, roomLighting: 0, textScale: 0, flicker: true, crtGlass: 'full', staticLevel: 100, sound: true, hints: true, backdrop: 'void', sessionRow: 'compact', keepComputerAwake: false, notifyPrefs: notifyDefaults() }; }
+  function defaults() { return { theme: 'amber', themeHue: 35, themeSat: 100, themeGlow: 100, panelBright: 0, roomLighting: 0, textScale: 0, flicker: true, crtGlass: 'full', staticLevel: 100, sound: true, hints: true, backdrop: 'farm', sessionRow: 'compact', keepComputerAwake: false, notifyPrefs: notifyDefaults() }; }
   // ROOM LIGHT is a 0–100 slider (Andrew 10-10: "maybe we should have adjustable lighting setting?").
   // 0 is the approved station, untouched, and the default. Ambient alone barely moved the screen (the old
   // HIGH chip measured +3% over LOW, 10-10 player report: "high lighting but still too dark"): WorldLight's
@@ -1305,7 +1305,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       screen.appendChild(head); screen.appendChild(body);
       w.appendChild(screen);
       w.appendChild(mkEl('div', 'term-plate',
-        '<span>STARNET DYNAMICS</span><span class="term-knobs"><i class="knob"></i><i class="knob"></i></span>'));
+        '<span>HOMESTEAD DYNAMICS</span><span class="term-knobs"><i class="knob"></i><i class="knob"></i></span>'));
     } else {
       w.appendChild(head); w.appendChild(body);
       // Phase-2 chrome (generic, plain windows only — feature windows carry their own casing):
@@ -1835,7 +1835,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     wireCrewLive();   // ensure the per-agent run-state listener is live
     const ul = $('#crew'); if (!ul) return;
     if (!present.length) {
-      ul.innerHTML = '<li class="crew-empty"><div class="empty-state">' + NO_AGENTS_MARK + '<b>NO AGENTS ON STATION</b><span>RECRUIT one from the CREW dock.</span></div></li>';
+      ul.innerHTML = '<li class="crew-empty"><div class="empty-state">' + NO_AGENTS_MARK + '<b>NO AGENTS ON FARM</b><span>RECRUIT one from the CREW dock.</span></div></li>';
       $('#crew-sum').innerHTML = '';
       return;
     }
@@ -1925,7 +1925,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // Update only when the text actually changes so the region doesn't spam announcements every tick.
     const stageSum = $('#stage-summary');
     if (stageSum) {
-      const txt = 'Station crew: ' + working + ' working, ' + (present.length - working) + ' idle.';
+      const txt = 'Farm crew: ' + working + ' working, ' + (present.length - working) + ' idle.';
       if (txt !== lastStageSummary) { lastStageSummary = txt; stageSum.textContent = txt; }
     }
   }
@@ -2095,11 +2095,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // the picker's word for the stored choice (HEART, never the engine id af_heart) — Voice.voiceLabel
     try { voice = (typeof Voice !== 'undefined' && Voice.voiceChoice && a && a.id) ? Voice.voiceChoice(a.id) : ''; if (voice && Voice.voiceLabel) voice = Voice.voiceLabel(voice); } catch (_) { voice = ''; }
     const rows = [
-      { lbl: 'MODEL',     val: pin || 'station default', dim: !pin,                 go: 'ag-model-card',     tip: 'change it in CONFIG › MODEL' },
+      { lbl: 'MODEL',     val: pin || 'farm default', dim: !pin,                 go: 'ag-model-card',     tip: 'change it in CONFIG › MODEL' },
       { lbl: 'PERSONALITY',     val: persona || '—',           dim: !persona,             go: 'ag-persona-card',   tip: 'change it in CONFIG › PERSONALITY' },
       { lbl: 'ACCESS',    val: 'checking effective access…', dim: false, go: 'ag-approval-card',  tip: 'change it in CONFIG › ACCESS' },
       { lbl: 'PROFILE',   val: prof.label.toLowerCase(),  dim: false,               go: 'ag-execution-card', tip: 'change it in CONFIG › ACCESS' },
-      { lbl: 'VOICE',     val: voice || 'station default', dim: !voice,             go: 'ag-voice',          tip: 'opens SETTINGS › LOOK & SOUND › VOICE FOR this agent' },
+      { lbl: 'VOICE',     val: voice || 'farm default', dim: !voice,             go: 'ag-voice',          tip: 'opens SETTINGS › LOOK & SOUND › VOICE FOR this agent' },
       { lbl: 'SKILLS',    val: 'its own procedures',       dim: true,               go: 'ag-skills',         tip: 'opens ABILITIES › SKILLS › LEARNED SKILLS for this agent' },
       { lbl: 'AWAY WORK', val: (a && a.workshop) ? 'on'  : 'off', dim: !(a && a.workshop), go: 'ag-workshop-card',  tip: 'opens AUTOMATE › AWAY WORK' }
     ];
@@ -2125,7 +2125,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       agSetupStrip(a) +
       '<div class="sec ag-brief-sec"><span class="sec-l">CAN DO</span><span class="sec-r"></span><span class="sec-nd"></span></div>' +
       agSkillsBrief(a && a.id) +
-      '<div class="ag-foot-row">on station since <b>' + since + '</b></div>';
+      '<div class="ag-foot-row">on farm since <b>' + since + '</b></div>';
   }
 
   // DELETE AGENT — its OWN row at the foot of CONFIG, never inside a group. It used to sit in a DANGER block at
@@ -2142,7 +2142,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const delBtn = disabledReason
       ? '<button class="bb sm ag-del" id="ag-del-btn" disabled>✕ DELETE AGENT</button>' +
         '<span class="ag-del-why">' + esc(disabledReason) + '</span>'
-      : '<button class="bb sm ag-del" id="ag-del-btn" title="archive this agent and remove it from the station">✕ DELETE AGENT</button>' +
+      : '<button class="bb sm ag-del" id="ag-del-btn" title="archive this agent and remove it from the farm">✕ DELETE AGENT</button>' +
         '<span class="ag-del-why">work is archived, not erased</span>';
     return '<div class="cf-card ag-del-card" id="ag-del-card"><div class="ag-del-row">' + delBtn + '</div></div>';
   }
@@ -2189,9 +2189,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const nAg = present.length || 1;
     return s ? (
       '<div class="gx-station" style="margin-top:18px;">' +
-      '<div class="hd"><span class="badge">●</span><span class="ttl">STATION XP</span><span class="agents">&Sigma; ' + nAg + ' AGENT' + (nAg === 1 ? '' : 'S') + '</span></div>' +
+      '<div class="hd"><span class="badge">●</span><span class="ttl">FARM XP</span><span class="agents">&Sigma; ' + nAg + ' AGENT' + (nAg === 1 ? '' : 'S') + '</span></div>' +
       '<div class="body">' +
-        '<div class="lv"><div class="gx-lbl" style="font-size:9px;">STATION</div><div class="n">' + s.level + '</div><div class="gx-lbl" style="font-size:9px;">LEVEL</div></div>' +
+        '<div class="lv"><div class="gx-lbl" style="font-size:9px;">FARM</div><div class="n">' + s.level + '</div><div class="gx-lbl" style="font-size:9px;">LEVEL</div></div>' +
         '<div style="flex:1;">' +
           '<div class="gx-row" style="margin-bottom:6px;"><span class="gx-val" style="font-size:13px;">' + s.xp.toLocaleString() + ' <span class="gx-dim">/</span> ' + Xp.xpForLevel(s.level + 1).toLocaleString() + ' <span class="gx-dim" style="font-size:11px;">XP</span></span><span class="gx-val" style="color:var(--gold);font-size:13px;">' + s.pct + '%</span></div>' +
           '<div class="gx-trk"><div class="gx-gfill" style="width:' + s.pct + '%;"></div></div>' +
@@ -2262,7 +2262,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div class="gx-trk" style="margin-bottom:5px;"><div class="gx-fill" style="width:' + (rl.known ? rl.pct : 0) + '%;"></div></div>' +
       '<div class="gx-well"><span class="gx-lbl">Finished / owned</span><span class="v">' + rl.completed + ' <span class="gx-dim">/</span> ' + rl.attempted + '</span></div>' +
       // the honest distinction from Satisfaction — these two meters measure different things and may disagree.
-      '<div class="gx-row gx-dim" style="font-size:11px;margin-top:4px;">what the station observed — Satisfaction above is what you said</div>' +
+      '<div class="gx-row gx-dim" style="font-size:11px;margin-top:4px;">what the farm observed — Satisfaction above is what you said</div>' +
       excludedNote +
       '</div>';
 
@@ -2297,7 +2297,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div class="ag-growth-heading"><span class="ag-growth-eyebrow">AGENT PROGRESSION</span><h3>' + esc(a.name || 'Agent') + '</h3><p>' + g.xp.toLocaleString() + ' total XP · ' + earned + ' of ' + cat.length + ' achievements earned</p>' + progression + '</div></div>' +
       (nextMilestone ? '<div class="ag-next-challenge"><span>CHALLENGE TO AIM FOR</span><b>' + nextMilestone.label + '</b><span>' + nextMilestone.hint + '</span></div>' : '') +
       '<div class="ag-growth-section-title">Performance &amp; learning</div><div class="gx-2">' + confidence + reliabilityBlk + practiceBlk + '</div>' +
-      '<p class="ag-growth-station-link">The station’s own level, systems and milestones: <button type="button" class="bb xs" data-open-progress>QUESTS › PROGRESS</button></p>' +
+      '<p class="ag-growth-station-link">The farm’s own level, systems and milestones: <button type="button" class="bb xs" data-open-progress>QUESTS › PROGRESS</button></p>' +
       '<section class="ag-achievements">' + trophies + '</section></div>';
   }
 
@@ -2388,7 +2388,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
             (t.available ? (t.consentGated ? 'AVAILABLE · risky actions may ask' : 'AVAILABLE') : !t.enabled ? 'SWITCHED OFF' : 'NEEDS GEAR OR ACCESS') +
             '</div><div class="perk-desc">' + esc(t.grantSource || 'No current grant') + '</div></div>').join('') + '</div>' +
           '<p class="sk-note">' + esc(authority.revoke) + ' Service credentials, task-specific permissions and operating-system limits still apply. Unattended jobs have their own grants.</p>' +
-          '<button class="bb sm" data-access-manage>MANAGE ABILITIES</button> <button class="bb sm" data-access-settings>STATION PERMISSIONS</button> <button class="bb sm" data-access-refresh>REFRESH ACCESS</button>';
+          '<button class="bb sm" data-access-manage>MANAGE ABILITIES</button> <button class="bb sm" data-access-settings>FARM PERMISSIONS</button> <button class="bb sm" data-access-refresh>REFRESH ACCESS</button>';
         // BRIEF's compact line: how many toolsets are ready, which ones, and the approval mode — one jump to the full grid
         const ready = view.toolsets.filter(x => x.available);
         // in the words TOOLS and the ACCESS tile use (UX night 10-26): "7 of 8 tools ready · CHECK WITH ME", never the
@@ -2453,7 +2453,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // P1-10 REFLECTION controls — the master on/off + the cooldown, both HONORED live at the reflect gate in the
       // sidecar (station-wide, not per-agent — the reflect loop is a station engine). Plus a plain scope note.
       '<div class="gx-sec"><span class="gx-ref">◈</span><span class="gx-title">Reflection</span></div>' +
-      '<div class="mc-note" id="mc-scope">How the station learns from finished work.</div>' +
+      '<div class="mc-note" id="mc-scope">How the farm learns from finished work.</div>' +
       '<label class="set-row"><input type="checkbox" id="mc-reflect-on"> REFLECTION <b id="mc-reflect-state">…</b> (all agents) <span class="dim">— propose memories after a completed task</span></label>' +
       '<div class="set-row"><label for="mc-cooldown">TIME BETWEEN SUGGESTIONS (MINUTES)</label><input id="mc-cooldown" class="key-input" type="number" min="0" max="60" step="1" style="max-width:90px" title="minimum gap between turn-in beats per agent"></div>' +
       '<div class="mc-acts"><button class="bb sm" id="mc-reflect-save">SAVE</button><span class="msg" id="mc-reflect-msg"></span></div></div>' +
@@ -2470,7 +2470,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div id="mc-list" class="mc-list"><span class="loading pulse">reading memory core&hellip;</span></div>' +
       // observability: the permanent reject-list (Discarded proposals never re-proposed). Hidden until non-empty.
       '<div class="gx-sec" id="mc-declined-sec" style="display:none;"><span class="gx-ref">&#10007;</span><span class="gx-title">Declined</span><span class="gx-tag" id="mc-declined-count"></span></div>' +
-      '<div class="mc-note" id="mc-declined-note" style="display:none;">Beliefs you Discarded — the station will <b>never propose these again</b>. <b>Restore</b> one to let it be proposed in future.</div>' +
+      '<div class="mc-note" id="mc-declined-note" style="display:none;">Beliefs you Discarded — the farm will <b>never propose these again</b>. <b>Restore</b> one to let it be proposed in future.</div>' +
       '<div id="mc-declined-list" class="mc-list"></div>' +
       '</div>';
   }
@@ -2754,7 +2754,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       agSkills(a.id) + accessAnswerCard(a), agCommand(a)
     ];
     const summaries = [a.purpose || 'What should this agent accomplish?', 'Identity, context and operating rules · edit each source file',
-      a.model || 'Follow station default', (typeof Personas !== 'undefined' && Personas.get(a.personaId)?.name) || 'Station personality',
+      a.model || 'Follow farm default', (typeof Personas !== 'undefined' && Personas.get(a.personaId)?.name) || 'Farm personality',
       (() => { const AP = agentPostureOf(a); return AP ? AP.label + ' — ' + AP.agentBlurb : 'Custom — its own mix of reach and asking'; })(),
       ((typeof DATA !== 'undefined' && DATA.SKINS && DATA.SKINS[a.skin]) || {}).name || 'Choose a skin'];
     return '<p class="cf-grp-note">Choose what to change. Text you edit needs SAVE; buttons apply right away.</p>' +
@@ -2777,7 +2777,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<label class="set-row" style="align-items:flex-start;gap:8px;">' +
         '<input type="checkbox" id="ag-workshop-on"' + (on ? ' checked' : '') + ' aria-label="Build things while I am away">' +
         '<span><b>Work through this agent’s queue</b>' +
-        '<span class="dim" style="display:block;margin-top:2px;line-height:1.35;">Let this agent work through the list below in its own sandbox. Keep the station running. Finished builds arrive as <b>sessions to review</b>.</span></span>' +
+        '<span class="dim" style="display:block;margin-top:2px;line-height:1.35;">Let this agent work through the list below in its own sandbox. Keep the farm running. Finished builds arrive as <b>sessions to review</b>.</span></span>' +
       '</label>' +
       '<div id="ag-workshop-msg" class="msg"></div>' +
       '<div id="ag-ws-live"><div class="dim" style="font-size:11px;">reading the build list…</div></div>' +
@@ -2799,9 +2799,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // `plainLabel` is what the chip SAYS (what the choice means to the person choosing); `label` stays the
     // house name and rides every notification, the dossier card, and the roster — renaming a chip must never
     // rename the thing. A newcomer reads "NOTHING OF MINE"; the house name sits under it for everyone else.
-    { id: 'safe-cell', label: 'SAFE CELL', plainLabel: 'NOTHING OF MINE', reach: 1, plain: 'None of your files. It works inside a sealed container that only holds its own workspace.', short: 'works in a sealed box', backend: 'docker', files: 'agent workspace only', tools: 'terminal + files', desktop: 'never', desc: 'isolated workspace; connected services still follow placed station gear' },
+    { id: 'safe-cell', label: 'SAFE CELL', plainLabel: 'NOTHING OF MINE', reach: 1, plain: 'None of your files. It works inside a sealed container that only holds its own workspace.', short: 'works in a sealed box', backend: 'docker', files: 'agent workspace only', tools: 'terminal + files', desktop: 'never', desc: 'isolated workspace; connected services still follow placed farm gear' },
     { id: 'remote-ssh', label: 'REMOTE SSH', plainLabel: 'ANOTHER MACHINE', reach: 1, plain: 'None of your files. Commands run on a different machine you point it at below.', short: 'works on another machine', backend: 'ssh', files: 'synced agent workspace', tools: 'remote terminal + files + connectors', desktop: 'never', desc: 'strict-known-host SSH; pushes the workspace before each command and pulls it back afterward' },
-    { id: 'station-gear', label: 'STATION GEAR', plainLabel: 'WHAT I PLACED', reach: 2, plain: 'Only what you placed on the station floor, plus project folders you approved. The default.', short: 'uses only the gear you placed', backend: 'current', files: 'placed gear + approved project folders', tools: 'only tools granted by floor objects', desktop: 'live lease required', desc: 'compatibility profile; the station floor remains the capability authority' },
+    { id: 'station-gear', label: 'FARM GEAR', plainLabel: 'WHAT I PLACED', reach: 2, plain: 'Only what you placed on the farm floor, plus project folders you approved. The default.', short: 'uses only the gear you placed', backend: 'current', files: 'placed gear + approved project folders', tools: 'only tools granted by floor objects', desktop: 'live lease required', desc: 'compatibility profile; the farm floor remains the capability authority' },
     { id: 'trusted-project', label: 'TRUSTED PROJECT', plainLabel: 'MY PROJECT FOLDERS', reach: 3, plain: 'Its own workspace plus the project folders you approved — nothing else on this computer.', short: 'reaches your approved project folders', backend: 'local', files: 'workspace + approved project folders', tools: 'terminal + files + connectors', desktop: 'live lease required', desc: 'local project work with the folders you approve' },
     { id: 'this-computer', label: 'THIS COMPUTER', plainLabel: 'MY WHOLE COMPUTER', reach: 4, plain: 'The whole local computer. In Full Power this includes protected files, arbitrary host commands, visible apps, and screen/input control.', short: 'reaches the whole local computer', backend: 'local', files: 'all host paths in Full Power', tools: 'all available tools + host terminal', desktop: 'Full Power or live lease', desc: 'host-wide authority when paired with Full Power; ASK mode retains approval boundaries' }
   ];
@@ -2833,9 +2833,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   const initiativeLabel = (id) => { const r = INITIATIVE_RUNGS.find(x => x.id === id); return r ? r.label : String(id || '').toUpperCase(); };
   const STATION_POSTURES = [
     { id: 'careful', label: 'CHECK WITH ME', approval: 'ask', profile: 'station-gear', level: 'suggest',
-      blurb: 'It asks you before every risky step, and only touches what you placed on the station.',
+      blurb: 'It asks you before every risky step, and only touches what you placed on the farm.',
       who: 'Best if you are just starting out.',
-      agentBlurb: 'Asks before every risky step. Uses only what you placed on the station.' },
+      agentBlurb: 'Asks before every risky step. Uses only what you placed on the farm.' },
     { id: 'balanced', label: 'LET IT WORK', approval: 'ask', profile: 'trusted-project', level: 'draft',
       blurb: 'It still asks before risky steps, but it can work in your project folders and leave drafts while you are away.',
       who: 'The everyday setting.',
@@ -2968,20 +2968,20 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const hasPicker = (typeof ModelPicker !== 'undefined');
     const picker = hasPicker
       ? '<div class="set-row mc-pick-row"><label for="ag-model-pick-model">MODEL</label>' +
-          '<div class="mc-pick" id="ag-model-pick">' + ModelPicker.shellHTML({ id: 'ag-model-pick', inheritLabel: 'Follow station default', ariaLabel: 'Agent model', effort: true }) + '</div></div>'
+          '<div class="mc-pick" id="ag-model-pick">' + ModelPicker.shellHTML({ id: 'ag-model-pick', inheritLabel: 'Follow farm default', ariaLabel: 'Agent model', effort: true }) + '</div></div>'
       : '';
     return '<div class="cf-card" id="ag-model-card">' +
       '<div class="cf-head"><span class="cf-file">▣ model</span></div>' +
-      '<div class="cf-desc">What this agent runs on. Pick a model to run this agent on it everywhere — chat, delegated work, scheduled routines — independent of the station default in the COMMS dock. “Follow station default” clears the pin. Choose SAVE MODEL to apply your selection.</div>' +
+      '<div class="cf-desc">What this agent runs on. Pick a model to run this agent on it everywhere — chat, delegated work, scheduled routines — independent of the farm default in the COMMS dock. “Follow farm default” clears the pin. Choose SAVE MODEL to apply your selection.</div>' +
       picker +
       '<details class="mc-adv"' + ((pinned && !hasPicker) ? ' open' : '') + '><summary>advanced — type a model id</summary>' +
         '<div class="set-row"><label for="ag-model-in">MODEL</label><input id="ag-model-in" class="key-input" type="text" spellcheck="false" autocomplete="off" placeholder="e.g. anthropic/claude-sonnet-4-5" value="' + esc(model) + '"></div>' +
         '<div class="set-row"><label for="ag-prov-in">PROVIDER</label><input id="ag-prov-in" class="key-input" type="text" spellcheck="false" autocomplete="off" placeholder="e.g. openrouter · anthropic · codex" value="' + esc(prov) + '"></div>' +
       '</details>' +
-      '<div class="mc-hint">' + (pinned ? 'pinned — this agent ignores the station default' : 'following the station default') + '</div>' +
+      '<div class="mc-hint">' + (pinned ? 'pinned — this agent ignores the farm default' : 'following the farm default') + '</div>' +
       '<div class="mc-acts">' +
         '<button class="bb sm" id="ag-model-save">SAVE MODEL</button>' +
-        (pinned ? '<button class="bb xs" id="ag-model-clear" title="run this agent on the station default model again">FOLLOW STATION DEFAULT</button>' : '') +
+        (pinned ? '<button class="bb xs" id="ag-model-clear" title="run this agent on the farm default model again">FOLLOW FARM DEFAULT</button>' : '') +
       '</div>' +
       '<div id="ag-model-msg" class="msg"></div>' +
     '</div>';
@@ -3148,10 +3148,10 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         if (!(access.config && access.config.setExecutionProfile)) { notify('execution profile change unavailable', 'bad'); sfx('bad'); return; }
         chip.disabled = true;
         Promise.resolve(access.config.setExecutionProfile(a && a.id, id)).then(ok => {
-          if (!ok) { notify('could not change execution profile — the station kept the prior profile', 'bad'); sfx('bad'); rerender('agents'); return; }
+          if (!ok) { notify('could not change execution profile — the farm kept the prior profile', 'bad'); sfx('bad'); rerender('agents'); return; }
           notify(((a && a.name) || 'agent') + ' execution profile → ' + (chip.dataset.name || id), id === 'this-computer' ? 'warn' : 'good');
           sfx('click'); rerender('agents');
-        }).catch(() => { notify('could not change execution profile — the station kept the prior profile', 'bad'); sfx('bad'); rerender('agents'); });
+        }).catch(() => { notify('could not change execution profile — the farm kept the prior profile', 'bad'); sfx('bad'); rerender('agents'); });
       }));
     }
 
@@ -3227,7 +3227,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       setWMsg(next ? 'saving…' : 'saving…', true);
       Promise.resolve(access.config.setWorkshop(a && a.id, next)).then(ok => {
         wOn.disabled = false;
-        if (!ok) { setWMsg('could not save that — the station didn’t record it', false); sfx('bad'); wOn.checked = !next; return; }
+        if (!ok) { setWMsg('could not save that — the farm didn’t record it', false); sfx('bad'); wOn.checked = !next; return; }
         setWMsg(next ? 'on — this agent can build in its sandbox while you’re away' : 'off — this agent stays idle while you’re away', true);
         loadWsLive();   // grant flips arm/disarm the shift → the next-shift line changes
       }).catch(() => {
@@ -3268,8 +3268,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     function loadWsLive() {
       if (!wsLive) return;
       Harness.api.get('/api/workshop/backlog?agent=' + encodeURIComponent(aid))
-        .then(j => { if (j && j.ok) renderWsLive(j); else if (wsLive) wsLive.innerHTML = '<div class="dim" style="font-size:11px;">couldn’t read the build list — the station may be unreachable</div>'; })
-        .catch(() => { if (wsLive) wsLive.innerHTML = '<div class="dim" style="font-size:11px;">couldn’t read the build list — the station may be unreachable</div>'; });
+        .then(j => { if (j && j.ok) renderWsLive(j); else if (wsLive) wsLive.innerHTML = '<div class="dim" style="font-size:11px;">couldn’t read the build list — the farm may be unreachable</div>'; })
+        .catch(() => { if (wsLive) wsLive.innerHTML = '<div class="dim" style="font-size:11px;">couldn’t read the build list — the farm may be unreachable</div>'; });
     }
     function renderWsLive(j) {
       const items = Array.isArray(j.items) ? j.items : [];
@@ -3309,14 +3309,14 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         b.disabled = true;
         Harness.api.post('/api/workshop/remove', { agentId: aid, backlogId: id })
           .then(({ j: res }) => { if (!(res && res.ok)) notify((res && res.error) || 'could not remove that', 'bad'); loadWsLive(); })
-          .catch(() => { notify('could not reach the station', 'bad'); loadWsLive(); });
+          .catch(() => { notify('could not reach the farm', 'bad'); loadWsLive(); });
       }));
       wsLive.querySelectorAll('.ws-bl-retry').forEach(b => b.addEventListener('click', () => {
         const id = b.closest('.ws-bl-row').getAttribute('data-blid');
         b.disabled = true;   // re-queueing the SAME id un-parks it server-side (clears the failed-attempt count)
         Harness.api.post('/api/workshop/queue', { agentId: aid, id: id, title: b.getAttribute('data-title') || '' })
           .then(() => loadWsLive())
-          .catch(() => { notify('could not reach the station', 'bad'); loadWsLive(); });
+          .catch(() => { notify('could not reach the farm', 'bad'); loadWsLive(); });
       }));
       wsLive.querySelectorAll('.ws-bl-review').forEach(b => b.addEventListener('click', () => {
         const run = b.getAttribute('data-run');
@@ -3341,7 +3341,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
             else notify('the shift didn’t run (' + (p.reason || 'unknown') + ')', 'warn');
             loadWsLive();
           })
-          .catch(() => { notify('could not reach the station', 'bad'); loadWsLive(); });
+          .catch(() => { notify('could not reach the farm', 'bad'); loadWsLive(); });
       });
     }
     loadWsLive();
@@ -3478,7 +3478,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // org P10: the empty dossier carries the RECRUIT door itself (the same App.openSummonBay the CREW dock's RECRUIT opens)
       const canRecruit = typeof App !== 'undefined' && !!App.openSummonBay;
       body.innerHTML = '<div class="empty-state" style="margin:32px auto;">' + NO_AGENTS_MARK +
-        '<b>NO AGENTS ON STATION</b><span>RECRUIT one from the CREW dock.</span>' +
+        '<b>NO AGENTS ON FARM</b><span>RECRUIT one from the CREW dock.</span>' +
         (canRecruit ? '<button type="button" class="bb sm" data-act="empty-recruit" style="margin-top:14px;">▸ OPEN RECRUIT</button>' : '') + '</div>';
       const recruitKey = body.querySelector('[data-act="empty-recruit"]');
       if (recruitKey) recruitKey.addEventListener('click', () => { sfx('click'); try { App.openSummonBay(); } catch (e) { console.warn('[dossier] recruit door failed:', (e && e.message) || e); } });
@@ -3568,7 +3568,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
              lane that adds or renames a block cannot silently fall out of its own contents. */
           addSectionJumpNav(elx);
         } },
-      { id: 'memory', label: 'MEMORY', glyph: '◈', desc: 'Review saved memories, their sources, and how the station learns.',
+      { id: 'memory', label: 'MEMORY', glyph: '◈', desc: 'Review saved memories, their sources, and how the farm learns.',
         build: frag(agMemory(a)) },
       { id: 'config', label: 'CONFIG', glyph: '▣', desc: 'Adjust this agent’s instructions, model, access, and appearance.',
         build: frag(agConfig(a)) }
@@ -3584,7 +3584,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           ? '<span class="ag-item-st working">' + (x.id === focusedId && act === 'talk' ? 'talking' : 'working') + '</span>'
           : '<span class="ag-item-st">idle</span>';
         top.innerHTML =
-          '<div class="ag-list" role="listbox" aria-label="Agents on station">' +
+          '<div class="ag-list" role="listbox" aria-label="Agents on farm">' +
           present.map((x, i) => '<div class="ag-item ' + (i === sel ? 'sel' : '') + '" data-i="' + i + '" role="option" aria-selected="' + (i === sel ? 'true' : 'false') + '" tabindex="0" style="--ci:' + i + '">' +
             '<span class="ag-item-dot" style="color:' + esc(x.color) + '">●</span>' +
             '<span class="ag-item-nm">' + esc(x.name) + '</span>' + hint(x) + '</div>').join('') +
@@ -3858,7 +3858,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const secMarket =
       '<div class="cc-filters" id="skm-filters" role="group" aria-label="Filter the skill market">' +
         '<button type="button" class="cc-filter active" data-skm-filter="all" aria-pressed="true">ALL</button>' +
-        '<button type="button" class="cc-filter" data-skm-filter="originals" aria-pressed="false">STARNET ORIGINALS</button>' +
+        '<button type="button" class="cc-filter" data-skm-filter="originals" aria-pressed="false">HOMESTEAD ORIGINALS</button>' +
         '<button type="button" class="cc-filter" data-skm-filter="community" aria-pressed="false">COMMUNITY</button>' +
         '<button type="button" class="cc-filter" data-skm-filter="installed" aria-pressed="false">INSTALLED</button>' +
         '<button type="button" class="cc-filter" data-skm-filter="update" aria-pressed="false">UPDATES</button>' +
@@ -3873,7 +3873,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // is unchanged, so wire() below runs as before, and the retired section ids land here via SECTION_ALIAS.
     const block = (id, label) => '<div class="sec" id="' + id + '"><span class="sec-l">' + label + '</span><span class="sec-r"></span><span class="sec-nd"></span></div>';
     const sections = [
-      { id: 'market', label: 'SKILL MARKET', glyph: '▦', desc: 'New skills for your crew, from StarNet and the community. Installing one switches it on for every agent.', build: frag(secMarket + block('ab-exchange', 'ADD FROM A LINK') + secExchange) },
+      { id: 'market', label: 'SKILL MARKET', glyph: '▦', desc: 'New skills for your crew, from Homestead and the community. Installing one switches it on for every agent.', build: frag(secMarket + block('ab-exchange', 'ADD FROM A LINK') + secExchange) },
       { id: 'library', label: 'SKILLS', glyph: '▤', desc: 'What your crew knows how to do. Switch a skill on or off; agents use it when a task needs it, with the tools they already have.', build: frag(agentPicker + secLibrary + block('ab-agent-skills', 'LEARNED SKILLS') + secAgent) }
     ];
     function wire() {
@@ -3933,7 +3933,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const gear = missing.map(skmGear);
     const slug = esc(e.slug);
     const origin = e.shelf === 'originals'
-      ? '<span class="cc-badge cc-official">STARNET ORIGINAL</span>'
+      ? '<span class="cc-badge cc-official">HOMESTEAD ORIGINAL</span>'
       : '<span class="cc-badge cc-community">community · ' + esc(e.author || 'credited') + '</span>';
     const btn = (act, text, cls) => {
       const busy = skmBusy.get(e.slug);
@@ -3949,11 +3949,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       action = btn('uninstall', 'REMOVE'); hint = 'Installed · v' + esc(e.installedVersion || e.version) + '.' + needs;
     } else if (e.status === 'bundled') {
       action = '<span class="cc-badge cc-official">BUILT IN</span>';
-      hint = 'Came with StarNet (v' + esc(e.builtInVersion || e.version) + '). Switch it on or off in SKILLS.';
+      hint = 'Came with Homestead (v' + esc(e.builtInVersion || e.version) + '). Switch it on or off in SKILLS.';
     } else if (e.status === 'update') {
       action = btn('install', 'UPDATE');
       hint = e.builtIn && !e.delisted && e.installedVersion === e.builtInVersion
-        ? 'A newer version than the one built into StarNet: v' + esc(e.builtInVersion) + ' → v' + esc(e.version) + '.'
+        ? 'A newer version than the one built into Homestead: v' + esc(e.builtInVersion) + ' → v' + esc(e.version) + '.'
         : 'v' + esc(e.installedVersion) + ' → v' + esc(e.version) + '.';
     } else if (e.status === 'tampered') {
       action = btn('install', 'REINSTALL'); warn = true;
@@ -4025,22 +4025,22 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (!d || !d.ok) {
       host.dataset.skmOk = '';
       const err = String((d && d.error) || 'no answer').replace(/[.\s]+$/, '');
-      if (/turned off on this station/.test(err)) {
-        host.innerHTML = '<p class="mc-notice"><b>The skill market is turned off</b>This station was started with the market switched off (STARNET_SKILL_MARKET_URL=off). Skills you already installed keep working.</p>';
+      if (/turned off on this (?:station|farm)/.test(err)) {
+        host.innerHTML = '<p class="mc-notice"><b>The skill market is turned off</b>This farm was started with the market switched off (STARNET_SKILL_MARKET_URL=off). Skills you already installed keep working.</p>';
         return;
       }
       // a catalog that failed its signature or serial check was reached but REFUSED — say that, not "couldn't reach"
       const refused = /^the skill market (.+?) was not trusted: (.+)$/.exec(err);
       // "http 403" / "took too long" come from THIS app talking to its own station, not from the market
-      const local = /^http \d{3}$/i.test(err) ? 'your station didn\'t answer the request (' + err.toUpperCase() + '); reload StarNet and try again'
-        : /took too long/i.test(err) ? 'your station took too long to answer' : '';
+      const local = /^http \d{3}$/i.test(err) ? 'your farm didn\'t answer the request (' + err.toUpperCase() + '); reload Homestead and try again'
+        : /took too long/i.test(err) ? 'your farm took too long to answer' : '';
       host.innerHTML = (refused
-        ? '<p class="mc-notice"><b>StarNet refused the skill market\'s ' + esc(refused[1]) + '</b>' + esc(refused[2]) + '. Nothing from it was used, and skills you already installed keep working.</p>'
+        ? '<p class="mc-notice"><b>Homestead refused the skill market\'s ' + esc(refused[1]) + '</b>' + esc(refused[2]) + '. Nothing from it was used, and skills you already installed keep working.</p>'
         : '<p class="mc-hint">' + (local ? 'Couldn\'t load the skill market: ' + esc(local) : 'Couldn\'t reach the skill market: ' + esc(err)) + '. Skills you already installed keep working.</p>') +
         '<button class="bb xs" type="button" data-skm-act="retry">TRY AGAIN</button>';
       return;
     }
-    const shelves = [['originals', 'StarNet Originals', 'Written by StarNet for your station\'s gear and tools.'], ['community', 'Community picks', 'Open skills by other authors, adapted for StarNet and credited.']];
+    const shelves = [['originals', 'Homestead Originals', 'Written by Homestead for your farm\'s gear and tools.'], ['community', 'Community picks', 'Open skills by other authors, adapted for Homestead and credited.']];
     // Originals still lead (DECISIONS: the Skill Market); inside a shelf, its categories in A-Z order, one fold each
     const html = shelves.map(([id, label, note]) => {
       const rows = d.entries.filter(e => e.shelf === id);
@@ -4116,7 +4116,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       b.disabled = true; b.textContent = act === 'install' ? 'INSTALLING…' : 'REMOVING…';
       try {
         const r = await Harness.api.post('/api/skill-market/' + (act === 'install' ? 'install' : 'uninstall'), { slug });
-        if (!r.ok || !r.j || r.j.ok === false) throw new Error((r.j && r.j.error) || 'the station refused');
+        if (!r.ok || !r.j || r.j.ok === false) throw new Error((r.j && r.j.error) || 'the farm refused');
         const text = act !== 'install' ? 'Removed ' + name + '.'
           : /^REINSTALL/.test(verb) ? 'Reinstalled ' + name + '.'
             : /^UPDATE/.test(verb) ? 'Updated ' + name + ' to v' + (r.j.version || '') + '.'
@@ -4288,7 +4288,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           '</div>' +
           '<div class="sk-card-actions"><button class="sk-expand" data-expand="' + esc(s.slug) + '" aria-expanded="false" aria-label="Read instructions for ' + esc(s.name) + '">Read instructions</button>' + switchHTML(s) + '</div>' +
           '<div class="sk-body"><div class="sk-detail-label">Required gear</div><div class="sk-reqs">' + reqBadges(s) + '</div><div class="sk-detail-label">Instructions</div><div class="sk-instructions">' + (typeof Deliverables !== 'undefined' && Deliverables.safeMarkdown ? Deliverables.safeMarkdown(s.body || '') : '<pre>' + esc(s.body || '') + '</pre>') + '</div>' +
-            (s.market ? '<div class="sk-attr">' + (s.shelf === 'originals' ? 'StarNet Original, installed from the Skill Market' : 'From the Skill Market' + (s.author ? ' · by ' + esc(s.author) : '')) + (s.license ? ' · ' + esc(s.license) : '') + '</div>'
+            (s.market ? '<div class="sk-attr">' + (s.shelf === 'originals' ? 'Homestead Original, installed from the Skill Market' : 'From the Skill Market' + (s.author ? ' · by ' + esc(s.author) : '')) + (s.license ? ' · ' + esc(s.license) : '') + '</div>'
               : s.author ? '<div class="sk-attr">Ported from ' + esc(s.author) + (s.license ? ' · ' + esc(s.license) : '') + '</div>' : '') +
           '</div>' +
         '</div>';
@@ -4496,7 +4496,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   }
   async function skillReviewPost(action, body, opts) {
     const r = await Harness.api.post('/api/agent-skills/' + action, body, { timeoutMs: (opts && opts.timeoutMs > 0) ? opts.timeoutMs : action === 'evaluate-candidate' ? 180000 : 60000 });
-    if (!r.ok || !r.j || !r.j.ok) throw new Error((r.j && r.j.error) || 'The station refused this change.');
+    if (!r.ok || !r.j || !r.j.ok) throw new Error((r.j && r.j.error) || 'The farm refused this change.');
     return r.j;
   }
   // How long the page waits for evaluate-candidate: the suite's waitMs (the station's own clock for it plus a margin,
@@ -4549,8 +4549,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const held = runs.indexOf('policy-denied');
       if (held < 0) return 'No result: not every run finished.';
       if (held > 0 && (runs[held - 1] === 'error' || runs[held - 1] === 'runner-error') && runs.slice(held).every(x => x === 'policy-denied'))
-        return 'No result: a run failed and the station held back every run after it, so not every run finished.';
-      return 'No result: the station stopped a run (a budget limit, paused spending, the time limit, or an earlier run whose cost could not be settled), so not every run finished.';
+        return 'No result: a run failed and the farm held back every run after it, so not every run finished.';
+      return 'No result: the farm stopped a run (a budget limit, paused spending, the time limit, or an earlier run whose cost could not be settled), so not every run finished.';
     };
     for (const candidate of rows) {
       const skill = candidate.skill || {};
@@ -4573,7 +4573,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         (outdated ? '<div class="sk-attr" data-evaluation-result></div><div class="consent-btns mc-acts"><button class="consent-btn" data-candidate-reject>Reject proposal</button></div></div>' :
         '<div class="sk-attr">Evaluation checks only the selected task family. A passing result does not prove improvement for every use.</div><div data-evaluation-suites></div>' +
         '<div class="sk-attr" data-evaluation-result>No evaluation run from this panel yet.</div><div class="consent-btns mc-acts"><button class="consent-btn" data-candidate-approve disabled>Approve evaluated revision</button><button class="consent-btn" data-candidate-acknowledge hidden disabled>Approve without measured improvement</button><button class="consent-btn" data-candidate-reject>Reject proposal</button></div>' +
-        '<details><summary>Register task checks (JSON)</summary><div class="sk-attr">Declare repeatable tasks and exact checks, including a held-out case. The station validates and runs this suite before approval.</div><textarea class="cf-ta mc-edit" data-suite-json spellcheck="false" aria-label="Evaluation suite JSON" placeholder="' + esc(SUITE_EXAMPLE) + '"></textarea><button class="consent-btn" data-suite-register>Register task checks</button></details></div>');
+        '<details><summary>Register task checks (JSON)</summary><div class="sk-attr">Declare repeatable tasks and exact checks, including a held-out case. The farm validates and runs this suite before approval.</div><textarea class="cf-ta mc-edit" data-suite-json spellcheck="false" aria-label="Evaluation suite JSON" placeholder="' + esc(SUITE_EXAMPLE) + '"></textarea><button class="consent-btn" data-suite-register>Register task checks</button></details></div>');
       const note = card.querySelector('[data-evaluation-result]');
       const reject = card.querySelector('[data-candidate-reject]');
       let receipt = null, busy = false;
@@ -4648,7 +4648,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
 
   // Skill sharing in plain words (skillstore.js isAccessible): agent = only the owning agent; project = any
   // agent working in that project folder; station = every agent on the station.
-  const SKILL_SCOPE_LABEL = { agent: 'Only this agent', project: 'This project', station: 'Whole station' };
+  const SKILL_SCOPE_LABEL = { agent: 'Only this agent', project: 'This project', station: 'Whole farm' };
   const skillScopeText = (scope, root) => (SKILL_SCOPE_LABEL[scope || 'agent'] || String(scope)) + (root ? ' · ' + root : '');
   const SUITE_EXAMPLE = 'Example:\n{ "id": "owner:weekly-brief", "version": 1, "description": "Weekly brief",\n  "cases": [\n' +
     '    { "id": "basic", "prompt": "Write brief.json for this week", "writablePaths": ["brief.json"],\n' +
@@ -4812,7 +4812,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (shown) { shown.remove(); return; }
     const panel = mkEl('div', ''); panel.dataset.skillSharing = '1'; body.appendChild(panel);
     const note = mkEl('div', 'sk-attr'); panel.appendChild(note);
-    note.textContent = 'Only this agent: just ' + agentId + ' uses it. This project: any agent working in that project folder. Whole station: every agent.';
+    note.textContent = 'Only this agent: just ' + agentId + ' uses it. This project: any agent working in that project folder. Whole farm: every agent.';
     const row = mkEl('div', 'consent-btns mc-acts'); panel.appendChild(row);
     const input = mkEl('input', 'key-input'); input.value = skill.projectRoot || ''; input.placeholder = 'Project folder (full path)';
     input.setAttribute('aria-label', 'Project folder to share with'); input.hidden = (skill.scope || 'agent') !== 'project'; panel.appendChild(input);
@@ -4856,7 +4856,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<span class="skm-label" id="' + uid + '-license-l">LICENSE</span><div class="skm-chips" role="group" aria-labelledby="' + uid + '-license-l" data-skm="license"><button type="button" class="consent-btn" aria-pressed="true" data-v="MIT">MIT</button><button type="button" class="consent-btn" aria-pressed="false" data-v="CC-BY-4.0">CC BY 4.0</button></div>' +
       '<label for="' + uid + '-credit">CREDIT ME AS</label><input id="' + uid + '-credit" class="key-input" maxlength="60" autocomplete="off" placeholder="your name or handle">' +
       '<label class="skm-agree"><input type="checkbox" id="' + uid + '-agree"> <span>I wrote this skill (or may share it) and publish it under the license above. Anyone may use and adapt it, with credit to me.</span></label>' +
-      '<div class="sk-attr">A person reads every line before it goes on the market. This station must be linked to your StarNet account.</div>' +
+      '<div class="sk-attr">A person reads every line before it goes on the market. This farm must be linked to your StarNet account.</div>' +
       '<div class="sk-attr skm-result" role="status"></div>';
     const $f = (k) => form.querySelector('#' + uid + '-' + k);
     $f('title').value = title;
@@ -4895,7 +4895,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       }
       if (!r) { result.textContent = 'The station is not answering right now. This station cannot tell whether the skill arrived. Check your Skills tab on account.starnetos.com before you send it again.'; return; }
       if (r.outcome === 'unknown') { result.textContent = (r.error ? r.error + ' ' : '') + 'This station cannot tell whether the skill arrived. Check your Skills tab on account.starnetos.com before you send it again.'; return; }
-      if (r.linked === false) { result.textContent = 'Link this station to your StarNet account first (STORE › LINK STATION). A free account works. Nothing was shared.'; return; }
+      if (r.linked === false) { result.textContent = 'Link this farm to your StarNet account first (STORE › LINK FARM). A free account works. Nothing was shared.'; return; }
       result.textContent = r.code === 'token_rejected' ? r.error : (r.error || 'The market refused it.') + ' Nothing was shared.';
     };
     $f('title').focus();
@@ -5516,8 +5516,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const e = res && res.engine;
     if (e && e.ok === true && !e.skipped && !e.stale) {
       return e.keySource === 'environment'
-        ? 'stored in this browser and on this station (routines use the API key variable this station was started with)'
-        : 'stored in this browser and on this station, so routines can use it';
+        ? 'stored in this browser and on this farm (routines use the API key variable this farm was started with)'
+        : 'stored in this browser and on this farm, so routines can use it';
     }
     if (keychainModeKnown === false) return 'stored locally in this browser';
     return 'stored on this machine';
@@ -5693,7 +5693,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       (extras.length ? all.map(row).join('') : '') +
       box +
       '<div class="prov-accounts-add">' +
-        (canAdd ? '<button class="bb sm" data-act="prov-claude-add" title="sign in another Claude account — Claude Code keeps each sign-in, StarNet never sees them">＋ ADD ACCOUNT</button>' : '') +
+        (canAdd ? '<button class="bb sm" data-act="prov-claude-add" title="sign in another Claude account — Claude Code keeps each sign-in, Homestead never sees them">＋ ADD ACCOUNT</button>' : '') +
         '<span class="dim">' + (extras.length
           ? 'runs start on the first ready account; when it hits its usage limit they continue on the next'
           : 'connect more Claude accounts — when one hits its usage limit, runs continue on the next') + '</span>' +
@@ -5841,7 +5841,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
      can answer: do you have StarNet credits, a subscription, an API key, or your own model server? A card leads with
      what you need; its address rides the tip. The group with no id list takes every provider the others do not name. */
   const PROVIDER_GROUPS = [
-    { id: 'credits', label: 'STARNET CREDITS', note: 'link this station once, nothing to paste', ids: ['starnet'] },
+    { id: 'credits', label: 'STARNET CREDITS', note: 'link this farm once, nothing to paste', ids: ['starnet'] },
     { id: 'subscription', label: 'A SUBSCRIPTION YOU HAVE', note: 'sign in, no API key', ids: ['codex', 'grok', 'kimi', 'claude-cli'] },
     { id: 'key', label: 'AN API KEY', note: 'paste a key from the service’s website' },
     { id: 'own', label: 'YOUR OWN MODELS', note: 'on this computer, or a server you run', ids: ['ollama', 'custom'] }
@@ -5936,7 +5936,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         '</button>' +
           '<span class="prov-stat"><span class="prov-stat-t">' + stat + statWhy + (credentialSaved && !isOAuthProvider(p.id) ? '<i>' + n + (n === 1 ? ' key' : ' keys') + '</i>' : '') + '</span></span>' +   // org P03: the reason sits right under the verdict it explains, above the key count
         (wantsInline ? '<button class="bb sm prov-addkey" data-act="prov-add-toggle" data-provider="' + esc(p.id) + '" aria-label="Add a ' + esc(p.name) + ' key" title="paste a ' + esc(p.name) + ' key without leaving this card">＋ ADD KEY</button>' : '') +
-        (wantsClaudeSignin && !claudeFlowing && !(typeof ClaudeCliSignIn !== 'undefined' && ClaudeCliSignIn.active()) ? '<button class="bb sm prov-addkey" data-act="prov-claude-signin" aria-label="Sign in with Claude" title="opens Claude in your browser — Claude Code keeps the sign-in, StarNet never sees it">' + (claudeCard.failed ? '⏼ TRY AGAIN' : '⏼ SIGN IN') + '</button>' : '') +
+        (wantsClaudeSignin && !claudeFlowing && !(typeof ClaudeCliSignIn !== 'undefined' && ClaudeCliSignIn.active()) ? '<button class="bb sm prov-addkey" data-act="prov-claude-signin" aria-label="Sign in with Claude" title="opens Claude in your browser — Claude Code keeps the sign-in, Homestead never sees it">' + (claudeCard.failed ? '⏼ TRY AGAIN' : '⏼ SIGN IN') + '</button>' : '') +
         (wantsClaudeInstall ? '<button class="bb sm prov-addkey" data-act="prov-claude-install" aria-label="Get Claude Code" title="Claude Code needs a Pro, Max, Team or Enterprise plan">↗ GET CLAUDE CODE</button>' : '') +
         (wantsOAuthSignin ? '<button class="bb sm prov-addkey" data-act="prov-oauth-signin" data-provider="' + esc(p.id) + '" aria-label="Sign in to ' + esc(p.name) + '" title="device-code sign-in — no API key needed">' + (codexDead ? '⏼ RECONNECT' : '⏼ SIGN IN') + '</button>' : '') +
         (wantsInline
@@ -5983,9 +5983,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '</button>' +
         '<span class="prov-stat"><span class="prov-stat-t">' + stat + '</span></span>' +
       '<button class="bb sm prov-addkey" data-act="credits-store" data-provider="' + esc(p.id) + '" ' +
-      'aria-label="' + ((linked || saved) ? 'Open the STORE' : 'Link this station to a StarNet account') + '" ' +
-      'title="' + ((linked || saved) ? 'balance, plan and history live in the STORE' : 'link this station to a StarNet account') + '">' +
-      ((linked || saved) ? '◆ STORE' : '↗ LINK STATION') + '</button>' +
+      'aria-label="' + ((linked || saved) ? 'Open the STORE' : 'Link this farm to a StarNet account') + '" ' +
+      'title="' + ((linked || saved) ? 'balance, plan and history live in the STORE' : 'link this farm to a StarNet account') + '">' +
+      ((linked || saved) ? '◆ STORE' : '↗ LINK FARM') + '</button>' +
       '</div>';
   }
 
@@ -6062,7 +6062,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           '<span class="conn-dot"></span>' +
           '<div class="key-main">' +
           '<div class="key-top"><span class="key-prov">' + esc(provName(k.provider)) + '</span>' +
-          '<code class="key-mask" title="signed in through Claude Code, which keeps the sign-in; StarNet never holds it">' + esc(claudeCliSt.email || 'Claude sign-in') + '</code></div>' +
+          '<code class="key-mask" title="signed in through Claude Code, which keeps the sign-in; Homestead never holds it">' + esc(claudeCliSt.email || 'Claude sign-in') + '</code></div>' +
           '<div class="key-meta">model <b>' + esc(k.model || '—') + '</b> · ' + runState +
           (plan ? ' · <span class="key-stat">' + esc(plan) + '</span>' : '') +
           ' · <span class="key-stat">no API key needed</span></div>' +
@@ -6770,7 +6770,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     stopLinkPoll();        // any in-flight link poll from a prior render is stale now
     if (_creditsUnlinkPending) {
       host.innerHTML = '<h4 class="ms-h">STORE <span class="dim">— managed credits</span></h4>' +
-        '<p class="set-about" role="status">Unlinking this station…</p>';
+        '<p class="set-about" role="status">Unlinking this farm…</p>';
       return Promise.resolve();
     }
     host.innerHTML = '<p class="set-about" role="status">Checking your account connection…</p>';
@@ -6794,7 +6794,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
             if (!current()) return;
             if (lk && lk.available === true) renderCreditsLinkCard(body, host,
               lk.reason === 'link_revoked'
-                ? 'This station’s previous link was removed from your account. Link it again to reconnect your balance.'
+                ? 'This farm’s previous link was removed from your account. Link it again to reconnect your balance.'
                 : '');
             else if (lk && lk.available === false && lk.cloud === false && !_creditsUnlinkError) host.innerHTML = '';
             else renderCreditsUnavailable(body, host);
@@ -6870,8 +6870,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // Same balance, completely different sentence — describing a subscriber's own account as something "the
     // operator tops up" is just wrong on the surface that is supposed to be the truthful one.
     const about = j.linkSaved
-      ? 'This station runs on <b>your StarNet credits</b> — agents work without you bringing a provider key. Each run reserves up to your <b>PER RUN</b> budget and refunds whatever it doesn’t spend. You can always switch to your own key: add it on a provider card above, then select that card.'
-      : 'This station runs on <b>managed credits</b> — a prepaid balance the operator tops up, so your agents can work without you bringing your own provider key. Each run reserves up to your <b>PER RUN</b> budget and refunds whatever it doesn’t spend. You can always switch to your own key: add it on a provider card above, then select that card.';
+      ? 'This farm runs on <b>your StarNet credits</b> — agents work without you bringing a provider key. Each run reserves up to your <b>PER RUN</b> budget and refunds whatever it doesn’t spend. You can always switch to your own key: add it on a provider card above, then select that card.'
+      : 'This farm runs on <b>managed credits</b> — a prepaid balance the operator tops up, so your agents can work without you bringing your own provider key. Each run reserves up to your <b>PER RUN</b> budget and refunds whatever it doesn’t spend. You can always switch to your own key: add it on a provider card above, then select that card.';
     host.innerHTML =
       '<h4 class="ms-h">STORE <span class="dim">— managed credits</span></h4>' +
       creditsUnlinkErrorMarkup() +
@@ -6885,12 +6885,12 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         (j.subscription ? '<button class="bb xs" id="credits-manage" title="change or cancel your plan in the browser">MANAGE PLAN ↗</button>' : '') +
         '<button class="bb xs" id="credits-refresh" title="re-read the balance">↻ REFRESH</button>' +
       '</div>' +
-      '<div class="mc-hint">Adding credits opens your browser — StarNet never handles your payment details.</div>' +
+      '<div class="mc-hint">Adding credits opens your browser — Homestead never handles your payment details.</div>' +
       '<div class="set-row"><span class="dim">RECENT ACTIVITY</span></div>' +
       '<div class="mc-list">' + rows + '</div>' +
       (j.linkSaved ? '<div class="set-row" style="margin-top:.6em"><span class="dim" style="font-size:.85em">' +
-        (j.linked ? 'This station is linked to your account.' : 'Link saved locally; the cloud check is unavailable, so runs wait for verification.') + '</span>' +
-        '<button class="bb xs" id="credits-unlink" title="forget this station’s link" style="margin-left:auto">UNLINK</button></div>' : '');
+        (j.linked ? 'This farm is linked to your account.' : 'Link saved locally; the cloud check is unavailable, so runs wait for verification.') + '</span>' +
+        '<button class="bb xs" id="credits-unlink" title="forget this farm’s link" style="margin-left:auto">UNLINK</button></div>' : '');
     const buy = host.querySelector('#credits-buy');
     if (buy) buy.addEventListener('click', () => { sfx('click'); openExternal(j.purchaseUrl); });
     const manage = host.querySelector('#credits-manage');
@@ -6935,7 +6935,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         .catch(() => {
           _creditsUnlinkPending = false;
           _creditsUnlinkError = stage === 'keychain'
-            ? 'Could not clear the saved account credential. Unlink was not completed. Try UNLINK again; if it still fails, fully quit and reopen StarNet.'
+            ? 'Could not clear the saved account credential. Unlink was not completed. Try UNLINK again; if it still fails, fully quit and reopen Homestead.'
             : stage === 'station'
               ? 'Could not confirm that unlink completed. Refresh the account connection, then retry UNLINK if it is still linked.'
               : 'Unlink completed, but the account display could not refresh. Retry to load the linking options.';
@@ -6974,10 +6974,10 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     host.innerHTML =
       '<h4 class="ms-h">STORE <span class="dim">— managed credits</span></h4>' +
       creditsUnlinkErrorMarkup() +
-      '<p class="set-about">Link this station to your <b>StarNet account</b> to run agents on managed credits — no provider key needed. You will confirm a short code in your browser.</p>' +
+      '<p class="set-about">Link this farm to your <b>StarNet account</b> to run agents on managed credits — no provider key needed. You will confirm a short code in your browser.</p>' +
       (note ? '<div class="set-row" style="color:var(--gold,#e8c15a)">' + esc(note) + '</div>' : '') +
-      '<div class="mc-acts"><button class="bb sm" id="credits-link">🔗 LINK STATION</button></div>' +
-      '<div class="mc-hint">Linking opens your browser to confirm — StarNet never handles your payment details.</div>' +
+      '<div class="mc-acts"><button class="bb sm" id="credits-link">🔗 LINK FARM</button></div>' +
+      '<div class="mc-hint">Linking opens your browser to confirm — Homestead never handles your payment details.</div>' +
       '<div id="credits-link-state"></div>';
     const btn = host.querySelector('#credits-link');
     if (btn) btn.addEventListener('click', () => { sfx('click'); startCreditsLink(body, host); });
@@ -6994,7 +6994,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (state) state.innerHTML = '<div class="set-row dim">Requesting a link code…</div>';
     // Same failure facts as the genesis LINK (app.js startStarnetLink): a dead local engine is never "the link service".
     const startFail = info => Object.assign(new Error('start failed'), { linkStart: info });
-    Harness.api.post('/api/credits/link/start', { deviceName: 'StarNet Station' })
+    Harness.api.post('/api/credits/link/start', { deviceName: 'Homestead Farm' })
       .then(r => { if (generation !== _creditsLinkGeneration) return null; if (!r || !r.ok) throw startFail({ status: r && r.status, j: r && r.j }); return r.j; },
         () => { throw startFail({ local: true }); })
       .then(j => { if (generation !== _creditsLinkGeneration) return; if (!j || !j.code) throw new Error('no code'); showCreditsLinkCode(body, host, j); })
@@ -7011,7 +7011,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const generation = _creditsLinkGeneration;
     const expiresAt = Number(j.expiresAt) || 0;
     host.innerHTML =
-      '<h4 class="ms-h">LINK STATION <span class="dim">— confirm in your browser</span></h4>' +
+      '<h4 class="ms-h">LINK FARM <span class="dim">— confirm in your browser</span></h4>' +
       '<p class="set-about">Open the link page and confirm this code to connect your account:</p>' +
       '<div class="credits-link-code" style="font-family:\'VT323\',monospace;font-size:2.6em;line-height:1.1;letter-spacing:.14em;text-align:center;color:var(--gold,#e8c15a);text-shadow:0 0 10px rgba(232,193,90,.55);margin:.35em 0">' + esc(String(j.code)) + '</div>' +
       '<div class="mc-acts"><button class="bb sm" id="credits-link-open">OPEN LINK PAGE ↗</button></div>' +
@@ -7150,11 +7150,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
             : (open === 1 ? 'an interrupted run never recorded what it spent' : open + ' interrupted runs never recorded what they spent');
         const floor = (st.atLeast && typeof st.atLeast.today === 'number') ? ' At least ' + fmtUsd(st.atLeast.today) + ' today.' : '';
         spendEl.textContent = acc.writeError
-          ? 'Spend history unavailable — it could not be saved to disk, so your spending limits can’t be checked. Restart StarNet to recover it.'
+          ? 'Spend history unavailable — it could not be saved to disk, so your spending limits can’t be checked. Restart Homestead to recover it.'
           : (acc.readError === 'UNSETTLED_SPEND' && open)
             ? 'Spend history unavailable — ' + missing +
               ', so your spending limits can’t be checked. Settle ' + (open === 1 ? 'it' : 'each') + ' below.' + floor
-            : 'Spend history unavailable — the spend record could not be read, so your spending limits can’t be checked. Restart StarNet; if this stays, the spend files in your workspaces folder are damaged.';
+            : 'Spend history unavailable — the spend record could not be read, so your spending limits can’t be checked. Restart Homestead; if this stays, the spend files in your workspaces folder are damaged.';
       } else if (spendEl) {
         const today = fmtUsd(st && st.spentToday), life = fmtUsd(st && st.lifetime);
         const runs = (st && typeof st.runs === 'number') ? st.runs : 0;
@@ -7200,7 +7200,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         // charge is in the STORE's RECENT ACTIVITY (AI & MODELS), which lists each charge with its run id — on a linked
         // station and an operator (env) one alike — not on a provider dashboard the user never had.
         const managed = r.managed === true, byok = r.managed === false;
-        const chargedBy = managed ? 'what StarNet charged' : byok ? 'what your provider charged' : 'the verified charge';
+        const chargedBy = managed ? 'what Homestead charged' : byok ? 'what your provider charged' : 'the verified charge';
         // A skill evaluation run (budgetUnsettledRuns tags it kind 'evaluation' from its runId, which survives a restart)
         // may well have finished: what it lacks is a recorded price, so it reads UNPRICED, never INTERRUPTED.
         const evaluation = r.kind === 'evaluation';
@@ -7208,12 +7208,12 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         // unknown. It is never rewritten or deleted; settling it books the verified charge once and history is whole again.
         const damaged = r.kind === 'damaged';
         if (damaged) row.setAttribute('data-tip', 'One line of your spend record could not be read (an older crash can leave a torn line), so what it recorded is unknown' +
-          (r.model ? ' (it names ' + r.model + ')' : '') + '. Match it to StarNet Recent Activity or your provider billing records, then enter only its verified charge: StarNet books it once, keeps the damaged line untouched, and your spending limits can be checked again.');
+          (r.model ? ' (it names ' + r.model + ')' : '') + '. Match it to Homestead Recent Activity or your provider billing records, then enter only its verified charge: Homestead books it once, keeps the damaged line untouched, and your spending limits can be checked again.');
         else row.setAttribute('data-tip', (evaluation ? 'This skill evaluation run has no recorded price: its provider usage came back without one, or the call failed or was cut off'
-          : 'This run stopped before StarNet recorded what it spent') +
+          : 'This run stopped before Homestead recorded what it spent') +
           (managed ? ' (it ran on your StarNet credits' + (r.model ? ', ' + r.model : '') + ')' : (where ? ' (it started on ' + where + ')' : '')) +
-          (managed ? '. Enter what StarNet charged for it — SETTINGS → AI & MODELS › STORE › RECENT ACTIVITY lists those charges as ' + creditRunTag(r.runId)
-            : byok ? '. Enter the charge your provider dashboard shows for it' : '. The billing source was not recorded. Match this run to StarNet Recent Activity or the original provider billing records, then enter only its verified charge') + ': StarNet books it once and your spending limits can be checked again.');
+          (managed ? '. Enter what Homestead charged for it — SETTINGS → AI & MODELS › STORE › RECENT ACTIVITY lists those charges as ' + creditRunTag(r.runId)
+            : byok ? '. Enter the charge your provider dashboard shows for it' : '. The billing source was not recorded. Match this run to Homestead Recent Activity or the original provider billing records, then enter only its verified charge') + ': Homestead books it once and your spending limits can be checked again.');
         const what = document.createElement('span');
         what.className = 'bg-un-what';
         const name = document.createElement('b');
@@ -7454,7 +7454,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const sel = selOf(tier); if (!sel) return;
       const want = String(map[tier] || '');
       sel.replaceChildren();
-      const inherited = document.createElement('option'); inherited.value = ''; inherited.textContent = '(station default)'; sel.appendChild(inherited);
+      const inherited = document.createElement('option'); inherited.value = ''; inherited.textContent = '(farm default)'; sel.appendChild(inherited);
       const seen = new Set();
       (models || []).forEach(m => {
         if (!m || !m.id || seen.has(m.id)) return;
@@ -7481,7 +7481,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         const v = String(sel.value || '').trim();
         if (v) map[tier] = v; else delete map[tier];
         writeTierModels(map); sfx('click');
-        setMsg(v ? ('✓ ' + tier.toUpperCase() + '-class agents will summon on ' + v) : ('✓ ' + tier.toUpperCase() + ' follows the station default'), true);
+        setMsg(v ? ('✓ ' + tier.toUpperCase() + '-class agents will summon on ' + v) : ('✓ ' + tier.toUpperCase() + ' follows the farm default'), true);
       });
     });
   }
@@ -7587,7 +7587,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     { key: 'maxSubscriptionTokens', label: 'CLAUDE CODE TOKEN CEILING', hint: 'tokens one run may use on a Claude subscription sign-in (cache re-reads count 1/10). 0 = no ceiling. Applies from the next run.', min: 0, max: 100000000, step: 100000 },
     // issue #135: the ceiling on a model StarNet can't price (a custom provider's model) was env-only. Both token ceilings
     // apply from the next run (the sidecar re-resolves them into CAPS on save); the other rows wait for a restart.
-    { key: 'maxUnpricedTokens', label: 'UNPRICED MODEL TOKEN CEILING', hint: 'tokens one run may use on a model StarNet has no price for. 0 = no ceiling. Applies from the next run.', min: 0, max: 100000000, step: 100000 }
+    { key: 'maxUnpricedTokens', label: 'UNPRICED MODEL TOKEN CEILING', hint: 'tokens one run may use on a model Homestead has no price for. 0 = no ceiling. Applies from the next run.', min: 0, max: 100000000, step: 100000 }
   ];
   /* the STANDING APPROVALS heading's tip (org P02): when an ask nobody answers is denied, in minutes, and where to change
      it. The number is the deadline the sidecar ENFORCES now (GET /api/runtime/knobs consentTimeoutMs.live — frozen at
@@ -7777,7 +7777,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         const f = fileIn.files && fileIn.files[0]; if (!f) return;
         const reader = new FileReader();
         reader.onload = () => {
-          let env; try { env = JSON.parse(String(reader.result || '')); } catch (_) { setMsg('that is not a valid StarNet backup file'); sfx('bad'); fileIn.value = ''; return; }
+          let env; try { env = JSON.parse(String(reader.result || '')); } catch (_) { setMsg('that is not a valid Homestead backup file'); sfx('bad'); fileIn.value = ''; return; }
           setMsg('importing…');
           Harness.api.post('/api/config/import', { envelope: env })
             .then(async ({ ok, j }) => {
@@ -7886,7 +7886,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div class="set-themes" id="auto-pace">' +
         '<button class="set-theme" data-pace="1" title="one small job a day">LIGHT</button>' +
         '<button class="set-theme" data-pace="3" title="a few small jobs a day — the default">STANDARD</button>' +
-        '<button class="set-theme" data-pace="6" title="a busier station — up to 6 jobs a day">BUSY</button>' +
+        '<button class="set-theme" data-pace="6" title="a busier farm — up to 6 jobs a day">BUSY</button>' +
         '<button class="set-theme" data-pace="12" title="as much as it&#39;s allowed — up to 12 jobs a day">MAX</button>' +
       '</div>' +
       // DIRECTION (autonomy-tuning 2026-07-17) — the dial says HOW MUCH it may run on its own; this block says
@@ -7903,7 +7903,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div class="set-sub"><span class="set-sub-k">OFF-LIMITS</span><span class="set-sub-d">it will never pick these on its own</span></div>' +
       '<div class="key-list" id="auto-avoid"><p class="set-about">reading directives…</p></div>' +
       '<div class="set-row ns-steer"><input id="auto-avoid-ref" class="key-input" type="text" autocomplete="off" placeholder="a project folder, thread:&lt;id&gt;, or goal to rule out"><button class="bb xs" id="auto-avoid-add">ADD EXCLUSION</button></div>' +
-      '<div class="mc-hint">off-limits holds until you remove it. You can still work there yourself — it only stops the station choosing it unattended.</div>' +
+      '<div class="mc-hint">off-limits holds until you remove it. You can still work there yourself — it only stops the farm choosing it unattended.</div>' +
       '<div class="set-sub"><span class="set-sub-k">LEARNED INTERESTS</span><span class="set-sub-d">what it thinks you keep coming back to</span></div>' +
       '<div class="key-list" id="auto-interests"><p class="set-about">reading interests…</p></div>' +
       '</details>' +
@@ -7977,7 +7977,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div id="perm-glance" class="perm-glance"><p class="pg-line">reading your crew…</p></div>' +
       // ── THE QUESTION — three postures. One click sets reach, asks-first and the unattended level together for
       // the whole station. Painted by paintPostures(): a card highlights only when every component matches.
-      '<div class="perm-postures" id="perm-postures"><p class="set-about">reading your station…</p></div>' +
+      '<div class="perm-postures" id="perm-postures"><p class="set-about">reading your farm…</p></div>' +
       // ── EACH CREW MEMBER — visible, directly under the cards it overrides. One collapsed row per agent.
       '<h4 class="ms-h">EACH CREW MEMBER <span class="dim">— give one agent a different answer</span></h4>' +
       '<div class="perm-list" id="perm-crew"></div>' +
@@ -8024,7 +8024,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // plain first (UX night 10-26): what it is for, then the one rule; which connection runs a fallback model stays said;
       // the four real trigger classes stay named (errorClass: availability, authentication, billing, rate limits), and the word
       // is FALLBACK, never "backup" (org P04: STATION BACKUP is a different thing)
-      '<p class="set-about">If your model fails mid-run because it is unavailable, its key or sign-in is refused, it is out of credit, or it hits rate limits, StarNet tries these models, top to bottom. You pick your main model in COMMS. <b>An empty list means no fallback.</b> Fallback models run on your OpenRouter key, or on StarNet credits when StarNet is your provider; COMMS and the logbook say when one takes over.</p>' +
+      '<p class="set-about">If your model fails mid-run because it is unavailable, its key or sign-in is refused, it is out of credit, or it hits rate limits, Homestead tries these models, top to bottom. You pick your main model in COMMS. <b>An empty list means no fallback.</b> Fallback models run on your OpenRouter key, or on StarNet credits when Homestead is your provider; COMMS and the logbook say when one takes over.</p>' +
       '<div class="mc-form" id="fbc-form">' +
         '<div id="fbc-list" class="mc-list-fb"><div class="dim">reading chain…</div></div>' +
         '<div class="set-row"><select id="fbc-add" class="fbc-sel"><option value="">＋ add a model from the catalog…</option></select></div>' +
@@ -8040,11 +8040,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // at "(station default)" a tier inherits the model dock's primary, so this is purely opt-in. Saved per-machine
       // (localStorage) and read live by the summon path (app.resolveTierModel) — no rerun/rebuild needed.
       '<h4 class="ms-h">New agent defaults <span class="dim">— model choice by class tier</span></h4>' +
-      '<p class="set-about">The model a NEW agent starts with, by its class tier. <b>(station default)</b> uses your main model from COMMS. Agents you already have keep theirs; change one in its dossier.</p>' +
+      '<p class="set-about">The model a NEW agent starts with, by its class tier. <b>(farm default)</b> uses your main model from COMMS. Agents you already have keep theirs; change one in its dossier.</p>' +
       '<div class="mc-form" id="tm-form">' +
-        '<div class="set-row"><label for="tm-reasoning">◆◆◆ DEEP</label><select id="tm-reasoning" class="fbc-sel" data-tier="reasoning"><option value="">(station default)</option></select></div>' +
-        '<div class="set-row"><label for="tm-balanced">◆◆ BALANCED</label><select id="tm-balanced" class="fbc-sel" data-tier="balanced"><option value="">(station default)</option></select></div>' +
-        '<div class="set-row"><label for="tm-fast">◆ FAST</label><select id="tm-fast" class="fbc-sel" data-tier="fast"><option value="">(station default)</option></select></div>' +
+        '<div class="set-row"><label for="tm-reasoning">◆◆◆ DEEP</label><select id="tm-reasoning" class="fbc-sel" data-tier="reasoning"><option value="">(farm default)</option></select></div>' +
+        '<div class="set-row"><label for="tm-balanced">◆◆ BALANCED</label><select id="tm-balanced" class="fbc-sel" data-tier="balanced"><option value="">(farm default)</option></select></div>' +
+        '<div class="set-row"><label for="tm-fast">◆ FAST</label><select id="tm-fast" class="fbc-sel" data-tier="fast"><option value="">(farm default)</option></select></div>' +
         '<div class="mc-hint">A pick here never changes a model you set on one agent.</div>' +
       '</div>' +
       '<div id="tm-msg" class="msg"></div>' +
@@ -8066,18 +8066,18 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
        hardcoded here, so it can never drift from what the provider actually offers. */
     const secLiveVoice =
       '<h4 class="ms-h">SPOKEN VOICE</h4>' +
-      '<p class="set-about">Choose a station default for LIVE VOICE, or assign each agent a built-in, keyless voice for spoken replies and hands-free conversations. Changes apply to the next reply or new Live Voice session. Saved in this app or browser.</p>' +
-      '<div class="set-row"><label for="set-lv-agent">VOICE FOR</label><select id="set-lv-agent" class="fbc-sel"><option value="">Station default</option>' +
+      '<p class="set-about">Choose a farm default for LIVE VOICE, or assign each agent a built-in, keyless voice for spoken replies and hands-free conversations. Changes apply to the next reply or new Live Voice session. Saved in this app or browser.</p>' +
+      '<div class="set-row"><label for="set-lv-agent">VOICE FOR</label><select id="set-lv-agent" class="fbc-sel"><option value="">Farm default</option>' +
         present.map(a => '<option value="' + esc(a.id) + '">' + esc(a.name || a.id) + '</option>').join('') + '</select></div>' +
-      '<button class="bb sm" id="set-lv-inherit" hidden>USE STATION DEFAULT</button>' +
+      '<button class="bb sm" id="set-lv-inherit" hidden>USE FARM DEFAULT</button>' +
       '<p id="set-lv-msg" class="msg" aria-live="polite"></p>' +
       '<div class="set-themes" id="set-lv-voices"><span class="dim">reading the built-in voice list…</span></div>' +
       // EFFECT — what the voice is played through. One choice for every voice; AUTO lets each wear its own.
       '<h4 class="ms-h">VOICE EFFECT</h4>' +
       '<div class="set-themes" id="set-lv-effect">' +
-        [['', 'AUTO', 'Each voice wears its own effect: built-in voices sound natural, the Ultron station voice keeps its machine shell.'],
+        [['', 'AUTO', 'Each voice wears its own effect: built-in voices sound natural, the Ultron farm voice keeps its machine shell.'],
          ['natural', 'NATURAL', 'The voice itself, with a light room around it.'],
-         ['comms', 'COMMS', 'A subtle station comms-channel colour.'],
+         ['comms', 'COMMS', 'A subtle farm comms-channel colour.'],
          ['machine', 'MACHINE', 'The Ultron machine shell: metallic, digitized, robotic.']]
           .map(([v, label, tip]) => '<button type="button" class="set-theme" data-lv-effect="' + v + '" aria-pressed="false" title="' + esc(tip) + '">' + label + '</button>').join('') +
       '</div>' +
@@ -8097,19 +8097,19 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<label class="set-slider"><span class="set-slider-name">GLOW</span><input type="range" id="set-glow" min="0" max="150" step="5" value="' + clampN(s.themeGlow, 0, 150, 100) + '"><span class="set-slider-val" id="set-glow-val">' + clampN(s.themeGlow, 0, 150, 100) + '%</span></label>' +
       '<label class="set-slider"><span class="set-slider-name">BRIGHTNESS</span><input type="range" id="set-bright" min="-100" max="100" step="5" value="' + clampN(s.panelBright, -100, 100, 0) + '"><span class="set-slider-val" id="set-bright-val">' + clampN(s.panelBright, -100, 100, 0) + '%</span></label>' +
       '<h4 class="ms-h" id="set-lighting-label">ROOM LIGHTING</h4>' +
-      '<p class="set-about">Drag right to light your rooms brighter. All the way left is the standard station lighting.</p>' +
+      '<p class="set-about">Drag right to light your rooms brighter. All the way left is the standard farm lighting.</p>' +
       '<div id="set-lighting"><label class="set-slider"><span class="set-slider-name">ROOM LIGHT</span><input type="range" id="set-room-light" aria-labelledby="set-lighting-label" min="0" max="100" step="1" value="' + resolveRoomLighting(s.roomLighting) + '"><span class="set-slider-val" id="set-room-light-val">' + resolveRoomLighting(s.roomLighting) + '%</span></label></div>' +
       // THE BACKDROP — what the station floats in. Swatches are painted by the REAL backdrop
       // renderer below (SpaceBG.paintSample), never by a stand-in gradient, so a preview can
       // not promise a sky the station won't deliver — the same law the deck/wall swatches follow.
-      '<h4 class="ms-h">BACKDROP <span class="dim">— where the station is</span></h4>' +
-      '<p class="set-about">Choose the scene around your station. Each tile previews the actual backdrop.</p>' +
+      '<h4 class="ms-h">BACKDROP <span class="dim">— where the farm is</span></h4>' +
+      '<p class="set-about">Choose the scene around your farm. Each tile previews the actual backdrop.</p>' +
       '<div class="set-backdrops" id="set-backdrop">' +
       (typeof SpaceBG === 'undefined' ? '' : []
         .concat(SpaceBG.list())
         .concat(typeof Terrain === 'undefined' || !Terrain.list ? [] : Terrain.list())
         .map(b => {
-        const on = (s.backdrop || 'void') === b.id;
+        const on = (s.backdrop || 'farm') === b.id;
         return '<button class="set-bd' + (on ? ' sel' : '') + '" aria-pressed="' + (on ? 'true' : 'false') + '" data-bd="' + esc(b.id) + '" title="' + esc(b.blurb) + '">' +
           '<canvas class="set-bd-cv" width="112" height="63" aria-hidden="true"></canvas>' +
           '<span class="set-bd-name">' + esc(b.label) + '</span></button>';
@@ -8118,7 +8118,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<h4 class="ms-h">DISPLAY</h4>' +
       // TEXT SIZE — the laptop-readability dial (2026-07-19): scales every panel, window and COMMS
       // face together; the station view re-renders sharp at the new scale (world.js resize).
-      '<div class="set-row"><span class="dim">TEXT SIZE — AUTO matches this screen; scales all panels &amp; COMMS, the station view stays crisp</span></div>' +
+      '<div class="set-row"><span class="dim">TEXT SIZE — AUTO matches this screen; scales all panels &amp; COMMS, the farm view stays crisp</span></div>' +
       '<div class="set-themes" id="set-textsize">' +
       TEXT_SCALES.map(([v, name]) => {
         const cur = Number(s.textScale) || 0;
@@ -8137,7 +8137,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '</div>' +
       // STATION DOCK (systems.js) — GROW WITH ME adds dock buttons as the station is used; SHOW EVERYTHING puts every
       // system in the dock now. Either way every window opens from every other door; this only shapes the dock.
-      '<div class="set-row"><span class="dim">STATION DOCK — GROW WITH ME adds a dock button the first time you need it; SHOW EVERYTHING puts every system in the dock now</span></div>' +
+      '<div class="set-row"><span class="dim">FARM DOCK — GROW WITH ME adds a dock button the first time you need it; SHOW EVERYTHING puts every system in the dock now</span></div>' +
       '<div class="set-themes" id="set-stationdock">' +
       [['staged', 'GROW WITH ME'], ['all', 'SHOW EVERYTHING']].map(([v, name]) => {
         const cur = (typeof Systems !== 'undefined' && Systems.staged && Systems.staged()) ? 'staged' : 'all';
@@ -8145,13 +8145,13 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       }).join('') +
       '</div>' +
       // HINTS (hint.js) — the glossary bubble on hover; once the station's words are familiar it can go quiet.
-      '<label class="set-row"><input type="checkbox" id="set-hints" ' + (s.hints ? 'checked' : '') + '> HINTS <span class="dim">— explain station terms when you hover them</span></label>' +
+      '<label class="set-row"><input type="checkbox" id="set-hints" ' + (s.hints ? 'checked' : '') + '> HINTS <span class="dim">— explain farm terms when you hover them</span></label>' +
       // CRT — its own section, and a LEVEL rather than a named mode. Framing this as an
       // accessibility fix ("easy read") tells the people who like the tube that they are enduring
       // something, which is not what most of them report. There is no OFF: the station is a CRT.
       // SCREEN FLICKER lives here too — it is a CRT effect, not a display one.
       '<h4 class="ms-h">CRT <span class="dim">— how strong the tube reads</span></h4>' +
-      '<div class="set-row"><span class="dim">DULLED thins the glass over the panels &amp; COMMS so text sits clearer under it. The station keeps its tube either way.</span></div>' +
+      '<div class="set-row"><span class="dim">DULLED thins the glass over the panels &amp; COMMS so text sits clearer under it. The farm keeps its tube either way.</span></div>' +
       '<div class="set-themes" id="set-crtglass">' +
       GLASS_STEPS.map(([v, name, why]) => {
         const cur = resolveGlass(s.crtGlass);
@@ -8159,7 +8159,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       }).join('') +
       '</div>' +
       '<label class="set-slider"><span class="set-slider-name">STATIC LEVEL</span><input type="range" id="set-static" min="0" max="200" step="5" aria-describedby="set-static-help" value="' + clampN(s.staticLevel, 0, 200, 100) + '"><span class="set-slider-val" id="set-static-val">' + clampN(s.staticLevel, 0, 200, 100) + '%</span></label>' +
-      '<p class="mc-hint" id="set-static-help">Film grain over the station view. 0% removes static; 100% is the default. Changes preview and save immediately.</p>' +
+      '<p class="mc-hint" id="set-static-help">Film grain over the farm view. 0% removes static; 100% is the default. Changes preview and save immediately.</p>' +
       '<label class="set-row"><input type="checkbox" id="set-flicker" ' + (s.flicker ? 'checked' : '') + '> SCREEN FLICKER</label>' +
       // TERMINAL AUDIO is a sound control, not a display one — its own header (it also gates notification chimes).
       '<h4 class="ms-h">SOUND</h4>' +
@@ -8182,13 +8182,13 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const secSystem =
       // "POWER" — this header held only KEEP COMPUTER AWAKE, so "SCHEDULED TASKS" mislabelled it.
       '<h4 class="ms-h">POWER</h4>' +
-      '<label class="set-row"><input type="checkbox" id="set-awake" ' + (awakeChecked ? 'checked' : '') + (awakeDesktop ? '' : ' disabled') + '> KEEP COMPUTER AWAKE <span class="dim">— ' + (awakeDesktop ? 'prevent idle sleep while StarNet is open' : 'desktop app only') + '</span></label>' +
+      '<label class="set-row"><input type="checkbox" id="set-awake" ' + (awakeChecked ? 'checked' : '') + (awakeDesktop ? '' : ' disabled') + '> KEEP COMPUTER AWAKE <span class="dim">— ' + (awakeDesktop ? 'prevent idle sleep while Homestead is open' : 'desktop app only') + '</span></label>' +
       // Lane 4D — native startup/tray choices + the honest background-lifecycle explainer. All controls are
       // desktop-only; they stay disabled and the line names the browser reality otherwise. The explainer
       // is filled live from the tray supervisor's REAL armed state (wireLifecycle) so it never over-claims.
-      '<label class="set-row"><input type="checkbox" id="set-autostart" disabled> LAUNCH AT LOGIN <span class="dim">— ' + (lifecycleDesktop ? 'start StarNet automatically when you sign in' : 'desktop app only') + '</span></label>' +
+      '<label class="set-row"><input type="checkbox" id="set-autostart" disabled> LAUNCH AT LOGIN <span class="dim">— ' + (lifecycleDesktop ? 'start Homestead automatically when you sign in' : 'desktop app only') + '</span></label>' +
       '<label class="set-row"><input type="checkbox" id="set-start-minimized" disabled> START MINIMIZED TO TRAY <span class="dim">— ' + (lifecycleDesktop ? 'begin each launch hidden; open from the tray icon' : 'desktop app only') + '</span></label>' +
-      '<label class="set-row"><input type="checkbox" id="set-close-to-tray" disabled> CLOSE WINDOW TO TRAY <span class="dim">— ' + (lifecycleDesktop ? 'X hides StarNet; tray Quit stops it' : 'desktop app only') + '</span></label>' +
+      '<label class="set-row"><input type="checkbox" id="set-close-to-tray" disabled> CLOSE WINDOW TO TRAY <span class="dim">— ' + (lifecycleDesktop ? 'X hides Homestead; tray Quit stops it' : 'desktop app only') + '</span></label>' +
       '<p class="set-about" id="lifecycle-desc">' + (lifecycleDesktop ? 'Checking what runs in the background…' : 'The desktop app can stay supervised in the system tray. This browser tab has no background process.') + '</p>' +
       // ADVANCED — env-only runtime knobs, now editable + persisted server-side (P1-9). PRECEDENCE is spelled out
       // in the card: an explicit environment variable ALWAYS wins over a value saved here (a deploy stays in control).
@@ -8201,11 +8201,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div id="adv-msg" class="msg"></div>' +
       // DATA / STATION BACKUP — export the whole station config to one JSON file, import it back, reset a section.
       // Secrets NEVER leave the machine (configexport.js redacts to a configured-marker); import surfaces re-enter states.
-      '<h4 class="ms-h">STATION BACKUP <span class="dim">— export / import your setup</span></h4>' +
-      '<p class="set-about">Export your station configuration to a JSON file, or restore a saved configuration. <b>Keys and tokens are excluded</b> and must be entered again after importing.</p>' +
+      '<h4 class="ms-h">FARM BACKUP <span class="dim">— export / import your setup</span></h4>' +
+      '<p class="set-about">Export your farm configuration to a JSON file, or restore a saved configuration. <b>Keys and tokens are excluded</b> and must be entered again after importing.</p>' +
       '<div class="set-save">' +
-        '<button class="bb sm" id="bk-export">EXPORT STATION</button>' +
-        '<button class="bb sm" id="bk-import">IMPORT STATION…</button>' +
+        '<button class="bb sm" id="bk-export">EXPORT FARM</button>' +
+        '<button class="bb sm" id="bk-import">IMPORT FARM…</button>' +
         '<input type="file" id="bk-file" accept="application/json,.json" style="display:none">' +
       '</div>' +
       '<div id="bk-msg" class="msg"></div>' +
@@ -8231,7 +8231,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div id="diag-swallowed" class="dim" style="margin-top:6px;font-size:11px">swallowed errors: reading…</div>' +
       '<h4 class="ms-h">LIVE DOCTOR <span class="dim">— opt-in runtime proof</span></h4>' +
       // plain first (UX night 10-26); every probe it runs is still named
-      '<p class="set-about">Checks, for real, that StarNet works: one tiny reply from your model, one harmless test command, a hello to each connected service, and a status check of each chat channel. It sends no chat messages and shares no secrets.</p>' +
+      '<p class="set-about">Checks, for real, that Homestead works: one tiny reply from your model, one harmless test command, a hello to each connected service, and a status check of each chat channel. It sends no chat messages and shares no secrets.</p>' +
       '<label class="set-check"><input type="checkbox" id="diag-live-consent"> I understand this makes real requests and may spend one tiny model reply.</label>' +
       '<div class="set-save"><button class="bb sm" id="diag-live-run">RUN LIVE DOCTOR</button><button class="bb sm" id="diag-live-copy" hidden>⧉ COPY RECEIPT</button></div>' +
       '<div id="diag-live-msg" class="msg"></div>' +
@@ -8241,7 +8241,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       '<div id="diag-build" class="dim" style="margin-top:6px;font-size:11px" hidden></div>' +
       // CLEAR NOTIFICATIONS moved to the NOTIFICATIONS section (where it belongs); this is now just the about note.
       '<h4 class="ms-h">ABOUT</h4>' +
-      '<p class="set-about">STARNET — gamified AI-agent harness.<br>Theme, display & audio preferences are saved locally on this machine. Manage planned tasks under MY WORK › TASKS and saved conversations under SESSIONS in COMMS.</p>';
+      '<p class="set-about">HOMESTEAD — gamified AI-agent harness.<br>Theme, display & audio preferences are saved locally on this machine. Manage planned tasks under MY WORK › TASKS and saved conversations under SESSIONS in COMMS.</p>';
 
     // Keep every control mounted and reachable; group existing nodes without replacing their IDs.
     function arrangeSettingsPane(el) {
@@ -8305,7 +8305,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const save = want => {
         try {
           VoiceLive.setVoice(want, target.value);
-          message.textContent = want ? 'Voice saved. Applies to the next reply or new Live Voice session.' : 'Using the station default. Applies to a new Live Voice session.';
+          message.textContent = want ? 'Voice saved. Applies to the next reply or new Live Voice session.' : 'Using the farm default. Applies to a new Live Voice session.';
           refresh();
           try { SFX.click(); } catch (_) {}
         } catch (_) { message.textContent = 'Voice could not be saved. Please try again.'; }
@@ -8371,7 +8371,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // ONE WORD: AUTONOMY — the dial and what it did while you were away are one section (the old NIGHT SHIFT
       // section folded in; openTerm maps its id here so an old deep link still lands).
       { id: 'autonomy', label: 'AUTONOMY', glyph: '◈', desc: 'Choose when agents work on their own, where that work goes, and see what they did while you were away.', build: frag(secAutonomy + secAwayActivity) },
-      { id: 'permissions', label: 'PERMISSIONS', glyph: '⊘', desc: 'Set access and approval rules for the station or individual agents.', build: frag(secPermissions) },
+      { id: 'permissions', label: 'PERMISSIONS', glyph: '⊘', desc: 'Set access and approval rules for the farm or individual agents.', build: frag(secPermissions) },
       { id: 'budget', label: 'SPENDING LIMITS', glyph: '$', desc: 'Set spending limits and review recorded usage.', build: frag(secBudget) },
       // build, not frag: the pane is created lazily when the section is opened, so wiring at MOUNT time
       // ran before this element existed and left the list stuck on its placeholder. Paint it when it is born.
@@ -8382,9 +8382,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // dock read as a loop.
       { id: 'notifs', label: 'ALERTS', glyph: '◔', desc: 'What pings you while you work, and whether it chimes.', build: frag(secNotifs) },
       // STARNET REMOTE: pair a phone and drive the station from anywhere (app/remote-devices.js owns the pane)
-      { id: 'remote', label: 'REMOTE', glyph: '▯', desc: 'Pair your phone and control this station from anywhere.', build: el => { if (typeof RemoteDevices !== 'undefined') RemoteDevices.mount(el, arrangeSettingsPane); else el.textContent = 'Remote is not available in this build.'; } },
+      { id: 'remote', label: 'REMOTE', glyph: '▯', desc: 'Pair your phone and control this farm from anywhere.', build: el => { if (typeof RemoteDevices !== 'undefined') RemoteDevices.mount(el, arrangeSettingsPane); else el.textContent = 'Remote is not available in this build.'; } },
       // BROWSER: where the station browser lives — built-in / a Chrome window (YOUR CHROME is not offered yet; app/outputbrowser.js owns the pane)
-      { id: 'browser', label: 'BROWSER', glyph: '◎', desc: 'Where the station browser runs: inside StarNet, or as its own Chrome window.', build: el => {
+      { id: 'browser', label: 'BROWSER', glyph: '◎', desc: 'Where the farm browser runs: inside Homestead, or as its own Chrome window.', build: el => {
         if (typeof OutputBrowser !== 'undefined' && OutputBrowser.mountSettings) OutputBrowser.mountSettings(el, arrangeSettingsPane);
         // SAVED SIGN-INS: STEP-IN is no longer a standing dock button, so the sign-ins it keeps get a door here
         const row = mkEl('div', 'set-row');
@@ -8550,7 +8550,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         step();
       };
       const syncBackdrop = () => bdChips.forEach(x => {
-        const on = x.dataset.bd === (s.backdrop || 'void');
+        const on = x.dataset.bd === (s.backdrop || 'farm');
         x.classList.toggle('sel', on);
         x.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
@@ -8598,18 +8598,18 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const paintLife = () => {
         if (!lifeDesc) return;
         Lifecycle.status().then(v => {
-          if (!v || !v.supervised) { lifeDesc.textContent = 'Closing the window keeps the station running only when armed work needs it — otherwise it fully quits.'; return; }
+          if (!v || !v.supervised) { lifeDesc.textContent = 'Closing the window keeps the farm running only when armed work needs it — otherwise it fully quits.'; return; }
           if (startMinimizedToggle) { startMinimizedToggle.disabled = false; startMinimizedToggle.checked = !!v.startMinimized; }
           if (closeToTrayToggle) { closeToTrayToggle.disabled = false; closeToTrayToggle.checked = !!v.closeToTray; }
           if (v.closeToTray) {
-            lifeDesc.textContent = 'Closing the window hides StarNet in the tray and keeps the station running. Use Quit StarNet in the tray menu to stop it.';
+            lifeDesc.textContent = 'Closing the window hides Homestead in the tray and keeps the farm running. Use Quit Homestead in the tray menu to stop it.';
           } else if (v.armed) {
             const why = (v.reasons && v.reasons.length) ? v.reasons.join(', ') : 'armed background work';
-            lifeDesc.textContent = 'Right now, closing the window KEEPS the station running in the background (' + why + '). Quit fully from the tray icon. Otherwise closing would fully quit.';
+            lifeDesc.textContent = 'Right now, closing the window KEEPS the farm running in the background (' + why + '). Quit fully from the tray icon. Otherwise closing would fully quit.';
           } else {
-            lifeDesc.textContent = 'Right now, nothing is armed — closing the window fully quits StarNet (no background process). Arm a routine, connect a channel, or set ON ITS OWN to ' + initiativeLabel('leash') + ' or ' + initiativeLabel('free') + ' in SETTINGS › AUTONOMY to keep it running while closed.';
+            lifeDesc.textContent = 'Right now, nothing is armed — closing the window fully quits Homestead (no background process). Arm a routine, connect a channel, or set ON ITS OWN to ' + initiativeLabel('leash') + ' or ' + initiativeLabel('free') + ' in SETTINGS › AUTONOMY to keep it running while closed.';
           }
-        }).catch(() => { lifeDesc.textContent = 'Closing the window keeps the station running only when armed work needs it — otherwise it fully quits.'; });
+        }).catch(() => { lifeDesc.textContent = 'Closing the window keeps the farm running only when armed work needs it — otherwise it fully quits.'; });
       };
       paintLife();
       if (autostartToggle) autostartToggle.addEventListener('change', ev => {
@@ -8736,7 +8736,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           const rm = document.createElement('button');
           rm.className = 'bb xs';
           rm.textContent = 'ALLOW AGAIN';
-          rm.title = 'remove this boundary — the station may pick it unattended again';
+          rm.title = 'remove this boundary — the farm may pick it unattended again';
           rm.addEventListener('click', () => {
             rm.disabled = true;
             Harness.api.del('/api/nightshift/avoid?ref=' + encodeURIComponent(e.ref))
@@ -9148,7 +9148,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           ? 'Your one crew member ' + verbSingular
           : 'All ' + n + ' of your crew ' + verbPlural;
         let head;
-        if (!n) head = 'No crew on the station yet. Nothing can run until you summon someone.';
+        if (!n) head = 'No crew on the farm yet. Nothing can run until you summon someone.';
         else if (bypassOn) head = everyone('has', 'have') + ' Full Power over the local computer — the whole-station switch is ON.';
         else if (!noPrompt) head = everyone('stops and asks', 'stop and ask') + ' you before anything risky.';
         else if (!asks) head = everyone('runs', 'run') + ' without stopping to ask you.';
@@ -9209,7 +9209,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           apply(P).then(r => {
             refreshExecutionProfiles(); repaintPerm(); repaintDial();
             notify(!r.done
-              ? (present.length ? 'nothing changed — the station kept its previous settings' : 'no crew to change — summon an agent first')
+              ? (present.length ? 'nothing changed — the farm kept its previous settings' : 'no crew to change — summon an agent first')
               : r.done + ' of ' + r.of + ' crew set to ' + P.label + (r.levelFailed ? ' — the unattended level could not be saved' : ''),
               (!r.done || r.levelFailed) ? 'bad' : (P.id === 'open' ? 'warn' : 'good'));
           });
@@ -9268,7 +9268,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
             '<div class="set-row"><label>USER</label><input class="key-input" data-ssh-user value="' + esc(String(target.user || '')) + '" placeholder="optional"></div>' +
             '<div class="set-row"><label>PORT</label><input class="key-input" data-ssh-port type="number" min="1" max="65535" value="' + esc(String(target.port || 22)) + '"></div>' +
             '<div class="set-row"><label>REMOTE ROOT</label><input class="key-input" data-ssh-root value="' + esc(String(target.remoteRoot || '/workspace')) + '" placeholder="/workspace"></div>' +
-            '<div class="mc-hint">Uses the OS OpenSSH agent/config with batch authentication and strict known_hosts. StarNet stores no password or private key. Files push before each command and pull back afterward; sync never deletes either side.</div>' +
+            '<div class="mc-hint">Uses the OS OpenSSH agent/config with batch authentication and strict known_hosts. Homestead stores no password or private key. Files push before each command and pull back afterward; sync never deletes either side.</div>' +
             '<div class="mc-hint" data-ssh-status>' + esc(sshStatus) + '</div>' +
             '<div class="mc-acts"><button class="bb sm" data-ssh-save>SAVE &amp; PROBE</button>' +
               (sshConfigured ? '<button class="bb sm" data-ssh-sync="push">PUSH NOW</button><button class="bb sm" data-ssh-sync="pull">PULL NOW</button><button class="bb xs danger" data-ssh-clear>CLEAR TARGET</button>' : '') +
@@ -9445,11 +9445,11 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
             }
             b.disabled = true;
             Promise.resolve(access.config.setExecutionProfile(b.getAttribute('data-perm-profile-agent'), b.getAttribute('data-perm-profile'))).then(ok => {
-              if (!ok) notify('could not change execution profile — the station kept the prior profile', 'bad');
+              if (!ok) notify('could not change execution profile — the farm kept the prior profile', 'bad');
               // the HOUSE name rides the notification (it is what the roster, dossier and logs call it)
               else notify('execution profile → ' + b.getAttribute('data-house'), b.getAttribute('data-perm-profile') === 'this-computer' ? 'warn' : 'good');
               refreshExecutionProfiles();
-            }).catch(() => { notify('could not change execution profile — the station kept the prior profile', 'bad'); refreshExecutionProfiles(); });
+            }).catch(() => { notify('could not change execution profile — the farm kept the prior profile', 'bad'); refreshExecutionProfiles(); });
           };
           const arms = b.getAttribute('data-perm-profile') === 'this-computer' && !b.classList.contains('sel');
           b.addEventListener('click', () => {
@@ -9527,7 +9527,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         const errLine = bypassErr ? '<p class="perm-m-err">⚠ ' + esc(bypassErr) + ' — the switch is unchanged.</p>' : '';
         if (snap.envFullAccess) {
           bypassWrap.innerHTML = head('ON — FORCED BY ENVIRONMENT', 'on') +
-            '<p class="perm-m-desc">Forced ON by the <code>SKYNET_FULL_ACCESS</code> environment variable. Remove it and restart the station to hand control back to this switch.</p>' +
+            '<p class="perm-m-desc">Forced ON by the <code>SKYNET_FULL_ACCESS</code> environment variable. Remove it and restart the farm to hand control back to this switch.</p>' +
             '<p class="perm-m-floor">' + floorNote + '</p>';
           return;
         }
@@ -10197,7 +10197,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const banner = document.createElement('div'); banner.id = 'save-preserved-notice'; banner.setAttribute('role', 'alert');
     banner.style.cssText = 'position:fixed;top:8px;left:10%;right:10%;z-index:100000;padding:16px;background:#281e12;color:#fff;border:2px solid #e8b35c';
     const label = document.createElement('p');
-    label.textContent = 'A window’s save preserved on the station (' + when + ') holds work in ' + n + (n === 1 ? ' session' : ' sessions') + ' that this station doesn’t have. Restoring brings it into the station; nothing in the station is removed, and the station file is copied aside first.';
+    label.textContent = 'A window’s save preserved on the farm (' + when + ') holds work in ' + n + (n === 1 ? ' session' : ' sessions') + ' that this farm doesn’t have. Restoring brings it into the farm; nothing on the farm is removed, and the farm file is copied aside first.';
     const restore = document.createElement('button'); restore.className = 'bb'; restore.textContent = 'Restore ' + n + (n === 1 ? ' session' : ' sessions');
     restore.onclick = async () => { restore.disabled = true; try { await CloudSave.restoreConflict(offer.file); } catch (e) { label.textContent = e.message; restore.disabled = false; } };
     const later = document.createElement('button'); later.className = 'bb'; later.textContent = 'Not now'; later.onclick = () => { dismissPreserved(offer); banner.remove(); };
@@ -10210,7 +10210,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     d.classList.remove('stale', 'degraded');
     if (h && h.seeded && !seededNotified) {
       seededNotified = true;
-      try { notify('The station file on this computer was missing, so this window’s copy of your station was saved back to it.', 'warn'); } catch (_) {}
+      try { notify('The farm file on this computer was missing, so this window’s copy of your farm was saved back to it.', 'warn'); } catch (_) {}
     }
     if (h && h.conflict) {
       d.classList.add('degraded');
@@ -10228,21 +10228,21 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // station refuses to restore, so no Restore key is offered (review 10-23 #5)
       const erased = !reset && h.conflict.predatesReset === true;
       d.title = reset
-        ? 'This computer’s station was reset (erased, or set aside for a fresh start) after the station in this window was founded, so it was not restored. This window’s copy was kept separately on the station. Download a copy or open the fresh station.'
+        ? 'This computer’s farm was reset (erased, or set aside for a fresh start) after the farm in this window was founded, so it was not restored. This window’s copy was kept separately on the farm. Download a copy or open the fresh farm.'
         : erased
-        ? 'This window holds a station from before this computer’s station was reset, so its changes were not saved into the current station. This window’s copy was kept separately on the station. Download a copy or reload the current station.'
+        ? 'This window holds a farm from before this computer’s farm was reset, so its changes were not saved into the current farm. This window’s copy was kept separately on the farm. Download a copy or reload the current farm.'
         : reseeded
-        ? 'The station file on this computer was missing, and another window’s copy of this station was saved back to it first. This window’s copy was kept separately on the station. Download a copy or reload the current station.'
+        ? 'The farm file on this computer was missing, and another window’s copy of this farm was saved back to it first. This window’s copy was kept separately on the farm. Download a copy or reload the current farm.'
         : ownSeed
-        ? 'The station file on this computer was missing, and this window’s copy was saved back to it, but this window never heard back that it was. This window’s later changes were kept separately on the station. Download a copy or reload the current station.'
-        : 'Another window saved newer station changes. Your work from this window was preserved separately on the station. Download a copy or reload the current station.';
+        ? 'The farm file on this computer was missing, and this window’s copy was saved back to it, but this window never heard back that it was. This window’s later changes were kept separately on the farm. Download a copy or reload the current farm.'
+        : 'Another window saved newer farm changes. Your work from this window was preserved separately on the farm. Download a copy or reload the current farm.';
       if (!document.getElementById('save-conflict-notice')) {
         const banner = document.createElement('div'); banner.id = 'save-conflict-notice'; banner.setAttribute('role', 'alert');
         banner.style.cssText = 'position:fixed;top:8px;left:10%;right:10%;z-index:100000;padding:16px;background:#281e12;color:#fff;border:2px solid #e8b35c';
         const label = document.createElement('p'); label.textContent = d.title;
         const exportButton = document.createElement('button'); exportButton.className = 'bb'; exportButton.textContent = 'Download this window’s save';
         exportButton.onclick = () => { const blob = new Blob([JSON.stringify(CloudSave.localSnapshot() || {})], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'starnet-conflicting-save.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); };
-        const reload = document.createElement('button'); reload.className = 'bb'; reload.textContent = reset ? 'Open the fresh station' : 'Reload current station'; reload.onclick = async () => { try { await CloudSave.reloadCurrent(); } catch (e) { label.textContent = e.message; } };
+        const reload = document.createElement('button'); reload.className = 'bb'; reload.textContent = reset ? 'Open the fresh farm' : 'Reload current farm'; reload.onclick = async () => { try { await CloudSave.reloadCurrent(); } catch (e) { label.textContent = e.message; } };
         // the preserved copy's sessions go INTO the station (added, never removing any), then this window reloads onto it
         // never after a RESET, and never for erased work: the station was erased on purpose, and this copy is from before it
         // (the station refuses that restore, so the key is never shown for it)
@@ -10257,10 +10257,10 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       // EL-11 FIX 1: the sidecar is REFUSING writes — this workspace was written by a NEWER StarNet. Persistent
       // red dot + a one-time visible line; never lets a refused write read as a healthy backup.
       d.classList.add('degraded');
-      d.title = 'this station’s data was written by a newer StarNet — update the app. Until then, changes are NOT being backed up.';
+      d.title = 'this farm’s data was written by a newer Homestead — update the app. Until then, changes are NOT being backed up.';
       if (!degradedNotified) {
         degradedNotified = true;
-        try { notify('This station’s data was written by a newer StarNet — update the app. Until you do, your changes are NOT being backed up.', 'bad'); } catch (_) {}
+        try { notify('This farm’s data was written by a newer Homestead — update the app. Until you do, your changes are NOT being backed up.', 'bad'); } catch (_) {}
       }
     } else if (h && h.cacheFailed) {
       // #121: the browser cache is full (its per-site cap), so every change rides on the station file alone. The words
@@ -10270,13 +10270,13 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const cache = /quota/i.test(String(h.cacheFailedReason || '')) ? 'browser cache full' : 'browser cache refused the save';
       if (h.cacheFailedConfirmed) {
         d.classList.add('stale');
-        d.title = cache + ' — saving to the station file only. Your latest change is confirmed in the station file.';
+        d.title = cache + ' — saving to the farm file only. Your latest change is confirmed in the farm file.';
       } else if ((h.consecutiveFailures || 0) > 0) {
         d.classList.add('degraded');
-        d.title = cache + ' and the station file has not confirmed your latest change — it is NOT saved. Keep StarNet open; it keeps retrying.';
+        d.title = cache + ' and the farm file has not confirmed your latest change — it is NOT saved. Keep Homestead open; it keeps retrying.';
       } else {
         d.classList.add('stale');
-        d.title = cache + ' — your latest change is NOT saved yet; it is on its way to the station file.';
+        d.title = cache + ' — your latest change is NOT saved yet; it is on its way to the farm file.';
       }
     } else if (h && h.stale) {
       d.classList.add('stale');
@@ -10323,7 +10323,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
      provenance — add / edit / pin / forget, all local-first. It reads + mutates DossierStore (which
      recomposes the live prompt + persists on each edit); the panel re-renders after a mutation. Belief text
      is rendered as textContent (never interpreted), mirroring the Memory Core's injection-safe discipline. */
-  const CD_SOURCE = { onboarding: 'from your awakening', commander: 'you told the station', interview: 'from the intake interview', curiosity: 'you answered a question', study: 'observed from your work' };
+  const CD_SOURCE = { onboarding: 'from your awakening', commander: 'you told the farm', interview: 'from the intake interview', curiosity: 'you answered a question', study: 'observed from your work' };
   const CDS = () => (typeof DossierStore !== 'undefined') ? DossierStore : null;
 
   // STATION RECORD — the durable lifetime pride counters (G3a). Reads the pure PrideStore snapshot and renders a
@@ -10345,10 +10345,10 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     let founded = '';
     if (snap.founded && snap.foundedAt) {
       let d = ''; try { d = new Date(snap.foundedAt).toLocaleDateString(); } catch (_) { d = ''; }
-      if (d) founded = '<div class="cd-founded">station founded <b>' + esc(d) + '</b></div>';
+      if (d) founded = '<div class="cd-founded">farm founded <b>' + esc(d) + '</b></div>';
     }
     return mkEl('div', 'cd-record',
-      '<div class="cd-record-h">STATION RECORD // LIFETIME</div>'
+      '<div class="cd-record-h">FARM RECORD // LIFETIME</div>'
       + '<div class="cd-record-grid">' + grid + '</div>'
       + founded);
   }
@@ -10356,7 +10356,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   function buildCommander(body) {
     const ds = CDS();
     const sum = ds ? ds.summary() : null;
-    if (!ds || !sum) { body.innerHTML = '<p class="dim">The Commander Dossier warms up once your agent is awake.</p>'; return; }
+    if (!ds || !sum) { body.innerHTML = '<p class="dim">The Farmer Dossier warms up once your agent is awake.</p>'; return; }
     const dims = ds.dims();
     body.innerHTML = '';
 
@@ -10399,9 +10399,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         onCommit: belief => ds.upsert(belief.dim, { text: belief.text, source: belief.source, weight: belief.weight }),   // V3: weight rides through (canned chip = 'seed', never opens the readiness gate)
         onDone: () => rerender('commander'),
         onLeave: () => { rerender('commander'); notify('left the interview — what you answered is saved', ''); },   // user-launched: leaving is a clean stop (answers banked), nothing to wave off
-        onEmpty: () => notify('the station already knows you — edit any belief below to refine', 'good')
+        onEmpty: () => notify('the farm already knows you — edit any belief below to refine', 'good')
       });
-      if (began) { sfx('click'); notify('the station is interviewing you — answer in COMMS →', 'good'); }
+      if (began) { sfx('click'); notify('the farm is interviewing you — answer in COMMS →', 'good'); }
     };
     actRow.appendChild(goBtn);
     actRow.appendChild(mkEl('p', 'cd-interview-help', 'Answer a few questions in COMMS. Your answers build this profile.'));
@@ -10454,14 +10454,14 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         el.appendChild(mkEl('p', 'cd-privacy', 'Your profile is stored locally. Its briefing is sent to each agent’s configured model when it works; relevant summaries may also be used for suggestions.'));
         el.appendChild(cdBriefing(ds));
       } },
-      { id: 'sources', label: 'SOURCES', glyph: '⌁', desc: 'Manage the notes StarNet can study for useful work.', build: el => {
+      { id: 'sources', label: 'SOURCES', glyph: '⌁', desc: 'Manage the notes Homestead can study for useful work.', build: el => {
         if (typeof WorkHub !== 'undefined') WorkHub.mountSources(el);
         else el.appendChild(mkEl('p', 'cd-empty', 'Source settings are unavailable. Reopen the dossier to try again.'));
       }, onShow: el => { const detail = el.querySelector('.wh-source-settings'); if (detail) detail.open = true; } },
-      { id: 'record', label: 'STATION RECORD', glyph: '▥', desc: 'Recorded activity across the lifetime of your station.', build: el => {
+      { id: 'record', label: 'FARM RECORD', glyph: '▥', desc: 'Recorded activity across the lifetime of your farm.', build: el => {
         const rec = cdStationRecord();
         if (rec) el.appendChild(rec);
-        else el.appendChild(mkEl('p', 'cd-empty', 'No station record is available yet.'));
+        else el.appendChild(mkEl('p', 'cd-empty', 'No farm record is available yet.'));
         el.appendChild(mkEl('p', 'cd-sub', obsLine));
       } }
     ]);
@@ -10496,7 +10496,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // chips still state where the block WILL flow, phrased as wiring, since the paths exist regardless.
     const foot = mkEl('div', 'cd-brief-foot');
     const flows = mkEl('div', 'cd-flows',
-      '<span class="cd-flow" title="composeSystemPrompt folds this block into the system prompt of every agent on the station — including a freshly-summoned one">▸ every agent’s briefing</span>' +
+      '<span class="cd-flow" title="composeSystemPrompt folds this block into the system prompt of every agent on the farm — including a freshly-summoned one">▸ every agent’s briefing</span>' +
       '<span class="cd-flow" title="mirrored to the sidecar so autonomous scheduled runs (routines, autonomy) that compose their own persona still know who they serve">▸ autonomous &amp; scheduled runs</span>' +
       '<span class="cd-flow" title="the pitch engine and recruitment matcher read your goals, pain points and ambitions to propose work and crew">▸ pitches &amp; recruitment</span>' +
       '<span class="cd-flow" title="the quest board turns still-blank dimensions into get-to-know-you quests">▸ quest board</span>');
@@ -10525,13 +10525,13 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (!st.stopped && !st.asked) return row;   // never asked → say nothing (keeps the panel quiet)
     const lbl = mkEl('span', 'cd-curio-lbl');
     lbl.textContent = st.stopped
-      ? (st.dismissed ? '⏸ you waved this question off' : '⏸ the station stopped asking — you skipped it')
-      : ('· the station asked once, waiting');
+      ? (st.dismissed ? '⏸ you waved this question off' : '⏸ the farm stopped asking — you skipped it')
+      : ('· the farm asked once, waiting');
     row.appendChild(lbl);
     if (st.stopped) {
       const rb = mkEl('button', 'consent-btn cd-reenable'); rb.textContent = 'ask me about this';
-      rb.title = 'turn this question back on — the station may ask about your ' + String(d.label).toLowerCase() + ' again';
-      rb.onclick = () => { CuriosityStore.reEnable(d.key); sfx('click'); notify('the station will ask about your ' + String(d.label).toLowerCase() + ' again', 'good'); rerender('commander'); };
+      rb.title = 'turn this question back on — the farm may ask about your ' + String(d.label).toLowerCase() + ' again';
+      rb.onclick = () => { CuriosityStore.reEnable(d.key); sfx('click'); notify('the farm will ask about your ' + String(d.label).toLowerCase() + ' again', 'good'); rerender('commander'); };
       row.appendChild(rb);
     }
     return row;
@@ -10543,7 +10543,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const metaRow = mkEl('div', 'cd-meta');
     // GROWTH Tier 1: a STUDY-sourced belief (the station learned it from real work, not the Commander authoring it)
     // gets a distinct "observed" tag so the glass box stays honest about provenance.
-    if (b.source === 'study') { const tag = mkEl('span', 'cd-observed-tag'); tag.textContent = 'observed'; tag.title = 'the station proposed this from your work; you kept it'; metaRow.appendChild(tag); }
+    if (b.source === 'study') { const tag = mkEl('span', 'cd-observed-tag'); tag.textContent = 'observed'; tag.title = 'the farm proposed this from your work; you kept it'; metaRow.appendChild(tag); }
     // BRIEFING HONESTY: the composed block trims past its char cap (fair-share per dimension), so a belief can
     // exist in the dossier yet be shortened/dropped from the prompt. An exact-substring check against the LIVE
     // block flags that state — otherwise the panel implies every belief reaches the agents, which can be false.
@@ -10554,7 +10554,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     }
     const meta = mkEl('span', 'cd-src');
     const when = (Number.isFinite(b.observedAt) && b.observedAt > 0) ? b.observedAt : b.createdAt;
-    meta.textContent = (b.pinned ? '★ pinned · ' : '') + (CD_SOURCE[b.source] || 'you told the station') + (when ? ' · ' + new Date(when).toLocaleDateString() : '');
+    meta.textContent = (b.pinned ? '★ pinned · ' : '') + (CD_SOURCE[b.source] || 'you told the farm') + (when ? ' · ' + new Date(when).toLocaleDateString() : '');
     card.appendChild(metaRow).appendChild(meta);
 
     const btns = mkEl('div', 'consent-btns cd-acts'); card.appendChild(btns);
@@ -10679,7 +10679,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const key = (q.contract && q.contract.key) || '';
       if (t === 'prop') return 'the ' + (key || 'named') + ' capability goes live on your floor';
       if (t === 'run') return 'the bound build runs to completion';
-      if (t === 'fact') return 'the station learns this about you';
+      if (t === 'fact') return 'the farm learns this about you';
       if (t === 'artifact') return 'the deliverable lands in the workshop';
       if (t === 'attest') return 'you report the result, or confirm your agent’s evidence';
       return 'its completion contract is met';
@@ -10688,7 +10688,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       case 'station-gap': return 'you place the prop that grants this capability';
       case 'work': return 'the build finishes its run';
       case 'maintenance': return 'the recurring failure stops happening';
-      case 'dossier': return 'you tell the station this';
+      case 'dossier': return 'you tell the farm this';
       case 'milestone': return String(q.desc || '').replace(/^how:\s*/i, '').trim() || 'you ship the real work behind it';
       case 'station':
         return q.id === 'st:crew' ? 'a second specialist joins your crew'
@@ -10712,7 +10712,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
      made 26 cards read as one undifferentiated wall. Naming the kind is the opposite of collapsing them. */
   const QUEST_KIND_TAG = {
     ledger: 'FOR YOU', work: 'BUILD', 'station-gap': 'FLOOR', maintenance: 'FIX',
-    dossier: 'ABOUT YOU', milestone: 'MILESTONE', station: 'STATION', idea: 'IDEA'
+    dossier: 'ABOUT YOU', milestone: 'MILESTONE', station: 'FARM', idea: 'IDEA'
   };
   function questGoDest(q) {
     if (!q || q.status === 'done') return null;
@@ -10876,13 +10876,13 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
   }
   function passHtml() {
     const m = bpModel();
-    if (!m) return '<div class="q-journal-empty"><span aria-hidden="true">◇</span><h3>Pass offline</h3><p>Your Commander progression has not loaded yet. It appears here as soon as the station reports it.</p></div>';
+    if (!m) return '<div class="q-journal-empty"><span aria-hidden="true">◇</span><h3>Pass offline</h3><p>Your Farmer progression has not loaded yet. It appears here as soon as the farm reports it.</p></div>';
     const f = m.frame, pad = n => String(n).padStart(2, '0');
     const s = m.streak;
     // the sidecar went quiet: these are the last VERIFIED numbers, not live ones — say so (sweep 10-20; the PROGRESS view
     // and the topbar's "Lv N · saved" already do). CLAIM still works: it only marks tiers the ledger already proved.
     let stale = false; try { const st = JourneyStore.state && JourneyStore.state(); stale = !!(st && st.stale); } catch (_) {}
-    const staleHtml = stale ? '<div class="sub warn bp-stale">[ OFFLINE ] showing your last verified pass — points and streak refresh when the station reconnects.</div>' : '';
+    const staleHtml = stale ? '<div class="sub warn bp-stale">[ OFFLINE ] showing your last verified pass — points and streak refresh when the farm reconnects.</div>' : '';
     // the flame: lit while the streak is alive, an ember when it is at risk, cold ash at zero.
     const flame = s.current > 0
       ? (s.atRisk ? '   .   \n  ( )  \n (   ) \n  \'-\'  ' : '   (   \n  ) )  \n ( ( ( \n  \'-\'  ')
@@ -10928,7 +10928,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       + '<ol class="bp-track">' + nodes + '</ol>'
       + bpRule(f, 'WEEKLY CHALLENGES') + '<div class="sub bp-reset">resets in ' + esc(m.week.resetsIn.toLowerCase()) + '</div>'
       + '<ul class="bp-chals">' + chal + '</ul>'
-      + '<p class="sub dim bp-law">Points come only from real progress on your goals: +10 for each goal quest you confirm, planned step you finish, or metric checkpoint you pass, and +100 when you confirm a goal is achieved. Station, profile, and build quests earn no points. Tiers give titles and frames only. Every tool works at every tier.</p>'
+      + '<p class="sub dim bp-law">Points come only from real progress on your goals: +10 for each goal quest you confirm, planned step you finish, or metric checkpoint you pass, and +100 when you confirm a goal is achieved. Farm, profile, and build quests earn no points. Tiers give titles and frames only. Every tool works at every tier.</p>'
       + bpRule(f, '')
       + '</section>';
   }
@@ -10978,9 +10978,9 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       } catch (_) { /* no read → fall through to the first-time copy */ }
       const lede = reached > 0
         ? '<div class="sub"><b class="q-track-reached">&#9670; ' + reached + ' goal' + (reached === 1 ? '' : 's') + ' reached</b>'
-          + (stageName ? ' — the station is now <b class="q-track-stage">' + esc(stageName) + '</b>' : '')
+          + (stageName ? ' — the farm is now <b class="q-track-stage">' + esc(stageName) + '</b>' : '')
           + '. set the next one and it gets broken into steps here.</div>'
-        : '<div class="sub">no goal path yet — tell the station a goal and it breaks it into a handful of real steps, then tracks them here as you finish them.</div>';
+        : '<div class="sub">no goal path yet — tell the farm a goal and it breaks it into a handful of real steps, then tracks them here as you finish them.</div>';
       return '<div class="gx-sec q-track-sec"><span class="gx-title">YOUR GOAL</span></div>'
         + '<div class="q-track q-track-empty' + (reached > 0 ? ' q-track-reached-band' : '') + '">'
         + lede
@@ -11008,7 +11008,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const next = steps.find(s => s.isNext && s.status !== 'done');
     const accept = (next && !next.inFlight)
       ? '<button class="consent-btn q-arc-accept q-track-accept" data-gid="' + esc(next.arcGoalId) + '" data-mid="' + esc(next.milestoneId) + '">▶ START THIS STEP</button><p class="sub dim">Starts work with your crew using your current model and permissions.</p>'
-        + '<details class="q-life-report"><summary>I DID THIS STEP</summary><label>What did you do?<textarea class="q-step-evidence" maxlength="1000" placeholder="Describe the action you completed outside StarNet"></textarea></label>'
+        + '<details class="q-life-report"><summary>I DID THIS STEP</summary><label>What did you do?<textarea class="q-step-evidence" maxlength="1000" placeholder="Describe the action you completed outside Homestead"></textarea></label>'
         + '<button class="consent-btn q-step-report" data-gid="' + esc(next.arcGoalId) + '" data-mid="' + esc(next.milestoneId) + '">RECORD MY ACTION</button></details>'
       : (next && next.inFlight ? '<span class="sub q-track-running">the build for this step is running — finishing it completes the step.</span>' : '');
     const alternatives = steps.filter(s => s.status !== 'done' && !s.isNext);
@@ -11031,8 +11031,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const j = (typeof JourneyStore !== 'undefined' && JourneyStore.status) ? JourneyStore.status() : null;
       const evo = j && j.evolution;
       if (evo && evo.next) {
-        payoff = '<div class="sub q-track-payoff">&#9670; confirming your goal’s outcome advances the station to <b>' + esc(evo.next) + '</b>'
-          + '<span class="dim"> — the station’s expression, never your tools</span></div>';
+        payoff = '<div class="sub q-track-payoff">&#9670; confirming your goal’s outcome advances the farm to <b>' + esc(evo.next) + '</b>'
+          + '<span class="dim"> — the farm’s expression, never your tools</span></div>';
       }
     } catch (_) { /* no evolution read → no claim */ }
     return '<div class="gx-sec q-track-sec"><span class="gx-title">YOUR GOAL</span>'
@@ -11082,7 +11082,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const ns = s.northStar;
       const srcTag = ns.source === 'goal' ? 'your goal' : 'inferred';
       const proposed = ns.status === 'proposed';
-      const unconf = proposed ? ' <span class="q-nstag q-unconf" title="the station inferred this — confirm or correct it">unconfirmed</span>' : '';
+      const unconf = proposed ? ' <span class="q-nstag q-unconf" title="the farm inferred this — confirm or correct it">unconfirmed</span>' : '';
       // propose-and-confirm: an inferred star is never silently adopted — the Commander confirms (adopt) or
       // corrects (decline → denylisted, re-inferred next cycle). A Commander-set goal needs no verdict.
       const verdictRow = proposed
@@ -11097,7 +11097,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         + verdictRow + '</div>';
     } else {
       starHtml = '<div class="q-northstar"><span class="q-ns-eyebrow">NORTH STAR</span>'
-        + '<div class="sub q-ns-text dim">not set yet &mdash; the station learns your long-term goal from your goal arc, dossier, and real activity.</div></div>';
+        + '<div class="sub q-ns-text dim">not set yet &mdash; the farm learns your long-term goal from your goal arc, dossier, and real activity.</div></div>';
     }
     // LAST OUTCOME — the most recent honest attempt (minted/none/rejected/skipped/error) the refresher recorded.
     const last = s && s.ledger && s.ledger.length ? s.ledger[s.ledger.length - 1] : null;
@@ -11106,7 +11106,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // rejected cycle is the confusing one — it reads as a failure when it is the station refusing to invent
     // a quest it cannot ground, so it says that outright rather than leaving "rejected" to be guessed at.
     const OUTCOME_PLAIN = {
-      rejected: 'the station had nothing it could honestly ground — no quest was invented',
+      rejected: 'the farm had nothing it could honestly ground — no quest was invented',
       none: 'your direction is already covered',
       skipped: 'the cycle did not need to run'
     };
@@ -11160,7 +11160,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const svg = b.querySelector('svg');
       return svg ? svg.outerHTML : esc(b.textContent || '◇');
     };
-    return '<div class="q-systems q-constellation" id="q-systems"><div class="gx-sec"><span class="gx-title">STATION SYSTEMS</span><span class="gx-tag">'
+    return '<div class="q-systems q-constellation" id="q-systems"><div class="gx-sec"><span class="gx-title">FARM SYSTEMS</span><span class="gx-tag">'
       + s.online + ' OF ' + s.total + ' ONLINE</span></div>'
       + (staged ? '<div class="arc-bar q-bar"><div class="q-bar-fill" style="width:' + pct + '%"></div></div>' : '')
       + '<div class="q-star-map q-sys-map">' + s.list.map(x =>
@@ -11169,7 +11169,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         + '<span class="q-star-glyph" aria-hidden="true">' + glyphOf(x.id) + '</span><span>' + esc(x.label) + '</span><small>'
         + (x.online ? (x.fresh ? 'NEW · ' : '') + esc(x.group.toUpperCase()) + ' DOCK' : esc(x.how || 'not in your dock yet')) + '</small></button>').join('')
       + '</div>'
-      + (staged ? '<p class="sub dim">Your dock grows as you use the station. Every system already works: open any of them here.</p>'
+      + (staged ? '<p class="sub dim">Your dock grows as you use the farm. Every system already works: open any of them here.</p>'
         + '<div class="q-journey-actions"><button type="button" class="bb sm q-sys-all">SHOW EVERYTHING</button></div>' : '')
       + '</div>';
   }
@@ -11177,7 +11177,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (!root) return;
     root.querySelectorAll('.q-sys').forEach(b => b.addEventListener('click', () => { sfx('click'); Systems.openSystem(b.dataset.sys); }));
     const all = root.querySelector('.q-sys-all');
-    if (all) all.addEventListener('click', () => { sfx('click'); Systems.showEverything(); notify('Every station system is in your dock now. SETTINGS › LOOK & SOUND › STATION DOCK switches it back.', '', undefined, { transient: true }); });
+    if (all) all.addEventListener('click', () => { sfx('click'); Systems.showEverything(); notify('Every farm system is in your dock now. SETTINGS › LOOK & SOUND › FARM DOCK switches it back.', '', undefined, { transient: true }); });
   }
   // repaint ONLY the systems block of an open quest log — never the whole window (drafts live there)
   function refreshSystems() {
@@ -11197,8 +11197,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (JS && JS.sync) { try { JS.sync(); } catch (_) {} }
     const j = JS && JS.status ? JS.status() : null;
     const journeyState = JS && JS.state ? JS.state() : null;
-    if (!j) return '<div class="gx-sec"><span class="gx-title">COMMANDER JOURNEY</span></div>'
-      + '<div class="q-journey-card"><div class="sub dim">Progress is not available yet. It will appear when the station can load your records.</div></div>';
+    if (!j) return '<div class="gx-sec"><span class="gx-title">FARMER JOURNEY</span></div>'
+      + '<div class="q-journey-card"><div class="sub dim">Progress is not available yet. It will appear when the farm can load your records.</div></div>';
 
     const evo = j.evolution || { stage: 0, name: 'DRIFT', goalsReached: 0 };
     const chapters = typeof GoalStore !== 'undefined' && GoalStore.listGoals ? GoalStore.listGoals() : [];
@@ -11265,8 +11265,8 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const recent = (Array.isArray(j.outcomes) ? j.outcomes : []).slice(-3).reverse();
     const progression = j.progression;
     const achievements = progression && Array.isArray(progression.achievements) ? progression.achievements.slice(-5).reverse() : [];
-    const proofLabel = (kind, authority) => authority === 'commander-confirmed' ? 'You confirmed' : kind === 'metric' ? 'You recorded' : 'StarNet recorded';
-    const growthHtml = progression ? '<div class="q-commander-growth"><div class="q-journey-title">COMMANDER LEVEL ' + progression.level + '</div>'
+    const proofLabel = (kind, authority) => authority === 'commander-confirmed' ? 'You confirmed' : kind === 'metric' ? 'You recorded' : 'Homestead recorded';
+    const growthHtml = progression ? '<div class="q-commander-growth"><div class="q-journey-title">FARMER LEVEL ' + progression.level + '</div>'
       + '<div class="sub">' + progression.points + ' achievement points · ' + progression.pointsToNextLevel + ' to the next level</div>'
       + '<div class="sub dim">Confirmed goal activity and recorded metric checkpoints earn points across your goals. Confirming a completed goal earns 100 points. Setbacks never erase your history.</div>'
       + '<details class="q-growth-history"><summary>Recent achievements</summary>' + achievements.map(a => '<details class="sub q-achievement"><summary>◆ ' + esc(a.title || a.kind || 'Goal progress') + ' <span class="gx-tag">+' + (Number(a.points) || 0) + '</span></summary>'
@@ -11278,7 +11278,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       : '';
 
     return '<div class="q-journey-card">' + staleHtml + constellation + '<div class="q-progress-overview">' + growthHtml
-      + '<div class="q-evolution"><div><span class="q-ns-eyebrow">STATION EVOLUTION</span><div class="q-evolution-name">' + esc(evo.name) + '</div></div>'
+      + '<div class="q-evolution"><div><span class="q-ns-eyebrow">FARM EVOLUTION</span><div class="q-evolution-name">' + esc(evo.name) + '</div></div>'
       + '<span class="gx-tag">' + (Number(evo.goalsReached) || 0) + ' distinct goals reached</span>'
       + (evo.next ? '<p class="sub">Next chapter: <b>' + esc(evo.next) + '</b><br>One more distinct goal outcome, confirmed by you.</p>' : '') + '</div>'
       + '</div><div class="q-progress-goal">' + goalHtml + '</div>' + metricsHtml + masteryHtml + receiptHtml
@@ -11329,7 +11329,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
           + '<button class="consent-btn q-goal-reflect">SAVE REFLECTION</button></details></details>';
       }).join('') + '</div>' : '';
     return '<details class="q-life-goal q-life-manage"' + (goals.length ? '' : ' open') + '><summary>Start a goal</summary>'
-      + '<p class="sub">A rough idea is enough. Shape it with StarNet or write your own plan.</p>'
+      + '<p class="sub">A rough idea is enough. Shape it with Homestead or write your own plan.</p>'
       + '<label>I want to…<input class="q-new-goal" maxlength="280" placeholder="Learn to play a song, change careers, build a business…"></label>'
       + '<button class="consent-btn q-goal-suggest">HELP SHAPE MY PLAN</button><p class="sub dim">Uses your current AI model to suggest an editable plan. Saving and starting work are separate actions.</p>'
       + '<div class="q-plan-feedback" role="status" aria-live="polite"></div><div class="q-plan-proposal"></div>'
@@ -11513,7 +11513,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       const rewardHtml = q.reward ? '<div class="sub q-reward"><span class="q-field-label">REWARD</span>&#9670; ' + esc(q.reward) + '</div>' : '';
       const actionRow = (goBtn || queueBtn) ? '<div class="q-actions">' + goBtn + queueBtn + '</div>' : '';
       const lifeActions = q.kind === 'ledger' && q.status !== 'done' ? '<div class="q-life-quest" data-qid="' + esc(q.id) + '">'
-        + '<div class="sub q-owner">' + esc(q.executionMode === 'commander' ? 'YOUR ACTION' : q.executionMode === 'together' ? 'YOU + STARNET' : 'STARNET CAN HELP') + '</div>'
+        + '<div class="sub q-owner">' + esc(q.executionMode === 'commander' ? 'YOUR ACTION' : q.executionMode === 'together' ? 'YOU + HOMESTEAD' : 'HOMESTEAD CAN HELP') + '</div>'
         + (q.whyNow ? '<div class="sub">Why now: ' + esc(q.whyNow) + '</div>' : '')
         + (isPaused(q) ? '<div class="sub">' + esc(q.disposition.type === 'later' ? 'Saved for tomorrow' : q.disposition.type === 'too_big' ? 'Needs a smaller step' : 'Blocked') + (q.disposition.reason ? ': ' + esc(q.disposition.reason) : '') + '</div><button class="consent-btn q-quest-disposition" data-action="resume">RESUME</button>'
           : '<details><summary>CHANGE THIS RECOMMENDATION</summary><label>What needs to change?<input id="q-reason-' + esc(q.id) + '" class="q-disposition-reason" value="' + esc(questDrafts.get(q.id)?.reason || '') + '" maxlength="240" placeholder="For example: waiting for a reply, or only 15 minutes available"></label>'
@@ -11522,7 +11522,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         + '</div>' : '';
       return '<div class="gx-tro q-card ' + (q.status === 'done' ? 'on' : 'off') + (glow ? ' q-celebrate' : '') + '" style="--ci:' + (i || 0) + '">'
         + '<div class="q-card-meta">' + kindHtml + '<span class="q-card-state">' + (q.status === 'done' ? '✓ COMPLETED' : isPaused(q) ? 'SAVED / BLOCKED' : 'AVAILABLE QUEST') + '</span>'
-        + (dis ? '<button class="q-dismiss" data-qid="' + esc(q.id) + '" title="Dismiss — the station will never raise this again">&#10005;</button>' : '')
+        + (dis ? '<button class="q-dismiss" data-qid="' + esc(q.id) + '" title="Dismiss — the farm will never raise this again">&#10005;</button>' : '')
         + '</div>'
         + '<div class="q-hd"><span class="gl" aria-hidden="true">' + (q.status === 'done' ? '&#9733;' : '&#9671;') + '</span><h3 class="nm">' + esc(q.title) + '</h3></div>'
         + '<div class="sub">' + esc(q.status === 'done' ? ('▸ ' + q.reward) : q.desc) + '</div>'
@@ -11549,7 +11549,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const milestoneDone = milestones.filter(q => q.status === 'done').length;
     const milestonesHtml = milestones.length
       // folded, with the TROPHY CASE door on the summary row itself so it is reachable without unfolding (org pass 10-14, P28)
-      ? '<details class="q-milestones q-progress-section"><summary><span>Station milestones</span><span class="q-section-count">' + milestoneDone + ' / ' + milestones.length + '</span>'
+      ? '<details class="q-milestones q-progress-section"><summary><span>Farm milestones</span><span class="q-section-count">' + milestoneDone + ' / ' + milestones.length + '</span>'
         + '<button type="button" class="bb xs q-trophy-door" data-open-trophies>OPEN THE TROPHY CASE</button></summary>'
         + '<div class="q-section-body"><div class="gx-tros q-grid q-milestone-grid">' + milestones.map(tro).join('') + '</div></div></details>'
       : '';
@@ -11558,7 +11558,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const categories = [
       ['all', 'All quests', () => true],
       ['missions', 'Missions', q => ['ledger', 'work', 'idea'].includes(q.kind)],
-      ['station', 'Station', q => ['station', 'station-gap', 'maintenance'].includes(q.kind)],
+      ['station', 'Farm', q => ['station', 'station-gap', 'maintenance'].includes(q.kind)],
       ['commander', 'About you', q => q.kind === 'dossier']
     ];
     const category = categories.find(c => c[0] === body.dataset.questCategory) || categories[0];
@@ -11586,7 +11586,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       + '</section></div>';
     const questViews = [
       ['pass', 'PASS', 'Your battle pass: every point comes from real progress on your goals. Tiers give titles and frames only, never tools.'],
-      ['available', 'NOW', 'Your next move, open work, and station quests.'],
+      ['available', 'NOW', 'Your next move, open work, and farm quests.'],
       ['goals', 'GOALS', 'Define what you want to achieve long term, then choose a goal to focus on. Its plan breaks the goal into smaller steps.'],
       ['progress', 'PROGRESS', 'Your recorded progress across all goals: planned steps, tracked metrics, and earned achievements.'],
       ['completed', 'HISTORY', 'Your goals, results, reflections, and changes of direction.']
@@ -11771,7 +11771,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (suggest) suggest.addEventListener('click', async () => {
       if (body._journeyPlanning) return;
       const form = body.querySelector('.q-life-manage'), title = form.querySelector('.q-new-goal').value.trim();
-      if (title.length < 4) { body._journeyPlanMessage = 'Tell StarNet a little about what you want to do first.'; planFeedback.textContent = body._journeyPlanMessage; form.querySelector('.q-new-goal').focus(); return; }
+      if (title.length < 4) { body._journeyPlanMessage = 'Tell Homestead a little about what you want to do first.'; planFeedback.textContent = body._journeyPlanMessage; form.querySelector('.q-new-goal').focus(); return; }
       const options = { motivation: form.querySelector('.q-new-motivation').value, constraints: form.querySelector('.q-new-constraints').value,
         successCondition: form.querySelector('.q-new-success').value, steps: form.querySelector('.q-new-steps').value };
       body._journeyPlanning = true; body._journeyPlan = null; rerender('quests', false);
@@ -11874,7 +11874,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         });
       if (r && (r.ok || r.saved)) {
         body._journeyIdeaId = null; body._journeyPreviousDraft = null; body._journeyPlan = null;
-        body._journeyPlanMessage = r.ok ? 'Goal saved. Your next step is ready in Now.' : 'Saved on this browser; the station has not confirmed it yet.';
+        body._journeyPlanMessage = r.ok ? 'Goal saved. Your next step is ready in Now.' : 'Saved on this browser; the farm has not confirmed it yet.';
         sfx('click'); questJourneySaved(body, submitted, true, r.ok ? 'Goal saved. Your next step is ready.' : '');
         // Stay with a newer draft or another tab if the user moved on while saving.
         const newerDraft = Array.from(body.querySelectorAll('.q-life-manage input,.q-life-manage textarea')).some(el => el.dataset.dirty === '1');
@@ -12090,7 +12090,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       if (typeof QuestRefreshStore === 'undefined' || !QuestRefreshStore.run) return;
       refreshBtn.disabled = true; refreshBtn.innerHTML = 'REFRESHING&hellip;';
       const r = await QuestRefreshStore.run();
-      if (r && r.started) { sfx('click'); notify('◆ refreshing quests — the station is re-deriving your direction', 'gold'); }
+      if (r && r.started) { sfx('click'); notify('◆ refreshing quests — the farm is re-deriving your direction', 'gold'); }
       else { notify('refresh not started: ' + ((r && r.error) || 'unavailable'), 'warn'); }
       // The cycle is async on the server. The STORE now follows it to the end (watchSettle) and pokes one
       // re-render carrying the recorded outcome, so this render is only the launch state — no blind timer,
@@ -12106,7 +12106,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
       if (typeof QuestRefreshStore === 'undefined' || !QuestRefreshStore.verdict) return;
       btn.disabled = true;
       const r = await QuestRefreshStore.verdict(decision);
-      if (r && r.ok) { sfx('click'); notify(decision === 'confirm' ? '◆ north star confirmed — quests will steer by it' : '↩ got it — the station will re-read your direction', tone); }
+      if (r && r.ok) { sfx('click'); notify(decision === 'confirm' ? '◆ north star confirmed — quests will steer by it' : '↩ got it — the farm will re-read your direction', tone); }
       else { btn.disabled = false; notify('could not record that', 'bad'); }
       rerender('quests', false);
     }); };
@@ -12121,7 +12121,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     // `wide` = wide width only). The old per-window pixel widths (460/540/560/620/640/760/1000) are
     // gone — they made eight windows read as eight unrelated apps. A window earns WIDE only by having
     // a rail, a card grid, or side-by-side columns; everything single-column is a PANEL.
-    commander:['YOU · COMMANDER DOSSIER',      buildCommander, { console: true, className: 'commander-console' }],   // focused profile, preferences, briefing, and record sections
+    commander:['YOU · FARMER DOSSIER',      buildCommander, { console: true, className: 'commander-console' }],   // focused profile, preferences, briefing, and record sections
     // NAV CONDENSE 2 (2026-08-04): 'skills' is no longer a window key — the skill library/agent-
     // skills sections live in the ABILITIES (connectors) console via AbilityLanes, and per-agent
     // capabilities live in the dossier's SKILLS tab. openTerm keeps the old keys alive as aliases

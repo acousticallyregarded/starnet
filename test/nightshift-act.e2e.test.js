@@ -81,10 +81,10 @@ function startMockOpenRouter() {
             text([
               'JOB: Release checklist tool',
               'KIND: advance-goal',
-              'GROUNDS: ship the StarNet beta to 100 users',
+              'GROUNDS: ship the Homestead beta to 100 users',
               'CONFIDENCE: high',
               'SPEC: a small script that helps ship the beta'
-            ].concat(keptBefore ? ['', 'JOB: Beta signup tracker', 'KIND: advance-goal', 'GROUNDS: ship the StarNet beta to 100 users', 'CONFIDENCE: high', 'SPEC: a tiny tracker of beta signups'] : []).join('\n'));
+            ].concat(keptBefore ? ['', 'JOB: Beta signup tracker', 'KIND: advance-goal', 'GROUNDS: ship the Homestead beta to 100 users', 'CONFIDENCE: high', 'SPEC: a tiny tracker of beta signups'] : []).join('\n'));
           } else {
             text('ok');
           }
@@ -128,10 +128,10 @@ function hotBeliefs(now) {
   return {
     known: ['goals', 'pain', 'stack', 'ambition'],
     beliefs: {
-      goals: b('ship the StarNet beta to 100 users'),
+      goals: b('ship the Homestead beta to 100 users'),
       pain: b('manual release notes eat my fridays'),
       stack: b('node and a pixel-art canvas'),
-      ambition: b('a living agent station people watch')
+      ambition: b('a living agent farm people watch')
     }
   };
 }

@@ -102,8 +102,8 @@ function fixture({ native, get, post } = {}) {
     get: async route => route === '/api/credits' ? (unlinked ? { configured: false } : linked) : { available: true, cloud: true },
     post: async () => { unlinked = true; return { ok: true, j: { ok: true, unlinked: true } }; }
   });
-  await success.read(); await success.unlink(); assert.match(success.host.innerHTML, /Unlinking this station/);
-  await success.read(); assert.match(success.host.innerHTML, /Unlinking this station/, 'repaint preserves pending status');
+  await success.read(); await success.unlink(); assert.match(success.host.innerHTML, /Unlinking this farm/);
+  await success.read(); assert.match(success.host.innerHTML, /Unlinking this farm/, 'repaint preserves pending status');
   resolveNative(); await flush(); assert.ok(success.host.querySelector('#credits-link'));
   assert.ok(success.calls.includes('refresh') && success.calls.includes('provider'));
 

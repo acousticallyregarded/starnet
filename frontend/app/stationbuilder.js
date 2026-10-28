@@ -509,7 +509,7 @@
     const why = stock.length ? ' (instructions: what that step does in the workflow the Farmer described)' : '';
     // staffed, with stock instructions only: often right ("builds features and tests them" IS the Engineer's and Tester's stock work),
     // so it is the lead's call, said once; the usual next step stays, word for word
-    if (!idle.length) return said(stock) + (stock.length === 1 ? ' has' : ' have') + canned + '. If that is not the work the Commander described, plan again with the same request plus steps: '
+    if (!idle.length) return said(stock) + (stock.length === 1 ? ' has' : ' have') + canned + '. If that is not the work the Farmer described, plan again with the same request plus steps: '
       + form + why + ', so its Bays are told the real work and ONE approval builds it. Otherwise: ' + NEXT_WORD;
     const one = idle.length === 1, same = stock.length && stock.every(s => idle.indexOf(s) >= 0) && idle.every(s => stock.indexOf(s) >= 0);
     return 'Nothing is built yet. ' + said(idle) + (one ? ' has nobody to work it' : ' have nobody to work them') + ', so the line will not run'
@@ -2303,7 +2303,7 @@
     return SIDES.indexOf(s) >= 0 ? { ok: true, side: s } : refuse('side is north, south, east or west (north is the back wall, the top of the map).');
   }
   function hallOf(raw) {
-    if (raw == null || raw === true || /^(yes|true|hall|hallway|corridor)$/i.test(String(raw))) return { ok: true, len: HALL_LEN };
+    if (raw == null || raw === true || /^(yes|true|hall|hallway|corridor|path)$/i.test(String(raw))) return { ok: true, len: HALL_LEN };
     if (raw === false || raw === 0 || /^(no|none|false|flush|open|door|0)$/i.test(String(raw))) return { ok: true, len: 0 };
     const n = Number(raw);
     if (Number.isInteger(n) && n >= 2 && n <= 8) return { ok: true, len: n };

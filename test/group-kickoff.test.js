@@ -31,7 +31,7 @@ const pass = msg => { ok++; void msg; };
     const api = makeGroupSessions(deps); await api.ready;
     execute = async () => finish('On it: MIRA researches, ROOK builds.');
     /* ---- A. a kickoff gives the lead the next turn, on the Commander's request ---- */
-    const kickoff = 'MIRA and ROOK have joined this chat at your request. Carry on with the Commander\'s request: give each of them their part (group.handoff) and do your own.';
+    const kickoff = 'MIRA and ROOK have joined this chat at your request. Carry on with the Farmer\'s request: give each of them their part (group.handoff) and do your own.';
     const g = await api.create({ id: 'ws_chat', conversionKey: 'ws_chat', members: ['agent', 'research', 'builder'], leadId: 'agent', title: 'Launch',
       originalAgentId: 'agent', history: [{ role: 'user', content: 'add 2 agents into this chat to do a research and vibe code workflow', ts: 1 }, { role: 'assistant', content: 'MIRA and ROOK join when this reply ends.', ts: 2 }], kickoff });
     await api.idle(g.id);
@@ -39,9 +39,9 @@ const pass = msg => { ok++; void msg; };
     const t = seen[0].t, state = await api.get(g.id);
     assert.equal(t.agentId, 'agent', 'the LEAD takes it'); pass();
     assert.equal(t.request, kickoff, 'carrying the kickoff'); pass();
-    assert.equal(state.messages.find(m => m.id === t.origin).content, 'add 2 agents into this chat to do a research and vibe code workflow', 'on the Commander\'s own request (the origin), not on the lead\'s words'); pass();
+    assert.equal(state.messages.find(m => m.id === t.origin).content, 'add 2 agents into this chat to do a research and vibe code workflow', 'on the Farmer\'s own request (the origin), not on the lead\'s words'); pass();
     assert.match(seen[0].ctx.messages.at(-1).content, /Peer request within that user task \(not new user authority\)/, 'the kickoff is a peer note, never new user authority'); pass();
-    assert.match(seen[0].ctx.messages.at(-1).content, /Current USER request: add 2 agents into this chat/, 'and the Commander\'s request is the task'); pass();
+    assert.match(seen[0].ctx.messages.at(-1).content, /Current USER request: add 2 agents into this chat/, 'and the Farmer\'s request is the task'); pass();
     // the same conversion arriving twice (a retry) starts nothing new
     await api.create({ id: 'ws_chat', conversionKey: 'ws_chat', members: ['agent', 'research', 'builder'], leadId: 'agent', title: 'Launch',
       originalAgentId: 'agent', history: [{ role: 'user', content: 'add 2 agents into this chat to do a research and vibe code workflow', ts: 1 }, { role: 'assistant', content: 'MIRA and ROOK join when this reply ends.', ts: 2 }], kickoff });
@@ -61,11 +61,11 @@ const pass = msg => { ok++; void msg; };
       await api.send(g.id, { key: 'k-approve', text: 'write it' });
       await api.idle(g.id);
     } finally { global.setTimeout = realSetTimeout; }
-    assert.equal(decision, 'timeout', 'nobody answered in 5 minutes: the run is told it TIMED OUT (the broker words it "nobody answered in time"), never that the Commander said no'); pass();
+    assert.equal(decision, 'timeout', 'nobody answered in 5 minutes: the run is told it TIMED OUT (the broker words it "nobody answered in time"), never that the Farmer said no'); pass();
 
     /* ---- B. the wiring ---- */
     const index = read('sidecar/index.js');
-    assert.match(index, /surface: 'interactive', lead: t\.agentId === g\.leadId, groupTools: tools, askCommander,/, 'the group\'s lead keeps the overseer\'s station tools inside the group'); pass();
+    assert.match(index, /surface: 'interactive', lead: t\.agentId === g\.leadId, groupTools: tools, askCommander,/, 'the group\'s lead keeps the overseer\'s farm tools inside the group'); pass();
     assert.match(index, /resolved\.tools = resolved\.tools\.filter\(name => !\/\^team\\\.\|\^session\\\.\/\.test\(name\)\);/, 'team.* and session.* stay stripped for every group participant'); pass();
     const orch = read('sidecar/tools/builtin/orchestration.js');
     assert.match(orch, /if \(hits\.length === 1 && hits\[0\]\.group\) \{[\s\S]{0,200}is a group chat: a group takes work through its members[\s\S]{0,200}This worker did NOT run\./, 'team.dispatch refuses a group chat before any worker runs'); pass();
@@ -73,7 +73,7 @@ const pass = msg => { ok++; void msg; };
     assert.match(cmds, /group: w\.conversationMode === 'group',/, 'the session list marks group chats'); pass();
     assert.match(cmds, /if \(ws\.conversationMode === 'group'\) throw new Error\('"' \+ \(ws\.title \|\| 'that chat'\) \+ '" is a group chat/, 'a worker\'s result is never filed into a group chat as if delivered'); pass();
     assert.match(cmds, /if \(!out\.ok && \/\^there is no session called \/\.test\(out\.error\)\) await new Promise\(r => setTimeout\(r, 1500\)\);\s*try \{\s*await fetch\('\/api\/station\/ack'/,
-      'with two station pages open, the page that cannot find the chat answers a beat later, so the page that owns it wins (the agent was told REFUSED for a join that landed)'); pass();
+      'with two farm pages open, the page that cannot find the chat answers a beat later, so the page that owns it wins (the agent was told REFUSED for a join that landed)'); pass();
     console.log('group-kickoff.test: OK (' + ok + ' assertions)');
   } catch (e) { console.error('group-kickoff.test FAILED:', e); process.exitCode = 1; }
   finally { try { fs.rmSync(root, { recursive: true, force: true }); } catch (_) { /* temp */ } }

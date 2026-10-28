@@ -65,15 +65,15 @@ function rig(persistentDir, o) {
     A.eq(r.launches.length, 4, 'then exactly ONE more launch');
     const temp = r.launches[3];
     A.ok(temp !== station && temp.indexOf(tmpRoot) === 0, 'on a fresh temporary profile: ' + temp);
-    A.eq(r.driver.usingPersistentProfile(), false, 'the driver no longer claims the signed-in station profile');
+    A.eq(r.driver.usingPersistentProfile(), false, 'the driver no longer claims the signed-in farm profile');
     const note = r.driver.profileFallback();
     A.ok(/Saved sign-ins are not available this session/.test(note || ''), 'its note says saved sign-ins are unavailable: ' + note);
-    A.ok(/another process is holding the station browser profile/.test(note || ''), 'and why');
+    A.ok(/another process is holding the farm browser profile/.test(note || ''), 'and why');
     await r.driver.tabs();
     A.eq(r.launches.length, 4, 'a later call reuses the fallback browser');
     await r.driver.close();
     A.ok(!fs.existsSync(temp), 'closing removes the temporary profile');
-    A.ok(fs.existsSync(path.join(station, 'Cookies')), 'the durable station profile is never deleted');
+    A.ok(fs.existsSync(path.join(station, 'Cookies')), 'the durable farm profile is never deleted');
     try { fs.rmSync(station, { recursive: true, force: true }); } catch (_) {}
   }
 
@@ -86,8 +86,8 @@ function rig(persistentDir, o) {
     A.ok(err, 'the launch fails');
     A.eq(err && err.code, 'BROWSER_PROFILE_HELD', 'with the held-profile code');
     const msg = String(err && err.message);
-    A.ok(/another process is holding the station browser's profile/.test(msg), 'naming the cause: ' + msg);
-    A.ok(/SETTINGS › BROWSER › RESET STATION BROWSER/.test(msg) && /started as administrator can't be closed by StarNet/.test(msg), 'and the repair');
+    A.ok(/another process is holding the farm browser's profile/.test(msg), 'naming the cause: ' + msg);
+    A.ok(/SETTINGS › BROWSER › RESET FARM BROWSER/.test(msg) && /started as administrator can't be closed by Homestead/.test(msg), 'and the repair');
     A.ok(!/CDP ownership/.test(msg), 'never the raw CDP hand-off text');
     A.eq(r.launches.length, 4, 'three persistent tries + ONE temporary try');
     let err2 = null;
@@ -114,14 +114,14 @@ function rig(persistentDir, o) {
 
   // 4. THE SESSION tells the truth: a held-profile fallback remembers nothing, even with the station lease held
   {
-    const NOTE = 'Saved sign-ins are not available this session: another process is holding the station browser profile, so this browser started on a temporary profile.';
+    const NOTE = 'Saved sign-ins are not available this session: another process is holding the farm browser profile, so this browser started on a temporary profile.';
     for (const fellBack of [true, false]) {
       const drv = { alive: () => true, streamStart() {}, streamStop() {}, humanInput() {}, pageInfo() {}, visible: () => true,
         usingPersistentProfile: () => !fellBack, profileFallback: () => (fellBack ? NOTE : null), close: async () => {} };
       const B = makeBrowserTools({ makeDriver: () => drv, persistentProfile: { dir: '/station-profile', acquire: () => true, release() {} } });
       B.session.visible();   // starts the (fake) driver on the leased station profile
       const s = B.session.handoffSurface();
-      A.eq(s.remembered, !fellBack, fellBack ? 'a fallback browser is NOT remembered, though the lease is held' : 'the station profile is remembered');
+      A.eq(s.remembered, !fellBack, fellBack ? 'a fallback browser is NOT remembered, though the lease is held' : 'the farm profile is remembered');
       A.eq(s.profileNote, fellBack ? NOTE : '', 'the surface carries the note');
       A.eq(B.session.profileNote(), fellBack ? NOTE : '', 'session.profileNote() says the same');
     }

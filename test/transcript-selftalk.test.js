@@ -52,7 +52,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       say(undefined, 'assistant', 'Zebrafish Aquarium Rebuild', { dispatchState: 'internal' });
       // what a 0.13.5 station already wrote: the same self-talk, unstamped, in 'global'
       say('global', 'user', 'Fix the walrus invoice export\n\nAssistant reply (context only): The walrus export fails because');
-      say('global', 'user', 'INTERNAL — SELF-DIRECTED WORK. The Commander is away. Do not run any tools. walrus backlog');
+      say('global', 'user', 'INTERNAL — SELF-DIRECTED WORK. The Farmer is away. Do not run any tools. walrus backlog');
       say('global', 'user', 'Goal:\nship the walrus importer\n\nAgent\'s most recent response:\nwalrus done\n\nIs the goal satisfied — done or continue?');
       // the Commander's own words: a real global row, and a named session that quotes the same shapes
       say('global', 'user', 'remember the walrus password rotation');
@@ -63,7 +63,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       const said = allHits.map(h => h.content);
       A.ok(!said.some(c => /context only|Zebrafish Aquarium Rebuild|SELF-DIRECTED|Is the goal satisfied/.test(c)), label + ': search (scope all) returns no self-talk row: ' + JSON.stringify(said));
       A.ok(said.includes('remember the walrus password rotation'), label + ': a real global row is still found');
-      A.ok(said.includes('INTERNAL — walrus memo I wrote myself') && said.includes('zebrafish tank notes for the named session'), label + ': a named session\'s words are the Commander\'s and are still found');
+      A.ok(said.includes('INTERNAL — walrus memo I wrote myself') && said.includes('zebrafish tank notes for the named session'), label + ': a named session\'s words are the Farmer\'s and are still found');
       const globalHits = store.search(undefined, 'walrus zebrafish', { limit: 50 }).map(h => h.content);
       A.eq(globalHits, ['remember the walrus password rotation'], label + ': search of the global stream itself finds only the real row');
 
@@ -126,7 +126,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
 
       const g = store.streams({ limit: 20 }).find(s => s.streamId === 'global');
       A.ok(g && !/landlord|Goal:/.test(g.preview), label + ': the global listing never previews the self-talk prompt: ' + JSON.stringify(g && g.preview));
-      A.eq(g && g.preview, 'remember the walrus password rotation', label + ': it previews the newest real Commander row');
+      A.eq(g && g.preview, 'remember the walrus password rotation', label + ': it previews the newest real Farmer row');
       A.ok(!store.streams({ limit: 20 }).some(s => s.streamId === 'ws_secret'), label + ': the deleted session is not listed');
       const tool = makeRecallTool({ transcriptStore: store, ownStreamOnly: () => false }).recallTool;
       const listing = (await tool.run({}, { streamId: 'ws_other' })).content;

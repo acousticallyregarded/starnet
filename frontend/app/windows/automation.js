@@ -90,7 +90,7 @@
     const renderAway = () => {
       awayAgent = picker.value;
       const a = H.present.find(a => a.id === awayAgent);
-      awayBody.innerHTML = a ? H.workshopCard(a) : '<p>No agents on this station. Recruit one to configure away work.</p>';
+      awayBody.innerHTML = a ? H.workshopCard(a) : '<p>No agents on this farm. Recruit one to configure away work.</p>';
       if (a) H.wireWorkshop(awayBody, a);
     };
     picker.addEventListener('change', renderAway);

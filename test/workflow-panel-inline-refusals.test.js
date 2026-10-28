@@ -44,7 +44,7 @@ A.ok(/function refuse\(msg, anchor\) \{ H\.sfx\('bad'\); note\(msg, true, anchor
 
 /* ---------- the + and its inserter ---------- */
 A.ok(/if \(b\.dataset\.plusOff\) \{ refuse\(b\.dataset\.plusOff, b\); return; \}/.test(paintStrip), 'a disabled + clicked says why, in the panel');
-A.ok(/class="wf-plus off" aria-disabled="true" data-plus-at="' \+ i \+ '" data-plus-off="' \+ esc\(plusWhy\(chk\)\) \+ '" aria-label="' \+ esc\('Adding a step here is not possible: ' \+ plusWhy\(chk\)\) \+ '" data-tip="' \+ esc\(plusWhy\(chk\)\) \+ '"/.test(paintStrip), '…and on hover: the station tip carries the same reason (its label too, for a screen reader)');
+A.ok(/class="wf-plus off" aria-disabled="true" data-plus-at="' \+ i \+ '" data-plus-off="' \+ esc\(plusWhy\(chk\)\) \+ '" aria-label="' \+ esc\('Adding a step here is not possible: ' \+ plusWhy\(chk\)\) \+ '" data-tip="' \+ esc\(plusWhy\(chk\)\) \+ '"/.test(paintStrip), '…and on hover: the farm tip carries the same reason (its label too, for a screen reader)');
 A.ok(/const plusWhy = chk => \(chk && chk\.msg\) \|\| 'a step cannot be added on this belt automatically — add a BAY by hand \(Conveyors › MACHINES › BAY\) and connect it with BELT';/.test(panel), 'a + with no reason of its own still names the way round');
 A.ok(/insertStep\(from, to, role, b, tidy\);/.test(paintStrip) && /armKey\('insertStep', from, \{ from, to, role \}\)/.test(paintStrip), 'a role chip is the anchor of its answer, and its second click (armed) tidies round the step');
 const ins = fn('inserterHTML', '\n  function nodeHTML(');

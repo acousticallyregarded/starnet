@@ -82,7 +82,7 @@ function harness(hostEnv, getKeys) {
   A.eq(inter.UNGRANTED_API_KEY, 'u', 'a watched run still gets an ungranted key — the grant is about UNATTENDED use');
 
   const auto = K.runEnv(keys, host, { reservedEnv: RESERVED, surface: 'autonomous' });
-  A.eq(auto.GRANTED_API_KEY, 'g', 'an unattended run gets the key the Commander granted for unattended use');
+  A.eq(auto.GRANTED_API_KEY, 'g', 'an unattended run gets the key the Farmer granted for unattended use');
   A.ok(!('UNGRANTED_API_KEY' in auto), 'an unattended run NEVER receives a key without the unattended grant');
   // the same rule the request route already enforced — one key, one answer, both routes
   A.eq(K.resolveForRequest(keys, 'UNGRANTED_API_KEY', 'autonomous').reason, 'unattended',

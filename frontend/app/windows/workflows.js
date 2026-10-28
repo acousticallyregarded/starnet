@@ -159,10 +159,10 @@ const WorkflowsWindow = (() => {
       if (!s) return null;
       const errs = s.errors || [];
       if (errs.length) return { refuse: 'the floor has something to fix first: ' + errs.map(e => (B() && B().nagWhy) ? B().nagWhy(e.code) : e.code).filter((v, i, a) => a.indexOf(v) === i).join(' · ') };
-      if (s.refusedHash && s.refusedHash === s.lastHash) return { refuse: 'the station refused this line — open EDIT WORKFLOW to see what to fix' };
-      if (s.stale || s.inflight || s.retryPending) return { refuse: 'the station did not answer, so the job was not sent' };
+      if (s.refusedHash && s.refusedHash === s.lastHash) return { refuse: 'the farm refused this line — open EDIT WORKFLOW to see what to fix' };
+      if (s.stale || s.inflight || s.retryPending) return { refuse: 'the farm did not answer, so the job was not sent' };
       return null;
-    }, () => ({ refuse: 'the job was not sent: the line could not be saved to the station' }));
+    }, () => ({ refuse: 'the job was not sent: the line could not be saved to the farm' }));
   }
   function send(line, text, retryOf) {
     if (S.out || runningJob()) return;
@@ -191,7 +191,7 @@ const WorkflowsWindow = (() => {
     }
     // nothing was sent down the line (a refusal): say why, the job text stays in the box
     sfx('bad');
-    S.msg = { bad: true, text: (j && j.error) ? String(j.error) : status ? 'the station refused the job (HTTP ' + status + ')' : 'the station could not be reached — is it running?' };
+    S.msg = { bad: true, text: (j && j.error) ? String(j.error) : status ? 'the farm refused the job (HTTP ' + status + ')' : 'the farm could not be reached — is it running?' };
     loadJobs(); schedule();
   }
   function stop() {
@@ -201,7 +201,7 @@ const WorkflowsWindow = (() => {
     postJSON('/api/routing/sample/stop', {}).then(({ j }) => {
       if (!(j && j.ok)) { if (S.out) S.out.stopping = false; notify((j && j.error) || 'the stop was not accepted', 'warn'); }
       schedule();
-    }, () => { if (S.out) S.out.stopping = false; notify('the station could not be reached — E-STOP stops everything', 'warn'); schedule(); });
+    }, () => { if (S.out) S.out.stopping = false; notify('the farm could not be reached — E-STOP stops everything', 'warn'); schedule(); });
   }
 
   /* ---------- where the job is now: the floor's own bay lamps ---------- */
@@ -237,7 +237,7 @@ const WorkflowsWindow = (() => {
         const said = turns.filter(m => m && m.role === 'assistant' && String(m.content || '').trim() && String(m.content).trim() !== '[SILENT]');
         S.stepOut[r.runId] = { output: said.length ? String(said[said.length - 1].content) : '' };
         schedule();
-      }, () => { S.stepOut[r.runId] = { err: 'this step’s reply could not be read — is the station running?' }; schedule(); });
+      }, () => { S.stepOut[r.runId] = { err: 'this step’s reply could not be read — is the farm running?' }; schedule(); });
   }
   // what the line delivered, as the work alone: a reviewer's VERDICT line and a loop's machine note steer the line, they are not the work
   const LOOP_NOTE = /^\[LOOP — (exhausted|escalated): (\d+) pass(?:es)? round the gate[^\n]*\]\s*/gm;
@@ -267,9 +267,9 @@ const WorkflowsWindow = (() => {
         Object.assign(S.fix, { state: 'done', diagnosis: j.diagnosis || '', usd: j.usd || 0, model: j.model || '',
           fixes: (j.fixes || []).map(x => Object.assign({}, x, { was: ((st && st.propById(x.dockId)) || {}).brief || '', wasHands: ((st && st.propById(x.dockId)) || {}).hands || '' })) });
         sfx('chime'); S.scrollTo = '[data-fixes]';
-      } else { Object.assign(S.fix, { state: 'error', error: (j && j.error) || ('the station refused (HTTP ' + status + ')') }); sfx('bad'); }
+      } else { Object.assign(S.fix, { state: 'error', error: (j && j.error) || ('the farm refused (HTTP ' + status + ')') }); sfx('bad'); }
       schedule();
-    }, () => { if (S.fix && S.fix.jobId === job.id) { Object.assign(S.fix, { state: 'error', error: 'the station could not be reached' }); schedule(); } });
+    }, () => { if (S.fix && S.fix.jobId === job.id) { Object.assign(S.fix, { state: 'error', error: 'the farm could not be reached' }); schedule(); } });
   }
   // a fix is IN USE while the step's instructions say exactly what it suggested (read live: putting it back shows USE THIS again)
   const fixInUse = x => { const st = stationOf(), p = (st && st.propById(x.dockId)) || {}; return (x.does == null || (p.brief || '') === x.does) && (x.hands == null || (p.hands || '') === x.hands); };
@@ -339,7 +339,7 @@ const WorkflowsWindow = (() => {
       if (status !== 200 || !(j && j.ok)) { notify((undo ? 'the crew still remembers this style: ' : 'kept for this step, but the crew could not learn the style: ') + ((j && j.error) || 'http ' + status), 'warn'); return; }
       const fm = j.feedbackMemory;
       if (!undo && fm && fm.reason === 'personalization-paused') notify('kept for this step — learning is paused, so the rest of the crew will not learn this style', 'warn');
-    }, () => notify(undo ? 'the crew’s copy of this style could not be taken back — is the station running?' : 'kept for this step — the crew could not learn the style (is the station running?)', 'warn'));
+    }, () => notify(undo ? 'the crew’s copy of this style could not be taken back — is the farm running?' : 'kept for this step — the crew could not learn the style (is the farm running?)', 'warn'));
     tasteWrites.set(runId, sent);
     sent.then(() => { if (tasteWrites.get(runId) === sent) tasteWrites.delete(runId); });
   }
@@ -448,8 +448,8 @@ const WorkflowsWindow = (() => {
         const briefs = {}; for (const r in (j.briefs || {})) briefs[r] = { does: String(j.briefs[r] || ''), hands: '' };
         pickStarter(j.starter, { name: j.name || plainName(j.starter), briefs, job: j.job || '', drafted: true, usd: j.usd || 0, model: j.model || '' });
         sfx('chime');
-      } else { S.drafting = { state: 'error', error: (j && j.error) || ('the station refused (HTTP ' + status + ')') }; sfx('bad'); schedule(); }
-    }, () => { S.drafting = { state: 'error', error: 'the station could not be reached' }; schedule(); });
+      } else { S.drafting = { state: 'error', error: (j && j.error) || ('the farm refused (HTTP ' + status + ')') }; sfx('bad'); schedule(); }
+    }, () => { S.drafting = { state: 'error', error: 'the farm could not be reached' }; schedule(); });
   }
   /* CREATE: the line is laid on the floor by the layout engine (LineEdit.placeBlueprint — the Build Library's own MAKE ROOM-aware
      placement, in the clear floor nearest the middle of the station), each step gets its agent and its instructions, the INBOX
@@ -508,7 +508,7 @@ const WorkflowsWindow = (() => {
     let html;
     paintFloor = f;   // (lent for this render only — a render that throws still hands it back)
     try {
-      if (!f) { html = '<div class="wfw-empty">The station floor is still loading…</div>'; setTimeout(() => { if (alive() && !floor()) schedule(); else if (alive()) { attachFloor(); schedule(); } }, 1000); }
+      if (!f) { html = '<div class="wfw-empty">The farm floor is still loading…</div>'; setTimeout(() => { if (alive() && !floor()) schedule(); else if (alive()) { attachFloor(); schedule(); } }, 1000); }
       else if (S.view === 'new' || (!f.lines.length && S.view !== 'line')) html = newHTML(f);
       else if (S.view === 'line' && lineOf(f, S.line)) html = lineHTML(f, lineOf(f, S.line));
       else { S.view = 'list'; html = listHTML(f); }
@@ -558,7 +558,7 @@ const WorkflowsWindow = (() => {
       const shape = bp.props.some(p => p.t === 'loop') ? ' · reviewed' : bp.props.some(p => p.t === 'splitter') ? ' · side by side' : '';
       // (org g7 D2, final round) the shelf claims a goal only by NAMING it: the Commander's own words (their dossier goal) ride the
       // heading, so FOR YOUR GOAL never reads as a match for the still-empty 'What should it make?' box above it
-      return (isGoal ? '<div class="wfw-tgroup wfw-goalhd" data-tip="Your own words: the goal you told the station. This ready-made workflow has its shape.">FOR YOUR GOAL <span class="wfw-goalq">“' + esc(goal.quote) + '”</span></div>' : '')
+      return (isGoal ? '<div class="wfw-tgroup wfw-goalhd" data-tip="Your own words: the goal you told the farm. This ready-made workflow has its shape.">FOR YOUR GOAL <span class="wfw-goalq">“' + esc(goal.quote) + '”</span></div>' : '')
         + '<button type="button" class="wfw-tile' + (on ? ' on' : '') + (isGoal ? ' wfw-goal' : '') + '" data-starter="' + esc(id) + '" aria-pressed="' + !!on + '" data-tip="' + esc(tip) + '">'
         + '<span class="wfw-tart">' + (art ? '<img alt="" src="' + art + '">' : '') + '</span><b>' + esc(plainName(id)) + '</b><span class="wfw-tstat">' + roles.length + ' step' + (roles.length === 1 ? '' : 's') + shape + '</span></button>'
         // the four starters under the goal tile get the shelf's second heading, so FOR YOUR GOAL heads only its own tile
@@ -591,7 +591,7 @@ const WorkflowsWindow = (() => {
         + '</div>';
     }).join('');
     return '<section class="wfw-sec wfw-picked" id="wfw-picked"><h3>' + esc(plainName(pk.bp)) + (pk.drafted ? ' <span class="wf-tag">SET UP FOR YOU</span>' : '') + '</h3>'
-      + (pk.drafted && pk.usd ? '<p class="wfw-note">Set up by ' + esc(pk.model || 'the station’s model') + ' · ' + usd(pk.usd) + '. Nothing is on the floor until you press CREATE.</p>' : '')
+      + (pk.drafted && pk.usd ? '<p class="wfw-note">Set up by ' + esc(pk.model || 'the farm’s model') + ' · ' + usd(pk.usd) + '. Nothing is on the floor until you press CREATE.</p>' : '')
       + '<label class="wfw-k" for="wfw-name">Name</label><input id="wfw-name" class="wfw-field" type="text" maxlength="40" value="' + esc(S.draft.name != null ? S.draft.name : pk.name) + '">'
       + '<div class="wfw-k">Who does each step?' + (one ? ' <span class="wfw-note">— one agent can do every step</span>' : '') + '</div>'
       + stepRows
@@ -640,7 +640,7 @@ const WorkflowsWindow = (() => {
   }
   function jobRows(l) {
     const rows = jobsOf(l.key).slice(0, 8);
-    if (S.jobsErr && !rows.length) return '<p class="wfw-note">The job history could not be read — is the station running?</p>';
+    if (S.jobsErr && !rows.length) return '<p class="wfw-note">The job history could not be read — is the farm running?</p>';
     /* (org P15) a scheduled, channel, folder or webhook run is not a job record yet (only a job you send and a SEND TO hand-off write one:
        the sample route and the handoff runner — trigger-runner.js never does): say where it is filed, never an empty "nothing ran" (org wire AUTO-P15-3) */
     if (!rows.length) return '<p class="wfw-note">No jobs yet. Jobs you send show here; scheduled, channel, folder and webhook runs are filed in DELIVERABLES.</p>';
@@ -743,7 +743,7 @@ const WorkflowsWindow = (() => {
     // a step goes by its NAME first, then its role — the map's word for it (conveyor-ui-15)
     const why = ok ? '' : job.status === 'problem' && bad ? (() => { const p = bad.dockId && st ? st.propById(bad.dockId) : null, nm = p && (p.label || p.role); return 'The ' + (nm ? nm + ' step' : 'step') + ' (' + NAME(bad.agentId) + ') ' + (END[bad.reason] || String(bad.reason || 'did not finish').replace(/_/g, ' ')) + ', so this job did not finish cleanly. Sending it again often works.'; })()
       // (a stopped record says WHO stopped it — "you stopped this job", E-STOP, or the station's own fault — never "You stopped" for all)
-      : job.status === 'stopped' ? sentence(job.error, 'You stopped this job.') + ' What already ran is counted.' : job.status === 'interrupted' ? 'The station stopped while this job was out. Send it again.'
+      : job.status === 'stopped' ? sentence(job.error, 'You stopped this job.') + ' What already ran is counted.' : job.status === 'interrupted' ? 'The farm stopped while this job was out. Send it again.'
       : (wasRefused ? refusedWhy() : sentence(job.error, 'Nothing ran.')) + (job.repeats > 1 ? ' (' + job.repeats + ' hand-offs from ' + lineWord(job.from) + ' were refused like this — the last ' + ago(job.endedAt) + ')' : '');
     const passes = {};
     const steps = runs.map((r, i) => {
@@ -818,7 +818,7 @@ const WorkflowsWindow = (() => {
     const fx = S.fix, asking = fx.state === 'asking';
     let h = '<div class="wfw-fix"><div class="wfw-k">What’s wrong with it?</div>'
       + '<textarea id="wfw-fix-in" class="wfw-field" rows="2" maxlength="1200" placeholder="e.g. too long, no sources, the wrong tone, it missed the main point">' + esc(S.draft['fix:' + job.id] != null ? S.draft['fix:' + job.id] : (fx.complaint || '')) + '</textarea>'
-      + '<div class="wf-row"><button type="button" class="bb refit-primary" data-act="suggest"' + (asking ? ' disabled' : '') + '>' + (asking ? 'THINKING…' : 'SUGGEST CHANGES') + '</button><span class="wfw-note">The station reads each step and what it produced, and suggests exact changes. Nothing changes until you use one.</span></div>';
+      + '<div class="wf-row"><button type="button" class="bb refit-primary" data-act="suggest"' + (asking ? ' disabled' : '') + '>' + (asking ? 'THINKING…' : 'SUGGEST CHANGES') + '</button><span class="wfw-note">The farm reads each step and what it produced, and suggests exact changes. Nothing changes until you use one.</span></div>';
     if (fx.state === 'error') h += '<p class="wfw-bad">✕ ' + esc(fx.error) + '</p>';
     if (fx.state === 'done') {
       const st = stationOf();
@@ -831,7 +831,7 @@ const WorkflowsWindow = (() => {
           + '<div class="wf-row">' + (inUse ? '<button type="button" class="bb sm" data-fix-back="' + i + '">PUT IT BACK</button>' : '<button type="button" class="bb sm refit-primary" data-fix-use="' + i + '">✓ USE THIS</button>') + '</div></div>';
       }).join('')
         + '<div class="wf-row">' + (job.from ? '' : '<button type="button" class="bb' + (fx.fixes.some(fixInUse) ? ' refit-primary' : '') + '" data-act="rerun"' + (runningJob() ? ' disabled' : '') + '>↻ SEND IT AGAIN</button>')
-        + '<span class="wfw-note">Suggested by ' + esc(fx.model || 'the station’s model') + (fx.usd ? ' · ' + usd(fx.usd) : '') + '.</span></div></div>';
+        + '<span class="wfw-note">Suggested by ' + esc(fx.model || 'the farm’s model') + (fx.usd ? ' · ' + usd(fx.usd) : '') + '.</span></div></div>';
     }
     return h + '</div>';
   }

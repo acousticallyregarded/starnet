@@ -74,7 +74,7 @@ const failRun = (o) => { o.emit('agent.run.error', { agentId: 'a', runId: o.runI
     A.ok(paused.disabledAt, 'disabledAt stamped');
     A.eq(paused.nextRunAt, null, 'no next fire while auto-paused');
     A.eq(paused.state, 'error', 'state stays error (visible)');
-    A.ok(/Routine paused after 3 consecutive failures/.test(paused.finalization.error), 'the finalization (delivery) text tells the Commander it was paused');
+    A.ok(/Routine paused after 3 consecutive failures/.test(paused.finalization.error), 'the finalization (delivery) text tells the Farmer it was paused');
     A.ok(/e6/.test(paused.finalization.error), 'the delivery text still carries the underlying error');
     // a transient failure with retries left does NOT count (the occurrence isn't finalized)
     let t = [intervalJob('t1', 'every 1h')];

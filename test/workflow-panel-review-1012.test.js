@@ -161,7 +161,7 @@ const body = () => ({ innerHTML: '', querySelector: () => null, querySelectorAll
   (async () => {
     // the immediate toast says only the step's fact
     const kx = A.fnBody(panel, 'function keepExample(mine)');
-    A.ok(kx.length > 0 && !/the crew learns/.test(kx) && /will match this example · UNDO takes it back/.test(kx), 'KEEP AS THE EXAMPLE says only that the step will match it before the station answers');
+    A.ok(kx.length > 0 && !/the crew learns/.test(kx) && /will match this example · UNDO takes it back/.test(kx), 'KEEP AS THE EXAMPLE says only that the step will match it before the farm answers');
     /* (wave-2 repair) the first cut of this table locked two wrong answers in: created:false ("already knew") is a record that
        existed — a 👎 on that run, say — gaining the kept flag, so the crew DID learn the style; and 'nothing to learn' is the
        station saying that run's style is ALREADY kept (FeedbackMemory.apply returns null for a kept=true on a record already

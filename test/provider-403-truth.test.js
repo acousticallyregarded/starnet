@@ -50,8 +50,8 @@ for (const [label, F] of both) {
 for (const msg of FORBIDDEN) {
   for (const [label, F] of both) {
     const v = F.friendlyError(msg);
-    A.ok(v.kind !== 'stale_session', label + ': "' + msg + '" is not a stale station session (got ' + v.kind + ': ' + v.userMessage + ')');
-    A.ok(!/station restarted/i.test(v.userMessage), label + ': "' + msg + '" never claims the station restarted');
+    A.ok(v.kind !== 'stale_session', label + ': "' + msg + '" is not a stale farm session (got ' + v.kind + ': ' + v.userMessage + ')');
+    A.ok(!/farm restarted/i.test(v.userMessage), label + ': "' + msg + '" never claims the farm restarted');
   }
 }
 

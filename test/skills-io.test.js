@@ -119,7 +119,7 @@ const seed = (s) => { for (const n of names) A.ok(s.write({ agentId: 'a', name: 
   A.ok(grew > 0 && grew < 300, 'one use appends a ~150-byte usage row (' + grew + ' bytes), not the ~36 KB record');
   const last = JSON.parse(fs.readFileSync(f.file, 'utf8').trim().split('\n').pop());
   A.eq(last.recordType, 'skill-usage', 'the appended row is a usage row');
-  A.ok(!('name' in last) && last.skillName === 'Delta', 'a usage row carries skillName, never `name` (an older StarNet skips it)');
+  A.ok(!('name' in last) && last.skillName === 'Delta', 'a usage row carries skillName, never `name` (an older Homestead skips it)');
   A.eq(f.store.curate('a', { now: t + 40 * 86400000 }).stale, 5, 'precondition: aging marks every skill stale');
   f.store.markUsed('a', 'Echo');
   const s = f.restart();
@@ -286,7 +286,7 @@ const seed = (s) => { for (const n of names) A.ok(s.write({ agentId: 'a', name: 
   const file = path.join(dir, 'skills.jsonl');
   const mkIo = () => makeSkillsIo({ fs, file, writeDurable: (f2, b) => writeFileDurable({ fs, path }, f2, b) });
   let s = makeSkillStore({ io: mkIo(), clock, guard: realGuard, digest: digestOf });
-  A.ok(s.write({ agentId: 'a', name: 'Deploy', summary: 'deploy', body: '1. npm ci\n2. npm test\n3. ship', createdBy: 'user' }).ok, 'seeded the Commander\'s skill');
+  A.ok(s.write({ agentId: 'a', name: 'Deploy', summary: 'deploy', body: '1. npm ci\n2. npm test\n3. ship', createdBy: 'user' }).ok, 'seeded the Farmer\'s skill');
   const p = s.write({ agentId: 'a', name: 'Deploy', summary: 'deploy', body: '1. npm ci\n2. npm test\n3. ship\n4. VERIFY LIVE', createdBy: 'background-review' });
   A.ok(p.ok && p.pending, 'precondition: a review proposal is pending');
   const before = fs.readFileSync(file, 'utf8');

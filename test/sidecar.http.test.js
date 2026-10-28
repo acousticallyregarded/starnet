@@ -219,7 +219,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
     const desktopDiagResponse = await fetch(B + '/api/diagnostics', { headers: Object.assign({ Origin: tauriOrigin }, tok) });
     const desktopDiag = await desktopDiagResponse.json();
     A.eq(desktopDiag.report.mode, 'desktop', 'http://tauri.localhost is classified as the packaged desktop origin');
-    A.ok(/StarNet diagnostics/.test(diag.body.text), 'the block is clearly fenced');
+    A.ok(/Homestead diagnostics/.test(diag.body.text), 'the block is clearly fenced');
     A.ok(/no keys, tokens, or message content/.test(diag.body.text), 'the block states it carries no secrets');
     A.eq(typeof diag.body.report.keyPresent, 'boolean', 'keyPresent is a boolean, never the key itself');
     // the pre-seeded discord channel carries a fake OpenRouter key (sk-or-v1-fake-discord) + a bot token — NEITHER
@@ -304,7 +304,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
         A.eq(after.body.reason, 'link_revoked', 'the route names the authoritative account-side revocation');
         A.eq(after.body.balanceUsd, undefined, 'the stale cached $0 is not emitted as the paid account balance');
         const linkable = await read('/api/credits/linkable');
-        A.eq(linkable.body.available, true, 'the revoked station can pair again without manually unlinking locally');
+        A.eq(linkable.body.available, true, 'the revoked farm can pair again without manually unlinking locally');
         A.eq(linkable.body.reason, 'link_revoked', 'the relink card receives the recovery reason');
       } finally {
         try { rb.child.kill(); } catch (_) {}
@@ -389,7 +389,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
 
         const unlinked = await request('POST', '/api/credits/unlink', {});
         A.eq(unlinked.body.unlinked, true, 'genesis switch-account action clears the old sidecar link');
-        const start = await request('POST', '/api/credits/link/start', { deviceName: 'StarNet Station' });
+        const start = await request('POST', '/api/credits/link/start', { deviceName: 'Homestead Farm' });
         A.eq(start.body.code, 'STAR-PAID', 'switch account starts the ordinary one-code pairing flow');
         const paired = await request('POST', '/api/credits/link/poll', { code: start.body.code });
         A.eq(paired.body.linked, true, 'newly confirmed paid account is accepted as linked');
@@ -402,14 +402,14 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
           url: cloudUrl, accountId: 'acct_paid_22', linkedAt: now
         }));
         const funded = await request('GET', '/api/credits?history=0');
-        A.eq(funded.body.balanceUsd, 22, 'after token adoption the running station still reads $22, never the old $0');
+        A.eq(funded.body.balanceUsd, 22, 'after token adoption the running farm still reads $22, never the old $0');
         A.eq(funded.body.accountId, 'acct_paid_22', 'after token adoption the paid account remains the active identity');
 
         const run = await request('POST', '/api/run', {
           provider: 'starnet', model: 'test/model', agentId: 'paid-wake', internal: true,
           messages: [{ role: 'user', content: 'Reply with exactly: OK' }]
         });
-        A.eq(run.status, 200, 'funded StarNet WAKE enters the real streaming run route');
+        A.eq(run.status, 200, 'funded Homestead WAKE enters the real streaming run route');
         A.ok(run.text.indexOf('agent.token') >= 0, 'funded WAKE reaches the managed model and streams its reply');
         A.ok(run.text.indexOf('Out of managed credit') < 0, 'funded WAKE is never denied as out of credits');
         const paidCalls = calls.filter(c => ['/v1/balance', '/v1/debit', '/v1/credit', '/v1/chat/completions'].includes(c.path) && c.account !== 'acct_wrong_zero');
@@ -483,15 +483,15 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
           return { status: rr.status, body: parsed, text };
         };
         const broke = await request('GET', '/api/credits?history=0');
-        A.eq(broke.body.balanceUsd, 0, 'precondition: the station is linked and the wallet is authoritatively $0');
+        A.eq(broke.body.balanceUsd, 0, 'precondition: the farm is linked and the wallet is authoritatively $0');
 
         const byok = await request('POST', '/api/run', {
           provider: 'custom', baseUrl: vendorUrl + '/v1', key: 'byok-own-key',
           model: 'local/proven-model', agentId: 'byok-wake', internal: true,
           messages: [{ role: 'user', content: 'Reply with exactly: OK' }]
         });
-        A.eq(byok.status, 200, 'BYOK WAKE on a linked $0 station enters the real streaming run route');
-        A.ok(byok.text.indexOf('Out of managed credit') < 0, 'BYOK run is never refused for an empty StarNet wallet (issue #6)');
+        A.eq(byok.status, 200, 'BYOK WAKE on a linked $0 farm enters the real streaming run route');
+        A.ok(byok.text.indexOf('Out of managed credit') < 0, 'BYOK run is never refused for an empty Homestead wallet (issue #6)');
         A.ok(byok.text.indexOf('agent.token') >= 0, 'BYOK run reaches the user\'s own model endpoint and streams its reply');
         A.ok(vendorCalls.some(c => c.path === '/v1/chat/completions' && c.auth === 'Bearer byok-own-key'),
           'the BYOK run authenticated to the USER\'s endpoint with the user\'s key');
@@ -1064,7 +1064,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
     const pend = await j('GET', '/api/memory/pending?agent=agent');
     A.eq(pend.status, 200, 'GET /api/memory/pending -> 200');
     A.eq(pend.body.agentId, 'agent', 'the pending deck is reported per agent');
-    A.eq(pend.body.pending, [], 'a station with nothing awaiting a verdict reports an empty deck');
+    A.eq(pend.body.pending, [], 'a farm with nothing awaiting a verdict reports an empty deck');
     const pendBad = await j('GET', '/api/memory/pending?agent=..%2Fetc');
     A.eq(pendBad.status, 403, 'a bad agent id is refused, not path-joined');
 
@@ -1169,18 +1169,18 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
       headers: { 'Content-Type': 'application/json', 'X-Skynet-Token': IPC_TOKEN },
       body: JSON.stringify({ provider: 'openai', key: '' })
     });
-    const ttsNoKey = await j('POST', '/api/tts', { text: 'station check', voice: 'Umbriel', style: 'a low, detached transmission' });
+    const ttsNoKey = await j('POST', '/api/tts', { text: 'farm check', voice: 'Umbriel', style: 'a low, detached transmission' });
     A.eq(ttsNoKey.status, 200, 'POST /api/tts with no key -> 200 (never a hard error)');
     A.eq(ttsNoKey.body.fallback, true, 'no-key TTS returns the {fallback:true} envelope so the client uses speechSynthesis');
     A.ok(/no key/i.test(ttsNoKey.body.reason || ''), 'the TTS fallback names the no-key reason');
     const ttsNoText = await j('POST', '/api/tts', { text: '   ' });
     A.eq(ttsNoText.body.fallback, true, 'empty-text TTS also degrades cleanly');
     // ElevenLabs branch: same 200-degrade contract, its own key + validation (no network with the env cleared).
-    const elBadVoice = await j('POST', '/api/tts', { provider: 'elevenlabs', text: 'station check', voiceId: 'not/a/valid/id!' });
+    const elBadVoice = await j('POST', '/api/tts', { provider: 'elevenlabs', text: 'farm check', voiceId: 'not/a/valid/id!' });
     A.eq(elBadVoice.status, 200, 'POST /api/tts elevenlabs with a malformed voiceId -> 200');
     A.eq(elBadVoice.body.fallback, true, 'malformed voiceId degrades to the fallback envelope');
     A.ok(/bad voiceId/i.test(elBadVoice.body.reason || ''), 'the degrade names the bad-voiceId reason');
-    const elNoKey = await j('POST', '/api/tts', { provider: 'elevenlabs', text: 'station check', voiceId: 'AbCdEf012345678901234' });
+    const elNoKey = await j('POST', '/api/tts', { provider: 'elevenlabs', text: 'farm check', voiceId: 'AbCdEf012345678901234' });
     A.eq(elNoKey.status, 200, 'POST /api/tts elevenlabs with no key -> 200 (never a hard error)');
     A.eq(elNoKey.body.fallback, true, 'no-key ElevenLabs TTS returns the {fallback:true} envelope');
     A.ok(/no elevenlabs key/i.test(elNoKey.body.reason || ''), 'the degrade names the missing ElevenLabs key specifically');
@@ -1208,7 +1208,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
     const canHearKeyless = !!(localVoice.body && localVoice.body.available);
     if (canHearKeyless) {
       A.ok(/local/i.test(sttNoKey.body.reason || ''), 'with a keyless local engine the degrade names THAT tier failing, not a missing key');
-      A.ok(!/no key/i.test(sttNoKey.body.reason || ''), 'and never blames a key on a station that can transcribe without one');
+      A.ok(!/no key/i.test(sttNoKey.body.reason || ''), 'and never blames a key on a farm that can transcribe without one');
     } else {
       A.ok(/no key/i.test(sttNoKey.body.reason || ''), 'with no engine and no key the STT degrade names the no-key reason');
     }
@@ -1371,10 +1371,10 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
       // simple masked (client-style) round-trip: one text frame encodes and parses back unchanged
       const frames = [];
       const parse = edge.makeWsParser((op, payload) => frames.push({ op, text: payload.toString('utf8') }), () => {});
-      parse(edge.wsEncode(0x1, Buffer.from('hello station', 'utf8')));
+      parse(edge.wsEncode(0x1, Buffer.from('hello farm', 'utf8')));
       A.eq(frames.length, 1, 'one full masked frame parsed');
       A.eq(frames[0].op, 0x1, 'opcode preserved (text)');
-      A.eq(frames[0].text, 'hello station', 'masked payload decodes back to the original bytes');
+      A.eq(frames[0].text, 'hello farm', 'masked payload decodes back to the original bytes');
     }
     {
       // a fragmented message (fin=0 first frame + final continuation) with an interleaved ping, fed ONE byte at
@@ -1497,7 +1497,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
         rq.on('end', () => {
           seenBody = Buffer.concat(chunks); seenCt = String(rq.headers['content-type'] || '');
           rs.writeHead(200, { 'Content-Type': 'application/json' });
-          rs.end(JSON.stringify({ text: 'station systems nominal' }));
+          rs.end(JSON.stringify({ text: 'farm systems nominal' }));
         });
       });
       await new Promise(r => groqMock.listen(0, '127.0.0.1', r));
@@ -1511,7 +1511,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
         const r = await fetch(GB + '/api/stt', { method: 'POST', headers: { 'Content-Type': 'audio/webm', 'X-StarNet-Token': gtok, Origin: GB }, body: audioBytes });
         A.eq(r.status, 200, 'groq-keyed /api/stt -> 200');
         const body = await r.json();
-        A.eq(body.text, 'station systems nominal', 'the transcript comes from the dedicated Groq Whisper branch');
+        A.eq(body.text, 'farm systems nominal', 'the transcript comes from the dedicated Groq Whisper branch');
         A.ok(/multipart\/form-data/.test(seenCt), 'the sidecar sent a multipart/form-data body to Groq');
         A.ok(seenBody && seenBody.includes('whisper-large-v3-turbo'), 'the multipart body carries model=whisper-large-v3-turbo');
         A.ok(seenBody && seenBody.includes('name="file"'), 'the multipart body has a file part named "file"');

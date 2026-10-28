@@ -118,7 +118,7 @@ const overseerIn = extra => {
     holdsTo('an hour later, nothing out', T);
     p = ask();
     A.eq(O.fresh(), false, 'the catch-up ask out against an hour-old ledger is not current (trunk)');
-    A.eq(O.unreachable(), true, '…and trunk calls it unreachable until it answers (nobody has checked the station for an hour)');
+    A.eq(O.unreachable(), true, '…and trunk calls it unreachable until it answers (nobody has checked the farm for an hour)');
     holdsTo('the catch-up ask out against an hour-old ledger', s.askedAt);
     T += 40; await answer(p);
     holdsTo('the catch-up answer lands', s.okAt);
@@ -175,7 +175,7 @@ const overseerIn = extra => {
     await advance(120000);
     const awayReads = asks - atAway;
     A.ok(awayReads >= 3 && awayReads <= 5, 'away: the 30 s floor (' + awayReads + ' reads in 2 min; it was 48)');
-    A.ok(O.snapshot() === LEDGER && !O.unreachable(), 'away: each floor read answers and the ledger stays the station\'s');
+    A.ok(O.snapshot() === LEDGER && !O.unreachable(), 'away: each floor read answers and the ledger stays the farm\'s');
 
     // back 20 s after the last away read: the catch-up read goes out in the wake itself, before any timer runs
     if (T - askedAt < 20000) await advance(20000 - (T - askedAt));
@@ -184,7 +184,7 @@ const overseerIn = extra => {
     A.eq(asks, before + 1, 'WAKE: the catch-up read is out at once, not on the next beat');
     const want = oracle({ last: LEDGER, okAt, askedAt: T, busy: true, failing: false }, T);
     A.eq(JSON.stringify({ fresh: O.fresh(), unreachable: O.unreachable() }), JSON.stringify(want), 'WAKE: while that read is out against a ledger ' + Math.round((T - okAt) / 1000) + ' s old, the labels are trunk\'s');
-    A.eq(O.fresh(), false, '…which do not vouch for it (nobody checked the station for 20 s) until the read lands');
+    A.eq(O.fresh(), false, '…which do not vouch for it (nobody checked the farm for 20 s) until the read lands');
     await advance(41);
     A.eq(O.fresh(), true, 'WAKE: the catch-up answer makes it current again');
     A.eq(O.unreachable(), false, '…and reachable');

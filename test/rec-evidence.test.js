@@ -52,7 +52,7 @@ const RecQuality = require('../frontend/app/recquality.js');
   // the dossier is not duplicated when the caller's system prompt already carries it (the composer's own law)
   const dup = CommanderContext.compose({ dossier: 'They run a two-person studio.', existingSystem: 'x They run a two-person studio. y' });
   A.eq(dup.indexOf('<commander_context'), -1, 'the pack never re-injects a dossier the system prompt already holds');
-  A.eq(CommanderContext.compose({}), '', 'a station that knows nothing composes NOTHING (no empty scaffolding)');
+  A.eq(CommanderContext.compose({}), '', 'a farm that knows nothing composes NOTHING (no empty scaffolding)');
 }
 
 /* the wiring, end to end: browser flag → request body → runOnce opt → the one place it is spent.
@@ -94,7 +94,7 @@ for (const [file, label] of [['frontend/app/pitchstore.js', 'the First Pitch'],
   const plain = Pitch.buildDirective(base);
   A.eq(plain.indexOf('EVIDENCE:'), -1, 'the First Pitch directive is unchanged — no EVIDENCE line it would not check');
   const withEv = Pitch.buildDirective(Object.assign({ wantEvidence: true }, base));
-  A.ok(withEv.indexOf('EVIDENCE:') >= 0, 'the suggestion directive asks for the Commander’s own words');
+  A.ok(withEv.indexOf('EVIDENCE:') >= 0, 'the suggestion directive asks for the Farmer’s own words');
   A.ok(/quoted verbatim/.test(withEv), '…verbatim');
   A.ok(/never your own paraphrase/.test(withEv), '…never a paraphrase');
   A.ok(/write NONE/.test(withEv), '…and gives the model an HONEST way out (it is allowed to have nothing)');

@@ -17,8 +17,8 @@ let n = 0;
 const ok = (cond, msg) => { assert.ok(cond, msg); n++; };
 
 // STARNET is THE HERO (the promoted easiest start) and ships HIDDEN — only the live probe reveals it.
-ok(/class="prov prov-hero hidden" data-prov="starnet"/.test(index), 'the STARNET hero ships hidden (honesty: no cloud, no offer)');
-ok(/data-prov="starnet"[\s\S]{0,600}Subscribe and start\. No API keys\./.test(index), 'the STARNET hero clearly explains the simple subscription path');
+ok(/class="prov prov-hero hidden" data-prov="starnet"/.test(index), 'the HOMESTEAD hero ships hidden (honesty: no cloud, no offer)');
+ok(/data-prov="starnet"[\s\S]{0,600}Subscribe and start\. No API keys\./.test(index), 'the HOMESTEAD hero clearly explains the simple subscription path');
 // ChatGPT/Codex has no chip of its own anymore — its sign-in lives inside the OPENAI card.
 ok(!/data-prov="codex"/.test(index), 'no standalone codex chip — ChatGPT sign-in lives inside the OPENAI selection');
 ok(/pickedProvider === 'codex'\) pickedProvider = 'openai'/.test(app), 'a returning codex agent lands on the OPENAI card');
@@ -45,14 +45,14 @@ ok(/refreshCreditsConfigured/.test(app), "a fresh link teaches Harness so config
 
 // WAKE is gated: an unlinked STARNET pick is refused with the remedy named, before any agent exists.
 ok(/pickedProvider === 'starnet'[\s\S]{0,1800}!creditState\.linked[\s\S]{0,240}link your StarNet account first/i.test(app),
-  'WAKE refuses an unlinked STARNET pick and names the one-button remedy');
+  'WAKE refuses an unlinked HOMESTEAD pick and names the one-button remedy');
 
 // Leaving the screen (or switching provider) drops the in-flight pairing poll — no orphan pollers.
 ok(/stopStarnetLinkPoll\(\)/.test(app), 'the pairing poll has a stop, wired on screen exit and provider switch');
 
 // EMPTY WALLET IS SAID HERE (2026-08-22: a first-timer signed in without buying credits; WAKE's real call was
 // refused by managed admission and the screen said "your model didn't answer", so they kept switching models).
-ok(/id="btn-starnet-credits"/.test(index), 'the STARNET block offers ADD CREDITS');
+ok(/id="btn-starnet-credits"/.test(index), 'the HOMESTEAD block offers ADD CREDITS');
 ok(/id="btn-starnet-switch"/.test(index) && /USE A DIFFERENT ACCOUNT/.test(index),
   'the genesis screen lets a paid beginner escape an automatically linked wrong account');
 ok(/async function switchStarnetAccount\(\)[\s\S]{0,1400}harness_clear_credits_token[\s\S]{0,800}\/api\/credits\/unlink[\s\S]{0,800}startStarnetLink\(\)/.test(app),
@@ -126,7 +126,7 @@ ok(/stopStarnetBalancePoll\(\)/.test(app), 'the empty-wallet balance poll has a 
   const unanswered = refusalOf({}).message;
   const outOf = refusalOf({ exhausted: true }).message;
   const held = refusalOf({ exhausted: true, balanceUsd: 0, held: { runs: 1, usd: 4, counted: true } }).message;
-  ok(/refused this station's link/.test(refusedLink) && /did not answer/.test(unanswered) && /^Out of managed credit/.test(outOf) && /^Managed credits are held/.test(held),
+  ok(/refused this farm's link/.test(refusedLink) && /did not answer/.test(unanswered) && /^Out of managed credit/.test(outOf) && /^Managed credits are held/.test(held),
     'the sidecar still emits the refused-link, unanswered, out-of-credit and held refusals');
   // preflightWire collapses whitespace and keeps 160 chars: the WAKE screen only ever sees that much
   const wake = (why, prov) => {
@@ -137,12 +137,12 @@ ok(/stopStarnetBalancePoll\(\)/.test(app), 'the empty-wallet balance poll has a 
   for (const prov of ['starnet', 'openai']) {
     const w = wake(refusedLink, prov);
     ok(w.r === false && w.refreshed === 1, 'a refused link bounces WAKE and repaints the link state (' + prov + ')');
-    ok(/no longer accepts this station’s link/.test(w.text) && /credits are safe/.test(w.text), 'a refused link names the refused link (' + prov + ')');
+    ok(/no longer accepts this farm’s link/.test(w.text) && /credits are safe/.test(w.text), 'a refused link names the refused link (' + prov + ')');
     ok(!/try WAKE again in a moment|couldn’t read your credit balance|no credits|ADD CREDITS/.test(w.text), 'a refused link is never "retry" or "out of credits" (' + prov + ')');
   }
   ok(/CONNECT STARNET ACCOUNT/.test(wake(refusedLink, 'starnet').text) && /id="btn-starnet-link" class="btn">CONNECT STARNET ACCOUNT/.test(index),
-    'on the STARNET pick the relink copy names the button that is actually on screen');
-  ok(!/CONNECT STARNET ACCOUNT/.test(wake(refusedLink, 'openai').text), 'another provider pick is never pointed at a STARNET button it is not showing');
+    'on the HOMESTEAD pick the relink copy names the button that is actually on screen');
+  ok(!/CONNECT STARNET ACCOUNT/.test(wake(refusedLink, 'openai').text), 'another provider pick is never pointed at a HOMESTEAD button it is not showing');
   ok(/couldn’t read your credit balance/.test(wake(unanswered, 'starnet').text), 'an unanswered balance check still says the balance could not be read');
   ok(/no credits/.test(wake(outOf, 'starnet').text), 'only a reported empty wallet says ADD CREDITS');
   // a balance HELD by this station's own running StarNet runs (audit B11) is neither empty nor unreadable
@@ -153,7 +153,7 @@ ok(/stopStarnetBalancePoll\(\)/.test(app), 'the empty-wallet balance poll has a 
     ok(!/couldn’t read your credit balance|has no credits/.test(w.text), 'a held balance is never "could not read" or "no credits" (' + prov + ')');
   }
   ok(/＄ ADD CREDITS above/.test(wake(held, 'starnet').text) && !/＄ ADD CREDITS/.test(wake(held, 'openai').text),
-    'only the STARNET pick (which shows the ＄ ADD CREDITS button) is pointed at it; another pick is offered its own key');
+    'only the HOMESTEAD pick (which shows the ＄ ADD CREDITS button) is pointed at it; another pick is offered its own key');
   ok(wake('rate limited', 'starnet').r === true, 'a non-billing failure falls through to the model-did-not-answer line');
   ok(!/LINK YOUR STARNET ACCOUNT/.test(app), 'WAKE never names a LINK YOUR STARNET ACCOUNT button (the button reads CONNECT STARNET ACCOUNT)');
 }
@@ -165,12 +165,12 @@ ok(/snap\.authStatus === 'invalid'[\s\S]{0,300}configured:\s*false[\s\S]{0,200}r
   'a cloud-rejected linked device is reported as unconfigured with an explicit revoked reason');
 ok(/const revoked = !CREDITS_URL[\s\S]{0,240}snap\.authStatus === 'invalid'/.test(host) &&
    /available = creditsLink\.configured\(\) && \(!credits\.configured\(\) \|\| revoked\)/.test(host),
-  'remote revocation re-opens the normal LINK STATION flow without a manual local unlink');
+  'remote revocation re-opens the normal LINK FARM flow without a manual local unlink');
 ok(/previous link was removed from your account/.test(app),
-  'genesis names the removed link and tells the Commander to reconnect credits');
+  'genesis names the removed link and tells the Farmer to reconnect credits');
 ok(/lk\.reason === 'link_revoked'[\s\S]{0,220}previous link was removed from your account/.test(stationui),
   'Settings renders the same relink recovery from backend truth');
-ok(/LINK SAVED · SERVICE UNAVAILABLE/.test(stationui) && /link saved on this station, but StarNet could not verify it/.test(app),
+ok(/LINK SAVED · SERVICE UNAVAILABLE/.test(stationui) && /link saved on this farm, but Homestead could not verify it/.test(app),
   'temporary cloud failure is presented separately and never overclaimed as LINKED');
 
 console.log('genesis-starnet-link.test.js OK -', n, 'assertions');

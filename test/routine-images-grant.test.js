@@ -28,7 +28,7 @@ const IMAGE = { name: 'image_generate', capability: 'studio', scope: 'write', re
 const ANALYZE = { name: 'image_analyze', capability: 'studio', scope: 'read', requiresConsent: false };
 const WRITE = { name: 'fs.write', capability: 'cabinet', scope: 'write', requiresConsent: true };
 const EXEC = { name: 'shell.exec', capability: 'workbench', scope: 'execute', requiresConsent: true };
-const imageCall = { name: 'image_generate', args: { prompt: 'a sunrise over the station' } };
+const imageCall = { name: 'image_generate', args: { prompt: 'a sunrise over the farm' } };
 
 // ---- 1. the broker tier ----
 {
@@ -111,7 +111,7 @@ const imageCall = { name: 'image_generate', args: { prompt: 'a sunrise over the 
   A.ok(/studioRefusal: \(\) => \{\s*if \(askedBy\.getStore\(\) \|\| !\(trigger === 'schedule' && String\(o\.cronJobId \|\| ''\)\)\) return null;/.test(src),
     'the images refusal hint is for a routine\'s own run only (a worker, hop, trigger or chat keeps the plain refusal)');
   A.ok(/▣ ALLOW IMAGES on this routine in AUTOMATE › SCHEDULES/.test(src), 'the refusal names the real row key and where it lives');
-  A.ok(/switched off for the rest of THIS run because it read content from outside StarNet/.test(src), 'a granted run lifted by taint is told why, not sent to grant what it has');
+  A.ok(/switched off for the rest of THIS run because it read content from outside Homestead/.test(src), 'a granted run lifted by taint is told why, not sent to grant what it has');
 
   // taint: an image is not itself an outward action, so taint.js keeps the TOOL; the GRANT is what taint lifts
   A.ok(taint.allowedWhenTainted(IMAGE) === true, 'taint does not lock image_generate as a tool (a standing Always grant behaves as before)');
@@ -153,7 +153,7 @@ const imageCall = { name: 'image_generate', args: { prompt: 'a sunrise over the 
   A.ok(/if \(!btn\.dataset\.armed\)/.test(h), 'granting takes a deliberate second click');
   A.ok(/addGrants: \['studio'\]/.test(h), 'the row sends addGrants, never its own (possibly stale) grant list');
   A.ok(!/unattendedGrants: grantsOf/.test(h), 'it never re-posts the rendered list');
-  A.ok(/job\.unattendedGrants\.indexOf\('studio'\) >= 0/.test(h), 'the success toast is proven off the saved job the station returns');
+  A.ok(/job\.unattendedGrants\.indexOf\('studio'\) >= 0/.test(h), 'the success toast is proven off the saved job the farm returns');
   A.ok(!/window\.confirm|confirm\(/.test(h), 'no native dialog');
 }
 

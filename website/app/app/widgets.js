@@ -196,8 +196,8 @@ const Widgets = (() => {
   const CATALOG = {
     crew: {
       stats: true,
-      lbl: 'CREW', tip: 'Agents in your current station roster, including the overseer.',
-      paint() { return { val: typeof App !== 'undefined' && App.crewCount ? String(App.crewCount()) : null, sub: 'station roster' }; }
+      lbl: 'CREW', tip: 'Agents in your current farm roster, including the overseer.',
+      paint() { return { val: typeof App !== 'undefined' && App.crewCount ? String(App.crewCount()) : null, sub: 'farm roster' }; }
     },
     active: { stats: true, lbl: 'ACTIVE COMMS', tip: 'Confirmed running conversations in COMMS. Connecting requests are shown separately; background jobs are not included.', paint: () => commsReadout(false) },
     approvals: { lbl: 'NEEDS YOU', action: 'Review waiting conversation', tip: 'Conversations waiting for your approval or answer. Use the arrow to open the first waiting conversation.', paint: () => ({ ...commsReadout(true), tone: typeof Channels !== 'undefined' && Channels.pendingIds().length ? 'warn' : null }) },
@@ -205,7 +205,7 @@ const Widgets = (() => {
     runs24: {
       stats: true,
       lbl: 'RUNS · 24H',
-      tip: 'Runs across the whole station in the last 24h — folded from the real run history (/api/insights), ticking live on each run end.',
+      tip: 'Runs across the whole farm in the last 24h — folded from the real run history (/api/insights), ticking live on each run end.',
       paint() {
         if (!insights) return { val: null, sub: '' };
         const f = foldRuns(insights);
@@ -235,7 +235,7 @@ const Widgets = (() => {
     tokens: {
       stats: true,
       lbl: 'TOKENS',
-      tip: 'Recorded tokens across station run history, including subscription runs — from the real usage fold.',
+      tip: 'Recorded tokens across farm run history, including subscription runs — from the real usage fold.',
       paint() {
         if (!insights) return { val: null, sub: '' };
         return { val: fmtCount(foldTokens(insights)), sub: 'all-time' };
@@ -284,7 +284,7 @@ const Widgets = (() => {
       fed: true,
       configured: !!feed.get(slug)?.config,
       action: feed.get(slug)?.config ? 'View ' + feed.get(slug).label : null,
-      tip: 'Agent-fed readout "' + slug + '" — an agent publishes this via widget.set. The station only asserts WHO reported it and WHEN (the name · age line), never that the figure itself is true.',
+      tip: 'Agent-fed readout "' + slug + '" — an agent publishes this via widget.set. The farm only asserts WHO reported it and WHEN (the name · age line), never that the figure itself is true.',
       paint() {
         const rec = feed.get(slug);
         if (!rec) return { val: null, sub: 'no signal', prov: null };
@@ -520,7 +520,7 @@ const Widgets = (() => {
   async function sourceCards(force = false) {
     if (!popEl || popMode !== 'list' || popFilter !== 'apps') return;
     const root = popEl, epoch = ++studioEpoch, list = root.querySelector('.wg-library-list'); list.replaceChildren();
-    studioText(list, 'p', selectedPreset ? 'Choose the app for ' + selectedPreset.label + '.' : 'Choose an app, then tell StarNet what to display.', 'wg-studio-note');
+    studioText(list, 'p', selectedPreset ? 'Choose the app for ' + selectedPreset.label + '.' : 'Choose an app, then tell Homestead what to display.', 'wg-studio-note');
     if (!sourceRows || force) {
       const loading = studioText(list, 'p', 'Loading connected apps…', 'wg-studio-note');
       try {
@@ -542,7 +542,7 @@ const Widgets = (() => {
       const row = studioText(list, 'div', '', 'wg-app-row');
       const caption = studioText(row, 'div', '', 'wg-app-caption');
       studioText(caption, 'strong', s.label);
-      studioText(caption, 'small', s.kind === 'agent' ? 'Information StarNet manages' : s.kind === 'servicekey' && s.available ? 'API key configured' : s.available ? 'Connected' : s.state);
+      studioText(caption, 'small', s.kind === 'agent' ? 'Information Homestead manages' : s.kind === 'servicekey' && s.available ? 'API key configured' : s.available ? 'Connected' : s.state);
       const b = addStudioButton(row, s.available ? 'Choose' : 'Reconnect', () => {
         if (s.available) showWidgetForm(s, null, selectedPreset);
         else { closePop(); if (typeof StationUI !== 'undefined') StationUI.openTerm('connectors', s.kind === 'servicekey' ? 'keys' : 'mcp'); }
@@ -642,7 +642,7 @@ const Widgets = (() => {
     const jobs = (cron?.jobs || []).filter(j => j.meta?.widgetId === rec.slug);
     const next = jobs.find(j => j.enabled && j.nextRunAt);
     studioText(box, 'p', jobs.length ? (!cron.enabled || cron.halted ? 'Scheduled updates paused' : next ? 'Next update: ' + new Date(next.nextRunAt).toLocaleString() : 'Update schedule disabled') : 'Refresh on demand', 'wg-studio-note');
-    if (pollFail.feed || linkDownNow()) studioText(box, 'p', 'Station offline · showing the last saved reading.', 'wg-studio-error');
+    if (pollFail.feed || linkDownNow()) studioText(box, 'p', 'Farm offline · showing the last saved reading.', 'wg-studio-error');
   }
   function showWidgetDetail(id) {
     const rec = feed.get(id); if (!popEl || !rec?.config) return;

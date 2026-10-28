@@ -52,7 +52,7 @@ async function run(o) {
     A.eq(ran, false, 'a blocked tool NEVER runs — the block is before execution, not a filter on the result');
     const toolMsg = messages.find(m => m.role === 'tool');
     A.ok(/blocked by your hook/.test(toolMsg.content), 'the model is told a hook blocked it, not that the tool broke');
-    A.ok(/`freeze`/.test(toolMsg.content), 'and the hook is NAMED, so the Commander knows which script to edit');
+    A.ok(/`freeze`/.test(toolMsg.content), 'and the hook is NAMED, so the Farmer knows which script to edit');
     A.ok(/src\/ is frozen today/.test(toolMsg.content), 'the reason reaches the model so it can adapt instead of retrying');
   }
 
@@ -77,7 +77,7 @@ async function run(o) {
     h2.register('pre_tool_call', () => { seen2++; return { decision: 'allow' }; }, { name: 'permissive' });
     let ran2 = false;
     const r2 = reg(() => { ran2 = true; });
-    const { messages: m2 } = await run({ registry: r2, capCtx: openCtx({ hooks: h2, runId: 'r1', consent: async () => ({ allow: false, reason: 'the Commander said no' }) }), hooks: h2 });
+    const { messages: m2 } = await run({ registry: r2, capCtx: openCtx({ hooks: h2, runId: 'r1', consent: async () => ({ allow: false, reason: 'the Farmer said no' }) }), hooks: h2 });
     A.eq(seen2, 0, 'a consent-denied call never reaches the hook either');
     A.eq(ran2, false, 'and no hook return value can revive it');
     A.ok(/consent denied/.test(m2.find(m => m.role === 'tool').content), 'consent owns its own refusal message');

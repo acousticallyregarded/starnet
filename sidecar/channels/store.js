@@ -67,7 +67,7 @@
      appendTurn that would rewrite such a file first archives the untouched envelope beside it
      (<agentId>.history.legacy-hops.json, written once, never overwritten), and only then drops the turns. */
   const HOP_KEY_RE = /^hop_[0-9a-f]{32}$/;
-  const LEGACY_HOP_TURN = /^PIPELINE HANDOFF — you are stage \d+ of a work line on this station\.\n\nThe original request was:\n/;
+  const LEGACY_HOP_TURN = /^PIPELINE HANDOFF — you are stage \d+ of a work line on this (?:station|farm)\.\n\nThe original request was:\n/;
   function withoutLegacyHops(msgs) {
     const kept = [];
     let dropped = 0;

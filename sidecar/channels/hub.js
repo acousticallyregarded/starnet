@@ -2285,7 +2285,7 @@
           haltNoticeSent = true;
           // the station's OWN process-fault containment marks the run `faulted` before it kills it (halt.js markFaulted): that
           // stop is said as the fault it was, never as an E-STOP nobody pressed (wave 2 repair, conveyor-backend-08)
-          const why = myRec.faulted ? 'the farm hit an internal fault and stopped this run' : 'E-STOP was pressed in the farm';
+          const why = myRec.faulted ? 'the farm hit an internal fault and stopped this run' : 'E-STOP was pressed on the farm';
           try {
             await deliver(chatId, '⏹ Stopped — ' + why + '. This message got no reply and nothing further will run for it.', myRec.runId || '', 'command');
           } catch (_) { /* a stop notice must never crash the teardown */ }

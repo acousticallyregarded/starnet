@@ -40,7 +40,7 @@ const msg = (text, chatType, userId) => ({ channel: 'telegram', chatId: chatType
     const t = build(FILE);
     await t.hub.onInbound(msg('/allow'));
     await t.hub.onInbound(msg('/deny@halcyonbot'));
-    A.eq(t.slashCalls, ['/allow', '/deny'], 'both reached the registry as the Commander\'s commands');
+    A.eq(t.slashCalls, ['/allow', '/deny'], 'both reached the registry as the Farmer\'s commands');
     A.eq(t.sends, ['ran usage', 'ran tools'], 'and answered with their targets');
     A.eq(t.runs.length, 0, 'no model run');
   }

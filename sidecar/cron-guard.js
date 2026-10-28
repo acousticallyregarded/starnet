@@ -77,7 +77,7 @@
   // STRICT set — user-authored routine prompts only.
   const STRICT_PATTERNS = [
     [/ignore\s+(?:\w+\s+)*(?:previous|all|above|prior)\s+(?:\w+\s+)*instructions/i, 'prompt_injection'],
-    [/do\s+not\s+tell\s+the\s+(?:user|commander)/i, 'deception_hide'],
+    [/do\s+not\s+tell\s+the\s+(?:user|commander|farmer)/i, 'deception_hide'],
     [/system\s+prompt\s+override/i, 'sys_prompt_override'],
     [/disregard\s+(?:your|all|any)\s+(?:instructions|rules|guidelines)/i, 'disregard_rules'],
     [/cat\s+[^\n]*(?:\.env|credentials|\.netrc|\.pgpass)/i, 'read_secrets'],
@@ -90,7 +90,7 @@
   // command-shaped rule above: skill markdown legitimately quotes those commands while explaining them.
   const ASSEMBLED_PATTERNS = [
     [/ignore\s+(?:\w+\s+)*(?:previous|all|above|prior)\s+(?:\w+\s+)*instructions/i, 'prompt_injection'],
-    [/do\s+not\s+tell\s+the\s+(?:user|commander)/i, 'deception_hide'],
+    [/do\s+not\s+tell\s+the\s+(?:user|commander|farmer)/i, 'deception_hide'],
     [/system\s+prompt\s+override/i, 'sys_prompt_override'],
     [/disregard\s+(?:your|all|any)\s+(?:instructions|rules|guidelines)/i, 'disregard_rules']
   ];

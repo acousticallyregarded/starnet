@@ -394,7 +394,7 @@ async function runCommand(opts, station) {
   const tracker = core.makeRunTracker();
   const startedAt = Date.now();
   if (!opts.json) log('▸ ' + sel.name + ' (' + sel.agentId + ') · ' + sel.provider + '/' + sel.model + ' · ' + mode + ' ' + client.base + (cwd ? ' · in ' + cwd : ''));
-  if (untrusted) log('· ' + untrusted + ' is not a trusted project, so ' + sel.name + ' works in its own workspace — run `homestead` there once and press y to trust it, or pass --cwd');
+  if (untrusted) log('· ' + untrusted + ' is not a trusted project, so ' + sel.name + ' works in its own workspace — run `starnet` there once and press y to trust it, or pass --cwd');
 
   let abortSocket = null, cancelSent = false, graceTimer = null, timeoutTimer = null;
   async function cancel(why) {
@@ -627,7 +627,7 @@ async function resolveStation(opts, env) {
     const told = joining ? await awaitJoinOutcome(desktopWs, joinAt, JOIN_CONFIRM_MS) : null;
     const attached = await attaching;
     if (told === 'closing') {
-      const fresh = await startAppStation(desktop.appExe, desktopWs, host, '· Homestead is closing (its last homestead session just ended) — starting it again', desktop.ownerPid);
+      const fresh = await startAppStation(desktop.appExe, desktopWs, host, '· Homestead is closing (its last starnet session just ended) — starting it again', desktop.ownerPid);
       return { mode: 'attached', client: await attachClient(fresh, opts), workspace: desktopWs, child: null };
     }
     if (attached.err) throw attached.err;
@@ -649,27 +649,27 @@ async function resolveStation(opts, env) {
 async function main() {
   let opts;
   try { opts = core.parseArgs(process.argv.slice(2), process.env, { tty: !!(process.stdin.isTTY && process.stdout.isTTY) }); }
-  catch (e) { log('homestead: ' + e.message + '\n'); log(core.USAGE); return core.EXIT.USAGE; }
-  if (opts.version) { process.stdout.write('homestead ' + require('./lib/version.js').cliVersion(REPO) + '\n'); return 0; }
+  catch (e) { log('starnet: ' + e.message + '\n'); log(core.USAGE); return core.EXIT.USAGE; }
+  if (opts.version) { process.stdout.write('starnet ' + require('./lib/version.js').cliVersion(REPO) + '\n'); return 0; }
   if (opts.help) { process.stdout.write(core.USAGE + '\n'); return 0; }
   if (opts.promptFromStdin) {
     opts.prompt = await new Promise(r => { let s = ''; process.stdin.setEncoding('utf8'); process.stdin.on('data', d => { s += d; }); process.stdin.on('end', () => r(s)); });
     opts.prompt = opts.prompt.replace(/\s+$/, '');
-    if (!opts.prompt) { log('homestead: stdin carried no prompt'); return core.EXIT.USAGE; }
+    if (!opts.prompt) { log('starnet: stdin carried no prompt'); return core.EXIT.USAGE; }
   }
 
   if (opts.cmd === 'init') {
     const ws = defaultWorkspace(opts);
     const desktop = discoverDesktop(desktopWorkspaces(process.env));
-    if (path.resolve(ws) === path.resolve(desktop.workspace) && desktop.ownerAlive) { log('homestead: the desktop app is running on ' + ws + ' — nothing to bootstrap'); return 0; }
+    if (path.resolve(ws) === path.resolve(desktop.workspace) && desktop.ownerAlive) { log('starnet: the desktop app is running on ' + ws + ' — nothing to bootstrap'); return 0; }
     const r = bootstrapWorkspace(ws, opts, process.env);
-    if (!r.wrote) { log('homestead: ' + ws + ' — ' + r.reason); return r.refused ? core.EXIT.STATION : 0; }
-    log('homestead: bootstrapped ' + ws + '\n  agent    ' + opts.name + ' (approvalMode full)\n  provider ' + (r.provider || 'openrouter (no credential found in the environment yet)') + (r.providerSource ? ' — from ' + r.providerSource : '') + '\n  model    ' + (r.model || '(none — pass --model or set STARNET_DEFAULT_MODEL)'));
+    if (!r.wrote) { log('starnet: ' + ws + ' — ' + r.reason); return r.refused ? core.EXIT.STATION : 0; }
+    log('starnet: bootstrapped ' + ws + '\n  agent    ' + opts.name + ' (approvalMode full)\n  provider ' + (r.provider || 'openrouter (no credential found in the environment yet)') + (r.providerSource ? ' — from ' + r.providerSource : '') + '\n  model    ' + (r.model || '(none — pass --model or set STARNET_DEFAULT_MODEL)'));
     return 0;
   }
 
   if (opts.cmd === 'dash' && !(process.stdin.isTTY && process.stdout.isTTY)) {
-    log('homestead: the dashboard needs an interactive terminal — for a pipe or a script use `homestead ls`, `homestead watch` or `homestead approve`');
+    log('starnet: the dashboard needs an interactive terminal — for a pipe or a script use `starnet ls`, `starnet watch` or `starnet approve`');
     return core.EXIT.USAGE;
   }
   let station = null;
@@ -691,8 +691,8 @@ async function main() {
   } catch (e) {
     const code = (e && e.exitCode) || core.EXIT.RUN_FAILED;
     if (opts.json) process.stdout.write(JSON.stringify({ ok: false, reason: 'error', proven: false, exitCode: code, error: String((e && e.message) || e) }) + '\n');
-    log('homestead: ' + String((e && e.message) || e));
-    if (opts.cmd === 'status' && code === core.EXIT.STATION && !opts.json && String(e && e.message) !== core.DESKTOP_CLOSED) log('(no farm reachable — run `homestead -p "…"` to boot one, or start the desktop app)');
+    log('starnet: ' + String((e && e.message) || e));
+    if (opts.cmd === 'status' && code === core.EXIT.STATION && !opts.json && String(e && e.message) !== core.DESKTOP_CLOSED) log('(no farm reachable — run `starnet -p "…"` to boot one, or start the desktop app)');
     return code;
   } finally {
     if (station && station.child) await stopChild(station.child, station.workspace);
@@ -701,7 +701,7 @@ async function main() {
 
 if (require.main === module) {
   main().then(code => { process.exitCode = code; setTimeout(() => process.exit(code), 50).unref(); },
-    e => { log('homestead: ' + ((e && e.stack) || e)); process.exit(core.EXIT.RUN_FAILED); });
+    e => { log('starnet: ' + ((e && e.stack) || e)); process.exit(core.EXIT.RUN_FAILED); });
 }
 
 module.exports = { desktopWorkspaces, bareWorkspaces, defaultWorkspace, discoverDesktop, findAppExe, readTail, makeClient, bootstrapWorkspace, resolveStation, stopChild, STOP_GRACE_MS, SIDECAR_SHUTDOWN_DEADLINE_MS, _core: core };

@@ -116,7 +116,7 @@ async function run(base, token, body) {
     });
     const blockedError = blocked.find(e => e.name === 'agent.run.error');
     A.ok(blockedError && /for custom \/ test\/model/.test(blockedError.payload.message), 'configured model/key mismatch surfaces the exact STUDIO blocker');
-    A.ok(/link this station/.test(blockedError.payload.message), 'the blocker tells the user exactly how to authorize generation');
+    A.ok(/link this farm/.test(blockedError.payload.message), 'the blocker tells the user exactly how to authorize generation');
     A.eq(provider.requests.length, beforeBlocked, 'an impossible route never calls the configured model or a fallback');
     A.eq(blocked.filter(e => e.name === 'agent.run.end').pop().payload.reason, 'error', 'the impossible route ends error, never OK');
 
@@ -183,16 +183,16 @@ async function run(base, token, body) {
     const engineKey = body => fetch(base + '/api/providers/engine-key', {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: base }, body: JSON.stringify(body)
     });
-    A.eq((await engineKey({ provider: 'openai', key: 'page-saved-openai-key', baseUrl: provider.baseUrl })).status, 200, 'the page hands the station its OpenAI key');
+    A.eq((await engineKey({ provider: 'openai', key: 'page-saved-openai-key', baseUrl: provider.baseUrl })).status, 200, 'the page hands the farm its OpenAI key');
     const saved = await engineKey({ provider: 'openrouter', key: 'page-saved-or-key' });
-    A.eq(saved.status, 200, 'the page hands the station its OpenRouter key');
+    A.eq(saved.status, 200, 'the page hands the farm its OpenRouter key');
     const beforeKept = provider.requests.length;
     const kept = await run(base, token, {
       provider: 'custom', baseUrl: provider.baseUrl, key: 'custom-model-key', model: 'test/model',
       agentId: 'image-kept-route', isTask: true, placed: ['studio'],
       messages: [{ role: 'user', content: 'Generate an image of a blue cube' }]
     });
-    A.ok(kept.some(e => e.name === 'agent.tool_result' && e.payload.callId === 'make_image' && e.payload.ok), 'image_generate runs on the route the station already had');
+    A.ok(kept.some(e => e.name === 'agent.tool_result' && e.payload.callId === 'make_image' && e.payload.ok), 'image_generate runs on the route the farm already had');
     const keptCall = provider.requests.slice(beforeKept).find(r => r.path && r.path.includes('/images/generations'));
     A.eq(keptCall && keptCall.authorization, 'Bearer page-saved-openai-key', 'the image keeps its OpenAI route once an OpenRouter key is saved too');
     A.ok(!provider.requests.slice(beforeKept).some(r => Array.isArray(r.body.modalities) && r.body.modalities.includes('image')), 'the page-saved OpenRouter key is not spent while another image route exists');
@@ -204,7 +204,7 @@ async function run(base, token, body) {
       messages: [{ role: 'user', content: 'Generate an image of a blue cube' }]
     });
     A.ok(!borrowed.some(e => e.name === 'agent.run.error'), 'a page-saved OpenRouter key leaves no STUDIO blocker on a custom-model run');
-    A.ok(borrowed.some(e => e.name === 'agent.tool_result' && e.payload.callId === 'make_image' && e.payload.ok), 'image_generate runs on the page-saved station OpenRouter key');
+    A.ok(borrowed.some(e => e.name === 'agent.tool_result' && e.payload.callId === 'make_image' && e.payload.ok), 'image_generate runs on the page-saved farm OpenRouter key');
     const borrowCall = provider.requests.slice(beforeBorrow).find(r => Array.isArray(r.body.modalities) && r.body.modalities.includes('image'));
     A.eq(borrowCall && borrowCall.authorization, 'Bearer page-saved-or-key', 'STUDIO used the page-saved OpenRouter key, never the custom model key');
     A.eq(borrowed.filter(e => e.name === 'agent.run.end').pop().payload.reason, 'done', 'the borrowed-key image earns done');

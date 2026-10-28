@@ -23,7 +23,7 @@ function lockMessage(reason, keyError = '', detail = {}) {
   const movedTo = detail && typeof detail.movedTo === 'string' ? detail.movedTo.slice(0, 400) : '';
   const readCode = detail && typeof detail.readCode === 'string' ? detail.readCode.replace(/[^A-Z]/g, '').slice(0, 12) : '';
   if (reason === 'busy') return 'Saved connector sign-ins are locked: Homestead could not read the saved file' + (readCode ? ' (' + readCode + ')' : '') +
-    '. Another program such as antivirus, backup or sync may have been holding it, or this account may not be allowed to read it. They are safe and unchanged. Restart StarNet to try again.' +
+    '. Another program such as antivirus, backup or sync may have been holding it, or this account may not be allowed to read it. They are safe and unchanged. Restart Homestead to try again.' +
     ' If it is still locked after a restart, START FRESH moves the old files aside (nothing is deleted) so you can sign in again.';
   if (reason === 'key-unavailable') return 'Saved connector sign-ins are locked: Homestead could not open this computer\'s credential store.' +
     (why ? ' Reason: ' + why + '.' : '') + ' They are safe and unchanged. Unlock or repair the credential store and restart Homestead, or START FRESH to sign in again.';

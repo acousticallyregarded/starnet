@@ -117,7 +117,7 @@ function boot(port, env, attemptsLeft) {
     }
 
     // 1) the lead actually emitted a summon COMMAND carrying the class the model chose
-    A.ok(summonReq, 'the run emitted crew.summon.request (the lead asked the station to create a worker)');
+    A.ok(summonReq, 'the run emitted crew.summon.request (the lead asked the farm to create a worker)');
     A.eq(summonReq.name, 'RESEARCHER', 'summon request carries the requested name');
     A.eq(summonReq.specId, 'researcher', 'summon request carries the requested class');
     A.ok(summonReq.requestId, 'summon request carries a requestId for the ack');

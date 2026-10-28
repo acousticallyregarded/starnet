@@ -68,7 +68,7 @@ function fakeCloud(opts) {
     const link = makeCreditsLink({ cloudUrl: 'https://cloud.example/', fetch: cloud.fetch, fsp, fs, pathMod: path, dir, now: () => 2000 });
     A.eq(link.configured(), true, 'a STARNET_CLOUD_URL makes linking available');
 
-    const s = await link.start('My Station');
+    const s = await link.start('My Farm');
     A.eq(s.ok, true, 'start() ok');
     A.eq(s.code, 'STAR-7F3K', 'start returns the pairing code');
     A.ok(String(s.verifyUrl).indexOf('STAR-7F3K') >= 0, 'verifyUrl embeds the code');
@@ -163,7 +163,7 @@ function fakeCloud(opts) {
     const badDir = path.join(tmp, 'bad-confirm');
     const cloud = fakeCloud({ code: 'STAR-BAD1', accountId: '' });
     const link = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: cloud.fetch, fsp, fs, pathMod: path, dir: badDir, now: () => 4500 });
-    await link.start('Station'); cloud.confirm();
+    await link.start('Farm'); cloud.confirm();
     const p = await link.poll('STAR-BAD1');
     A.eq(p.status, 'invalid', 'a confirmation without an account id is rejected');
     A.eq(p.error, 'invalid_confirmation', 'the malformed identity handoff is explicit');
@@ -177,7 +177,7 @@ function fakeCloud(opts) {
     });
     const link = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: hung, fsp, fs, pathMod: path, dir: path.join(tmp, 'hung'), now: () => 4600, requestTimeoutMs: 5, linkRetryMs: 0 });
     let timedOut = false;
-    try { await link.start('Station'); } catch (e) { timedOut = e && e.name === 'AbortError'; }
+    try { await link.start('Farm'); } catch (e) { timedOut = e && e.name === 'AbortError'; }
     A.eq(timedOut, true, 'a hung link-start request aborts within the configured bound');
     A.eq(link.hasSaved(), false, 'a timed-out link request persists nothing');
   }
@@ -193,7 +193,7 @@ function fakeCloud(opts) {
     });
     const link = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: stalledBody, fsp, fs, pathMod: path, dir: path.join(tmp, 'stalled-body'), now: () => 4700, requestTimeoutMs: 5, linkRetryMs: 0 });
     let timedOut = false;
-    try { await link.start('Station'); } catch (e) { timedOut = e && e.name === 'AbortError'; }
+    try { await link.start('Farm'); } catch (e) { timedOut = e && e.name === 'AbortError'; }
     A.eq(timedOut, true, 'link-start also aborts when headers arrive but the JSON body stalls');
     A.eq(link.hasSaved(), false, 'a body-timeout persists no partial link identity');
   }
@@ -208,7 +208,7 @@ function fakeCloud(opts) {
     fs.writeFileSync(kcFile, JSON.stringify({ url: 'https://cloud.example', accountId: 'acct_kc', linkedAt: 7 }));
 
     const withoutEnv = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: fakeCloud().fetch, fsp, fs, pathMod: path, dir: kcDir, now: () => 5000 });
-    A.eq(withoutEnv.hasSaved(), false, 'a stripped file alone is NOT a linked station (no token anywhere)');
+    A.eq(withoutEnv.hasSaved(), false, 'a stripped file alone is NOT a linked farm (no token anywhere)');
     A.eq(withoutEnv.tokenAtRest(), 'none', 'and it honestly reports no token at rest');
 
     const withEnv = makeCreditsLink({
@@ -294,7 +294,7 @@ function fakeCloud(opts) {
     });
     await link.clearSaved();
     A.eq(link.hasSaved(), false, 'unlinked');
-    await link.start('Station');
+    await link.start('Farm');
     cloud.confirm();
     const p = await link.poll('STAR-RE01');
     A.eq(p.status, 'confirmed', 'relink confirms');
@@ -331,7 +331,7 @@ function fakeCloud(opts) {
       const r = await link.healFromEnv();
       A.eq(r.healed, true, 'the link self-heals from the surviving keychain token');
       A.eq(r.accountId, 'acct_healed', 'the account comes from the cloud, never guessed');
-      A.eq(link.hasSaved(), true, 'the rebuilt record persists — the station is linked again');
+      A.eq(link.hasSaved(), true, 'the rebuilt record persists — the farm is linked again');
       A.eq(link.loadSavedSync().accountId, 'acct_healed', 'the record carries the whoami account');
       const who = f.calls.find(c => c.url.indexOf('/v1/whoami') >= 0);
       A.eq(who.init.headers.Authorization, 'Bearer snd_keychain_survivor', 'the heal authenticates with the injected token');
@@ -372,11 +372,11 @@ function fakeCloud(opts) {
       const fresh = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: mkWhoamiFetch(), fsp, fs, pathMod: path, dir: tDir, now: () => 9400, envToken: 'snd_injected' });
       const r = await fresh.healFromEnv();
       A.eq(r.healed, false, 'a fresh process after an unlink does NOT resurrect the link from the keychain');
-      A.eq(r.reason, 'unlink_tombstone', 'the Commander\'s unlink outranks the surviving keychain token');
+      A.eq(r.reason, 'unlink_tombstone', 'the Farmer\'s unlink outranks the surviving keychain token');
       // a REAL relink clears the tombstone, so healing works again after future reinstalls
       const cloud2 = fakeCloud({ code: 'STAR-HE01', deviceToken: 'snd_new', accountId: 'acct_new' });
       const relink = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: cloud2.fetch, fsp, fs, pathMod: path, dir: tDir, now: () => 9500 });
-      await relink.start('Station'); cloud2.confirm();
+      await relink.start('Farm'); cloud2.confirm();
       A.eq((await relink.poll('STAR-HE01')).status, 'confirmed', 'relink confirms');
       A.eq(fs.existsSync(path.join(tDir, 'credits.unlinked.json')), false, 'a fresh link removes the tombstone');
     }
@@ -400,7 +400,7 @@ function fakeCloud(opts) {
       const offline = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: () => Promise.reject(new Error('offline')), fsp, fs, pathMod: path, dir: wDir, now: () => 9700 });
       const u = await offline.clearSaved();
       A.eq(u.ok, true, 'an offline unlink still succeeds locally');
-      A.eq(offline.hasSaved(), false, 'and the station is unlinked');
+      A.eq(offline.hasSaved(), false, 'and the farm is unlinked');
     }
   }
 
@@ -477,10 +477,10 @@ function fakeCloud(opts) {
     const [a, b] = [link.healFromEnv(), link.healFromEnv()];
     A.eq(a === b, true, 'concurrent heals share one in-flight attempt');
     const healed = await a;
-    A.eq(healed.healed, true, 'the station relinks itself once the cloud is back — no restart');
+    A.eq(healed.healed, true, 'the farm relinks itself once the cloud is back — no restart');
     A.eq(link.loadSavedSync().accountId, 'acct_back', 'the record carries the cloud-vouched account');
     A.eq(calls.filter(u => u.includes('/v1/whoami')).length, 3, 'one whoami per attempt (the shared one counted once)');
-    A.eq(link.healRetryDue(), false, 'a healed station has nothing left to retry');
+    A.eq(link.healRetryDue(), false, 'a healed farm has nothing left to retry');
 
     // a definitive 401 disarms the retry: a revoked token is never re-asked in a loop
     let c2 = 0;
@@ -511,24 +511,24 @@ function fakeCloud(opts) {
     const mk = (fetch, sub) => makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch, fsp, fs, pathMod: path, dir: path.join(tmp, 'start-retry-' + sub), now: () => 5000, linkRetryMs: 0 });
     for (const [first, label] of [[503, 'a 5xx'], ['throw', 'a transport error'], ['abort', 'an aborted request']]) {
       const c = scripted([first, 200]);
-      const s = await mk(c.fetch, String(first)).start('Station');
+      const s = await mk(c.fetch, String(first)).start('Farm');
       A.eq([s.ok, s.code, c.calls.length], [true, 'STAR-RTRY', 2], label + ' on link/start is retried once and the pairing goes on');
     }
     for (const [status, label] of [[400, 'a 400'], [429, 'a 429 (a fixed wait would only meet the same limit)']]) {
       const c = scripted([status, 200]);
-      let err = null; try { await mk(c.fetch, String(status)).start('Station'); } catch (e) { err = e; }
+      let err = null; try { await mk(c.fetch, String(status)).start('Farm'); } catch (e) { err = e; }
       A.eq([err && err.status, c.calls.length], [status, 1], label + ' is a verdict: exactly one call, the status kept');
     }
     {
       const c = scripted([502, 502]);
-      let err = null; try { await mk(c.fetch, 'twice').start('Station'); } catch (e) { err = e; }
+      let err = null; try { await mk(c.fetch, 'twice').start('Farm'); } catch (e) { err = e; }
       A.eq([err && err.status, err && err.attempts, c.calls.length], [502, 2, 2], 'two transient failures surface the last error with attempts:2');
     }
     {
       // an unlink during the backoff wins: the dead attempt never mints a second code
       const c = scripted([503, 200]);
       const link = makeCreditsLink({ cloudUrl: 'https://cloud.example', fetch: c.fetch, fsp, fs, pathMod: path, dir: path.join(tmp, 'start-retry-superseded'), now: () => 5000, linkRetryMs: 20 });
-      const pending = link.start('Station');
+      const pending = link.start('Farm');
       await new Promise(r => setTimeout(r, 5));
       await link.clearSaved();
       const s = await pending;

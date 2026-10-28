@@ -15,7 +15,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const MARK = '# added by StarNet: the `starnet` terminal command';
+const MARK = '# added by Homestead: the `starnet` terminal command';
 const OURS = /StarNet[^/]*\.app\/Contents\/Resources\/bin\/starnet$/;
 const PROFILES = ['.zprofile', '.zshrc', '.zlogin', '.bash_profile', '.bashrc', '.profile'];
 
@@ -27,7 +27,7 @@ function planCliLink(o) {
   const m = /^(.*\.app)\/Contents\/MacOS\/[^/]+$/.exec(String(o.execPath || ''));
   if (!m) return { skip: 'not running from an app bundle' };
   const target = m[1] + '/Contents/Resources/bin/starnet';
-  if (!o.exists(target)) return { skip: 'this app carries no homestead command' };
+  if (!o.exists(target)) return { skip: 'this app carries no starnet command' };
   if (!o.home) return { skip: 'no home folder' };
   const dir = path.posix.join(o.home, '.local', 'bin'), link = path.posix.join(dir, 'starnet');
   const actions = [];
@@ -40,7 +40,7 @@ function planCliLink(o) {
   const mentions = PROFILES.some(f => { const t = o.readText(path.posix.join(o.home, f)); return t !== null && /\.local\/bin/.test(t); });
   if (!mentions) actions.push({ do: 'profile', file: path.posix.join(o.home, '.zprofile'), text: '\n' + MARK + '\nexport PATH="$HOME/.local/bin:$PATH"\n' });
   if (!actions.length) return { actions, said: '' };
-  return { actions, said: 'terminal mode: `homestead` ' + (actions.some(a => a.do === 'relink') ? 're-linked' : actions.some(a => a.do === 'link') ? 'linked' : 'kept') + ' in ~/.local/bin' + (actions.some(a => a.do === 'profile') ? ', and ~/.local/bin added to PATH in ~/.zprofile (new terminals)' : '') };
+  return { actions, said: 'terminal mode: `starnet` ' + (actions.some(a => a.do === 'relink') ? 're-linked' : actions.some(a => a.do === 'link') ? 'linked' : 'kept') + ' in ~/.local/bin' + (actions.some(a => a.do === 'profile') ? ', and ~/.local/bin added to PATH in ~/.zprofile (new terminals)' : '') };
 }
 
 function applyCliLink(plan, f) {

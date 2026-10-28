@@ -29,7 +29,7 @@ A.ok(/sendQueuedNow\(/.test(rb), 'the key calls sendQueuedNow');
   // the pill's tip names what it does now that the key exists: it sends after this run, or send now hands it to the run.
   // Run the tip line for real: the clipped pill's whole message reads in the tip, and the hint survives the 400-char cap.
   const line = rb.slice(rb.indexOf('      const QHINT'), rb.indexOf("const label = document.createElement('span')"));
-  A.ok(line.length > 40 && !/pill\.title\s*=/.test(rb), 'the pill tip is a station data-tip (no native title)');
+  A.ok(line.length > 40 && !/pill\.title\s*=/.test(rb), 'the pill tip is a farm data-tip (no native title)');
   const tipOf = t => { let tip = null; new Function('pill', 't', line)({ setAttribute: (k, v) => { if (k === 'data-tip') tip = v; } }, t); return tip; };
   A.eq(tipOf('use the blue folder'), '“use the blue folder” · sends after this run · send now hands it to the running task', 'the tip names SEND NOW, not a slash command');
   const ht = tipOf('x'.repeat(2000));
@@ -62,8 +62,8 @@ A.ok(/before its next step/.test(body), 'success line promises only the next ste
 const soq = /function\s+sendOrQueue\s*\(text\)\s*\{([\s\S]*?)\n  \}/.exec(src);
 A.ok(soq && /if \(isBusy\(\)\) \{\s*enqueue\(value\)/.test(soq[1]), 'Enter while busy still queues');
 
-A.ok(/\.queued-now\s*\{[^}]*border: 1px solid var\(--ph-dim\)/.test(css), 'the key is skinned station hardware (no OS paint)');
-A.ok(/now\.setAttribute\('data-tip', /.test(rb) && !/now\.title\s*=/.test(rb), 'the key\'s tip is a station data-tip too, like its pill');
+A.ok(/\.queued-now\s*\{[^}]*border: 1px solid var\(--ph-dim\)/.test(css), 'the key is skinned farm hardware (no OS paint)');
+A.ok(/now\.setAttribute\('data-tip', /.test(rb) && !/now\.title\s*=/.test(rb), 'the key\'s tip is a farm data-tip too, like its pill');
 
 /* ── RUN IT (0.13.5 review): the real sendQueuedNow + its helpers in a sandbox ──
    · a multi-line pill reaches the run as ONE line: the loop echoes the note as '\n[steering] <note>\n' and every reader of
@@ -204,7 +204,7 @@ const ok200 = { status: 200, json: () => Promise.resolve({ ok: true }) };
     const disk = onDisk(r.ctx.localStorage, 'ws1');
     A.ok(/^sn[a-z0-9]+$/.test(r.posts[0].noteId || ''), 'the POST names the line with the page\'s own noteId: ' + JSON.stringify(r.posts[0]));
     A.eq(disk.map(e => [e.id, e.runId, e.text, e.wire]), [[r.posts[0].noteId, 'run-1', 'use the blue folder\nplease', 'use the blue folder please']],
-      'it is on disk BEFORE the station answers (a reload mid-POST still finds it): the typed words, the wire, its run');
+      'it is on disk BEFORE the farm answers (a reload mid-POST still finds it): the typed words, the wire, its run');
     r.answer(ok200); await tick(); await tick();
     A.eq(onDisk(r.ctx.localStorage, 'ws1').length, 1, 'accepted: it stays on disk while the run holds it');
     A.eq(r.ctx.sentNow.get('ws1')[0].id, r.posts[0].noteId, 'memory and disk name the same line');

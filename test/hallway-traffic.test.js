@@ -61,7 +61,7 @@ for(const width of [1,2,3,4]){
 }
 {
   const f=fixture(4),a=f.body(10,14,10,25),b=f.body(10,19,10,7),c=f.body(11,12,11,25);
-  f.step(1400);A.ok(!a.target&&!b.target&&!c.target,'three walkers clear a shared corridor');
+  f.step(1400);A.ok(!a.target&&!b.target&&!c.target,'three walkers clear a shared path');
   A.eq(f.errors,[],'crowded crossing preserves wall clearance');
 }
 {

@@ -23,7 +23,7 @@ const { bootToken } = require('./_httpToken.js');
 
 const HOST = '127.0.0.1';
 const INDEX = path.resolve(__dirname, '..', 'sidecar', 'index.js');
-const TRACK = '25+ tasks shipped · Commander rating: TRUSTED · finish rate: DEPENDABLE';
+const TRACK = '25+ tasks shipped · Farmer rating: TRUSTED · finish rate: DEPENDABLE';
 
 function startMockOpenRouter() {
   const requests = [];

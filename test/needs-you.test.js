@@ -82,9 +82,9 @@ const WHOLE = { clientHeight: 19, scrollHeight: 19, clientWidth: 150, scrollWidt
     '…its portrait the lead\'s, under the APPROVAL strip (a group sits with what it waits on), and no strip of its own');
   A.eq(NY.lineOf(grp), 'has an approval waiting', '(its line stays what the group waits on)');
   A.ok(!list.some(i => i.key === 'ask:p9'), 'an ask in a conversation this page does not hold is not listed');
-  A.ok(!list.some(i => /wr2|wr5/.test(i.key)), 'finished work and work the Commander stopped never need you');
+  A.ok(!list.some(i => /wr2|wr5/.test(i.key)), 'finished work and work the Farmer stopped never need you');
   A.ok(!list.some(i => i.key === 'worker:wr4'), 'a failure older than three days is history, not a to-do');
-  A.eq(list.find(i => i.key === 'worker:wr3').what, 'stopped when the station restarted', 'a restart-stopped worker says so');
+  A.eq(list.find(i => i.key === 'worker:wr3').what, 'stopped when the farm restarted', 'a restart-stopped worker says so');
   A.eq(list.find(i => i.key === 'worker:wr1').what, 'failed: ran out of time', 'a failed worker says why in words, never the ledger\'s code');
   A.ok(!list.some(i => i.key === 'routine:cron-r2'), 'a routine that ran fine is not a to-do');
   const k = NY._internals.keysFor;
@@ -118,7 +118,7 @@ const WHOLE = { clientHeight: 19, scrollHeight: 19, clientWidth: 150, scrollWidt
   ] }) };
   const list = NY.items(NOW);
   A.eq(list.find(i => i.key === 'worker:wr6').what, 'stopped after making no progress', 'a worker the liveness check stopped never blames a restart that did not happen');
-  A.eq(list.find(i => i.key === 'worker:wr7').what, 'stopped when the station restarted', 'a worker a restart cut off still says so');
+  A.eq(list.find(i => i.key === 'worker:wr7').what, 'stopped when the farm restarted', 'a worker a restart cut off still says so');
   const capped = list.find(i => i.key === 'worker:wr8');
   A.eq(capped.what, 'failed: couldn\'t start (too many running, or a sign-in is needed)', 'a refused worker says what stopped it');
   A.ok(NY._internals.html([capped], NOW).includes('title="failed: couldn\'t start (too many running, or a sign-in is needed) — subagent could not start — the concurrency cap (STARNET_MAX_CONCURRENT_AGENTS) is full or a sign-in is needed. Try fewer at once. — in General"'), 'and its row\'s tip carries the sidecar\'s own sentence, then where it waits');
@@ -138,7 +138,7 @@ const WHOLE = { clientHeight: 19, scrollHeight: 19, clientWidth: 150, scrollWidt
     ask({ promptId: 'p34', tool: 'fs.read', argsSummary: 'notes.md', background: true })
   ];
   const keysOfAll = asks.map(a => (k(a).match(/data-ny-act="[a-z-]+"[^>]*>[^<]+</g) || []).map(x => x.replace(/^data-ny-act="([a-z-]+)"[^>]*>([^<]+)<$/, '$1:$2')).join(' | '));
-  A.eq([...new Set(keysOfAll)], ['deny:Deny'], 'every approval — a long command, a station build, a file change, a short read, a station ask, a worker\'s ask — has Deny alone, never Approve once, Review or Answer');
+  A.eq([...new Set(keysOfAll)], ['deny:Deny'], 'every approval — a long command, a farm build, a file change, a short read, a farm ask, a worker\'s ask — has Deny alone, never Approve once, Review or Answer');
   A.eq(k({ key: 'attest:q1', kind: 'attest', questId: 'q1' }), '', 'a quest an agent says is done: no key (its verdict is given on the QUESTS card, which the row opens)');
   A.ok(!/>(Approve once|Review|Answer|Confirm|Not yet)</.test(NY._internals.html(asks.map(a => Object.assign(a, { who: 'NOVA', where: 'General', what: 'use fs read: notes.md', since: NOW - 60000 })), NOW)),
     'no row in the list carries an Approve once, Review, Answer, Confirm or Not yet key');
@@ -174,7 +174,7 @@ const WHOLE = { clientHeight: 19, scrollHeight: 19, clientWidth: 150, scrollWidt
     mk('stepin:h', 'stepin', { what: 'needs you to sign in', where: 'STEP-IN' }),
     mk('ask:a1', 'approval', { what: 'use fs read: a.md', p: { promptId: 'a1' } }),
     mk('ask:a2', 'approval', { what: 'use fs read: b.md', p: { promptId: 'a2' } }),
-    mk('worker:f2', 'failed', { what: 'stopped when the station restarted', since: NOW - 2000 })
+    mk('worker:f2', 'failed', { what: 'stopped when the farm restarted', since: NOW - 2000 })
   ];
   const hm = NY._internals.html(mixed, NOW);
   const secs = [...hm.matchAll(/<div class="ny-sec ([a-z]+)" role="group" aria-label="[^"]*"><div class="ny-grp" aria-hidden="true"><span class="ny-grp-t">([^<]*)<\/span>(?:<span class="ny-grp-n">(\d+)<\/span>)?<\/div><ul class="ny-list">([\s\S]*?)<\/ul><\/div>/g)]
@@ -198,8 +198,8 @@ const WHOLE = { clientHeight: 19, scrollHeight: 19, clientWidth: 150, scrollWidt
   A.ok(rowsOf(hm).length === 6 && rowsOf(hm).every(m => /^<span class="ny-face" aria-hidden="true" data-ny-aid="agent"><img alt="" draggable="false" hidden><\/span>/.test(m[2])),
     'every row that names an agent leads with its portrait well (painted by AgentPortraits after the build)');
   A.ok(rowsOf(hm).every(m => /class="ny-keys"/.test(m[2]) !== /<span class="ny-go" aria-hidden="true"><\/span>/.test(m[2])), 'every row has ONE right-hand column: its key, or else the caret (never both, never neither)');
-  const station = NY._internals.html([mk('extensions', 'extension', { who: 'STATION', aid: undefined, what: 'has 2 extensions awaiting your approval', where: 'EXTENSIONS', since: 0 })], NOW);
-  A.ok(!/ny-face/.test(station) && /<span class="ny-grp-t">Extensions<\/span><\/div>/.test(station), 'a wait that names no agent (the STATION\'s extensions) has no empty portrait well');
+  const station = NY._internals.html([mk('extensions', 'extension', { who: 'FARM', aid: undefined, what: 'has 2 extensions awaiting your approval', where: 'EXTENSIONS', since: 0 })], NOW);
+  A.ok(!/ny-face/.test(station) && /<span class="ny-grp-t">Extensions<\/span><\/div>/.test(station), 'a wait that names no agent (the FARM\'s extensions) has no empty portrait well');
   const src = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'needsyou.js'), 'utf8');
   A.ok(/host\.innerHTML = html\(list, now\);\s*\n\s*paintFaces\(host\);/.test(src) && /AgentPortraits\.paint\(face\.querySelector\('img'\), a\)/.test(src),
     'every rebuild paints the portraits through AgentPortraits (the CREW card\'s own figure)');
@@ -263,7 +263,7 @@ function fakeRail() {
   clock = NOW + 60000; NY.render();
   A.eq(host.writes, 1, 'a minute passing does not rebuild the list');
   A.eq(host.rows.find(r => r.dataset.nyKey === 'ask:p2').ageEl.textContent, '3m', 'only the age text moves, in place');
-  A.ok(doc.activeElement === key('deny', 'ask:p2'), 'so the key the Commander is on keeps its focus');
+  A.ok(doc.activeElement === key('deny', 'ask:p2'), 'so the key the Farmer is on keeps its focus');
   pend.push({ wsId: 'proj', p: { promptId: 'p30', tool: 'fs.read', argsSummary: 'notes.md', askedAt: NOW - 30000 } });
   NY.render();
   A.eq(host.writes, 2, 'a new ask rebuilds the list');
@@ -291,7 +291,7 @@ function fakeRail() {
   click(key('deny', 'ask:p30'));
   const door30 = host.buttons.find(b => b.dataset.nyAct === 'open' && b.dataset.nyKey === 'ask:p30' && b.className.split(' ').includes('ny-where'));
   A.ok(key('deny', 'ask:p30').disabled && door30 && doc.activeElement === door30, 'a second ask in flight: its key locks, focus waits on its row\'s door');
-  fail(new Error('the station is offline')); await new Promise(r => setTimeout(r, 0));
+  fail(new Error('the farm is offline')); await new Promise(r => setTimeout(r, 0));
   A.ok(!key('deny', 'ask:p30').disabled && doc.activeElement === key('deny', 'ask:p30'), 'the answer failed: Deny is back and so is the focus');
   global.Chat.answerConsent = answerConsent; Date.now = realNow; global.document = realDoc;
   pend.splice(pend.findIndex(x => x.p.promptId === 'p30'), 1); pend.splice(pend.findIndex(x => x.p.promptId === 'p31'), 1);

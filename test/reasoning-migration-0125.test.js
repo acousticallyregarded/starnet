@@ -55,7 +55,7 @@ function migrate(saved) {
   A.eq(r.saved.agents[3].reasoningEffort, 'high', 'a non-OFF level on those providers is kept');
   A.eq(r.saved.agents[4].reasoningEffort, 'none', 'Anthropic had a real dial in 0.12.4: its OFF was a real choice and is kept');
   A.eq(r.saved.agents[5].reasoningEffort, 'none', 'OpenRouter had a real dial in 0.12.4: its OFF is kept');
-  A.eq(r.saved.agents[6].reasoningEffort, 'none', 'an unpinned agent is untouched (it follows the station default)');
+  A.eq(r.saved.agents[6].reasoningEffort, 'none', 'an unpinned agent is untouched (it follows the farm default)');
   A.eq('reasoningEffort' in r.saved, false, 'the station-level inherited OFF is dropped');
   A.eq(r.saved.reasoningMigrated, '0125', 'the save is marked');
   A.eq(r.calls[0], ['clear', ['openai', 'xai', 'grok', 'deepseek']], 'the per-provider stored OFF is cleared for exactly the locked providers');
@@ -69,14 +69,14 @@ function migrate(saved) {
     agents: [{ id: 'writer', model: 'openai/gpt-5.5', provider: 'starnet', reasoningEffort: 'high' }] });
   A.eq(r.saved.agent.reasoningEffort, 'none', 'the Managed Overseer keeps OFF (nothing sent), not its onboarding MEDIUM');
   A.eq(r.saved.agents[0].reasoningEffort, 'none', 'a Managed pin keeps OFF');
-  A.eq(r.saved.reasoningEffort, 'none', 'the Managed station wire keeps OFF');
+  A.eq(r.saved.reasoningEffort, 'none', 'the Managed farm wire keeps OFF');
 }
 
 // ---- a pin with no provider uses the station provider (as focusWire does) ----
 {
   const r = migrate({ agent: { id: 'agent', model: 'gpt-5.5', provider: 'openai', reasoningEffort: 'none' },
     agents: [{ id: 'x', model: 'gpt-5.4', reasoningEffort: 'none' }] });
-  A.eq(r.saved.agents[0].reasoningEffort, null, 'a provider-less pin on an OpenAI-API station is migrated like the station');
+  A.eq(r.saved.agents[0].reasoningEffort, null, 'a provider-less pin on an OpenAI-API farm is migrated like the farm');
 }
 
 // ---- once migrated, a deliberate 0.12.5 OFF is never touched again ----

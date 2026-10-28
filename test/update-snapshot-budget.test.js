@@ -83,7 +83,7 @@ const browserStore = { 'starnet.save': JSON.stringify({ version: 5, updatedAt: 1
       sleep: async () => { clock += 25; }
     });
     const made = await prep.prepare({ targetVersion: '0.14.1', browserStore });
-    A.eq(made.ok, true, 'a station over the budget still gets its verified recovery point');
+    A.eq(made.ok, true, 'a farm over the budget still gets its verified recovery point');
     const tooLarge = made.receipt && made.receipt.tooLarge;
     A.eq(tooLarge && tooLarge.reason, REASON, 'the receipt names why files were left out');
     A.eq(tooLarge && tooLarge.files, 3, 'the receipt counts the files left out');

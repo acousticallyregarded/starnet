@@ -10,10 +10,10 @@ const ui = read('frontend/app/stationui.js');
 
 // ---- 1. the setting: default on, rendered in DISPLAY, wired, applied live, carried by backups ----------
 A.ok(/function defaults\(\) \{ return \{[^}]*\bhints: true\b/.test(ui), 'HINTS defaults to on (existing users keep today\'s help)');
-A.ok(/<input type="checkbox" id="set-hints" ' \+ \(s\.hints \? 'checked' : ''\) \+ '> HINTS <span class="dim">— explain station terms when you hover them<\/span>/.test(ui),
+A.ok(/<input type="checkbox" id="set-hints" ' \+ \(s\.hints \? 'checked' : ''\) \+ '> HINTS <span class="dim">— explain farm terms when you hover them<\/span>/.test(ui),
   'a HINTS checkbox with a one-line purpose is rendered in Settings');
 const display = ui.indexOf("id=\"set-stationdock\""), crt = ui.indexOf('// CRT — its own section', display), row = ui.indexOf('id="set-hints"');
-A.ok(display > 0 && row > display && row < crt, 'it sits in LOOK & SOUND › DISPLAY (after STATION DOCK, before CRT)');
+A.ok(display > 0 && row > display && row < crt, 'it sits in LOOK & SOUND › DISPLAY (after FARM DOCK, before CRT)');
 A.ok(/bind\('#set-hints', 'hints'\)/.test(ui), 'the checkbox saves through the same bind() as SCREEN FLICKER / TERMINAL AUDIO');
 A.ok(/document\.body\.classList\.toggle\('no-hints', !s\.hints\)/.test(ui), 'applySettings() toggles body.no-hints live (no reload)');
 A.ok(/if \(!s\.hints && typeof Hint === 'object' && Hint\.hide\) Hint\.hide\(\)/.test(ui), 'switching it off clears a bubble already on screen');
@@ -38,7 +38,7 @@ A.ok(/<button class="bb-grp" data-hint="crew"/.test(read('frontend/index.html'))
 // on the dock the glossary bubble is the only hover, so it wears the station tip's themed nameplate (not gold)
 const dockHint = (read('frontend/css/interface.css').match(/body > \.hint-bubble\.dock-tip \{([^}]*)\}/g) || []).join(' ');
 A.ok(/color: var\(--ph-bright\)/.test(dockHint) && /border: 1px solid var\(--ph-dim\)/.test(dockHint) && /inset 2px 0 0 var\(--ph\)/.test(dockHint),
-  'the dock\'s glossary bubble uses the station tip\'s phosphor colour, border and stripe');
+  'the dock\'s glossary bubble uses the farm tip\'s phosphor colour, border and stripe');
 A.ok(!/gold/.test(dockHint), 'and no gold accent on the dock');
 
 // ---- 2. hint.js honours it at show time --------------------------------------------------------------
@@ -67,7 +67,7 @@ global.document = { readyState: 'complete', body, head: { appendChild() {} }, do
 global.window = { innerWidth: 1360, innerHeight: 768, addEventListener: on(winL) };
 globalThis.Glossary = require('../frontend/app/glossary.js');
 require('../frontend/app/hint.js');
-const build = mkEl({ 'data-hint': 'build', title: 'Shape the station' });
+const build = mkEl({ 'data-hint': 'build', title: 'Shape the farm' });
 const shown = () => !!(bubble && bubble.classList.contains('on'));
 
 body.classList.add('no-hints');
@@ -87,11 +87,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 (async () => {
   fire(tipL, 'pointerover', { target: build });
   await sleep(420);
-  A.ok(!build.getAttribute('aria-describedby'), 'a hinted control gets no station tip (no double box on hover)');
+  A.ok(!build.getAttribute('aria-describedby'), 'a hinted control gets no farm tip (no double box on hover)');
   A.ok(!build.hasAttribute('title'), 'its title is still adopted, so the OS bubble stays silenced too');
   fire(tipL, 'pointerout', { target: build, relatedTarget: body });
   fire(tipL, 'pointerover', { target: plain });
   await sleep(420);
-  A.eq(plain.getAttribute('aria-describedby'), 'station-tip', 'a plain control (CREW-style) keeps its station tip');
+  A.eq(plain.getAttribute('aria-describedby'), 'station-tip', 'a plain control (CREW-style) keeps its farm tip');
   A.report('hints-setting.test');
 })().catch(e => { console.log('FAIL: hints-setting rig threw — ' + (e && e.stack || e)); process.exit(1); });

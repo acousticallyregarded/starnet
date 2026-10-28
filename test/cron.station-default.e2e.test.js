@@ -13,7 +13,7 @@ const { SidecarFixture } = require('./helpers/sidecar-fixture.js');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-test('routines on an unpinned agent run on the station default (Run Now + scheduled fire)', async () => {
+test('routines on an unpinned agent run on the farm default (Run Now + scheduled fire)', async () => {
   const calls = [];
   const server = http.createServer((req, res) => {
     if (req.url.includes('/chat/completions')) {
@@ -68,7 +68,7 @@ test('routines on an unpinned agent run on the station default (Run Now + schedu
     const r1 = await runNow(scoutJob);
     assert.equal(r1.status, 200, 'Run Now on an unpinned agent is not refused: ' + r1.text.slice(0, 300));
     assert.ok(calls.length > 0 && calls.every(c => c.model === 'hero-model' && c.auth === 'Bearer direct-fixture'),
-      'Run Now used the station default model + credential: ' + JSON.stringify(calls));
+      'Run Now used the farm default model + credential: ' + JSON.stringify(calls));
     const runs1 = (await fixture.json('GET', '/api/runs?agent=scout&limit=10')).body.runs || [];
     assert.ok(runs1.length >= 1, 'the Run Now run was recorded');
     assert.equal(runs1[0].model, 'hero-model', 'the run record names the model it actually used');
@@ -98,7 +98,7 @@ test('routines on an unpinned agent run on the station default (Run Now + schedu
     assert.ok(!job || job.lastReason !== 'blocked_config', 'the scheduled fire was not blocked: ' + JSON.stringify(job && { lastError: job.lastError, lastReason: job.lastReason }));
     assert.ok(!job || job.lastStatus === 'ok', 'the scheduled fire completed: ' + JSON.stringify(job && { lastStatus: job.lastStatus, lastError: job.lastError }));
     assert.ok(calls.length > 0 && calls.every(c => c.model === 'hero-model' && c.auth === 'Bearer direct-fixture'),
-      'the scheduled fire used the station default model + credential: ' + JSON.stringify(calls));
+      'the scheduled fire used the farm default model + credential: ' + JSON.stringify(calls));
     const runs2 = (await fixture.json('GET', '/api/runs?agent=scout&limit=10')).body.runs || [];
     const sched = runs2.find(r => r.model === 'hero-model' && r.runId !== runs1[0].runId);
     assert.ok(sched && sched.provider === 'custom', 'the scheduled run record names hero-model on custom: ' + JSON.stringify(runs2.map(r => ({ model: r.model, provider: r.provider }))));
@@ -108,7 +108,7 @@ test('routines on an unpinned agent run on the station default (Run Now + schedu
     assert.equal((await fixture.json('POST', '/api/roster', { agents, updatedAt: Date.now() })).status, 200);
     calls.length = 0;
     const r4 = await runNow(scoutJob);
-    assert.equal(r4.status, 400, 'with no station default the routine is refused: ' + r4.text.slice(0, 300));
+    assert.equal(r4.status, 400, 'with no farm default the routine is refused: ' + r4.text.slice(0, 300));
     assert.equal(calls.length, 0, 'nothing was spent');
   } finally {
     await fixture.dispose();

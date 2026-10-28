@@ -39,7 +39,7 @@ const fetchDown = async () => { throw new TypeError('Failed to fetch'); };
   // (review 2026-10-14) the station's answer says whether a live run was there to stop; the page passes that fact on
   // unchanged, and never invents it when the answer does not say
   const fetchSays = said => async () => ({ ok: true, status: 200, json: async () => said });
-  A.eq(await cancel(fetchSays({ ok: true, stopped: true }))('r1'), { ok: true, stopped: true }, 'stopped:true from the station is passed on');
+  A.eq(await cancel(fetchSays({ ok: true, stopped: true }))('r1'), { ok: true, stopped: true }, 'stopped:true from the farm is passed on');
   A.eq(await cancel(fetchSays({ ok: true, stopped: false }))('r1'), { ok: true, stopped: false }, 'stopped:false (the id was already gone) is passed on — still a confirmed 2xx');
   A.eq(await cancel(fetchSays({ ok: true, stopped: 'yes' }))('r1'), { ok: true }, 'a non-boolean stopped is not trusted');
   A.eq(await cancel(async () => ({ ok: true, status: 200, json: async () => { throw new SyntaxError('Unexpected token o'); } }))('r1'), { ok: true }, 'a 2xx whose body is not JSON is still ok, and says nothing about stopped');
@@ -76,13 +76,13 @@ const fetchDown = async () => { throw new TypeError('Failed to fetch'); };
   A.ok(failed.length > 200, 'stopFailed body located');
   A.ok(/interrupted\.delete\(id\)/.test(failed), 'an unconfirmed stop un-flags the stream: it is never marked stopped on a claim the harness cannot back');
   A.ok(/Harness\.pingEngine\(\)/.test(failed) && /Friendly\.friendlyError\(new Error\(reason\), null, \{ engineAlive: engineAlive \}\)/.test(failed), 'the transport verdict is MEASURED (pingEngine) and worded by friendlyError, the same path send()\'s catch uses');
-  A.ok(/STOP was not confirmed by the station — the run may still be working\./.test(failed), 'the line says the run may still be working (truthful telemetry)');
+  A.ok(/STOP was not confirmed by the farm — the run may still be working\./.test(failed), 'the line says the run may still be working (truthful telemetry)');
   A.ok(/status\(isBusy\(\) \? 'stopping… not confirmed' : 'online'\)/.test(failed), 'the status stays in the stopping family while the run is still busy');
 
   /* ---- chat.js consent ack: a failed ack is surfaced, the card stays pending ---- */
   A.ok(/Promise\.resolve\(Harness\.consentAck\(Channels\.runIdOf\(ws\.id\), ev\.promptId\)\)\.then\(v => \{ if \(!\(v && v\.ok\)\) consentAckFailed\(ws, ev, v\); \}/.test(chatSrc), 'the onPermission ack checks ok and routes a failure to consentAckFailed');
   const ackFailed = A.fnBody(chatSrc, 'function consentAckFailed');
-  A.ok(/auto-denies on a timer/.test(ackFailed), 'the warning tells the Commander why it matters (the fail-closed timer is still running)');
+  A.ok(/auto-denies on a timer/.test(ackFailed), 'the warning tells the Farmer why it matters (the fail-closed timer is still running)');
   A.ok(!/clearPending|Channels\.setPending/.test(ackFailed), 'the pending card is left pending — it IS pending');
 
   A.report('harness.cancel-truth');

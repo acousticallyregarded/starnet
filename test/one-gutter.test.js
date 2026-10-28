@@ -109,7 +109,7 @@ A.eq([decl(rule(glass, W + '.term.dossier .con-toptab'), 'padding-top'), decl(ru
 
 /* ---- 5. LINK STATION keeps its own padding ---- */
 A.ok(!/\[data-provider="starnet"\] :is\(\.prov-addkey,\s*\.prov-stat\) \{[^}]*padding-left:\s*0/.test(settings) && /\[data-provider="starnet"\] \.prov-addkey \{ margin-left:0; \}/.test(settings),
-  'the StarNet card drops the 42px indent but not the key\'s padding (↗ LINK STATION sat against its left edge)');
+  'the Homestead card drops the 42px indent but not the key\'s padding (↗ LINK FARM sat against its left edge)');
 
 /* ---- 6. the SESSIONS / PROJECTS switch (Andrew 10-23: "i saw a UI glitch in sessions and projects") ---- */
 A.ok(/#screen-game #left \.ws-head :is\(#ws-new, #ws-addproject\)\[hidden\] \{ display: none !important; \}/.test(glass),

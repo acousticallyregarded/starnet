@@ -46,8 +46,8 @@ try {
   for (const f of ['_station.quests.json', '_station.journey.json', '_commander.dossier.json', '_commander.goals.json', '_commander.autonomy.json']) {
     fs.writeFileSync(path.join(current, f), '{}');
     v = inspectWorkspaceLineage({ fs, path, workspaceRoot: current, candidateRoots: [legacy], snapshotsRoot: snapshots, platform: process.platform });
-    A.eq(v.priorInstallEvidence, true, f + ' (a real station record) is still prior-station evidence');
-    A.eq(hasStationState({ fs, path, workspaceRoot: current }), true, f + ' makes the workspace a station for background writers');
+    A.eq(v.priorInstallEvidence, true, f + ' (a real farm record) is still prior-station evidence');
+    A.eq(hasStationState({ fs, path, workspaceRoot: current }), true, f + ' makes the workspace a farm for background writers');
     fs.unlinkSync(path.join(current, f));
   }
   for (const f of ['_station.questrefresh.json', '_station.questrefresh.json.bak']) fs.unlinkSync(path.join(current, f));
@@ -59,7 +59,7 @@ try {
 
   fs.writeFileSync(path.join(current, 'ledger.jsonl'), '{"event":"prior-work"}\n');
   v = inspectWorkspaceLineage({ fs, path, workspaceRoot: current, candidateRoots: [legacy], snapshotsRoot: snapshots, platform: process.platform });
-  A.eq(v.priorInstallEvidence, true, 'known durable station ledgers still block destructive first-run inference when the save is missing');
+  A.eq(v.priorInstallEvidence, true, 'known durable farm ledgers still block destructive first-run inference when the save is missing');
   fs.unlinkSync(path.join(current, 'ledger.jsonl'));
 
   fs.mkdirSync(legacy, { recursive: true });
@@ -101,7 +101,7 @@ try {
   // route, and nothing on the screen creates a station client-side.
   A.ok(screen.includes('btn-lineage-fresh'), 'Recovery Mode offers START FRESH (the third exit)');
   A.ok(fn.includes('/api/lineage/start-fresh'), 'START FRESH is wired to the sidecar quarantine route, never a client-side wipe');
-  A.eq(/CREATE.*STATION/i.test(screen), false, 'Recovery Mode exposes no client-side create-station bypass');
+  A.eq(/CREATE.*FARM/i.test(screen), false, 'Recovery Mode exposes no client-side create-station bypass');
 
   // startFresh(): quarantines current-workspace state (never deletes), acknowledges external roots, and the
   // next inspection allows onboarding.
@@ -110,7 +110,7 @@ try {
   fs.writeFileSync(path.join(current, 'loops.json'), '{}');
   fs.writeFileSync(path.join(current, 'loops.halt.json'), '{}');         // infra (E-STOP bookkeeping): stays put
   fs.writeFileSync(path.join(current, 'liveprices.cache.json'), '{}');   // infra: stays put
-  fs.writeFileSync(path.join(current, '_station.questrefresh.json'), '{"v":1,"state":{"northStar":{"text":"old station"}}}');   // not evidence, but this station's
+  fs.writeFileSync(path.join(current, '_station.questrefresh.json'), '{"v":1,"state":{"northStar":{"text":"old farm"}}}');   // not evidence, but this station's
   fs.mkdirSync(legacy, { recursive: true });
   fs.writeFileSync(path.join(legacy, 'agent.save.json'), '{"version":5}');
   fs.mkdirSync(snapshots, { recursive: true });
@@ -122,7 +122,7 @@ try {
   A.ok(fresh.moved.includes('ledger.jsonl') && fresh.moved.includes('loops.json'), 'every current-workspace state file moved');
   A.eq(fresh.moved.includes('liveprices.cache.json'), false, 'infrastructure never moves');
   A.eq(fresh.moved.includes('loops.halt.json'), false, 'E-STOP bookkeeping is infrastructure and never moves');
-  A.ok(fresh.moved.includes('_station.questrefresh.json') && fs.existsSync(path.join(fresh.quarantine, '_station.questrefresh.json')), 'the old station\'s quest-refresh state (its north star) is quarantined with it, never left to steer the next station');
+  A.ok(fresh.moved.includes('_station.questrefresh.json') && fs.existsSync(path.join(fresh.quarantine, '_station.questrefresh.json')), 'the old farm\'s quest-refresh state (its north star) is quarantined with it, never left to steer the next farm');
   A.eq(fs.existsSync(path.join(fresh.quarantine, 'ledger.jsonl')), true, 'moved files live on in quarantine (never deleted)');
   A.eq(fs.existsSync(path.join(current, 'ledger.jsonl')), false, 'the live workspace no longer holds the stale state');
   A.eq(fs.existsSync(path.join(current, 'liveprices.cache.json')), true, 'infrastructure files are untouched');
@@ -150,7 +150,7 @@ try {
     for (const f of many) fs.writeFileSync(path.join(current, f), '{"v":1}');
     A.ok(many.length > 40, 'fixture exceeds one 40-entry listing page (' + many.length + ' files)');
     const big = startFresh({ fs, path, workspaceRoot: current, candidateRoots: [], snapshotsRoot: snapshots, platform: process.platform, now: () => Date.UTC(2026, 7, 28, 12, 0, 0) });
-    A.eq(big.ok, true, 'start fresh succeeds on a >40-file station');
+    A.eq(big.ok, true, 'start fresh succeeds on a >40-file farm');
     A.eq(big.moved.length, many.length, 'EVERY state file moved (' + big.moved.length + '/' + many.length + '), not just the first listing page');
     const bigAfter = inspectWorkspaceLineage({ fs, path, workspaceRoot: current, candidateRoots: [], snapshotsRoot: snapshots, platform: process.platform });
     A.eq(bigAfter.onboardingAllowed, true, 'the gate opens — no current-workspace evidence remains');

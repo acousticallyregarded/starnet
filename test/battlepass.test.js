@@ -20,7 +20,7 @@ A.eq(empty.challenges[0].id, 'goal', 'the only honest challenge is to set a goal
 
 // ---- tiers mirror the sidecar level; rewards are cosmetic titles/frames
 const p = BP.build({ progression: prog(364, []), goal, goalRegistered: true, now: NOW, claimedTier: 2 });
-A.eq(p.tier, 4, 'tier is the Commander level');
+A.eq(p.tier, 4, 'tier is the Farmer level');
 A.eq(p.into, 64, 'points into the tier come from levelStartsAt');
 A.eq(p.toNext, 36, 'points to the next tier');
 A.eq(p.rank, 'NAVIGATOR', 'tier 4 wears its rank title');
@@ -34,7 +34,7 @@ A.eq(p.claimable.join(','), '3,4', 'earned-but-unclaimed tiers are claimable');
 A.ok(p.track.every(t => t.state !== 'ahead' || !t.claimable), 'a tier ahead can never be claimed');
 A.eq(p.track.find(t => t.tier === 4).state, 'now', 'the current tier is marked');
 A.eq(p.track.find(t => t.tier === 5).state, 'ahead', 'upcoming tiers read ahead — not locked');
-A.eq(BP.build({ progression: prog(364, []), now: NOW, claimedTier: 99 }).claimedTier, 4, 'a stale claim above the current tier clamps (new Commander)');
+A.eq(BP.build({ progression: prog(364, []), now: NOW, claimedTier: 99 }).claimedTier, 4, 'a stale claim above the current tier clamps (new Farmer)');
 
 // ---- ASCII meters
 A.eq(BP.bar(50, 10), '[#####.....]', 'half bar');

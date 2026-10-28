@@ -377,9 +377,9 @@ const XpStore = (() => {
       // Read rejected responses too. Keep UI copy actionable without exposing arbitrary storage paths.
       let error = 'Rating was not saved — try again.';
       if (!res) error = 'Cannot reach the rating service — try again.';
-      else if (reason === 'station generation changed; reload before rating') error = 'Station changed — reload the app before rating this work.';
+      else if (reason === 'farm generation changed; reload before rating') error = 'Farm changed — reload the app before rating this work.';
       else if (reason === 'rateable run not found') error = 'This task’s saved run history is unavailable. Restart and retry; if it still fails, include Settings diagnostics in a bug report.';
-      else if (reason === 'internal run cannot be rated') error = 'Internal station activity cannot be rated. No action is needed.';
+      else if (reason === 'internal run cannot be rated') error = 'Internal farm activity cannot be rated. No action is needed.';
       else if (reason === 'non-interactive run cannot be rated') error = 'This scheduled activity is not eligible for rating. New interactive replies can be rated separately.';
       else if (reason === 'run origin unavailable for rating') error = 'This older reply has no saved run origin, so its rating eligibility cannot be verified. It cannot be rated; new interactive replies can be rated separately.';
       else if (reason === 'run did not produce rateable agent work') error = 'This task did not finish with rateable work.';
@@ -388,13 +388,13 @@ const XpStore = (() => {
       else if (status >= 500) error = 'The rating service could not save this rating — try again.';
       return { ok: false, error, status };
     }
-    if (owner !== generation) return { ok: false, error: 'Station changed — reload the app before rating this work.' };
+    if (owner !== generation) return { ok: false, error: 'Farm changed — reload the app before rating this work.' };
     // Only a complete history snapshot can advance the checkpoint. An acknowledgement for this run
     // says nothing about earlier ratings from another window. Fold those in order before this verdict,
     // and celebrate only this click; historical catch-up remains quiet.
     const since = Math.max(1, Number(station && station.ratingSyncAt) || 1);
     const sync = await syncRatingHistory(since, floor => loadRatingHistory(floor, post), { liveRunId: body.rating.runId });
-    if (owner !== generation) return { ok: false, error: 'Station changed — reload the app before rating this work.' };
+    if (owner !== generation) return { ok: false, error: 'Farm changed — reload the app before rating this work.' };
     if (sync.failed) scheduleRatingRetry(owner, since);   // the watermark now trails this rating: catch up later
     let applied = !!sync.liveApplied;
     for (const entry of body.rating.entries) {

@@ -172,7 +172,7 @@ function approvalsMap() {
   const approvals = approvalsMap();
   const gate = makeSkillGate({ guard: skillGuard, approvals });
   const legacy = { id: 'old', agentId: 'a', name: 'Old Deploy', createdBy: 'agent', state: 'active', body: RISKY, files: [], updatedAt: 42 };
-  A.eq(gate.verify(legacy).visible, false, 'withheld before the Commander allows it');
+  A.eq(gate.verify(legacy).visible, false, 'withheld before the Farmer allows it');
   approvals.set('a', 'old', { digest: digestOf(legacy), action: 'allow', at: 1 });   // what handleAgentSkillAllow stores
   const v = gate.verify(legacy);
   A.eq(v.visible, true, 'the approval of these exact bytes clears the legacy record');
@@ -250,7 +250,7 @@ function approvalsMap() {
 
   // only the Commander takes the lock off (bug 97743dff: a model unpin used to open the next patch)
   A.eq(s.manage({ agentId: 'a', action: 'unpin', target: id }).ok, false, 'a model (default writer) cannot unpin it');
-  A.eq(s.manage({ agentId: 'a', action: 'unpin', target: id, createdBy: 'user' }).ok, true, 'the Commander can unpin it (lifecycle, not content)');
+  A.eq(s.manage({ agentId: 'a', action: 'unpin', target: id, createdBy: 'user' }).ok, true, 'the Farmer can unpin it (lifecycle, not content)');
   A.eq(s.manage({ agentId: 'a', action: 'edit', target: id, body: 'new steps' }).ok, true, 'and then the edit lands');
 
   // the human surface may override its own pin, but only with an explicit force
@@ -368,7 +368,7 @@ function approvalsMap() {
   const gate = makeSkillGate({ guard: skillGuard, approvals });
   s.write({ agentId: 'a', name: 'Cleanup', body: NASTY, createdBy: 'user' });
   const rec = s.list('a')[0];
-  A.eq(rec.guardAction, 'ask', 'the Commander\'s own risky content asks');
+  A.eq(rec.guardAction, 'ask', 'the Farmer\'s own risky content asks');
   const tools = makeSkillTools({ store: s, gate });
   A.eq(tools.viewTool.run({ name: 'Cleanup' }, { agentId: 'a' }).summary, 'withheld', 'unapproved: withheld');
 

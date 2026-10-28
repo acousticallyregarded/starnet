@@ -254,7 +254,7 @@ function makeAwakening(deps) {
       const pick = await io.ask({ options });
       if (pick.value === 'key') {
         await io.say([seg('API keys are added in the Homestead desktop app — SETTINGS › AI & MODELS — which keeps them in your computer’s keychain.', 44, 300)], { who: 'HOMESTEAD' });
-        if (o.privateStation) await io.say([seg('this farm runs from the terminal on its own, so it can also read one from your environment: set it (for example OPENROUTER_API_KEY or ANTHROPIC_API_KEY) and run homestead again.', 44, 300)], { who: 'HOMESTEAD' });
+        if (o.privateStation) await io.say([seg('this farm runs from the terminal on its own, so it can also read one from your environment: set it (for example OPENROUTER_API_KEY or ANTHROPIC_API_KEY) and run starnet again.', 44, 300)], { who: 'HOMESTEAD' });
         continue;
       }
       const id = String(pick.value).replace(/^use:/, '');
@@ -310,7 +310,7 @@ function makeAwakening(deps) {
         async () => { await st.post('/api/auth/claude-cli/cancel', { login_id: sj.login_id }, 10000); });
     }
     if (b.flow === 'credits') {
-      const s = await st.post('/api/credits/link/start', { deviceName: 'homestead terminal' }, 20000);
+      const s = await st.post('/api/credits/link/start', { deviceName: 'starnet terminal' }, 20000);
       if (!(ok(s) && s.json && s.json.code)) { await io.say([seg('could not start linking your StarNet account: ' + ((s.json && s.json.error) || s.error || 'HTTP ' + s.status), 44, 300)], { who: 'HOMESTEAD' }); return false; }
       const linked = await waitLink('open ' + s.json.verifyUrl + ' and confirm the code ' + s.json.code + ' to link this farm to your StarNet account.', s.json.verifyUrl, 15 * 60000, 3000,
         async () => { const p = await st.post('/api/credits/link/poll', { code: s.json.code }, 20000); const pj = (p && p.json) || {}; return pj.linked ? 'ok' : /^(expired|consumed|unknown|invalid)$/.test(String(pj.status || '')) ? 'that link code ' + pj.status + ' — start again' : ''; });
@@ -639,7 +639,7 @@ function makeAwakening(deps) {
     await persist();
     io.feed(null);
     io.stage('YOUR FIRST TASK', 'From getting acquainted to working together');
-    await io.say([seg('i’m ' + ctx.agent.name + '. the station is yours. give me one task to start with — we can build the rest around the work. your setup stays editable in the dossier.', 46, 0)]);
+    await io.say([seg('i’m ' + ctx.agent.name + '. the farm is yours. give me one task to start with — we can build the rest around the work. your setup stays editable in the dossier.', 46, 0)]);
     if (ctx.birthFailed) await io.say([seg('the model connection failed during setup. check SETTINGS › AI & MODELS before starting a task; your saved setup is still here.', 46, 0)]);
     return { ok: true, agent: ctx.agent, firstMove: grabbed };
   }

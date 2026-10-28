@@ -63,7 +63,7 @@ function run(held, dialogue) {
 }
 
 const returning = run(false);
-A.eq(returning.coach.hidden, false, 'a returning Commander (no awakening) still gets the coach on arrival');
+A.eq(returning.coach.hidden, false, 'a returning Farmer (no awakening) still gets the coach on arrival');
 
 const born = run(true);
 A.eq(born.coach.hidden, true, 'during the awakening the coach stays hidden');

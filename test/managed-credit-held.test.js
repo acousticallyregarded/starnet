@@ -60,7 +60,7 @@ async function admit(credits, runId, chosenCap) {
     A.eq([lead.admitted, lead.reservedUsd], [true, 79.24], 'the lead reserves the whole $79.24 wallet (cap clamped to the balance)');
     const worker = await admit(credits, 'worker', 100);
     A.ok(worker.admitted === true, 'on the proxy-metered cloud the delegated worker is ADMITTED — the hold never lowers the true balance (no false "out of credit"): ' + JSON.stringify(worker));
-    A.eq(typeof credits.held === 'function' && credits.held().counted, false, 'the station knows this backend does not count holds against the balance');
+    A.eq(typeof credits.held === 'function' && credits.held().counted, false, 'the farm knows this backend does not count holds against the balance');
   }
 
   // ---- LEDGER backend (proxy off): the reservation is a real debit, so the refreshed balance reads $0 ----
@@ -73,7 +73,7 @@ async function admit(credits, runId, chosenCap) {
     refusal = await admit(credits, 'worker', 100);
     A.eq(refusal.refused, 'exhausted', 'REPRODUCED: the worker is refused as if the wallet were empty');
     A.ok(refusal.held && refusal.held.runs === 1 && Math.abs(refusal.held.usd - 79.24) < 1e-9 && refusal.held.counted === true,
-      'but the station can prove the balance is HELD by 1 running StarNet run it reserved ($79.24), on a backend that counts holds: ' + JSON.stringify(refusal.held));
+      'but the farm can prove the balance is HELD by 1 running Homestead run it reserved ($79.24), on a backend that counts holds: ' + JSON.stringify(refusal.held));
     // once the lead settles (spent $3, refunds the rest) the next run is admitted again
     credits.finishRun({ runId: 'lead', usd: 3, reason: 'done' }); await tick(); await tick();
     A.eq([credits.held().runs, cloud.st.balance], [0, 76.24], 'the settle frees the hold');
@@ -88,7 +88,7 @@ async function admit(credits, runId, chosenCap) {
     const r = await admit(credits, 'worker', 0);
     A.eq([r.refused, r.held && r.held.runs], ['exhausted', 1], 'the worker is refused while the lead holds the $0.30');
     const m = budgetCaps.managedRefusalMessage({ exhausted: true, held: r.held, balanceUsd: 0 }).message;
-    A.ok(/held by 1 running StarNet run\b/.test(m) && /top up under SETTINGS → AI & MODELS/.test(m), 'a tiny hold still says held AND keeps the top-up door: ' + m);
+    A.ok(/held by 1 running Homestead run\b/.test(m) && /top up under SETTINGS → AI & MODELS/.test(m), 'a tiny hold still says held AND keeps the top-up door: ' + m);
   }
   // ---- A FAILED SETTLE is not a running run: its reservation stays in the map (billing never settled it), but the run
   // is over — a later real $0 must not say "held by 1 running StarNet run" when nothing is running ----
@@ -113,7 +113,7 @@ async function admit(credits, runId, chosenCap) {
   A.eq(typeof managedRefusalMessage, 'function', 'one pure helper owns the managed refusal wording (index.js refuseManaged)');
   if (typeof managedRefusalMessage === 'function') {
     const held = managedRefusalMessage({ exhausted: true, held: { runs: 1, usd: 79.24, counted: true }, balanceUsd: 0 });
-    A.ok(/held by 1 running StarNet run\b/.test(held.message) && /lower PER RUN in SETTINGS › SPENDING LIMITS/.test(held.message) && !/out of/i.test(held.message),
+    A.ok(/held by 1 running Homestead run\b/.test(held.message) && /lower PER RUN in SETTINGS › SPENDING LIMITS/.test(held.message) && !/out of/i.test(held.message),
       'a held balance says so and how to free it, never "out of credit": ' + held.message);
     const waitAt = held.message.indexOf('. Wait for it to finish, ');
     A.ok(waitAt > 0 && waitAt < held.message.indexOf('top up') && /, or top up under SETTINGS → AI & MODELS\.$/.test(held.message),
@@ -125,7 +125,7 @@ async function admit(credits, runId, chosenCap) {
       A.ok(cls.reason !== 'billing' && cls.retryable === true && cls.shouldRotateCredential !== true,
         'errorClass never reads a held balance as an empty wallet: ' + JSON.stringify([cls.reason, cls.retryable, cls.shouldRotateCredential]));
     }
-    A.ok(/held by 2 running StarNet runs\b/.test(managedRefusalMessage({ exhausted: true, held: { runs: 2, usd: 5, counted: true }, balanceUsd: 0 }).message), 'plural for several runs');
+    A.ok(/held by 2 running Homestead runs\b/.test(managedRefusalMessage({ exhausted: true, held: { runs: 2, usd: 5, counted: true }, balanceUsd: 0 }).message), 'plural for several runs');
     // the holds must be WHY the balance reads empty: settled wallet = reported balance + this station's holds
     A.ok(/^Out of managed credit/.test(managedRefusalMessage({ exhausted: true, held: { runs: 1, usd: 0.3, counted: true }, balanceUsd: -5 }).message),
       'an overdrawn wallet the holds do not explain is out of credit, not held');
@@ -136,7 +136,7 @@ async function admit(credits, runId, chosenCap) {
     const empty = managedRefusalMessage({ exhausted: true, held: { runs: 0, usd: 0, counted: true } });
     A.eq([empty.message, empty.transient], ['Out of managed credit — add credits in the STORE to keep running (or connect your own provider key).', false], 'a really empty wallet keeps the honest top-up refusal');
     A.ok(/^Out of managed credit/.test(managedRefusalMessage({ exhausted: true, held: { runs: 1, usd: 2, counted: false } }).message), 'an advisory backend never claims a hold it cannot prove');
-    A.ok(/refused this station's link/.test(managedRefusalMessage({ exhausted: false, linkRefused: true }).message), 'a refused link keeps its relink refusal');
+    A.ok(/refused this farm's link/.test(managedRefusalMessage({ exhausted: false, linkRefused: true }).message), 'a refused link keeps its relink refusal');
     A.ok(/did not answer/.test(managedRefusalMessage({ exhausted: false }).message), 'an unanswered check keeps its try-again refusal');
     // COMMS: a distinct kind with its own copy and door (SPENDING LIMITS, where PER RUN lives) — not the top-up
     const v = Friendly.friendlyError(held.message);

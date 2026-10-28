@@ -107,7 +107,7 @@ const okRun = (text) => (o) => { o.emit('agent.run.start', { agentId: 'a', runId
     await flush();
     A.eq(countOf(s.events, 'cron.result'), 1, 'one cron.result after it settles');
     A.eq(firstOf(s.events, 'cron.result').outcome, 'ok', 'a normal reply -> outcome ok');
-    A.eq(s.runs[0].station, undefined, 'no resolveStation dep -> station undefined (default office, pre-fix behavior)');
+    A.eq(s.runs[0].station, undefined, 'no resolveStation dep -> farm undefined (default office, pre-fix behavior)');
   }
 
   // ---- 1b. B5 parity: a fire passes the agent's per-bay station from resolveStation (null -> undefined) ----
@@ -118,7 +118,7 @@ const okRun = (text) => (o) => { o.emit('agent.run.start', { agentId: 'a', runId
     s.clock.set(T0 + 60000);
     s.driver.applyTick(s.clock.now());
     A.eq(s.runs.length, 1, 'fired once');
-    A.eq(s.runs[0].station, bayStation, "the run carries the bay's OWN station — cron gets the same capability isolation as a routed channel message");
+    A.eq(s.runs[0].station, bayStation, "the run carries the bay's OWN farm — cron gets the same capability isolation as a routed channel message");
     await flush();
   }
 

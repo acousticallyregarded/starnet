@@ -9,7 +9,7 @@ const app = fs.readFileSync(require.resolve('../frontend/app/app.js'), 'utf8');
 const start = app.indexOf('  let unsubscribeStationSave = null;');
 const end = app.indexOf('  /* ---------- connect screen', start);
 assert.ok(start > 0 && end > start, 'production autosave and persistence functions exist');
-assert.match(app, /pendingStationDoc = null;\s+watchStationSave\(\);/, 'every loaded station is subscribed');
+assert.match(app, /pendingStationDoc = null;\s+watchStationSave\(\);/, 'every loaded farm is subscribed');
 const cache = new Map(), pushed = [], notices = [];
 let fail = false, flashes = 0;
 const c = vm.createContext({ console: { warn() {} }, queueMicrotask,
@@ -29,7 +29,7 @@ async function check(label, action) {
   const result = action(); assert.notEqual(result && result.ok, false, label + ': valid mutation');
   await tick();
   assert.equal(pushed.length, before + 1, label + ': queued for durable write without closing Build');
-  assert.deepEqual(stored().station, c.station.serialize(), label + ': complete station round-trip');
+  assert.deepEqual(stored().station, c.station.serialize(), label + ': complete farm round-trip');
   assert.equal(stored().workstreams[0].id, c.Workstreams.serialize().workstreams[0].id);
   assert.deepEqual(M.deserialize(stored().station).serialize(), c.station.serialize(), label + ': reload retains design');
 }
@@ -51,7 +51,7 @@ async function check(label, action) {
   const previous = c.station;
   c.station = M.deserialize(stored().station); watch(); watch();
   const count = pushed.length; previous.renameRoom(previous.spawnRoomId(), 'Detached'); await tick();
-  assert.equal(pushed.length, count, 'replaced stations cannot trigger saves');
+  assert.equal(pushed.length, count, 'replaced farms cannot trigger saves');
   await check('reentry has one subscription', () => c.station.renameRoom(c.station.spawnRoomId(), 'Current'));
   const lastGood = cache.get('starnet.save'), flashCount = flashes;
   fail = true;
@@ -75,7 +75,7 @@ async function check(label, action) {
   const departing = c.station, reentryCount = pushed.length;
   departing.renameRoom(departing.spawnRoomId(), 'Queued before reentry');
   c.station = M.create(); watch();
-  c.station.renameRoom(c.station.spawnRoomId(), 'Replacement station');
+  c.station.renameRoom(c.station.spawnRoomId(), 'Replacement farm');
   await tick();
   assert.equal(pushed.length, reentryCount + 1, 'pending old callback and new edit coalesce across reentry');
   assert.deepEqual(stored().station, c.station.serialize(), 'queued save cannot resurrect the replaced model');

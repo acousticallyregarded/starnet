@@ -9,7 +9,7 @@ const http = require('node:http');
 const { SidecarFixture } = require('./helpers/sidecar-fixture.js');
 const Pipeline = require('../frontend/app/pipeline.js');
 
-test('fix-suggest answers checked fixes on the station default model; sample runs name their bay', async () => {
+test('fix-suggest answers checked fixes on the farm default model; sample runs name their bay', async () => {
   const calls = [];
   const server = http.createServer((req, res) => {
     if (req.url.includes('/chat/completions')) {

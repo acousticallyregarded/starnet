@@ -42,7 +42,7 @@ assert.equal(file.format, 'starnet.build'); assert.equal(file.version, 1); asser
 const flat = JSON.stringify(file);
 for (const k of WORK) assert.ok(!flat.includes('"' + k + '"'), 'export never carries ' + k);
 assert.ok(!flat.includes('secret-client') && !flat.includes('gmail-personal'), 'no private value survives');
-assert.ok(!('createdAt' in file.station.meta) && !('templateId' in file.station.meta), 'no station identity or preset claim');
+assert.ok(!('createdAt' in file.station.meta) && !('templateId' in file.station.meta), 'no farm identity or preset claim');
 assert.deepEqual(file.station.edges, [], 'pipeline edges name agents: they stay home');
 assert.equal(out.dropped.made, 1, 'the player-made prop is counted');
 assert.ok(!file.station.props.some(p => p.t.startsWith('user_')), 'the player-made prop stays home');
@@ -64,7 +64,7 @@ const kaiDesk = after.props.find(p => p.agentId === 'kai');
 assert.ok(kaiDesk, "the importer's crew keep a workstation");
 assert.deepEqual(shape({ props: after.props }).filter(s => expected.includes(s)).length, expected.length, 'every shared prop landed where it stood');
 assert.deepEqual(after.belts, saved.belts, 'same belts');
-assert.equal(after.meta.createdAt, before.meta.createdAt, "the importer's station keeps its identity");
+assert.equal(after.meta.createdAt, before.meta.createdAt, "the importer's farm keeps its identity");
 assert.ok(!after.props.some(p => p.brief || p.projectRoot || p.connectorId || p.label), 'nothing of the sharer\'s work arrived');
 assert.ok(!after.props.some(p => p.agentId && p.agentId !== 'kai'), "no desk is owned by the sharer's agents");
 const srcLinks = src.links(), dstLinks = dst.links();
@@ -88,7 +88,7 @@ assert.ok(ev.dropped.work >= 1);
 
 // a plain station save is a build too (same cleaner)
 const plain = B.readBuild(JSON.stringify(saved), M, 500);
-assert.ok(plain.ok && plain.dropped.made === 1 && !JSON.stringify(plain.doc).includes('secret-client'), 'a raw station save is cleaned the same way');
+assert.ok(plain.ok && plain.dropped.made === 1 && !JSON.stringify(plain.doc).includes('secret-client'), 'a raw farm save is cleaned the same way');
 
 // 5: refusals
 assert.equal(B.readBuild('not json', M, 1).error, 'NOT_JSON');

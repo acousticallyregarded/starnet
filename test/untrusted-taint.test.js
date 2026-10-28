@@ -166,8 +166,8 @@ A.eq(taint.postTaintBoundary(FS_WRITE, { taintedBy: 'web_fetch', surface: 'auton
     // assert initialTaint 'quoted user material', which locked an ordinary "Fix this crash: ```…```" run's tools and
     // replayed that lock into every later turn of the conversation.
     const quoted = classify([{ role: 'user', content: '> I prefer quoted instructions.' }]);
-    A.eq(quoted.initialTaint, null, 'quoted text the Commander typed does not lock tools, grants or workers');
-    A.eq(quoted.quotedOwnerInput, true, 'quoted text the Commander typed is flagged for the learning-only exclusion');
+    A.eq(quoted.initialTaint, null, 'quoted text the Farmer typed does not lock tools, grants or workers');
+    A.eq(quoted.quotedOwnerInput, true, 'quoted text the Farmer typed is flagged for the learning-only exclusion');
     A.eq(quoted.learningInput, null, 'quoted material cannot establish an owner preference');
     // the review's own repro shapes: a pasted stack trace, a quoted file name, "example" before a line break
     for (const text of ['Run the tests and fix this:\n```\nTypeError: cannot read \'id\' of undefined\n```',
@@ -272,8 +272,8 @@ A.eq(taint.postTaintBoundary(FS_WRITE, { taintedBy: 'web_fetch', surface: 'auton
     const note = (tasteWithheld) => vm.runInNewContext('(() => { ' + renderLine[1] + ' return earlier && earlier.note; })()', {
       EarlierConversation: require('../sidecar/earlier-conversation.js'), ctxMgr: { contextLimit: 200000 }, searchTool: '', tasteWithheld,
       dropped: [{ role: 'user', content: 'Always ship the dark theme first.' }, { role: 'assistant', content: 'Will do.' }] });
-    A.ok(/not the Commander's instructions/.test(note(true)) && !/from the Commander/.test(note(true)), 'a group or guest run carries the dropped messages as chat context, not the Commander\'s words');
-    A.ok(/from the Commander/.test(note(false)) && /still holds/.test(note(false)), 'the Commander\'s own chat still carries their dropped words as standing');
+    A.ok(/not the Farmer's instructions/.test(note(true)) && !/from the Farmer/.test(note(true)), 'a group or guest run carries the dropped messages as chat context, not the Farmer\'s words');
+    A.ok(/from the Farmer/.test(note(false)) && /still holds/.test(note(false)), 'the Farmer\'s own chat still carries their dropped words as standing');
   }
   A.ok(/revokedByTaint\.isSource\(liveTool, c\)/.test(src), 'taint is latched from the tool and path that produced the content');
   // A result with real content taints WHETHER OR NOT the call succeeded. The old rule required !r.isError on
@@ -313,7 +313,7 @@ A.eq(taint.postTaintBoundary(FS_WRITE, { taintedBy: 'web_fetch', surface: 'auton
   // team.resume: the stored task's taint rides along (resumeConnectorOptions resumedTaint) — never blame a clean resuming
   // lead's chat, and never promise that resuming from a new session unlocks it
   A.ok(/const fromResume = !!resumedTaint && !!ownTaint && ownTaint === taintHandedIn && taintHandedIn === resumedTaint;/.test(src)
-    && /const taintCause = fromResume\s*\n\s*\? (?:\(unverified\s*\n\s*\? 'This run resumes a task whose original context StarNet could not verify[^\n]*\n[^\n]*\n\s*: )?'This run resumes a task first handed over from a chat with outside content/.test(src),
+    && /const taintCause = fromResume\s*\n\s*\? (?:\(unverified\s*\n\s*\? 'This run resumes a task whose original context Homestead could not verify[^\n]*\n[^\n]*\n\s*: )?'This run resumes a task first handed over from a chat with outside content/.test(src),
     'a resumed task\'s lock says it rides the stored task, checked BEFORE the handed-over-by-the-lead wording');
   A.ok(/resuming it stays under the same lock from any session/.test(src) && /\(resumedTaint\s*\n\s*\? 'hand the task over fresh \(not resumed\) from a new session/.test(src),
     'a resumed task\'s remedy is a fresh hand-over, not a resume from a new session');

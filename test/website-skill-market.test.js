@@ -23,7 +23,7 @@ const html = read('market.html').replace(/<!--held:community-->([\s\S]*?)<!--hel
 const js = read('market.js');
 
 // ---- the page ----
-A.ok(/<title>Skill Market — StarNet<\/title>/.test(html), 'the page has its own title');
+A.ok(/<title>Skill Market — Homestead<\/title>/.test(html), 'the page has its own title');
 A.ok(/<link rel="canonical" href="https:\/\/starnetos\.com\/market\.html">/.test(html), 'and a canonical URL');
 A.ok(!/<script(?![^>]*\bsrc=)[^>]*>/i.test(html), 'no inline <script> (the CSP forbids it)');
 A.ok(!/\son[a-z]+\s*=/i.test(html), 'no inline event handlers');
@@ -36,7 +36,7 @@ A.ok(/<section class="section" id="share">[\s\S]*?<a class="btn btn-primary" hre
 A.eq([...html.matchAll(/href="(https:\/\/account\.starnetos\.com[^"]*)"/g)].map(m => m[1]).filter(u => u !== 'https://account.starnetos.com/account/skills'), [], 'and no other account URL');
 A.ok(!/Not yet\. Today the market carries/.test(html), 'the FAQ no longer says publishing is impossible');
 A.eq([...html.matchAll(/<span class="section-no">(\d+)<\/span>/g)].map(m => m[1]), ['01', '02', '03', '04', '05'], 'sections stay numbered in order');
-A.ok(/if \(s\.uploaded === true\) meta\.appendChild\(document\.createTextNode\(/.test(js), 'an uploaded skill\'s card says it was shared by a StarNet user (as text)');
+A.ok(/if \(s\.uploaded === true\) meta\.appendChild\(document\.createTextNode\(/.test(js), 'an uploaded skill\'s card says it was shared by a Homestead user (as text)');
 
 // ---- every page links it ----
 const pages = [];
@@ -59,7 +59,7 @@ A.eq(shell.status, 0, 'the shared shell is stamped: ' + (shell.stdout || shell.s
 // ---- the script ----
 const fetches = [...js.matchAll(/fetch\(\s*([^,)]+)/g)].map(m => m[1].trim());
 A.eq(fetches.sort(), ['INDEX', 'path'], 'market.js makes exactly two kinds of request: the catalog and a package file');
-A.ok(/var INDEX = '\/\.well-known\/starnet-skills\.json';/.test(js), 'the catalog is the same-origin signed index stations install from');
+A.ok(/var INDEX = '\/\.well-known\/starnet-skills\.json';/.test(js), 'the catalog is the same-origin signed index farms install from');
 A.ok(/function safePath\(p\) \{ return \/\^\\\/skills\\\//.test(js), 'package files are only requested under /skills/<slug>/<version>/');
 A.ok(!/innerHTML|insertAdjacentHTML|outerHTML|document\.write/.test(js), 'catalog text is never inserted as HTML');
 A.ok(/function safeHttps\(u\)/.test(js) && /a\.href = up;/.test(js), 'upstream links go through the https check');

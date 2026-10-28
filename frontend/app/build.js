@@ -1148,7 +1148,7 @@ const Build = (() => {
     const key = [spec.id, id, geoVer].join('|');
     if (box.dataset.infoKey !== key) {
       box.dataset.infoKey = key;
-      const purpose = facts.purpose || PALETTE_PURPOSE[spec.id] || spec.desc || (category === 'decoration' ? 'Changes the look of your farm. Adds no agent tools.' : 'Equipment for arranging work in the farm.');
+      const purpose = facts.purpose || PALETTE_PURPOSE[spec.id] || spec.desc || (category === 'decoration' ? 'Changes the look of your farm. Adds no agent tools.' : 'Equipment for arranging work on the farm.');
       box.innerHTML = '<p class="refit-purpose">' + esc(purpose) + '</p>' +
         (facts.cap ? '<div class="equipment-status" role="status">Checking current access…</div><div class="refit-equipment-scope">' +
         esc('Equipment sharing: ' + facts.scope + '.') + '</div>' :
@@ -4109,7 +4109,7 @@ const Build = (() => {
     cardRegister(g, closeP);
     g.innerHTML = '<div class="refit-guide-card"><h3>▮ PLUGIN TERMINAL — choose its plugin</h3>'
       + '<ul><li>This terminal gives its room’s agent the chosen plugin’s <b>tools</b> (each call asks you first, unless you choose Always or Full access).</li>'
-      + '<li>Clicking it in the farm opens that plugin’s window.</li></ul>'
+      + '<li>Clicking it on the farm opens that plugin’s window.</li></ul>'
       + '<div class="refit-conn-rows" id="pl-rows">loading…</div>'
       + '<div class="refit-actions"><button type="button" class="btn-sm" id="pl-unbind">✕ UNBIND</button><button type="button" class="btn-sm" id="pl-cancel">CANCEL</button></div></div>';
     root.appendChild(g);

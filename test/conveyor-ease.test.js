@@ -71,7 +71,7 @@ A.ok(/replace\(\/\\n\*MATCH THIS EXAMPLE of a good result\[\\s\\S\]\*\$\/, ''\)/
   '…as one marked block that replaces any earlier example, bounded to fit the 2000-character brief');
 A.ok(/★ KEEP THIS STYLE/.test(res) && /★ STYLE KEPT/.test(res) && !/KEEP AS THE EXAMPLE</.test(res), '…a key under the result (★ KEEP THIS STYLE, the WORKFLOWS word), then a tag saying the style is kept');
 A.ok(/keepTaste\(mine, last\.runId\);/.test(ex) && /api\('\/api\/taste\/keep-style', 'POST', \{ runId \}\)/.test(ex),
-  '…and the same approval becomes the Commander\'s station-wide taste, with the delivered run\'s real reference (DESIGN ANCHOR 10-11)');
+  '…and the same approval becomes the Farmer\'s station-wide taste, with the delivered run\'s real reference (DESIGN ANCHOR 10-11)');
 A.ok(/k\.sent\.then\(stored => stored && api\('\/api\/taste\/keep-style', 'POST', \{ runId: k\.runId, undo: true \}\)/.test(ex) && /unkeepTasteIfUndone\(mine\);/.test(panel),
   '…and the panel\'s UNDO takes the crew\'s copy back too, only after the keep itself landed (the two can never cross)');
 /* ---------- the loop's machine note, in words ---------- */
@@ -105,7 +105,7 @@ A.ok(/unknown right now/.test(unknownTip) && /shipment history can't be read/.te
 A.eq(todayTip('SHIPPED', '3'), todayTip('SHIPPED'), 'a known SHIPPED keeps its meaning');
 // (runtime repair 2026-10-12) the ? tip promised "the number comes back" — a job that shipped while the history was unreadable is
 // held in memory only, so the tip names the restart that loses it; and a LOWER BOUND (N+) says the real number is higher
-A.ok(/counted once it can be read again, unless the station restarts first/.test(unknownTip) && !/the number comes back when/.test(unknownTip), 'the ? tip never promises the whole count back: ' + unknownTip);
+A.ok(/counted once it can be read again, unless the farm restarts first/.test(unknownTip) && !/the number comes back when/.test(unknownTip), 'the ? tip never promises the whole count back: ' + unknownTip);
 const atLeastTip = todayTip('SHIPPED', '5000+');
 A.ok(/^SHIPPED\nat least this many/.test(atLeastTip) && /the real number is higher/.test(atLeastTip) && !/recorded jobs that reached the OUTBOX/.test(atLeastTip), 'a lower-bound SHIPPED says it is at least that many: ' + atLeastTip);
 for (const key of ['RUNS', 'SHIPPED', 'FAILED', 'TESTS', 'MEDIAN', '$ TODAY (UTC)']) {
@@ -150,14 +150,14 @@ A.ok(!/LAST stage/.test(P.handoffPrompt('req', 'writer', 'draft', 1, 'be picky',
 const turnAt = lastStage => Chain.hopTurn({ originalText: 'req', from: 'a', upstream: 'up', hop: 1, target: 'w', targetDock: 'd2', lineId: 'L', lastStage });
 A.ok(/LAST stage/.test(turnAt((a, d) => a === 'w' && d === 'd2')) && !/LAST stage/.test(turnAt(() => false)) && !/LAST stage/.test(turnAt(undefined)), 'the chain asks lastStage(target, dock) — no helper, no change');
 A.ok(/lastStage: \(agentId, dockId\) => router\.chainShipsToOutbox\(agentId, dockId\)/.test(sidecar) && /lastStage: \(a, d\) => router\.chainShipsToOutbox\(a, d\)/.test(sidecar),
-  '…and the station answers it for real runs and step tests alike: the dock whose lane ships to the OUTBOX');
+  '…and the farm answers it for real runs and step tests alike: the dock whose lane ships to the OUTBOX');
 // the one billed station call NOT RIGHT? and SET IT UP FOR ME share (2026-09-30: stationOneShot)
 const oneShot = at(sidecar, 'async function stationOneShot(prompt, tag, failLead) {', 'async function handleRoutingFixSuggest(req, res) {');
 const route = at(sidecar, 'async function handleRoutingFixSuggest(req, res) {', 'async function stepTestRunDock(h) {');
 A.ok(/\{ m: 'POST', exact: '\/api\/routing\/fix-suggest', h: handleRoutingFixSuggest \}/.test(sidecar), 'POST /api/routing/fix-suggest is a route');
 A.ok(oneShot.indexOf('budget.check(null, \'agent\', 0, Date.now(), null)') > 0 && oneShot.indexOf('budget.check(') < oneShot.indexOf('provider.stream('), '…the spending cap is read BEFORE the model call');
 A.ok(/cfg = sampleRunConfigFor\('agent'\)/.test(oneShot) && /ledger\.record\(\{ runId: tag \+ '-' \+ crypto\.randomUUID\(\), agentId: 'station'/.test(oneShot) && /catch \(e\) \{ failNote\(tag \+ '\.ledger', e\); \}/.test(oneShot)
-  && /stationOneShot\(LineFix\.buildPrompt\(input\), 'linefix', /.test(route), '…one call on the station default model, its spend booked on the ledger (a failed booking is noted)');
+  && /stationOneShot\(LineFix\.buildPrompt\(input\), 'linefix', /.test(route), '…one call on the farm default model, its spend booked on the ledger (a failed booking is noted)');
 // (sweep 10-02) a call that times out or errors after usage arrived still books it — those tokens were billed
 A.ok(/\} catch \(e\) \{\s*book\(\);\s*return \{ ok: false, status: 502/.test(oneShot) && /\} finally \{ clearTimeout\(timer\); stationOneShots\.delete\(ctrl\); \}\s*book\(\);/.test(oneShot), '…and a failed or timed-out call books the usage it already used');
 A.ok(/const parsed = LineFix\.parseFixes\(call\.out, input\);/.test(route) && /return json\(400, \{ ok: false, error: input\.error \}\);/.test(route), '…the reply checked (LineFix), bad input refused');

@@ -55,7 +55,7 @@ gaps.push({ id: 'sq:kaze:shell', status: 'open', firstSeenAt: 25000 });
 DG.tick();
 A.eq(glowing(), 'toggle', 'the next new gap lights BUILD again');
 refit = true; DG.tick();
-A.eq(glowing(), 'none', 'entering BUILD MODE clears it (the Commander is where the fix is made)');
+A.eq(glowing(), 'none', 'entering BUILD MODE clears it (the Farmer is where the fix is made)');
 refit = false; DG.tick();
 A.eq(glowing(), 'none', 'and leaving BUILD MODE does not relight a gap already seen');
 

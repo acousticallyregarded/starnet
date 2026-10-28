@@ -40,9 +40,9 @@ const sc = require('../bin/lib/station-commands.js');
   A.ok(core.isTaskText('write the release notes'), 'an instruction is a task (tools offered)');
   A.ok(!core.isTaskText('thanks!'), 'a pleasantry is talk');
   A.ok(core.isTaskText('yes', 'Want me to draft it?'), 'a yes to an offer to act is the task');
-  A.eq(core.buildRunBody({ model: 'm', provider: 'p', agentId: 'agent' }, 'fix the build', {}).isTask, true, 'starnet -p marks a task (without it the station offers no tools)');
+  A.eq(core.buildRunBody({ model: 'm', provider: 'p', agentId: 'agent' }, 'fix the build', {}).isTask, true, 'starnet -p marks a task (without it the farm offers no tools)');
   A.eq(core.buildRunBody({ model: 'm', provider: 'p', agentId: 'agent' }, 'hello', {}).isTask, false, '…and talk as talk');
-  A.eq([toolName('fs_write'), toolName('fs.write'), toolName('web')], ['fs.write', 'fs.write', 'web'], 'tool names as the station says them');
+  A.eq([toolName('fs_write'), toolName('fs.write'), toolName('web')], ['fs.write', 'fs.write', 'web'], 'tool names as the farm says them');
   A.eq(oneLine('{\n  "a": "x\\ny"\n}', 100), '{ "a": "x y" }', 'pretty JSON reads as one line');
   A.eq(costText({ usd: null, atLeast: null }), 'spend unknown', 'unknown spend is never $0');
   A.eq(costText({ usd: null, atLeast: 0.5 }), '≥$0.50 today', 'unsettled spend says at least');
@@ -89,7 +89,7 @@ function crew() {
   astra = m.rows(T0 + 600).find(r => r.id === 'astra');
   A.eq(astra.status.key, 'needs', 'an open ask = needs you');
   A.eq(m.header(T0).needs, 1, 'the header counts it');
-  A.eq(m.front().summary, 'auth.js', 'the ask reads as what it acts on (the station sends the whole request; the terminal words its glance)');
+  A.eq(m.front().summary, 'auth.js', 'the ask reads as what it acts on (the farm sends the whole request; the terminal words its glance)');
   m.apply('permission.response', { runId: 'r1', agentId: 'astra', promptId: 'p1', decision: 'once', via: 'terminal' }, T0 + 700);
   A.eq([m.front(), m.rows(T0 + 800).find(r => r.id === 'astra').status.key], [null, 'working'], 'answered → back to working');
   A.ok(/allowed once from the terminal/.test(m.logOf('astra').slice(-1)[0].text), 'the conversation says who answered');
@@ -146,7 +146,7 @@ function crew() {
   m.applyBudget({ spentToday: null, atLeast: 0.25 });
   A.eq(costText(m.state.cost), '≥$0.25 today', 'an unsettled ledger reads as at least');
   m.applyBudget({ spentToday: null, atLeast: { today: 0, lifetime: 1.35, runs: 815 } });
-  A.eq(costText(m.state.cost), 'spend unsettled', "the station's own floor shape ({ today, lifetime, runs }) at $0.00 names the state, never reads as $0");
+  A.eq(costText(m.state.cost), 'spend unsettled', "the farm's own floor shape ({ today, lifetime, runs }) at $0.00 names the state, never reads as $0");
   m.applyBudget({ spentToday: null, atLeast: { today: 0.4, lifetime: 1.75, runs: 816 } });
   A.eq(costText(m.state.cost), '≥$0.40 today', 'a floor above zero reads as at least');
   m.applyLines({ lines: [{ lineId: 'L9' }] }, [{ id: 'j9', line: 'L9', name: 'CRUCIBLE', status: 'delivered', startedAt: T0, endedAt: T0 + 1000, steps: 8 }]);
@@ -160,7 +160,7 @@ function crew() {
 }
 
 // ---- the screen ---------------------------------------------------------------------------------------------------
-function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ focus: 'astra', input: '', scroll: 0, still: true, stationLabel: 'station · test' }, ui), { cols, rows }, now); }
+function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ focus: 'astra', input: '', scroll: 0, still: true, stationLabel: 'farm · test' }, ui), { cols, rows }, now); }
 {
   const m = crew();
   m.apply('agent.run.start', { runId: 'r1', agentId: 'astra', trigger: 'directive', surface: 'interactive', prompt: 'fix it' }, T0);
@@ -201,9 +201,9 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   A.ok(stripSeg && /amfill/.test(stripSeg[1]), 'the NEEDS YOU strip is a filled amber label');
   const sbRow = text.findIndex(l => /^│ STANDING BY 2 +│/.test(l));
   A.ok(sbRow > astraRow && /^│  ○ (NOVA|CYPHER) +│/.test(text[sbRow + 1]), 'the rest stand by under their own strip');
-  A.ok(/^ {2}CREW 3 │ {2}⠋ 1 WORKING │ {2}▲ 1 NEEDS YOU │ {2}SPEND UNKNOWN +\d\d:\d\d $/.test(text[33]), 'the stat bar along the foot: crew, working, needs you, spend, the clock (no level until the station says one): ' + text[33]);
+  A.ok(/^ {2}CREW 3 │ {2}⠋ 1 WORKING │ {2}▲ 1 NEEDS YOU │ {2}SPEND UNKNOWN +\d\d:\d\d $/.test(text[33]), 'the stat bar along the foot: crew, working, needs you, spend, the clock (no level until the farm says one): ' + text[33]);
   const lv = screen(m, { stats: { level: 3, inLevel: 12, span: 40, frac: 0.3 } }, 110, 34, T0 + 3000).map(tui.toPlain)[33];
-  A.ok(/^ LV 3  ▌{10} {2}XP 12\/40 {2}│ {2}CREW 3 │/.test(lv), 'with the station\'s level it leads with LV and a segmented XP bar: ' + lv);
+  A.ok(/^ LV 3  ▌{10} {2}XP 12\/40 {2}│ {2}CREW 3 │/.test(lv), 'with the farm\'s level it leads with LV and a segmented XP bar: ' + lv);
   const lvRow = screen(m, { stats: { level: 3, inLevel: 12, span: 40, frac: 0.3 } }, 110, 34, T0 + 3000)[33];
   A.eq(lvRow.filter(([t, s]) => /^▌+$/.test(t) && /ph/.test(s)).reduce((n, [t]) => n + t.length, 0), 3,'the XP bar lights the share of the level it has made (3 of 10)');
   const tight = screen(m, { stats: { level: 3, inLevel: 12, span: 40, frac: 0.3 } }, 92, 34, T0 + 3000).map(tui.toPlain)[33];
@@ -242,7 +242,7 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   A.ok(text[crewTop].indexOf('╭', 1) >= 29 && !/CREW|COMMS/.test(text[crewTop]), 'COMMS is framed beside the crew, from right under the tab rule, so it gets most of the screen (the frames carry no titles)');
   const compact = screen(m, {}, 70, 20, T0 + 3000).map(tui.toPlain);
   const cTop = compact.findIndex(l => /^╭─ COMMS ▸ ASTRA /.test(l));
-  A.ok(/S T A R N E T/.test(compact[0]) && /1 needs you/.test(compact[0]) && cTop > 0 && cTop <= 3 && /2\/3 ─╮$/.test(compact[cTop].trimEnd()) && !compact.some(l => /CREW/.test(l)), 'a small terminal gets the one-line mark with the counts, and COMMS full width, saying which agent of how many: ' + compact[cTop]);
+  A.ok(/H O M E S T E A D/.test(compact[0]) && /1 needs you/.test(compact[0]) && cTop > 0 && cTop <= 3 && /2\/3 ─╮$/.test(compact[cTop].trimEnd()) && !compact.some(l => /CREW/.test(l)), 'a small terminal gets the one-line mark with the counts, and COMMS full width, saying which agent of how many: ' + compact[cTop]);
   A.ok(!screen(m, { logo: 'plain' }, 110, 34, T0).map(tui.toPlain).some(l => l.indexOf(logo.word[1].trim()) >= 0), 'STARNET_LOGO=plain keeps to the one-line mark');
   A.ok(text.some(l => /ASTRA ASKS/.test(l)) && text.some(l => /\[Y\] ALLOW ONCE/.test(l)), 'the open ask is a card with its keys');
   A.ok(text.some(l => /evil {2}text|evil text/.test(l)), 'model text is shown…');
@@ -299,7 +299,7 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
     A.eq(askGlance('web.request', JSON.stringify({ method: 'post', url: 'https://hooks.example.com/deploy' })), 'POST https://hooks.example.com/deploy', 'a web request asks with its method');
     const m5 = makeStation();
     const t5 = screen(m5, { focus: '' }, 110, 30, T0).map(tui.toPlain);
-    A.ok(/┘ COMMS └/.test(t5[3]) && t5.some(l => /connecting to the station…/.test(l)), 'before the roster loads, COMMS says it is connecting (never an empty tab titled —)');
+    A.ok(/┘ COMMS └/.test(t5[3]) && t5.some(l => /connecting to the farm…/.test(l)), 'before the roster loads, COMMS says it is connecting (never an empty tab titled —)');
   }
   A.ok(/needs at least/.test(tui.toPlain(screen(m, {}, 40, 10, T0)[0])), 'a terminal too small says so');
   const help = screen(m, { overlay: { title: 'COMMANDS', items: tui.HELP, foot: 'any key closes this' } }, 110, 34, T0).map(tui.toPlain);
@@ -340,7 +340,7 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
     A.eq(askGlance('fs.write', w), 'auth-fix.md (3 lines)', 'a file write asks as its file and how much goes in');
     A.eq(askInspect('fs.write', w), 'File: auth-fix.md\n\n# Fix\n\nKeep ?next= through.\n', '[v] reads a file write as the file: its path, then its text as written');
     A.eq(askGlance('shell.exec', JSON.stringify({ command: 'npm run test:fast', cwd: 'C:/w' }, null, 2)), 'npm run test:fast', 'a command asks as the command');
-    A.eq(askGlance('fs.write', 'auth.js (+2 −1)'), 'auth.js (+2 −1)', 'a summary the station already worded is kept');
+    A.eq(askGlance('fs.write', 'auth.js (+2 −1)'), 'auth.js (+2 −1)', 'a summary the farm already worded is kept');
   }
 }
 
@@ -401,7 +401,7 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   const f0 = feed.frame('nova', 'idle', T0, false, box);
   const d0 = sx.decodeSixel(f0.sixel);
   A.ok(d0.width === 260 && d0.height === 160, 'one frame fills the card exactly: 26 × 8 cells of 10 × 20 px = ' + d0.width + '×' + d0.height);
-  A.ok(d0.px.every(v => v >= 0 && v < cf.PALETTE.length), 'every pixel is one of StarNet\'s palette colours');
+  A.ok(d0.px.every(v => v >= 0 && v < cf.PALETTE.length), 'every pixel is one of Homestead\'s palette colours');
   // its walk follows its state
   const sim = (key, from, ms) => { let f; for (let t = from; t <= from + ms; t += 100) f = feed.frame('nova', key, T0 + t, false, box); return { f, s: feed.sim('nova', key, T0 + from + ms) }; };
   const idleA = feed.sim('nova', 'idle', T0 + 50);
@@ -410,7 +410,7 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   const typing = new Set(); for (let t = 9200; t < 10400; t += 100) typing.add(feed.frame('nova', 'working', T0 + t, false, box).key);
   A.ok(typing.size >= 3, 'seated, it types: its frames change (' + typing.size + ' looks in a second)');
   const used = f => { const d = sx.decodeSixel(f.sixel); const s = new Set(); for (const v of d.px) s.add(v); return [...s].map(i => cf.PALETTE[i]); };
-  A.ok(used(feed.frame('nova', 'working', T0 + 10500, true, box)).some(([r, g, b]) => r > 170 && g < r * 0.4 && b < r * 0.45), 'working: its rim is the station red');
+  A.ok(used(feed.frame('nova', 'working', T0 + 10500, true, box)).some(([r, g, b]) => r > 170 && g < r * 0.4 && b < r * 0.45), 'working: its rim is the farm red');
   sim('needs', 10600, 300);
   A.ok(used(feed.frame('nova', 'needs', T0 + 11000, true, box)).some(([r, g, b]) => r > 170 && g > r * 0.55 && g < r * 0.8 && b < 80), 'needs you: amber');
   const dn = sim('done', 11100, 4000);
@@ -458,13 +458,13 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   A.eq(folder.skipReason('c:\\users\\YOU', W), 'home', '…in any case');
   A.eq(folder.skipReason('C:\\', W), 'root', 'nor a drive root');
   A.eq(folder.skipReason('C:\\Windows\\System32', W), 'system', 'nor the OS (an admin shell opens in System32)');
-  A.eq(folder.skipReason('C:\\Users\\you\\AppData\\Roaming\\ai.skynet.harness\\workspaces\\agent', Object.assign({ stationDirs: ['C:\\Users\\you\\AppData\\Roaming\\ai.skynet.harness\\workspaces'] }, W)), 'station', "nor StarNet's own workspaces");
+  A.eq(folder.skipReason('C:\\Users\\you\\AppData\\Roaming\\ai.skynet.harness\\workspaces\\agent', Object.assign({ stationDirs: ['C:\\Users\\you\\AppData\\Roaming\\ai.skynet.harness\\workspaces'] }, W)), 'station', "nor Homestead's own workspaces");
   A.eq(folder.skipReason('C:\\Users\\you\\Desktop\\gen', W), '', 'a project in your home is');
   A.eq(folder.skipReason('/', { platform: 'linux', path: path.posix, env: {}, home: '/home/you' }), 'root', 'the filesystem root');
   A.eq(folder.skipReason('/home/you/code/app', { platform: 'linux', path: path.posix, env: {}, home: '/home/you' }), '', 'a linux project is offered');
 
   const projects = [{ root: 'C:\\Code\\App', blessed: true }, { root: 'C:\\Code', blessed: true }, { root: 'C:\\Code\\App\\pkg', blessed: false }];
-  A.eq(folder.trustedRoot('c:\\code\\app\\pkg\\src', projects, W), 'C:\\Code\\App', 'the deepest TRUSTED project holding the folder, spelled as the station spells it (an untrusted one is no grant)');
+  A.eq(folder.trustedRoot('c:\\code\\app\\pkg\\src', projects, W), 'C:\\Code\\App', 'the deepest TRUSTED project holding the folder, spelled as the farm spells it (an untrusted one is no grant)');
   A.eq(folder.trustedRoot('C:\\Codex', projects, W), '', 'a folder that only starts with a trusted name is not inside it');
   A.eq(folder.trustedRoot('C:\\Code', [{ root: 'C:\\Code', blessed: false }], W), '', 'a project whose trust was removed is not trusted');
 
@@ -476,7 +476,7 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   A.eq(folder.locate({ cwd: tmp, projects: [] }, { home: tmp }).skip, 'home', 'started in your home folder: nothing to ask');
   A.eq(folder.shortPath('C:\\Users\\you\\Desktop\\gen', 40, W), '~\\Desktop\\gen', 'a folder in your home is said from ~');
   A.ok(/^…/.test(folder.shortPath('D:\\' + 'x'.repeat(60) + '\\app', 20, W)) && [...folder.shortPath('D:\\' + 'x'.repeat(60) + '\\app', 20, W)].length === 20, 'a long one keeps its far end');
-  A.ok(folder.isLocalHost('127.0.0.1') && folder.isLocalHost('localhost') && !folder.isLocalHost('10.0.0.5'), 'only a station on this machine shares its folders');
+  A.ok(folder.isLocalHost('127.0.0.1') && folder.isLocalHost('localhost') && !folder.isLocalHost('10.0.0.5'), 'only a farm on this machine shares its folders');
   fs.rmSync(tmp, { recursive: true, force: true });
 
   // the card
@@ -515,15 +515,15 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   const rows = screen(m2, {}, 110, 34, T0 + 10);
   const text = rows.map(tui.toPlain);
   const u = text.findIndex(l => /\/usage +Spend/.test(l));
-  A.ok(u > 0 && /today \$0\.42 · lifetime \$12\.30/.test(text[u + 1]) && /214 runs/.test(text[u + 2]), 'a station command\'s answer shows under the command that asked: its title, then its lines: ' + text.slice(u, u + 3).join(' / '));
+  A.ok(u > 0 && /today \$0\.42 · lifetime \$12\.30/.test(text[u + 1]) && /214 runs/.test(text[u + 2]), 'a farm command\'s answer shows under the command that asked: its title, then its lines: ' + text.slice(u, u + 3).join(' / '));
   const label = rows[u].find(([t]) => /\/usage/.test(t));
   A.ok(label && /ph b/.test(label[1]), 'the command is the label, in the accent');
   const no = text.findIndex(l => /\/routine +no routine named "nightly"/.test(l));
   const noSeg = no > 0 && rows[no].find(([t]) => /no routine named/.test(t));
-  A.ok(noSeg && /am/.test(noSeg[1]), 'a "no" from the station is amber, not an error: it answered');
+  A.ok(noSeg && /am/.test(noSeg[1]), 'a "no" from the farm is amber, not an error: it answered');
   A.ok(text.some(l => /YOU +\/plan refactor commands/.test(l)) && !text.some(l => /skill recipe for this task/.test(l)), 'a skill shows as you typed it, not as the whole recipe it sends');
   for (const c of ['/retry', '/status', '/skills', '/usage  /tools', '/routine', '/away', '/version']) A.ok(tui.HELP.some(([k]) => k === c), '/help lists ' + c);
-  A.ok(/\/usage · \/tools · \/routine · \/away/.test(core.USAGE) && /each skill as \/<skill> <task>/.test(core.USAGE), 'the usage names the station\'s own commands and skills');
+  A.ok(/\/usage · \/tools · \/routine · \/away/.test(core.USAGE) && /each skill as \/<skill> <task>/.test(core.USAGE), 'the usage names the farm\'s own commands and skills');
 }
 
 // ---- an ask's answers: the app card's own ladder (once · always · deny), Always only where the app offers it ---------------
@@ -540,9 +540,9 @@ function screen(m, ui, cols, rows, now) { return tui.render(m, Object.assign({ f
   m2.apply('agent.run.start', { runId: 'r2', agentId: 'astra', trigger: 'directive', surface: 'interactive', prompt: 'more room' }, T0);
   m2.apply('permission.prompt', { runId: 'r2', agentId: 'astra', promptId: 'p2', tool: 'station.power', argsSummary: 'widen the leash' }, T0 + 2);
   const s2 = screen(m2, {}, 110, 34, T0 + 10).map(tui.toPlain);
-  A.ok(s2.some(l => /└─ \[Y\] ALLOW ONCE {3}\[N\] DENY/.test(l)) && !s2.some(l => /\[A\] ALWAYS/.test(l)) && !/a always/.test(s2[32]), 'an ask the app answers fresh every time (the station\'s leash) has no Always');
+  A.ok(s2.some(l => /└─ \[Y\] ALLOW ONCE {3}\[N\] DENY/.test(l)) && !s2.some(l => /\[A\] ALWAYS/.test(l)) && !/a always/.test(s2[32]), 'an ask the app answers fresh every time (the farm\'s leash) has no Always');
   m2.apply('permission.response', { promptId: 'p2', decision: 'once', via: 'terminal' }, T0 + 20);
-  A.ok(m2.logOf('astra').some(e => e.k === 'ok' && /^allowed once from the terminal/.test(e.text)), 'and the station\'s echo (once) is what COMMS says');
+  A.ok(m2.logOf('astra').some(e => e.k === 'ok' && /^allowed once from the terminal/.test(e.text)), 'and the farm\'s echo (once) is what COMMS says');
   A.ok(tui.HELP.some(([k, d]) => k === 'y  a  n  v' && /once, always, no, view/.test(d)), '/help lists a');
 }
 
@@ -556,7 +556,7 @@ const am = require('../bin/lib/app-modules.js');
   const a = { id: 'agent', name: 'VEGA', role: 'orchestrator', personaId: 'blunt', approvalMode: 'full', purpose: null };
   M.composer.docs(a);
   const p = M.composer.compose(a, { dossierBlock: '' });
-  A.ok(/^You are VEGA, an AI agent operating from a workstation aboard the STARNET station/.test(p) && /OVERSEER/.test(p) && /YOUR CREW: none yet/.test(p) && /YOUR FOUNDATION/.test(p) && /PERSONALITY — Blunt/.test(p) && /AUTHORITY — FULL POWER/.test(p) && /not yet been given a purpose/.test(p), 'the composed prompt is the app\'s: identity, crew, foundation, personality, authority, the missing purpose');
+  A.ok(/^You are VEGA, an AI agent operating from a workstation on the HOMESTEAD farm/.test(p) && /OVERSEER/.test(p) && /YOUR CREW: none yet/.test(p) && /YOUR FOUNDATION/.test(p) && /PERSONALITY — Blunt/.test(p) && /AUTHORITY — FULL POWER/.test(p) && /not yet been given a purpose/.test(p), 'the composed prompt is the app\'s: identity, crew, foundation, personality, authority, the missing purpose');
   A.eq(M.Personas.list().map(x => x.id), ['composed', 'warm', 'blunt', 'dry', 'unhinged', 'upbeat'], 'the personalities are the app\'s own six');
 }
 async function awakenRun(o) {
@@ -660,11 +660,11 @@ async function awakenRun(o) {
   const tickets = require('../sidecar/apitickets.js');
   const u = new URL(mouse.fileUrl('http://127.0.0.1:9', tickets, 'k3y', { agent: 'astra', path: 'notes/plan.md', project: 'C:\\Code\\App', now: T0 }));
   A.ok(u.pathname === '/api/file' && u.searchParams.get('agent') === 'astra' && u.searchParams.get('path') === 'notes/plan.md' && u.searchParams.get('project') === 'C:\\Code\\App' && u.searchParams.get('view') === 'doc'
-    && tickets.verify('k3y', u.searchParams.get('ticket'), 'file', tickets.scopeFile('astra', 'notes/plan.md'), { now: T0 + 1000 }).ok, 'a file link carries the station\'s own signed ticket for exactly that file (a text file opens as its reading page)');
+    && tickets.verify('k3y', u.searchParams.get('ticket'), 'file', tickets.scopeFile('astra', 'notes/plan.md'), { now: T0 + 1000 }).ok, 'a file link carries the farm\'s own signed ticket for exactly that file (a text file opens as its reading page)');
   m.apply('agent.tool_call', { runId: 'r1', agentId: 'astra', callId: 'c9', name: 'fs_write', argsSummary: '{"path":"auth.js","content":"x"}' }, T0 + 50);
   const s2 = screen(m, { focus: 'astra' }, 110, 34, T0 + 3000);
   const fy = s2.map(tui.toPlain).findIndex(l => /↳ fs\.write/.test(l));
-  A.eq(((mouse.hitAt(s2.hits, 45, fy) || {}).act || {}).t === 'file' && mouse.hitAt(s2.hits, 45, fy).act, { t: 'file', path: 'auth.js', runId: 'r1', agentId: 'astra' }, 'a file tool\'s line in COMMS is the file (ctrl+click opens it); from a station that did not say where the run works, no folder is assumed');
+  A.eq(((mouse.hitAt(s2.hits, 45, fy) || {}).act || {}).t === 'file' && mouse.hitAt(s2.hits, 45, fy).act, { t: 'file', path: 'auth.js', runId: 'r1', agentId: 'astra' }, 'a file tool\'s line in COMMS is the file (ctrl+click opens it); from a farm that did not say where the run works, no folder is assumed');
   const m3 = crew();
   m3.apply('agent.run.start', { runId: 'r3', agentId: 'astra', trigger: 'directive', surface: 'interactive', prompt: 'notes', projectRoot: 'C:\\Code\\App' }, T0);
   m3.apply('agent.tool_call', { runId: 'r3', agentId: 'astra', callId: 'c1', name: 'fs_write', argsSummary: '{"path":"docs/notes.md","content":"x"}' }, T0 + 5);
@@ -685,12 +685,12 @@ async function awakenRun(o) {
   const stat = screen(m, { page: 'stat', stats, pageData: { usage: { title: 'Spend', lines: ['Today: $0.42 across 3 runs'] } } }, 110, 34, T0 + 3000);
   const st = stat.map(tui.toPlain);
   A.ok(/┘ STAT └/.test(st[3]) && / CREW 3 .* COMMS .* WORK 1 .* SKILLS /.test(st[3]), 'STAT is the tab you are in, the others beside it: ' + st[3]);
-  A.ok(st.some(l => /│ LEVEL +LV 3 +▌{10} +XP 12\/40 +· 28 XP to level 4/.test(l)) && st.some(l => /132 XP in all · 5 tasks shipped/.test(l)) && st.some(l => /CONFIDENCE +calibrating/.test(l)), 'STAT: the level as the station records it, all of it');
+  A.ok(st.some(l => /│ LEVEL +LV 3 +▌{10} +XP 12\/40 +· 28 XP to level 4/.test(l)) && st.some(l => /132 XP in all · 5 tasks shipped/.test(l)) && st.some(l => /CONFIDENCE +calibrating/.test(l)), 'STAT: the level as the farm records it, all of it');
   A.ok(st.some(l => /SPEND +\$0\.42 today/.test(l)) && st.some(l => /CREW +3 agents +· 1 working · 0 need you/.test(l)) && st.some(l => /WORK +1 workflow +· 0 running · 2 shipped/.test(l)) && st.some(l => /USAGE +Spend/.test(l)) && st.some(l => /Today: \$0\.42 across 3 runs/.test(l)), 'STAT: spend, crew, work, and the ledger in its own words');
   const crewY = st.findIndex(l => /│ CREW +3 agents/.test(l));
   A.eq((mouse.hitAt(stat.hits, 50, crewY) || {}).act, { t: 'page', page: 'crew' }, 'its CREW line opens CREW');
   A.ok(!st.some(l => /YOU +fix it/.test(l)) && /esc back to COMMS/.test(st[32]), 'a page takes the whole frame, and the key line says how back');
-  A.ok(screen(m, { page: 'stat', pageData: {} }, 110, 34, T0).map(tui.toPlain).some(l => /LEVEL +not recorded on this station yet/.test(l)), 'a station that records no level says so — never a made-up LV 1');
+  A.ok(screen(m, { page: 'stat', pageData: {} }, 110, 34, T0).map(tui.toPlain).some(l => /LEVEL +not recorded on this farm yet/.test(l)), 'a farm that records no level says so — never a made-up LV 1');
 
   const cp = screen(m, { page: 'crew', focus: 'astra' }, 110, 34, T0 + 3000);
   const ct = cp.map(tui.toPlain);
@@ -705,7 +705,7 @@ async function awakenRun(o) {
   const fy = wt.findIndex((l, i) => i > 3 && /✓ RELEASE/.test(l));
   A.eq((mouse.hitAt(wp.hits, 60, fy) || {}).act, { t: 'flow', name: 'RELEASE' }, 'a click on a workflow readies a job for it');
   A.ok(wt.some(l => / ROUTINES 2 · scheduler on /.test(l)) && wt.some(l => /● nightly digest +every day at 7:00 AM · Cypher · next in 3h/.test(l)) && wt.some(l => /○ weekly report +every Monday · paused/.test(l)), 'WORK: the routines as the scheduler lists them, paused ones said so');
-  A.ok(wt.some(l => / AWAY SHIFT · Astra /.test(l)) && wt.some(l => /Away workshop — 1 queued/.test(l)) && wt.some(l => /Build while away: OFF\./.test(l)), 'WORK: the away shift of the agent shown, in the station\'s words');
+  A.ok(wt.some(l => / AWAY SHIFT · Astra /.test(l)) && wt.some(l => /Away workshop — 1 queued/.test(l)) && wt.some(l => /Build while away: OFF\./.test(l)), 'WORK: the away shift of the agent shown, in the farm\'s words');
   A.ok(screen(m, { page: 'work', pageData: { cron: { error: 'the routines could not be read (HTTP 500) — their state is unknown' } } }, 110, 34, T0).map(tui.toPlain).some(l => /their state is unknown/.test(l)), 'a routines read that failed says their state is unknown, never "none"');
 
   const sk = screen(m, { picker: { kind: 'skills', title: 'SKILLS · Astra', filter: '', sel: 0, items: [{ name: 'plan', search: 'plan', cols: [['/plan', 'ph']] }] } }, 110, 34, T0).map(tui.toPlain);
@@ -762,7 +762,7 @@ const awakenTests = (async () => {
   ] });
   const s = r.save(), ag = s.agent;
   A.ok(r.res.ok && ag.onboarded === true && ag.name === 'VEGA' && ag.personaId === 'blunt' && ag.approvalMode === 'full' && ag.executionProfile === 'this-computer' && ag.provider === 'openrouter' && ag.model === 'm/one', 'the awakening ends onboarded: VEGA, blunt, full power on this computer, openrouter · m/one');
-  A.ok(r.said.some(l => /API keys are added in the StarNet desktop app — SETTINGS › AI & MODELS/.test(l)) && r.said.some(l => /set it \(for example OPENROUTER_API_KEY/.test(l)), 'an API key is answered honestly (the desktop app, or this private station\'s environment)');
+  A.ok(r.said.some(l => /API keys are added in the Homestead desktop app — SETTINGS › AI & MODELS/.test(l)) && r.said.some(l => /set it \(for example OPENROUTER_API_KEY/.test(l)), 'an API key is answered honestly (the desktop app, or this private farm\'s environment)');
   A.ok(r.calls.indexOf('CHAT Reply with exactly: OK') >= 0 && r.calls.indexOf('CHAT Reply with exactly: OK') < r.calls.findIndex(c => /^POST \/api\/save/.test(c)), 'the wire is tested before anything is written');
   const firstSave = r.calls.findIndex(c => /^POST \/api\/save onboarded=false/.test(c)), journey = r.calls.indexOf('POST /api/journey'), revoke = r.calls.indexOf('POST /api/permissions/revoke cabinet:write');
   A.ok(firstSave >= 0 && journey > firstSave && revoke > firstSave && r.calls.indexOf('POST /api/memory/reset') > firstSave, 'the agent is saved (not onboarded) BEFORE the resets, which then run: grants revoked, journey and memory reset');
@@ -771,16 +771,16 @@ const awakenTests = (async () => {
   A.ok(ag.docs.purpose === 'Help me write and grow my AI tools newsletter.' && /Question: what is it about\?\nAnswer: About AI tools\./.test(ag.docs.context) && ag.docs.manual === '', 'purpose.md from THE READ, context.md the conversation, the manual empty');
   const goals = D_beliefs(s.dossier, 'goals');
   A.ok(goals.some(t => /Draft the weekly issue/.test(t)) && goals.some(t => /AI tools newsletter/.test(t)) && goals.some(t => /Grows a newsletter/.test(t)), 'the dossier: the dig\'s belief, the grabbed offer, the mission');
-  A.eq(s.station && s.station.meta && s.station.meta.templateId, 'research', 'the station picked is built (YOUR STATION)');
+  A.eq(s.station && s.station.meta && s.station.meta.templateId, 'research', 'the farm picked is built (YOUR FARM)');
   const lastRoster = rosters[rosters.length - 1].agents[0];
   A.ok(/YOUR PURPOSE \(purpose\.md\):\nHelp me write and grow my AI tools newsletter\./.test(lastRoster.system) && /AUTHORITY — FULL POWER/.test(lastRoster.system) && /Draft the weekly issue/.test(lastRoster.system) && lastRoster.approvalMode === 'full', 'the roster carries the composed prompt: purpose, authority, the dossier');
   A.eq(r.res.firstMove, 'Draft the weekly issue', 'the grabbed offer comes back as the first task');
-  A.ok(r.said.some(l => /^\[YOUR FIRST TASK/.test(l)) && r.said.some(l => /i’m VEGA\. the station is yours/.test(l)), 'it closes on YOUR FIRST TASK, in its own words');
+  A.ok(r.said.some(l => /^\[YOUR FIRST TASK/.test(l)) && r.said.some(l => /i’m VEGA\. the farm is yours/.test(l)), 'it closes on YOUR FIRST TASK, in its own words');
   // the dark mind: the wire passed, then the mind went quiet — the honest holding path, purpose and cadence still asked
-  const r2 = await awakenRun({ rosters: [], darkMind: true, script: [opt(/^Give it a station codename/), opt(/^Composed/), opt(/^Ask for approval/), opt(/OpenRouter — already connected/), opt(/^m\/one/), opt(/^Let’s talk it through/), opt(/^Code & build/), opt(/^Wait for me/), opt(/^Start with one room/)] });
+  const r2 = await awakenRun({ rosters: [], darkMind: true, script: [opt(/^Give it a farm codename/), opt(/^Composed/), opt(/^Ask for approval/), opt(/OpenRouter — already connected/), opt(/^m\/one/), opt(/^Let’s talk it through/), opt(/^Code & build/), opt(/^Wait for me/), opt(/^Start with one room/)] });
   const s2 = r2.save();
   A.ok(r2.said.some(l => /my wire is dark/.test(l)) && s2.agent.docs.purpose === 'Help me write, debug, and ship software.' && s2.agent.onboarded === true, 'a mind gone quiet gets the honest holding line, and purpose.md still lands');
-  A.ok(/^[A-Z]{2,18}$/.test(s2.agent.name) && s2.agent.name !== 'AGENT', 'no name given: a station codename (' + s2.agent.name + ')');
+  A.ok(/^[A-Z]{2,18}$/.test(s2.agent.name) && s2.agent.name !== 'AGENT', 'no name given: a farm codename (' + s2.agent.name + ')');
   A.ok(r2.said.some(l => /something just opened\./.test(l)), 'the scripted spine speaks where the mind is quiet');
   A.ok(!(s2.station.meta && s2.station.meta.templateId), 'one room kept');
   // started again mid-awakening: no second birth
@@ -792,10 +792,10 @@ const awakenTests = (async () => {
   A.eq(core.bootstrapDocs({ name: 'ATLAS', model: 'm', provider: 'openrouter', now: 1 }).save.doc.agent.bootstrappedBy, 'starnet-cli', 'a headless bootstrap marks its agent as never met by a person');
   // the screen
   const tm = crew();
-  const wakeUi = { focus: 'agent', input: '', scroll: 0, still: true, stationLabel: 'private station · port 1', wake: { log: [{ who: 'STARNET', text: 'what should it be called?', first: true, full: true }, { who: 'YOU', text: 'Vega', full: true, you: true }], ask: { options: [{ label: 'Give it a station codename', value: '', skip: true }], custom: true, customLabel: 'its name', optional: true }, stage: { title: 'CREATE YOUR OVERSEER', detail: 'Who it is' }, speaker: 'STARNET' } };
+  const wakeUi = { focus: 'agent', input: '', scroll: 0, still: true, stationLabel: 'private farm · port 1', wake: { log: [{ who: 'HOMESTEAD', text: 'what should it be called?', first: true, full: true }, { who: 'YOU', text: 'Vega', full: true, you: true }], ask: { options: [{ label: 'Give it a farm codename', value: '', skip: true }], custom: true, customLabel: 'its name', optional: true }, stage: { title: 'CREATE YOUR OVERSEER', detail: 'Who it is' }, speaker: 'HOMESTEAD' } };
   const ws = tui.render(tm, wakeUi, { cols: 120, rows: 34 }, T0).map(tui.toPlain);
-  A.ok(/^──┘ CREATE YOUR OVERSEER └ Who it is ─/.test(ws[3]) && ws.some(l => /│ STARNET +what should it be called\?/.test(l)) && ws.some(l => /│ YOU +Vega/.test(l)), 'the awakening owns COMMS: its stage on the frame, who said each line');
-  A.ok(ws.some(l => /┌─ ▲ YOUR CHOICE ─/.test(l)) && ws.some(l => /│ 1  Give it a station codename/.test(l)) && ws.some(l => /› +or type its name and press enter/.test(l)) && ws.some(l => /└─ \[1-1\] PICK {3}\[ENTER\] SEND WHAT YOU TYPED ─/.test(l)), 'its choice is a card: numbered options and the typed answer');
+  A.ok(/^──┘ CREATE YOUR OVERSEER └ Who it is ─/.test(ws[3]) && ws.some(l => /│ HOMESTEAD +what should it be called\?/.test(l)) && ws.some(l => /│ YOU +Vega/.test(l)), 'the awakening owns COMMS: its stage on the frame, who said each line');
+  A.ok(ws.some(l => /┌─ ▲ YOUR CHOICE ─/.test(l)) && ws.some(l => /│ 1  Give it a farm codename/.test(l)) && ws.some(l => /› +or type its name and press enter/.test(l)) && ws.some(l => /└─ \[1-1\] PICK {3}\[ENTER\] SEND WHAT YOU TYPED ─/.test(l)), 'its choice is a card: numbered options and the typed answer');
   A.ok(/^you ▸/.test(ws[31]) && /^1-1 pick · or type your own \+ enter · ctrl\+c pauses setup/.test(ws[32]) && !ws.some(l => /CREW/.test(l)) && /^ {2}SPEND UNKNOWN +\d\d:\d\d $/.test(ws[33]), 'the prompt is yours, the key line says how to answer, and there is no crew before the agent exists');
   wakeUi.wake.crew = true; wakeUi.wake.feedKey = 'stopped'; wakeUi.images = true; wakeUi.wake.ask = null;
   const wv = tui.render(tm, wakeUi, { cols: 120, rows: 34 }, T0);

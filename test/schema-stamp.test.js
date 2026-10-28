@@ -46,7 +46,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     try {
       // boot log warned LOUDLY (never silent)
       await wait(150);
-      A.ok(/WORKSPACE WRITTEN BY A NEWER STARNET|DEGRADED/i.test(fixture.output()), 'boot logs a loud newer-StarNet / DEGRADED warning');
+      A.ok(/WORKSPACE WRITTEN BY A NEWER HOMESTEAD|DEGRADED/i.test(fixture.output()), 'boot logs a loud newer-StarNet / DEGRADED warning');
 
       const token = fixture.token;
       A.ok(token.length >= 32, 'got a session API token');
@@ -64,7 +64,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
       A.eq(rosterRes.status, 200, 'degraded roster POST answers 200 (honest payload, not 5xx)');
       const rosterJson = await rosterRes.json();
       A.eq(rosterJson.ok, false, 'degraded roster POST is refused (ok:false)');
-      A.eq(rosterJson.error, 'workspace written by newer StarNet', 'degraded roster POST carries the honest error');
+      A.eq(rosterJson.error, 'workspace written by newer Homestead', 'degraded roster POST carries the honest error');
       // the on-disk roster was NOT written (the refusal happened before any write)
       A.ok(!fs.existsSync(path.join(ws, 'agent.roster.json')), 'degraded roster POST wrote nothing to disk');
 
@@ -76,7 +76,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
       A.eq(saveRes.status, 200, 'degraded save POST answers 200');
       const saveJson = await saveRes.json();
       A.eq(saveJson.ok, false, 'degraded save POST is refused (ok:false)');
-      A.eq(saveJson.error, 'workspace written by newer StarNet', 'degraded save POST carries the honest error');
+      A.eq(saveJson.error, 'workspace written by newer Homestead', 'degraded save POST carries the honest error');
 
       // GET /api/save STILL SERVES (reads are never blocked in degraded mode)
       const readRes = await fetch(B + '/api/save?agent=agent', { headers: { 'X-StarNet-Token': token, Origin: B } });

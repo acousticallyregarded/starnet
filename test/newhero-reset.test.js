@@ -44,7 +44,7 @@ const journeyReset = seg.indexOf('await JourneyStore.reset(newCommanderEpoch)');
 A.ok(journeyReset >= 0 && journeyReset < heroCommit,
   'new-hero journey reset is acknowledged before the hero/state commit point');
 A.ok(/if \(!journeyResetResult \|\| !journeyResetResult\.ok\)/.test(seg),
-  'a failed durable journey reset blocks commissioning instead of inheriting the prior Commander');
+  'a failed durable journey reset blocks commissioning instead of inheriting the prior Farmer');
 A.ok(seg.indexOf('createdAt: newCommanderEpoch') > journeyReset,
   'the committed hero uses the exact generation accepted by the journey reset');
 

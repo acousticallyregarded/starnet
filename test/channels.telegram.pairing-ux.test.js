@@ -17,7 +17,7 @@ const sidecar = fs.readFileSync(path.join(root, 'sidecar', 'index.js'), 'utf8');
 A.ok(ui.includes('POLLING — DMs BLOCKED: PAIR OWNER'),
   'an up Telegram poller without an owner is rendered as blocked, never CONNECTED');
 A.ok(/j\.pairingCode/.test(ui) && /\/pair /.test(ui),
-  'the connect response pairing code is turned into the exact Telegram command the Commander must send');
+  'the connect response pairing code is turned into the exact Telegram command the Farmer must send');
 A.ok(/pairingInstruction/.test(ui),
   'the one-time pairing command is retained across the asynchronous status repaint');
 A.ok(/<code>\/pair<\/code> message with a code/.test(ui.slice(ui.indexOf("id: 'telegram'"), ui.indexOf("id: 'discord'"))),
@@ -41,7 +41,7 @@ A.ok(/could not prove reconnect was saved; the bot was not started/.test(sidecar
   && /could not prove disconnect was saved; the bot remains connected/.test(sidecar),
   'agent-bot lifecycle actions fail closed when their durable state cannot be proven');
 A.ok((sidecar.match(/streamReplies:\s*false/g) || []).length >= 2,
-  'station and agent Telegram bots publish final answers only instead of exposing raw token deltas');
+  'farm and agent Telegram bots publish final answers only instead of exposing raw token deltas');
 A.ok(/const provider = \(ag && ag\.provider\)/.test(ui) && /const model = \(ag && ag\.model\)/.test(ui),
   'agent-bot setup sends the selected roster agent provider/model, not the globally focused provider/model');
 A.ok(/channelRunConfigFor\(agentId,[\s\S]*?probeChannelRunConfig\(runConfig/.test(sidecar.slice(sidecar.indexOf('async function handleTelegramBotAdd'))),

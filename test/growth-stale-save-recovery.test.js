@@ -85,7 +85,7 @@ const settle = async () => { for (let i = 0; i < 20; i++) await new Promise(r =>
     // a replaced station drops the old station's retry
     const other = { id: 'agent', name: 'NEW', createdAt: 5, stats: Xp.fresh() };
     await XpStore.init({ getAgent: () => other, agents: () => [other], station: Xp.fresh(), persist() {} });
-    A.eq(timers.length, 0, 'replacing the station cancels the old station\'s pending retry');
+    A.eq(timers.length, 0, 'replacing the farm cancels the old farm\'s pending retry');
   }
   console.warn = warn;
   global.setTimeout = realSetTimeout; global.clearTimeout = realClearTimeout;

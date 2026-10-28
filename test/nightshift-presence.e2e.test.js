@@ -104,7 +104,7 @@ function kill(child) { return new Promise(r => { try { child.on('exit', () => r(
     }).then(async r => { const rd = r.body.getReader(); while (!(await rd.read()).done) { /* drain */ } });
     await sleep(AWAY_MS + 600);   // well past the away threshold, measured from the run's START stamp
     s = await status();
-    A.eq(s.away, false, 'mid-run: an in-flight interactive run reads as PRESENT (the Commander is watching their own work)');
+    A.eq(s.away, false, 'mid-run: an in-flight interactive run reads as PRESENT (the Farmer is watching their own work)');
     A.eq(s.binding, 'present', 'mid-run: the binding gate is "present" — no beat may fire while the user\'s run streams');
     /* The same guarantee the old assertion made, under the name that actually says it: `awayAt` is the FUTURE
        instant away flips true, so mid-run it is still ahead of now (telemetry agrees with the driver).

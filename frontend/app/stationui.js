@@ -3979,7 +3979,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const files = (e.files || []).map(f => '<li><code>' + esc(f.path) + '</code> <span class="dim">' + esc(String(f.bytes)) + ' B</span></li>').join('');
     const upstream = e.upstream && /^https:\/\//.test(String(e.upstream.url || ''))
       ? '<div class="mc-hint">Adapted from <a class="dim" href="' + esc(e.upstream.url) + '" target="_blank" rel="noopener">the original ↗</a> (' + esc(e.upstream.license || e.license) + ')</div>' : '';
-    const search = [e.category, e.author, e.shelf === 'originals' ? 'homestead original' : 'community'].concat(e.tags || []).join(' ');
+    const search = [e.category, e.author, e.shelf === 'originals' ? 'starnet original' : 'community'].concat(e.tags || []).join(' ');
     return '<div class="cc-card' + (on ? ' cc-on' : '') + '" data-skm="' + slug + '" data-shelf="' + esc(e.shelf) + '" data-status="' + esc(e.status) + '" data-installed="' + (e.installedVersion && e.status !== 'available' ? '1' : '') + '" data-search="' + esc(search) + '" style="--ci:' + (i || 0) + '">' +
       '<div class="cc-head"><span class="cc-brand" aria-hidden="true">' + esc(String(e.name || e.slug).slice(0, 2).toUpperCase()) + '</span>' +
         '<div class="cc-identity"><b>' + esc(e.name) + '</b><span class="cc-chip">' + esc(e.category) + '</span></div></div>' +
@@ -4025,7 +4025,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     if (!d || !d.ok) {
       host.dataset.skmOk = '';
       const err = String((d && d.error) || 'no answer').replace(/[.\s]+$/, '');
-      if (/turned off on this station/.test(err)) {
+      if (/turned off on this (?:station|farm)/.test(err)) {
         host.innerHTML = '<p class="mc-notice"><b>The skill market is turned off</b>This farm was started with the market switched off (STARNET_SKILL_MARKET_URL=off). Skills you already installed keep working.</p>';
         return;
       }
@@ -7208,12 +7208,12 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
         // unknown. It is never rewritten or deleted; settling it books the verified charge once and history is whole again.
         const damaged = r.kind === 'damaged';
         if (damaged) row.setAttribute('data-tip', 'One line of your spend record could not be read (an older crash can leave a torn line), so what it recorded is unknown' +
-          (r.model ? ' (it names ' + r.model + ')' : '') + '. Match it to StarNet Recent Activity or your provider billing records, then enter only its verified charge: StarNet books it once, keeps the damaged line untouched, and your spending limits can be checked again.');
+          (r.model ? ' (it names ' + r.model + ')' : '') + '. Match it to Homestead Recent Activity or your provider billing records, then enter only its verified charge: Homestead books it once, keeps the damaged line untouched, and your spending limits can be checked again.');
         else row.setAttribute('data-tip', (evaluation ? 'This skill evaluation run has no recorded price: its provider usage came back without one, or the call failed or was cut off'
           : 'This run stopped before Homestead recorded what it spent') +
           (managed ? ' (it ran on your StarNet credits' + (r.model ? ', ' + r.model : '') + ')' : (where ? ' (it started on ' + where + ')' : '')) +
-          (managed ? '. Enter what StarNet charged for it — SETTINGS → AI & MODELS › STORE › RECENT ACTIVITY lists those charges as ' + creditRunTag(r.runId)
-            : byok ? '. Enter the charge your provider dashboard shows for it' : '. The billing source was not recorded. Match this run to StarNet Recent Activity or the original provider billing records, then enter only its verified charge') + ': Homestead books it once and your spending limits can be checked again.');
+          (managed ? '. Enter what Homestead charged for it — SETTINGS → AI & MODELS › STORE › RECENT ACTIVITY lists those charges as ' + creditRunTag(r.runId)
+            : byok ? '. Enter the charge your provider dashboard shows for it' : '. The billing source was not recorded. Match this run to Homestead Recent Activity or the original provider billing records, then enter only its verified charge') + ': Homestead books it once and your spending limits can be checked again.');
         const what = document.createElement('span');
         what.className = 'bg-un-what';
         const name = document.createElement('b');
@@ -10197,7 +10197,7 @@ const StationUI = typeof document === 'undefined' ? {} : (() => {
     const banner = document.createElement('div'); banner.id = 'save-preserved-notice'; banner.setAttribute('role', 'alert');
     banner.style.cssText = 'position:fixed;top:8px;left:10%;right:10%;z-index:100000;padding:16px;background:#281e12;color:#fff;border:2px solid #e8b35c';
     const label = document.createElement('p');
-    label.textContent = 'A window’s save preserved on the farm (' + when + ') holds work in ' + n + (n === 1 ? ' session' : ' sessions') + ' that this farm doesn’t have. Restoring brings it into the farm; nothing in the farm is removed, and the farm file is copied aside first.';
+    label.textContent = 'A window’s save preserved on the farm (' + when + ') holds work in ' + n + (n === 1 ? ' session' : ' sessions') + ' that this farm doesn’t have. Restoring brings it into the farm; nothing on the farm is removed, and the farm file is copied aside first.';
     const restore = document.createElement('button'); restore.className = 'bb'; restore.textContent = 'Restore ' + n + (n === 1 ? ' session' : ' sessions');
     restore.onclick = async () => { restore.disabled = true; try { await CloudSave.restoreConflict(offer.file); } catch (e) { label.textContent = e.message; restore.disabled = false; } };
     const later = document.createElement('button'); later.className = 'bb'; later.textContent = 'Not now'; later.onclick = () => { dismissPreserved(offer); banner.remove(); };

@@ -81,7 +81,7 @@ function boot(port, env, attemptsLeft) {
 function seedEvidence(ws) {
   fs.mkdirSync(ws, { recursive: true });
   fs.writeFileSync(path.join(ws, '_commander.dossier.json'), JSON.stringify({
-    block: 'COMMANDER DOSSIER\n- Goals: grow the youtube channel to sustainable income\n- Stack: davinci resolve, notion'
+    block: 'FARMER DOSSIER\n- Goals: grow the youtube channel to sustainable income\n- Stack: davinci resolve, notion'
   }));
   fs.writeFileSync(path.join(ws, '_commander.goals.json'), JSON.stringify({
     goal: { text: 'Grow the channel to 10k subs', done: 1, total: 4, pct: 25, next: 'publish episode 3' }
@@ -217,7 +217,7 @@ const CRED = { SKYNET_OPENROUTER_KEY: 'sk-or-v1-questrefresh-fake', SKYNET_DEFAU
       let base = 'http://' + HOST + ':' + up.port, token = await bootToken(base, base);
       const post = async (route, body) => (await fetch(base + route, { method: 'POST', headers: { Origin: base, 'X-StarNet-Token': token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })).json();
       const minted = await post('/api/quests/mint', { title: 'Attend a practice class', contract: { type: 'attest', key: '' }, domain: 'growth', executionMode: 'commander' });
-      A.ok(minted.ok, 'real route creates a Commander action');
+      A.ok(minted.ok, 'real route creates a Farmer action');
       const unauthorized = await fetch(base + '/api/quests/report', { method: 'POST', headers: { Origin: 'https://hostile.invalid', 'Content-Type': 'application/json' }, body: JSON.stringify({ id: minted.id, evidence: 'Unauthorized completion claim' }) });
       A.eq(unauthorized.status, 403, 'completion route rejects an untrusted origin');
       const paused = await post('/api/quests/disposition', { id: minted.id, disposition: 'too_big', reason: 'Need a beginner class first' });
@@ -229,7 +229,7 @@ const CRED = { SKYNET_OPENROUTER_KEY: 'sk-or-v1-questrefresh-fake', SKYNET_DEFAU
       A.eq(persisted.quests.find(q => q.id === minted.id).disposition.reason, 'Need a beginner class first', 'pause survives sidecar restart');
       A.ok((await post('/api/quests/disposition', { id: minted.id, disposition: 'resume' })).ok, 'real route resumes the action');
       const report = await post('/api/quests/report', { id: minted.id, evidence: 'I attended the beginner class this morning' });
-      A.ok(report.ok && report.quest.status === 'done' && report.quest.attest.source === 'commander', 'only Commander report completes real-world action with source');
+      A.ok(report.ok && report.quest.status === 'done' && report.quest.attest.source === 'commander', 'only Farmer report completes real-world action with source');
       const journey = await (await fetch(base + '/api/journey', { headers: { Origin: base, 'X-StarNet-Token': token } })).json();
       A.ok(journey.journey.outcomes.some(o => o.questId === minted.id && o.verifiedBy === 'commander-confirmed'), 'life action folds into Journey with Commander-confirmed provenance');
       child.kill(); await new Promise(resolve => child.once('exit', resolve)); child = null;
@@ -326,7 +326,7 @@ const CRED = { SKYNET_OPENROUTER_KEY: 'sk-or-v1-questrefresh-fake', SKYNET_DEFAU
         p => (p.ledger || []).some(e => e.outcome === 'minted'),
         'the boot-look refresh cycle minting quests');
       A.ok(true, 'ORCHESTRATION: a due refresh fired off the boot look and minted end-to-end');
-      A.ok(st.northStar && st.northStar.text === 'Grow the channel to 10k subs', 'the north star is the Commander\'s ACTIVE GOAL (user-set outranks the model line)');
+      A.ok(st.northStar && st.northStar.text === 'Grow the channel to 10k subs', 'the north star is the Farmer\'s ACTIVE GOAL (user-set outranks the model line)');
       A.eq(st.northStar.source, 'goal', 'the star carries source:goal');
       A.ok(st.lastCycleAt > 0, 'the cycle spent the cadence (lastCycleAt stamped)');
       A.eq(st.ledger.filter(e => e.outcome === 'minted').length, 2, 'both grounded quests minted');
@@ -372,7 +372,7 @@ const CRED = { SKYNET_OPENROUTER_KEY: 'sk-or-v1-questrefresh-fake', SKYNET_DEFAU
     const mock = await startMock([
       'NORTH_STAR: Achieve maximum synergy',
       'QUEST: Embrace the grindset',
-      'DESC: A quest citing nothing the station observed.',
+      'DESC: A quest citing nothing the farm observed.',
       'REWARD: vibes',
       'CONTRACT: attest',
       'WHY: hustle culture demands relentless morning routines'   // ungroundable: cites nothing real
@@ -470,7 +470,7 @@ const CRED = { SKYNET_OPENROUTER_KEY: 'sk-or-v1-questrefresh-fake', SKYNET_DEFAU
     seedAutonomy(ws);
     fs.mkdirSync(ws, { recursive: true });
     fs.writeFileSync(path.join(ws, '_commander.dossier.json'), JSON.stringify({
-      block: 'COMMANDER DOSSIER\n- Goals: grow the youtube channel to sustainable income\n- Stack: davinci resolve, notion'
+      block: 'FARMER DOSSIER\n- Goals: grow the youtube channel to sustainable income\n- Stack: davinci resolve, notion'
     }));
     const { child, port } = await boot(9025 + (process.pid % 10), Object.assign({ SKYNET_WORKSPACES: ws, SKYNET_OPENROUTER_BASE: mock.base }, CRED, QUIET), 20);
     const B = 'http://' + HOST + ':' + port;
@@ -507,7 +507,7 @@ const CRED = { SKYNET_OPENROUTER_KEY: 'sk-or-v1-questrefresh-fake', SKYNET_DEFAU
       A.eq(adoptedDirection && adoptedDirection.outcome.quality, 0, 'northstar confirmation does not invent satisfaction');
       const after = await (await fetch(B + '/api/quests/refresh', { headers: { 'X-StarNet-Token': token, Origin: B } })).json();
       A.eq(after.northStar.status, 'adopted', 'the confirmed star reads adopted');
-      A.eq(after.northStar.text, STAR, 'the adopted star is the one the Commander confirmed');
+      A.eq(after.northStar.text, STAR, 'the adopted star is the one the Farmer confirmed');
       A.eq(after.northStarProposed, false, 'no proposal pending after confirm');
       A.eq(after.pendingQuestCount, 0, 'the staged quest batch clears after confirm');
       const afterQuests = await (await fetch(B + '/api/quests', { headers: { 'X-StarNet-Token': token, Origin: B } })).json();

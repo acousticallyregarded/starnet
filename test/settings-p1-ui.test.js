@@ -19,13 +19,13 @@ let n = 0; const ok = (c, m) => { assert.ok(c, m); n++; };
 ok(/function modelCard\(/.test(ui), 'P1-6: the dossier CONFIG tab renders a per-agent MODEL card');
 ok(/id="ag-model-in"/.test(ui) && /id="ag-prov-in"/.test(ui), 'P1-6: the model card has model + provider inputs');
 ok(/access\.config\.setModel/.test(ui), 'P1-6: the model card calls config.setModel');
-ok(/FOLLOW STATION DEFAULT/.test(ui), 'P1-6: the card offers "follow station default" (clear the pin)');
+ok(/FOLLOW FARM DEFAULT/.test(ui), 'P1-6: the card offers "follow farm default" (clear the pin)');
 ok(/function setAgentModelPin\(/.test(appjs), 'P1-6: App implements setAgentModelPin');
 ok(/setModel:\s*setAgentModelPin/.test(appjs), 'P1-6: setModel is exposed on the config access surface');
 ok(/setAgentModelPin[\s\S]{0,1500}pushRoster\(\)/.test(appjs), 'P1-6: the pin pushes the roster so the sidecar records it');
 
 // ---- P1-7 station backup export/import/reset ----
-ok(/STATION BACKUP/.test(ui), 'P1-7: SETTINGS has a STATION BACKUP card');
+ok(/FARM BACKUP/.test(ui), 'P1-7: SETTINGS has a FARM BACKUP card');
 ok(/function wireBackup\(/.test(ui), 'P1-7: wireBackup is wired');
 // #134: the export request + its truthful "where did it go" line live in Backup.exportStation (backup.js)
 ok(/Backup\.exportStation\(/.test(ui) && /'\/api\/config\/export'/.test(app('backup.js')), 'P1-7: export hits /api/config/export (via Backup.exportStation)');
@@ -85,6 +85,6 @@ ok(/id="mc-reflect-on"/.test(ui), 'P1-10: MEMORY tab has a reflection on/off tog
 ok(/id="mc-cooldown"/.test(ui), 'P1-10: MEMORY tab has a reflection cooldown control');
 ok(/function loadReflectionConfig\(/.test(ui), 'P1-10: the reflection controls load + wire');
 ok(/\/api\/memory\/config/.test(ui), 'P1-10: the controls read/write /api/memory/config');
-ok(/mc-scope/.test(ui), 'P1-10: a "what the station may remember" scope note is shown');
+ok(/mc-scope/.test(ui), 'P1-10: a "what the farm may remember" scope note is shown');
 
 console.log('settings-p1-ui.test.js OK —', n, 'assertions');

@@ -19,9 +19,9 @@
   const ACTIONS = ['screenshot', 'move', 'click', 'double_click', 'drag', 'scroll', 'type', 'key', 'hotkey', 'wait'];
   // Keyboard input lands in whatever window has FOCUS — these are the actions the focus-truth guard covers.
   const KEYBOARD_ACTIONS = ['type', 'key', 'hotkey'];
-  // The harness's own window (desktop shell exe or a browser tab titled STARNET). Typing into it is never the
+  // The harness's own window (desktop shell exe or a browser tab titled HOMESTEAD, or STARNET before the farm). Typing into it is never the
   // intent — it means the target app lost focus (the 2026-07-08 "typed the song into its own chat box" incident).
-  const SELF_WINDOW_RE = /starnet/i;
+  const SELF_WINDOW_RE = /starnet|starnet/i;
   /* STARNET IS NEVER DRIVEN THROUGH THE SCREEN (2026-10-13). Asked in a group chat to configure a conveyor, a lead with no
      station tools spent 21 minutes clicking StarNet's own Workflow panel (~110 screenshot→click round trips) and then
      scripted keystrokes at the StarNet window — while station.plan/build does the same job in the background behind one
@@ -30,7 +30,7 @@
      shell that spawned this sidecar (selfPids) or its exe name — and, for StarNet open in a browser tab, its title. */
   const POINTER_ACTIONS = ['click', 'double_click', 'drag'];
   const SELF_PROCESS_RE = /^skynet-desktop(.exe)?$/i;
-  const SELF_TITLE_RE = /^starnet(?![w.])/i;
+  const SELF_TITLE_RE = /^(?:starnet|starnet)(?![w.])/i;
   const SELF_DRIVE_HELP = 'never operate Homestead through the screen: its own tools change it in the background while the Farmer keeps working. '
     + 'Read assembly lines with station.layout; tool_search "farm builder" for station.map, station.plan, station.build, station.test_line and station.start_line; '
     + 'tool_search "farm settings" for settings. If those tools are not in your list, tell the Farmer which change you need instead.';

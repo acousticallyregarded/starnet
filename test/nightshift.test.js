@@ -49,7 +49,7 @@ function inp(now, over) {
 })();
 (function presentGate() {
   const d = ns.decide(ns.fresh(T0), inp(T0, { lastUserActivityAt: T0 - 60000 }));   // 1 min ago → present
-  A.eq(d.fire, false, 'Commander present → no fire');
+  A.eq(d.fire, false, 'Farmer present → no fire');
   A.eq(d.binding, 'present', 'names present');
 })();
 (function haltGate() {

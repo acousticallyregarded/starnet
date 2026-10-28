@@ -126,7 +126,7 @@ const Onboarding = (() => {
       custom: true, placeholder: 'in your own words — what’s the purpose?',
       build: t => ({ purpose: t }),
       ack: lead
-        ? 'there it is — your station’s purpose, in ink. that’s what this station’s for.'
+        ? 'there it is — your farm’s purpose, in ink. that’s what this farm’s for.'
         : 'there it is. now the firepower has a target.' };
   }
 
@@ -672,7 +672,7 @@ const Onboarding = (() => {
     const pace = await Dialogue.node({
       lines: [seg(interviewOnly
         ? 'let’s fill in the picture. a few questions about your work, or a deeper conversation about your goals? you can review and change what we save in your dossier.'
-        : 'i’m awake. let’s give this station a direction. start with ' + quickSays.replace(/ (question)/, ' setup $1') + ', or take time to tell me about your work. you can edit what we save in your dossier — the COMMANDER file of what the station knows about you.', 46, 0)],
+        : 'i’m awake. let’s give this farm a direction. start with ' + quickSays.replace(/ (question)/, ' setup $1') + ', or take time to tell me about your work. you can edit what we save in your dossier — the FARMER file of what the farm knows about you.', 46, 0)],
       options: [
         ...(!interviewOnly ? [{ label: 'Quick setup — ' + quickSays, value: 'quick' }] : []),
         // the pace hint rides IN the label (no sentence under a choice). Only the quick path carries a count: the talks
@@ -804,7 +804,7 @@ const Onboarding = (() => {
           const offer = mir.offers[Number(String(pick.value).slice(1))] || '';
           grabbedMove = offer;   // the synthesis reads the offer itself ("the offer of yours they grabbed")
           firstTask = offer ? 'Go ahead with your offer: “' + offer.replace(/[.\s]+$/, '') + '.”' : '';
-          if (offer && typeof DossierStore !== 'undefined' && DossierStore.upsert) { DossierStore.upsert('goals', { text: 'Accepted the station’s offer: ' + offer, source: 'onboarding', weight: 'synth' }); ink('goals', 'Accepted the station’s offer: ' + offer); }
+          if (offer && typeof DossierStore !== 'undefined' && DossierStore.upsert) { DossierStore.upsert('goals', { text: 'Accepted the farm’s offer: ' + offer, source: 'onboarding', weight: 'synth' }); ink('goals', 'Accepted the farm’s offer: ' + offer); }
           bumpTruth();
           await Dialogue.say([seg('then that’s the one i keep my eye on.', 44, 340)]);
           break;
@@ -863,7 +863,7 @@ const Onboarding = (() => {
           const own = await Dialogue.node({
             lines: [seg('then say it straight — what are we actually here to do?', 46, 0)],
             options: [{ label: 'Keep your version', value: '', skip: true }],
-            allowCustom: true, customFirst: true, customLabel: 'the mission, in my own words', customPlaceholder: 'what this station is for…'
+            allowCustom: true, customFirst: true, customLabel: 'the mission, in my own words', customPlaceholder: 'what this farm is for…'
           });
           if (!running) return;
           if (own && own.value != null && String(own.value).trim()) purposeT = String(own.value).trim();
@@ -895,7 +895,7 @@ const Onboarding = (() => {
         if (syn.stack && typeof DossierStore !== 'undefined' && DossierStore.upsert) DossierStore.upsert('stack', { text: syn.stack, source: 'onboarding', weight: gaveAnything ? 'synth' : 'seed' });
         if (typeof ProfileStore !== 'undefined' && typeof Classify !== 'undefined') ProfileStore.seed(Classify.getTag(purposeT));
         bumpTruth();
-        await Dialogue.say([seg('there it is — your station’s purpose, in ink. that’s what this station’s for.', 44, 360)]);
+        await Dialogue.say([seg('there it is — your farm’s purpose, in ink. that’s what this farm’s for.', 44, 360)]);
         if (!running) return;
         purposeDone = true;
       }
@@ -953,8 +953,8 @@ const Onboarding = (() => {
     const ordered = rec ? [rec].concat(works.filter(c => c !== rec)) : works;
     // on the quick path the station is its counted last question, so it keeps that stage's name ("GET ACQUAINTED · 3 of 3"):
     // a switch to YOUR STATION read as step 3 of a three-step YOUR STATION run (P31 polish)
-    stage(quickTotal ? 'GET ACQUAINTED' : 'YOUR STATION', (quickTotal ? (++quickN) + ' of ' + quickTotal + ' · ' : '') + 'Where the work happens');
-    const ask = 'last question: which station should i build for you? '
+    stage(quickTotal ? 'GET ACQUAINTED' : 'YOUR FARM', (quickTotal ? (++quickN) + ' of ' + quickTotal + ' · ' : '') + 'Where the work happens');
+    const ask = 'last question: which farm should i build for you? '
       + (rec ? 'from what you told me, i’d start with the ' + rec.name.toLowerCase() + ': ' + rec.pitch + '.'
              : 'pick the kind of work you’ll do most, or start with one room and build it yourself.')
       + ' you can change it any time in BUILD MODE › Presets.';
@@ -967,13 +967,13 @@ const Onboarding = (() => {
     if (!running) return;
     const id = res && !res.skip ? String(res.value || '') : '';
     const pick = works.find(c => c.id === id);
-    if (!pick) { await Dialogue.say([seg('one room it is. you can pick a station any time in BUILD MODE › Presets.', 44, 360)]); return; }
+    if (!pick) { await Dialogue.say([seg('one room it is. you can pick a farm any time in BUILD MODE › Presets.', 44, 360)]); return; }
     let r = null;
     try { r = S.apply(pick.id); } catch (_) { r = null; }
     if (!running) return;
     await Dialogue.say([seg(r && r.ok
       ? 'done. the ' + pick.name.toLowerCase() + ' is built, and its line is waiting for a crew: WORK › AUTOMATE › WORKFLOWS walks you through who works each step.'
-      : 'i couldn’t build that station here, so we’ll keep one room. you can try again in BUILD MODE › Presets.', 44, 360)]);
+      : 'i couldn’t build that farm here, so we’ll keep one room. you can try again in BUILD MODE › Presets.', 44, 360)]);
   }
 
   // DAWN — the pull-back reveals its whole world, the light blooms, and it speaks its first WHOLE sentences
@@ -1000,7 +1000,7 @@ const Onboarding = (() => {
     // stage, so the panel never flips READY TO BEGIN → YOUR FIRST TASK between two back-to-back beats.
     stage('YOUR FIRST TASK', 'From getting acquainted to working together');
     const readyLine = role === 'orchestrator'
-      ? 'i’m ' + NAME + '. the station is yours. give me one task to start with — we can build the rest around the work. your setup stays editable in the dossier.'
+      ? 'i’m ' + NAME + '. the farm is yours. give me one task to start with — we can build the rest around the work. your setup stays editable in the dossier.'
       : 'i’m ' + NAME + '. ready for my first assignment. you can change my setup in the agent dossier.';
     await Dialogue.say([seg(readyLine, 46, 0)]);
     if (birthFailed) {

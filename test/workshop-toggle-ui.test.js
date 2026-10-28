@@ -65,7 +65,7 @@ const writeDurable = ({ fs }, file, data) => { fs.writeFileSync(file, data); };
   A.ok(/a\.workshop = on/.test(wBody), 'setAgentWorkshop writes the local away-workshop flag');
   A.ok(/\/api\/workshop\/grant/.test(wBody) && /method: 'POST'/.test(wBody), 'setAgentWorkshop records the grant via POST /api/workshop/grant (the server AUTHORITY)');
   A.ok(/agentId: a\.id, on: on/.test(wBody), 'the grant POST carries the agentId + on flag');
-  A.ok(/if \(!ok\)[\s\S]{0,80}a\.workshop = !on/.test(wBody), 'a grant the station did NOT record reverts the local flag (truthful telemetry)');
+  A.ok(/if \(!ok\)[\s\S]{0,80}a\.workshop = !on/.test(wBody), 'a grant the farm did NOT record reverts the local flag (truthful telemetry)');
   A.ok(/pushRoster\(\)/.test(wBody) && /persist\(\)/.test(wBody), 'the grant updates the away-driver dossier (pushRoster) and persists');
   A.ok(/setWorkshop:\s*setAgentWorkshop/.test(appjs), 'setAgentWorkshop is exposed on access.config.setWorkshop');
 

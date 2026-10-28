@@ -29,7 +29,7 @@ A.ok(!/ASSIGN AGENT TO WORKSTATION/.test(build), 'the old centred modal picker i
 //    overseer's station-control 'agent' op, so the chip binds through it and the rule is RUN here (and in
 //    test/desk-one-per-agent.test.js, which also runs the op)
 const assign = fn('assignDesk');
-A.ok(/return station\.assignDesk\(propId, String\(aid \|\| ''\)\);/.test(assign), 'a chip binds through the station\'s one-desk-per-agent rule');
+A.ok(/return station\.assignDesk\(propId, String\(aid \|\| ''\)\);/.test(assign), 'a chip binds through the farm\'s one-desk-per-agent rule');
 {
   const M = require('../frontend/app/worldmodel.js');
   const st = M.create(M.starterDoc());

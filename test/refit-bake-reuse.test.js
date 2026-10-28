@@ -11,7 +11,7 @@ assert.ok(handoff, 'world exposes its guarded read-only cache handoff');
 const station = {}, cache = {}, geo = {};
 const context = vm.createContext({ station, cache, geo, geoDirty: false, bakeDirty: false });
 vm.runInContext('this.borrow = ' + handoff[1], context);
-assert.equal(context.borrow({}), null, 'different station cannot inherit this image');
+assert.equal(context.borrow({}), null, 'different farm cannot inherit this image');
 for (const key of ['geoDirty', 'bakeDirty']) {
   context[key] = true;
   assert.equal(context.borrow(station), null, key + ' rejects stale rendered state');
@@ -117,14 +117,14 @@ for(const change of [()=>st.moveProp(door.id,1,0),()=>st.rotateProp(door.id,1),
   assert.ok(change().ok);assert.equal(patch.staticBakeUnchanged,undefined);
 }
 st.undo();assert.equal(patch.staticBakeUnchanged,undefined,'undoing an airlock edit re-bakes');
-assert.ok(patch.global&&patch.dirtyRects.length===0,'…the whole station (a sealed room drops every doorway it has)');
+assert.ok(patch.global&&patch.dirtyRects.length===0,'…the whole farm (a sealed room drops every doorway it has)');
 st.redo();assert.ok(patch.global,'…and so does redoing it');
 // A SEALING AIRLOCK MOVES A WHOLE ROOM'S DOORWAYS: its edits name the room it stands in, not just its own tile
 const sr=st.rooms()[0].rects[0], covers=(rects,r)=>rects.some(q=>q.x1===r.x1&&q.y1===r.y1&&q.x2===r.x2&&q.y2===r.y2);
 const seal=st.addProp({t:'airlock',door:'closed',x:sr.x1+3,y:sr.y1+3,w:1,h:1});
 assert.ok(seal.ok&&covers(patch.dirtyRects,sr),'placing a closed airlock re-bakes its whole room');
 assert.ok(st.moveProp(seal.id,1,0).ok&&covers(patch.dirtyRects,sr),'…moving it too');
-assert.ok(st.setDoorState(seal.id,'open').ok&&covers(patch.dirtyRects,sr)&&!patch.global,'…opening it re-bakes that room, not the station');
+assert.ok(st.setDoorState(seal.id,'open').ok&&covers(patch.dirtyRects,sr)&&!patch.global,'…opening it re-bakes that room, not the farm');
 assert.ok(st.setDoorState(seal.id,'closed').ok&&covers(patch.dirtyRects,sr),'…closing it too');
 assert.ok(st.removeProp(seal.id).ok&&covers(patch.dirtyRects,sr),'…and removing it');
 const openLock=st.addProp({t:'airlock',x:sr.x1+3,y:sr.y1+3,w:1,h:1});
@@ -157,7 +157,7 @@ assert.ok(st.renameRoom(rn.id,'RENAMED').ok);assert.equal(patch.staticBakeUnchan
 // bottom tile row — so its rect holds exactly that span and carries no wall reach (pad 0)
 const plateRect=r=>r.x1===x2-3&&r.x2===x2+12&&r.y1===y2&&r.y2===y2&&r.pad===0;
 assert.ok(!patch.global&&patch.dirtyRects.length===1&&plateRect(patch.dirtyRects[0]),
-  '…so a rename names that plate, not the whole station: '+JSON.stringify(patch.dirtyRects));
+  '…so a rename names that plate, not the whole farm: '+JSON.stringify(patch.dirtyRects));
 st.undo();assert.ok(!patch.global&&patch.dirtyRects.length===2&&patch.dirtyRects.every(plateRect),
   '…and undoing it re-bakes only that plate, never the whole room: '+JSON.stringify(patch.dirtyRects));
 console.log('refit placement: prop-only pixels, fresh geometry/routing, mixed edits, airlock and history PASS');
@@ -194,12 +194,12 @@ Object.assign(render,{station:handedSt,geo:frameOf,geoDirty:false});
 render.handedBake={station:handedSt,seq:7,bake:stitched};
 const paintedBefore=painted;render.rebake();
 assert.equal(render.cache,stitched,'the stitched floor becomes the world bake');
-assert.equal(painted,paintedBefore,'…without baking the station again');
+assert.equal(painted,paintedBefore,'…without baking the farm again');
 assert.equal(render.handedBake,null,'…and the offer is spent');
 render.handedBake={station:handedSt,seq:7,bake:stitched};seqNow=8;render.rebake();
 assert.ok(render.cache!==stitched&&painted===paintedBefore+1,'a floor edited since the offer bakes for itself');
 render.handedBake={station:{getSeq:()=>8},seq:8,bake:stitched};render.rebake();
-assert.ok(render.cache!==stitched&&painted===paintedBefore+2,'another station\'s floor is never taken');
+assert.ok(render.cache!==stitched&&painted===paintedBefore+2,'another farm\'s floor is never taken');
 render.handedBake={station:handedSt,seq:8,bake:Object.assign({},stitched,{H:6})};render.rebake();
 assert.ok(render.cache.tag!=='stitched'&&painted===paintedBefore+3,'nor one of another size');
 const worldStart=fnBody(world,'function start(');

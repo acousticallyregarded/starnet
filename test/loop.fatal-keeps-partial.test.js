@@ -86,7 +86,7 @@ const MARK = /\n\n\[response interrupted — [^\]]+; this answer is incomplete\]
     A.ok(attempt > 1, 'the ladder really retried (' + attempt + ' attempts)');
     const kept = assistants(res.messages);
     A.eq(kept.length, 1, 'one kept partial');
-    A.ok(String(kept[0].content).indexOf('Partial draft shown live') === 0 && MARK.test(kept[0].content), 'it is the text the Commander actually saw, flagged incomplete');
+    A.ok(String(kept[0].content).indexOf('Partial draft shown live') === 0 && MARK.test(kept[0].content), 'it is the text the Farmer actually saw, flagged incomplete');
     A.ok(/provider error: timeout/.test(kept[0].content), 'with the final classified reason');
     A.eq(tokens(seq), 'Partial draft shown live', 'nothing new was streamed by the empty retries');
   }

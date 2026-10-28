@@ -24,7 +24,7 @@ A.eq(GoalLoop.stepOfTurn({ role: 'user', content: STEP }), 'ship the landing pag
 A.eq(GoalLoop.stepOfTurn({ role: 'user', content: LEGACY }), 'fix the build', 'a pre-org-pass step too');
 A.eq(GoalLoop.stepOfTurn({ role: 'user', content: STEP, from: 'nova' }), null, 'a delegated brief keeps its own speaker');
 A.eq(GoalLoop.stepOfTurn({ role: 'assistant', content: STEP }), null, 'only a user-role turn can be a step');
-A.eq(GoalLoop.stepOfTurn({ role: 'user', content: 'ship the landing page' }), null, 'the Commander\'s own words are not a step');
+A.eq(GoalLoop.stepOfTurn({ role: 'user', content: 'ship the landing page' }), null, 'the Farmer\'s own words are not a step');
 A.eq(GoalLoop.stepOfTurn(null), null, 'nothing is not a step');
 
 /* ---------- 1. the rail excerpt ---------- */
@@ -33,10 +33,10 @@ A.eq(GoalLoop.stepOfTurn(null), null, 'nothing is not a step');
   const src = A.fnBody(app, 'function railExcerpt(');
   A.ok(src.length > 100, 'railExcerpt sliced');
   const railExcerpt = new Function('GoalLoop', src + '\nreturn railExcerpt;')(GoalLoop);
-  A.eq(railExcerpt({ role: 'user', content: STEP }), '↻ Goal step: ship the landing page', 'a goal step reads as the station\'s line, no "You:"');
+  A.eq(railExcerpt({ role: 'user', content: STEP }), '↻ Goal step: ship the landing page', 'a goal step reads as the farm\'s line, no "You:"');
   A.eq(railExcerpt({ role: 'user', content: LEGACY }), '↻ Goal step: fix the build', '…an old saved one too');
   A.ok(railExcerpt({ role: 'user', content: GoalLoop.continuationPrompt(GoalLoop.create('x'.repeat(400), { now: 1 })) }).length <= 160, 'a long goal clamps to the row');
-  A.eq(railExcerpt({ role: 'user', content: 'check the build. then deploy' }), 'You: check the build.', 'the Commander\'s own turn still reads "You:"');
+  A.eq(railExcerpt({ role: 'user', content: 'check the build. then deploy' }), 'You: check the build.', 'the Farmer\'s own turn still reads "You:"');
   A.eq(railExcerpt({ role: 'assistant', content: 'Green.' }), 'Green.', 'the agent\'s reply is unchanged');
 }
 
@@ -51,9 +51,9 @@ A.eq(GoalLoop.stepOfTurn(null), null, 'nothing is not a step');
     { role: 'assistant', content: 'Drafted the hero.' }
   );
   const md = W.exportConversation(w.id, 'markdown', { exportedAt: 1 }).text;
-  A.ok(/## Commander\n\nset up the launch\n/.test(md), 'the Commander\'s own turn exports under Commander');
-  A.ok(/## Station\n\nGoal step: ship the landing page\n/.test(md), 'a goal step exports as the station\'s line');
-  A.ok(md.indexOf('[Continuing toward') < 0, '…never the internal prompt as the Commander\'s words');
+  A.ok(/## Farmer\n\nset up the launch\n/.test(md), 'the Farmer\'s own turn exports under Farmer');
+  A.ok(/## Farm\n\nGoal step: ship the landing page\n/.test(md), 'a goal step exports as the farm\'s line');
+  A.ok(md.indexOf('[Continuing toward') < 0, '…never the internal prompt as the Farmer\'s words');
   const json = W.exportConversation(w.id, 'json', { exportedAt: 1 });
   A.eq(json.doc.messages[1].goalStep, 'ship the landing page', 'JSON names the step');
   A.eq(json.doc.messages[1].content, STEP, '…and keeps the record (what the model received)');
@@ -70,7 +70,7 @@ A.eq(GoalLoop.stepOfTurn(null), null, 'nothing is not a step');
   const legacy = [{ id: 's2', title: 'Fix', runIds: ['r2'], history: [{ role: 'user', content: LEGACY }] }];
   A.eq(H.taskOfRun('r2', legacy, '').task, 'fix the build', '…an old saved step too');
   const plain = [{ id: 's3', title: 'Plain', runIds: ['r3'], history: [{ role: 'user', content: 'check the build' }] }];
-  A.eq(H.taskOfRun('r3', plain, '').task, 'check the build', 'a Commander turn is still the task');
+  A.eq(H.taskOfRun('r3', plain, '').task, 'check the build', 'a Farmer turn is still the task');
 }
 
 /* ---------- 4. the desk screen's task ---------- */

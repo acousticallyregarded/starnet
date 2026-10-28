@@ -40,8 +40,8 @@ A.ok(F.DOC_VIEW_MAX_BYTES >= 256 * 1024 && F.DOC_VIEW_MAX_BYTES <= 4 * 1024 * 10
 {
   const md = '# StarNet Launch Tagline\n\n**Your AI agent.** Local-first. *Always* ready.\nSecond line.\n\n## Options\n\n- One `fast` pick\n- Two\n\n1. First\n2. Second\n\n> Ship it.\n\n---\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n```js\nconst x = "<b>";\n```\n\n[docs](https://example.com/a?b=1&c=2) and [bad](javascript:alert(1))';
   const doc = F.documentViewHtml('tagline.md', md);
-  A.ok(/<h1[^>]*>StarNet Launch Tagline<\/h1>/.test(doc) && /<h2[^>]*>Options<\/h2>/.test(doc), 'headings render as headings, marks gone');
-  A.ok(doc.indexOf('# StarNet') === -1 && doc.indexOf('**') === -1, 'no raw heading or bold marks on the page');
+  A.ok(/<h1[^>]*>Homestead Launch Tagline<\/h1>/.test(doc) && /<h2[^>]*>Options<\/h2>/.test(doc), 'headings render as headings, marks gone');
+  A.ok(doc.indexOf('# Homestead') === -1 && doc.indexOf('**') === -1, 'no raw heading or bold marks on the page');
   A.ok(/<strong>Your AI agent\.<\/strong>/.test(doc) && /<em>Always<\/em>/.test(doc) && /<code>fast<\/code>/.test(doc), 'bold, emphasis and inline code');
   A.ok(/Local-first\. <em>Always<\/em> ready\.<br>Second line\./.test(doc), 'a paragraph keeps the author\'s own line breaks');
   A.ok(/<ul><li>One <code>fast<\/code> pick<\/li><li>Two<\/li><\/ul>/.test(doc) && /<ol><li>First<\/li><li>Second<\/li><\/ol>/.test(doc), 'bullet and numbered lists');

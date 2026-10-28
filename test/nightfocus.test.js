@@ -151,7 +151,7 @@ const goal = { text: 'launch the beta', done: 1, total: 4, next: 'wire the signu
 // ---- NO DOUBLE-COUNT: a goal-sourced star, or a star equal to the active goal, is suppressed (goal already ranks it) ----
 (function northStarNoDoubleCount() {
   const goal = { text: 'launch the beta', done: 1, total: 4, next: 'wire the signup' };
-  const goalStar = { text: 'launch the beta', groundedIn: "the Commander's active goal arc", source: 'goal', status: 'adopted' };
+  const goalStar = { text: 'launch the beta', groundedIn: "the Farmer's active goal arc", source: 'goal', status: 'adopted' };
   A.eq(F.northStarEvidence(goalStar, goal), null, 'a goal-sourced star is not re-counted (the goal input covers it)');
   const echoStar = { text: 'launch the beta', source: 'model', status: 'adopted' };   // model text == goal text
   A.eq(F.northStarEvidence(echoStar, goal), null, 'a model star echoing the goal text is not double-counted');

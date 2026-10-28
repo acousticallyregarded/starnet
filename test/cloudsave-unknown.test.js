@@ -25,7 +25,7 @@ const doc = (updatedAt) => ({ schema: 'starnet.save', version: 3, updatedAt, age
 (async () => {
   for (const body of [null, {}, { error: 'unavailable' }, { save: { broken: true } }, { save: null, ok: false }]) {
     nextPull = () => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(body) });
-    A.ok(CloudSave.isUnknownSentinel(await CloudSave.reconcile(null)), 'malformed 200 is unknown, never a proven empty station');
+    A.ok(CloudSave.isUnknownSentinel(await CloudSave.reconcile(null)), 'malformed 200 is unknown, never a proven empty farm');
   }
   // ---- 1. auth-refused pull (403) + NO local cache → save-unknown sentinel, reason 'forbidden' ----
   nextPull = () => Promise.resolve({ ok: false, status: 403, json: () => Promise.resolve({}) });
@@ -73,7 +73,7 @@ const doc = (updatedAt) => ({ schema: 'starnet.save', version: 3, updatedAt, age
   const fromMemory = await CloudSave.reconcile(null);
   A.ok(!CloudSave.isUnknownSentinel(fromMemory) && fromMemory && fromMemory.agent && fromMemory.agent.name === 'NOVA', 'a remote the cache cannot hold is resumed from memory, not gated');
   A.eq(fromMemory.version, RealSave.CURRENT, 'the in-memory resume runs the migration ladder');
-  A.eq(CloudSave.revision(), 4, 'the in-memory resume carries the station file revision');
+  A.eq(CloudSave.revision(), 4, 'the in-memory resume carries the farm file revision');
   A.eq(CloudSave.memorySave() && CloudSave.memorySave().agent.name, 'NOVA', 'the in-memory save is what a later re-entry resumes');
   A.eq(removed, [], 'with no cache entry there is nothing to drop');
 
@@ -94,8 +94,8 @@ const doc = (updatedAt) => ({ schema: 'starnet.save', version: 3, updatedAt, age
   const staleRaw = JSON.stringify(staleLocal);
   global.localStorage.getItem = () => staleRaw;
   const resumed = await CloudSave.reconcile(staleLocal);
-  A.eq(resumed && resumed.agent && resumed.agent.name, 'NOVA-2', 'a failed cache write resumes the newer station file, not the stale local copy');
-  A.eq(CloudSave.revision(), 5, 'the resumed station builds on the station file revision');
+  A.eq(resumed && resumed.agent && resumed.agent.name, 'NOVA-2', 'a failed cache write resumes the newer farm file, not the stale local copy');
+  A.eq(CloudSave.revision(), 5, 'the resumed farm builds on the farm file revision');
   A.eq(removed, ['starnet.save'], 'the superseded clean cache entry is removed');
 
   // ...but when that newer remote fails migration, the original local snapshot is kept at its own revision

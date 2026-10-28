@@ -69,7 +69,7 @@ A.eq(I.summary(s, { now: T0 + 3 * HOUR + 200 * DAY }).length, 0, 'a long-idle hi
 
 /* ---------- warm ---------- */
 A.ok(I.warm(s, T0 + 3 * HOUR), 'an accumulated interest reads warm');
-A.ok(!I.warm(I.fresh(T0), T0), 'a fresh station is cold');
+A.ok(!I.warm(I.fresh(T0), T0), 'a fresh farm is cold');
 A.ok(!I.warm(s, T0 + 3 * HOUR + 100 * DAY), 'warmth decays with the histogram');
 
 /* ---------- shouldExtract cadence gates, each binding by name ---------- */
@@ -77,7 +77,7 @@ let g = I.fresh(T0);
 A.eq(I.shouldExtract(g, { now: T0, activityCount: 0 }).binding, 'no-activity', 'no activity -> no spend');
 // a NEVER-passed station (lastPassAt 0) catch-up-fires on its first qualifying run — cold-start learns fast
 g = I.noteRun(g, T0);
-A.ok(I.shouldExtract(g, { now: T0, activityCount: 4 }).fire, 'a never-passed station fires on its first qualifying run');
+A.ok(I.shouldExtract(g, { now: T0, activityCount: 4 }).fire, 'a never-passed farm fires on its first qualifying run');
 // once a pass has happened, the cadence gates hold against a recent stamp
 g = I.fold(g, [], { now: T0 });
 g = I.noteRun(g, T0);

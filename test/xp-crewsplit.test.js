@@ -22,7 +22,7 @@ r = Xp.crewSplit({ leadDelta: 8, leadCost: 0.5, workers: [{ agentId: 'w1', usd: 
 A.eq(r.lead.delta, 8, 'the lead keeps its full delta regardless of the split');
 A.eq(r.workers.length, 1, 'a worker with provable cost is credited');
 A.eq(r.workers[0].agentId, 'w1', 'the credited worker is identified by its real agentId');
-A.eq(r.workers[0].delta, 8, 'worker credit is equal to the Commander verdict, not a cost fraction');
+A.eq(r.workers[0].delta, 8, 'worker credit is equal to the Farmer verdict, not a cost fraction');
 
 /* ---------- 4. spend cannot rank multiple contributors ---------- */
 r = Xp.crewSplit({ leadDelta: 10, leadCost: 0, workers: [{ agentId: 'big', usd: 0.9 }, { agentId: 'small', usd: 0.1 }] });

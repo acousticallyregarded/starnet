@@ -63,7 +63,7 @@ try {
   await cdp.send('Page.enable'); await cdp.send('Runtime.enable');
   const diagnostics = collectDiagnostics(cdp);
   await cdp.send('Page.navigate', { url: appUrl });
-  check('seeded station reaches the live floor', await waitDevReady(cdp, evalJS, { url: appUrl }));
+  check('seeded farm reaches the live floor', await waitDevReady(cdp, evalJS, { url: appUrl }));
 
   let before = null;
   for (let i = 0; i < 50; i++) {

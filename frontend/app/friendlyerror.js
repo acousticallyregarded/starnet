@@ -592,8 +592,8 @@
     // ONLY "out of managed credit" means an empty wallet: "Managed credits are unavailable" also says "managed credit",
     // and matching that as managed_credit told funded customers to top up whenever a balance check failed.
     if (/managed credits? (?:are |is )?unavailable/.test(raw.toLowerCase())) {
-      kind = /refused this station'?s link|relink/.test(raw.toLowerCase()) ? 'managed_credit_link' : 'managed_credit_unavailable';
-    } else if (/managed credits? (?:are |is )?held|balance is held by \d+ running starnet run/.test(raw.toLowerCase())) {
+      kind = /refused this (?:station|farm)'?s link|relink/.test(raw.toLowerCase()) ? 'managed_credit_link' : 'managed_credit_unavailable';
+    } else if (/managed credits? (?:are |is )?held|balance is held by \d+ running (?:starnet|starnet) run/.test(raw.toLowerCase())) {
       kind = 'managed_credit_held';   // the balance sits in this station's own running runs' holds — never "out of credit"
     } else if (/managed credit|add credits in the store|out of managed credit/.test(raw.toLowerCase())) {
       kind = 'managed_credit';
@@ -722,7 +722,7 @@
       const low = raw.toLowerCase();
       const named = raw.match(/connect an? (.+?) api key\b/i);   // the sidecar guard: providerCredentialError()
       let userMessage = k.msg;
-      if (/link this station to a starnet account/.test(low)) {
+      if (/link this (?:station|farm) to a starnet account/.test(low)) {
         userMessage = "This farm isn't linked to StarNet credits yet — link it under SETTINGS → AI & MODELS → STARNET MANAGED, or connect your own provider key.";
       } else if (named) {
         userMessage = 'No ' + named[1].trim().replace(/\s+api$/i, '') + ' API key is connected yet — add it under SETTINGS → AI & MODELS, or pick a model from a provider you have already connected.';

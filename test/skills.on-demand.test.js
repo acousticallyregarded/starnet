@@ -31,7 +31,7 @@ const bySlug = {}; for (const s of LIB) bySlug[s.slug] = s;
 {
   const opts = { overrides: {}, placedTypes: [] };   // a fresh station: the default-on, no-gear recipes
   const offered = C.live(LIB, opts);
-  A.eq(offered.map(s => s.slug).sort(), ['ascii-art', 'creative-ideation', 'decision-1-3-1', 'humanizer', 'plan'], 'a fresh station is offered the five default recipes');
+  A.eq(offered.map(s => s.slug).sort(), ['ascii-art', 'creative-ideation', 'decision-1-3-1', 'humanizer', 'plan'], 'a fresh farm is offered the five default recipes');
   const idx = C.composeIndex(LIB, opts);
   A.ok(idx.indexOf('\n\n## INSTALLED SKILLS\n') === 0, 'the index keeps the INSTALLED SKILLS section header');
   A.ok(/FOLLOW its recipe instead of improvising/.test(idx), 'the original "follow the recipe" instruction is kept');
@@ -102,7 +102,7 @@ const bySlug = {}; for (const s of LIB) bySlug[s.slug] = s;
   A.eq(C.find(offered, 'Make a Plan'), plan, 'the display name resolves');
   A.eq(C.find(offered, 'library:web-research'), bySlug['web-research'], 'a gear-gated recipe resolves once its gear is placed and it is enabled');
   A.eq(C.find(offered, 'library:test-driven-development'), null, 'a recipe NOT offered this run (disabled + gear absent) is not served');
-  A.eq(C.find(C.live(LIB, { overrides: { plan: false }, placedTypes: [] }), 'library:plan'), null, 'a recipe the Commander DISABLED is not served');
+  A.eq(C.find(C.live(LIB, { overrides: { plan: false }, placedTypes: [] }), 'library:plan'), null, 'a recipe the Farmer DISABLED is not served');
   A.eq(C.find(offered, 'library:'), null, 'an empty library name is not a match');
   A.eq(C.find(offered, ''), null, 'no name, no recipe');
   const text = C.viewText(plan);

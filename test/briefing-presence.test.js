@@ -44,7 +44,7 @@ const tick = () => new Promise(r => setImmediate(r));
   now += 1000; handlers.pointerdown(); await tick();
   A.eq(seens().length, 0, 'the boot delivery itself moved the stamp: an input a second later needs no second one');
   now += 61000; handlers.pointerdown(); await tick();
-  A.eq(seens().length, 1, 'the Commander is here → the page stamps their presence');
+  A.eq(seens().length, 1, 'the Farmer is here → the page stamps their presence');
   now += 1000; handlers.keydown(); await tick();
   A.eq(seens().length, 1, 'stamps are throttled (one a minute is plenty for a 30-minute threshold)');
   now += 61000; handlers.keydown(); await tick();
@@ -76,7 +76,7 @@ const tick = () => new Promise(r => setImmediate(r));
 
   B.reset();
   now += 61000; handlers.pointerdown(); await tick();
-  A.eq(seens().length, before + 1, 'a reset station stamps nothing until its next page starts');
+  A.eq(seens().length, before + 1, 'a reset farm stamps nothing until its next page starts');
 
   // THE AWAKENING (review 10-14): a new Commander's first session runs with the briefing OFF (enterGame passes
   // enabled:false), but a presence stamp delivers nothing — it must still land, or the stamp stays 0 all session and the
@@ -85,13 +85,13 @@ const tick = () => new Promise(r => setImmediate(r));
   B.init({ enabled: false, agentId: 'agent' });
   A.eq(timers.length, t0, 'the awakening asks for no boot briefing');
   now += 1000; handlers.pointerdown(); await tick();
-  A.eq(seens().length, s0 + 1, 'the awakening page stamps the Commander\'s presence on their first input');
+  A.eq(seens().length, s0 + 1, 'the awakening page stamps the Farmer\'s presence on their first input');
   A.eq(delivers().length, d0, '…and delivers nothing');
   handlers.pagehide(); await tick();
   A.ok(seens().length === s0 + 2 && seens()[s0 + 1].keepalive, 'a reload/close of the awakening stamps on the way out (the first reload is a reload)');
   now += 31 * 60000; handlers.pointerdown(); await tick();
   A.eq(delivers().length, d0, 'the awakening never delivers a briefing, even after an idle half hour');
-  A.eq(seens().length, s0 + 3, 'it stamps the return instead (the Commander is here again)');
+  A.eq(seens().length, s0 + 3, 'it stamps the return instead (the Farmer is here again)');
   A.eq(B.ownsReturn(), false, 'the awakening still does not own the return');
 
   Date.now = realNow;

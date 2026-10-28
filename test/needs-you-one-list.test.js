@@ -63,7 +63,7 @@ const NY = require('../frontend/app/needsyou.js');
   A.ok(fetched.includes('/api/hooks') && fetched.includes('/api/plugins'), 'extensions are read from the sidecar (hooks + plugins), never the bell');
   const list = NY.items(NOW);
   const byKind = k => list.filter(i => i.kind === k);
-  A.eq(list.map(i => i.kind).join(','), 'approval,stepin,attest,loop,build,extension', 'every blocking wait, one list: the timed ask first, then STEP-IN, then the station waits oldest first (an untimed extension last, never above the approval)');
+  A.eq(list.map(i => i.kind).join(','), 'approval,stepin,attest,loop,build,extension', 'every blocking wait, one list: the timed ask first, then STEP-IN, then the farm waits oldest first (an untimed extension last, never above the approval)');
   A.eq(byKind('approval').length, 1, 'a background worker\'s ask is one row (its Channels ask), never added twice');
   A.ok(!list.some(i => /prop1|review/i.test(i.key)), 'TO REVIEW and PROPOSALS are optional piles, never NEEDS YOU');
   const step = byKind('stepin')[0];
@@ -72,7 +72,7 @@ const NY = require('../frontend/app/needsyou.js');
   A.eq([att.who, att.what, att.where].join(' | '), 'ROOK | says "Ship the landing page" is done | QUESTS', 'a quest an agent says is done');
   A.eq(att.tip, 'deployed to /landing', 'its evidence rides the row\'s tip');
   A.eq(byKind('loop')[0].what, 'has 2 results waiting on your review from "Tidy the docs"', 'goal-loop results waiting on review (who + a verb)');
-  A.eq(byKind('extension')[0].what, 'has 2 extensions awaiting your approval', 'extensions awaiting approval (1 hook + 1 plugin), read as STATION has …');
+  A.eq(byKind('extension')[0].what, 'has 2 extensions awaiting your approval', 'extensions awaiting approval (1 hook + 1 plugin), read as FARM has …');
   // (two reviews 10-16) a build row said "in DELIVERABLES" while its door opened the build's own session: it names the place
   // the click lands, by the name the SESSIONS rail gives that session
   A.eq([byKind('build')[0].who, byKind('build')[0].what, byKind('build')[0].where].join(' | '), 'VEX | built "Pricing page v2": keep or discard it | ⚒ Pricing page v2', 'a build that needs a decision, in its own session (named as the rail names it)');
@@ -223,7 +223,7 @@ const NY = require('../frontend/app/needsyou.js');
   // ---- the rail lists the SAME stored question, and opening it settles it in both lists ----
   {
     const rail = NY.items(NOW);
-    A.eq(rail.map(i => i.kind).join(','), 'approval,stepin,attest,loop,build,asked,extension', 'the rail lists the stored question with the station\'s other waits (it blocks no running conversation: never above an ask)');
+    A.eq(rail.map(i => i.kind).join(','), 'approval,stepin,attest,loop,build,asked,extension', 'the rail lists the stored question with the farm\'s other waits (it blocks no running conversation: never above an ask)');
     const q = rail.find(i => i.key === 'asked:n5');
     A.eq(q && [q.who, q.what, q.where, q.wsId].join(' | '), 'NOVA | has a question for you | Launch plan | other', 'the rail row: who, the line, "in <conversation>" (said once each)');
     A.eq(keys(q), '', 'no key: its row opens its conversation (a question in a reply is answered there)');

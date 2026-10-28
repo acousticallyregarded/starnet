@@ -1000,7 +1000,7 @@ const Onboarding = (() => {
     // stage, so the panel never flips READY TO BEGIN → YOUR FIRST TASK between two back-to-back beats.
     stage('YOUR FIRST TASK', 'From getting acquainted to working together');
     const readyLine = role === 'orchestrator'
-      ? 'i’m ' + NAME + '. the station is yours. give me one task to start with — we can build the rest around the work. your setup stays editable in the dossier.'
+      ? 'i’m ' + NAME + '. the farm is yours. give me one task to start with — we can build the rest around the work. your setup stays editable in the dossier.'
       : 'i’m ' + NAME + '. ready for my first assignment. you can change my setup in the agent dossier.';
     await Dialogue.say([seg(readyLine, 46, 0)]);
     if (birthFailed) {

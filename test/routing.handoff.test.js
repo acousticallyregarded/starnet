@@ -413,7 +413,7 @@ function station(n) {
     A.ok(s7.ok && typeof release === 'function', 'fault: the hand-off is running on LINE B');
     stop = true; release(); await tick(30);
     const rec7 = jobs.jobs.filter(j => j.line === LB).pop();
-    A.ok(rec7 && rec7.status === 'stopped' && /internal fault/.test(rec7.error) && !/E-STOP/.test(rec7.error), 'fault: the record says the station stopped it, not E-STOP — ' + JSON.stringify(rec7 && { status: rec7.status, error: rec7.error }));
+    A.ok(rec7 && rec7.status === 'stopped' && /internal fault/.test(rec7.error) && !/E-STOP/.test(rec7.error), 'fault: the record says the farm stopped it, not E-STOP — ' + JSON.stringify(rec7 && { status: rec7.status, error: rec7.error }));
     const f2 = R7.onShipped(fresh('sample-fault2', LA, lastA));
     A.ok(!f2.ok && /internal fault/.test(f2.error) && !/E-STOP/.test(f2.error), 'fault: a hand-off refused meanwhile says the fault, not E-STOP — ' + f2.error);
     stop = false;
@@ -476,8 +476,8 @@ function station(n) {
           hooks.send('the first part of the answer');
           return new Promise(res => { release = () => {
             runsByStream[sid] = [{ runId: 'nt' + (++n), agentId, dockId: docks[0], reason: 'cancelled', usd: 0.001, streamId: sid, startedAt: clock }];
-            hooks.send(fault ? '⏹ Stopped — the station hit an internal fault and stopped this run. This message got no reply and nothing further will run for it.'
-              : '⏹ Stopped — E-STOP was pressed in the station. This message got no reply and nothing further will run for it.');
+            hooks.send(fault ? '⏹ Stopped — the farm hit an internal fault and stopped this run. This message got no reply and nothing further will run for it.'
+              : '⏹ Stopped — E-STOP was pressed on the farm. This message got no reply and nothing further will run for it.');
             res();
           }; });
         } }), plan: () => plan, jobs: J, shipsToOutbox: () => true, halted: () => stop, faulted: () => stop && fault, runsFor: sid => runsByStream[sid] || [], now: () => clock,
@@ -510,13 +510,13 @@ function station(n) {
         }; });
       } }), plan: () => plan, jobs: J, shipsToOutbox: () => true, runsFor: sid => runsByStream[sid] || [], now: () => clock,
       newId: () => 'id' + (++n) + 'abcdef0123456789', warn: () => {} });
-    J.start({ id: 'job-quit0001', line: LA, name: 'A', text: 'running when the station quit', streamId: 'sample-quit1', at: clock });
+    J.start({ id: 'job-quit0001', line: LA, name: 'A', text: 'running when the farm quit', streamId: 'sample-quit1', at: clock });
     const q1 = RQ.onShipped(fresh('sample-quit1', LA, lastA));
     await tick();
     A.ok(q1.ok && typeof release === 'function', 'quit: one hand-off is running on LINE B');
-    const why = 'the station stopped before this hand-off ran — send the job again';
+    const why = 'the farm stopped before this hand-off ran — send the job again';
     A.eq(RQ.haltAll(why, { close: true }), 0, 'quit: nothing was waiting yet');
-    J.start({ id: 'job-quit0002', line: LA, name: 'A', text: 'finished while the station was quitting', streamId: 'sample-quit2', at: clock });
+    J.start({ id: 'job-quit0002', line: LA, name: 'A', text: 'finished while the farm was quitting', streamId: 'sample-quit2', at: clock });
     const q2 = RQ.onShipped(fresh('sample-quit2', LA, lastA));
     A.ok(!q2.ok && q2.error === why, 'quit: a job that ships after the quit began is refused with the quit reason, never queued — ' + JSON.stringify(q2));
     A.eq((RQ.status().lines.find(x => x.line === LB) || {}).queued, 0, 'quit: nothing waits in memory to vanish at exit');
@@ -534,7 +534,7 @@ function station(n) {
     A.ok(RO.onShipped(fresh('sample-after-estop', LA, lastA)).ok, 'an E-STOP drain alone leaves admission open');
     // the host's graceful shutdown is what closes it (sidecar/index.js gracefulShutdown — never require it: it boots a sidecar)
     const shut = A.fnBody(require('fs').readFileSync(require('path').join(__dirname, '..', 'sidecar', 'index.js'), 'utf8'), 'function gracefulShutdown(signal)');
-    A.ok(/handoffRunner\.haltAll\('the station stopped before this hand-off ran — send the job again', \{ close: true \}\)/.test(shut), 'gracefulShutdown drains AND closes SEND TO admission');
+    A.ok(/handoffRunner\.haltAll\('the farm stopped before this hand-off ran — send the job again', \{ close: true \}\)/.test(shut), 'gracefulShutdown drains AND closes SEND TO admission');
   }
 
   /* THE CAP WON THE RACE: the hand-off passed its dispatch preflight, then LINE B's own work reached the day limit before the entry

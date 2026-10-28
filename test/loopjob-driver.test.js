@@ -48,7 +48,7 @@ function world(opts) {
     hasCredential: opts.hasCredential,
     declineRepeatMs: opts.declineRepeatMs,
     defaultModel: 'test-model',
-    persona: 'STATION PERSONA',
+    persona: 'FARM PERSONA',
     harvest: opts.harvest,
     projectLine: opts.projectLine,
     context: opts.context,
@@ -99,7 +99,7 @@ function world(opts) {
     A.eq(o.trigger, 'loop', 'tagged with the loop trigger, distinct from schedule/nightshift');
     A.eq(o.streamId, 'loop-l1', 'iterations of one loop share one durable stream');
     A.eq(o.model, 'test-model', 'the host default model is used when the loop pins none');
-    A.eq(o.system, 'STATION PERSONA', 'the autonomous persona is the system prompt');
+    A.eq(o.system, 'FARM PERSONA', 'the autonomous persona is the system prompt');
     A.ok(/find bugs/.test(o.messages[0].content), 'the objective is the directive');
 
     // a second tick while in flight must NOT double-fire
@@ -276,7 +276,7 @@ function world(opts) {
   // ---- 7. gates that must cost nothing --------------------------------------------------------------------
   {
     const w = world({ halted: true }); w.seed({});
-    A.eq(w.tick(T0).fired, 0, 'the station E-STOP blocks every loop');
+    A.eq(w.tick(T0).fired, 0, 'the farm E-STOP blocks every loop');
     A.eq(w.calls.length, 0, 'with zero spend');
 
     const w2 = world({ agentBusy: true }); w2.seed({});
@@ -362,18 +362,18 @@ function world(opts) {
     w.tick(T0);
     const sys = w.calls[0].system;
     A.ok(/PROJECT FOLDER: C:\/proj\/cart/.test(sys), 'the project folder is injected into the system prompt');
-    A.ok(/STATION PERSONA/.test(sys), 'and it is APPENDED to the persona, never replacing it');
+    A.ok(/FARM PERSONA/.test(sys), 'and it is APPENDED to the persona, never replacing it');
 
     // a loop with no folder must inject nothing — never assert access we cannot prove
     const w2 = world({ projectLine: (l) => l.workdir ? '\n\nPROJECT FOLDER: ' + l.workdir : '' });
     w2.seed({});
     w2.tick(T0);
-    A.eq(w2.calls[0].system, 'STATION PERSONA', 'a folderless loop gets the bare persona, no phantom anchor');
+    A.eq(w2.calls[0].system, 'FARM PERSONA', 'a folderless loop gets the bare persona, no phantom anchor');
 
     // and with no projectLine dep wired at all the driver still runs (older hosts)
     const w3 = world(); w3.seed({ workdir: 'C:/proj' });
     w3.tick(T0);
-    A.eq(w3.calls[0].system, 'STATION PERSONA', 'the dep is optional');
+    A.eq(w3.calls[0].system, 'FARM PERSONA', 'the dep is optional');
   }
 
   /* ---- 13. THE PROJECT SNAPSHOT: anchor the agent, and NEVER converge on a project we could not read ------
@@ -566,7 +566,7 @@ function world(opts) {
     loops = S.createLoop(loops, { id: 'l2', objective: 'second' }, { now: T0 });
     const w = world({ loops, maxParallel: 2 });
     w.tick(T0);
-    A.eq(w.drv.abortLease('l1', 'paused by the Commander'), true, 'the targeted loop cancellation is accepted');
+    A.eq(w.drv.abortLease('l1', 'paused by the Farmer'), true, 'the targeted loop cancellation is accepted');
     A.eq(S.getLoop(w.loops, 'l1').iterations[0].outcome, 'cancelled', 'the targeted pass settles cancelled immediately');
     A.eq(S.getLoop(w.loops, 'l2').iterations[0].outcome, 'running', 'a sibling pass remains live');
     A.eq(w.drv.leases.size, 1, 'only the sibling lease remains');
@@ -594,7 +594,7 @@ function world(opts) {
     w.tick(T0);
     await w.finish({ text: 'old provider completed' });
     await w.flush();
-    A.eq(w.drv.abortLease('l1', 'paused by the Commander'), true, seam + ': cancel during pending host work');
+    A.eq(w.drv.abortLease('l1', 'paused by the Farmer'), true, seam + ': cancel during pending host work');
     A.eq(w.tick(T0 + MIN).fired, 1, seam + ': resume starts a replacement');
     const replacement = w.drv.leases.get('l1');
     A.eq(replacement.runId, 'run2', seam + ': replacement owns its lease');

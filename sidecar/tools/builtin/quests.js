@@ -181,7 +181,7 @@
             mintsByRun.set(runId, (mintsByRun.get(runId) || 0) + 1);
             if (mintsByRun.size > MINT_RUNS_CAP) { const oldest = mintsByRun.keys().next().value; mintsByRun.delete(oldest); }   // FIFO evict the oldest run
           }
-          return { content: 'Minted quest ' + r.id + '. It is now live in the Commander\'s QUEST LOG.', summary: 'minted ' + r.id };
+          return { content: 'Minted quest ' + r.id + '. It is now live in the Farmer\'s QUEST LOG.', summary: 'minted ' + r.id };
         }
 
         return { content: 'Unknown op "' + op + '". Use one of: ' + OPS.join(', ') + '.', summary: 'noop' };

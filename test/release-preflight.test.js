@@ -14,7 +14,7 @@ function fakeRepo(overrides) {
     'src-tauri/tauri.conf.json': JSON.stringify({ version: v, plugins: { updater: { endpoints: ['https://github.com/acme/starnet-releases/releases/latest/download/latest.json'] } } }),
     'src-tauri/Cargo.toml': '[package]\nname = "skynet-desktop"\nversion = "' + v + '"\n',
     'src-tauri/Cargo.lock': '[[package]]\nname = "other"\nversion = "1.0.0"\n\n[[package]]\nname = "skynet-desktop"\nversion = "' + v + '"\n',
-    'RELEASE_NOTES.md': '# StarNet v' + v + '\n\n- real notes\n',
+    'RELEASE_NOTES.md': '# Homestead v' + v + '\n\n- real notes\n',
     '/keys/starnet-updater.key': 'NEVER-PRINTED'
   }, (overrides && overrides.files) || {});
   const git = Object.assign({
@@ -215,7 +215,7 @@ A.ok(!parseGateLog('').ok, 'empty log rejected');
   A.ok(/--gates-proven-by/.test(byId(r3, 'gate-fast').fix), 'post-bump remediation names --gates-proven-by');
   A.eq(byId(r3, 'pins').status, 'PASS', 'post-bump: pins == target PASS');
   A.eq(byId(r3, 'notes').status, 'PASS', 'post-bump: real notes PASS');
-  const r4 = runPreflight(post, fakeRepo({ files: { 'RELEASE_NOTES.md': '# StarNet v0.10.7\n\n- TODO: summarize what changed in this release.\n' } }));
+  const r4 = runPreflight(post, fakeRepo({ files: { 'RELEASE_NOTES.md': '# Homestead v0.10.7\n\n- TODO: summarize what changed in this release.\n' } }));
   A.eq(byId(r4, 'notes').status, 'FAIL', 'post-bump: TODO scaffold is a hard FAIL');
   const r5 = runPreflight(Object.assign({}, CTX, { phase: 'post-bump' }), fakeRepo());
   A.eq(byId(r5, 'pins').status, 'FAIL', 'post-bump with pins still on the old version FAILs');
@@ -224,14 +224,14 @@ A.ok(!parseGateLog('').ok, 'empty log rejected');
 // ── an HTML comment left in the notes (an unfilled placeholder) is published as-is: refuse it at the cut ──
 {
   const post = Object.assign({}, CTX, { phase: 'post-bump', version: '0.10.7' });
-  const placeholder = '# StarNet v0.10.7\n\n- fixed the thing\n<!-- #121 line goes here only if the i121 lane ships -->\n- fixed another\n';
+  const placeholder = '# Homestead v0.10.7\n\n- fixed the thing\n<!-- #121 line goes here only if the i121 lane ships -->\n- fixed another\n';
   const r = runPreflight(post, fakeRepo({ files: { 'RELEASE_NOTES.md': placeholder } }));
   A.eq(byId(r, 'notes').status, 'FAIL', 'post-bump: an HTML comment in the notes is a hard FAIL');
   A.ok(/#121 line goes here/.test(byId(r, 'notes').detail), 'the notes row quotes the comment it found');
   A.ok(/fill it or delete it/.test(byId(r, 'notes').fix), 'the notes row says to fill or delete it');
   const pre = runPreflight(Object.assign({}, CTX, { version: '0.10.7' }), fakeRepo({ files: { 'RELEASE_NOTES.md': placeholder } }));
   A.eq(byId(pre, 'notes').status, 'WARN', 'pre-bump: the same comment is a WARN, like the TODO scaffold');
-  const clean = runPreflight(post, fakeRepo({ files: { 'RELEASE_NOTES.md': '# StarNet v0.10.7\n\n- fixed the thing\n- fixed another\n' } }));
+  const clean = runPreflight(post, fakeRepo({ files: { 'RELEASE_NOTES.md': '# Homestead v0.10.7\n\n- fixed the thing\n- fixed another\n' } }));
   A.eq(byId(clean, 'notes').status, 'PASS', 'post-bump: the same notes without the comment PASS');
 }
 

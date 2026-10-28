@@ -67,9 +67,9 @@ const refused = r => /^REFUSED: /.test(r.content);
     const r = await t.controlTool.run({ setting: 'daily budget', perDay: 5 });
     A.ok(refused(r) && /no action was named/.test(r.content) && /\{"action": "budget\.set", "args": \{"perDay": 5\}\}/.test(r.content),
       'a non-action `setting` is refused with the {action, args} shape and an example');
-    A.eq(cardFor({ setting: 'daily budget' }), 'make an unknown station change (it will be refused, and nothing will change)', 'and its card says so');
+    A.eq(cardFor({ setting: 'daily budget' }), 'make an unknown farm change (it will be refused, and nothing will change)', 'and its card says so');
     const r2 = await t.controlTool.run({ action: 'budget.raise', args: {} });
-    A.ok(refused(r2) && /no station action "budget\.raise"/.test(r2.content), 'an unknown action is named in the refusal');
+    A.ok(refused(r2) && /no farm action "budget\.raise"/.test(r2.content), 'an unknown action is named in the refusal');
   }
   // ---- args serialised as a JSON string (the second real-model run sent args: "{\"perDay\": 5}") ----
   {
@@ -89,7 +89,7 @@ const refused = r => /^REFUSED: /.test(r.content);
     A.ok(Array.isArray(j.toChange) && j.toChange.some(x => /^station\.power \{"action": "budget\.set", "args": \{perRun\?/.test(x)),
       'spending carries toChange: station.power budget.set with what it takes');
     A.ok(j.toChange.some(x => /^station\.control \{"action": "fallback\.set"/.test(x)), 'and station.control fallback.set');
-    A.ok(j.toChange.some(x => /settled by the Commander alone/.test(x)), 'and that an unsettled run is the Commander\'s');
+    A.ok(j.toChange.some(x => /settled by the Farmer alone/.test(x)), 'and that an unsettled run is the Farmer\'s');
     const keys = Object.keys(j); A.eq(keys[keys.length - 1], 'toChange', 'toChange comes last (a clipped answer loses the hint first)');
   }
   // ---- "pin this conversation": no session named = the run's own ----
@@ -135,7 +135,7 @@ const refused = r => /^REFUSED: /.test(r.content);
   {
     const s = stubs(); const t = make(s);
     for (const args of [{ hints: false }, '{"hints": false}', { look: { hints: false } }, { look: '{"hints": false}' }]) {
-      A.eq(cardFor({ action: 'look.set', args }), 'change the station\'s look: hints false', 'look.set card names the change for ' + JSON.stringify(args));
+      A.eq(cardFor({ action: 'look.set', args }), 'change the farm\'s look: hints false', 'look.set card names the change for ' + JSON.stringify(args));
     }
     const r = await t.controlTool.run({ action: 'look.set', args: '{"hints": false}' });
     A.ok(!refused(r), 'a stringified flat look is done');
@@ -175,12 +175,12 @@ const refused = r => /^REFUSED: /.test(r.content);
     const ctx = { streamId: 'ws1', runId: 'r1' };
     for (const k of ['place', 'target', 'id', 'window', 'page', 'section']) {
       const r = await t.run({ [k]: 'settings-spending' }, ctx);
-      A.ok(/^OPEN on the Commander's screen: SETTINGS › SPENDING LIMITS/.test(r.content), 'station.show {' + k + '} opens the place');
+      A.ok(/^OPEN on the Farmer's screen: SETTINGS › SPENDING LIMITS/.test(r.content), 'station.show {' + k + '} opens the place');
       A.ok(/opening it is not doing it/.test(r.content), 'and says opening is not doing a change');
     }
     A.eq(s.pages.map(p => p.args.place), Array(6).fill('settings-spending'), 'the page is asked for the catalog id every time');
     const bad = await t.run({ target: 'the spending page' }, ctx);
-    A.ok(/^REFUSED: there is no StarNet place "the spending page" — call it as \{place: "<id>"\}/.test(bad.content), 'free text never opens anything, and the refusal says how to call it');
+    A.ok(/^REFUSED: there is no Homestead place "the spending page" — call it as \{place: "<id>"\}/.test(bad.content), 'free text never opens anything, and the refusal says how to call it');
     const none = await t.run({}, ctx);
     A.ok(/^REFUSED: no place was named/.test(none.content), 'no place named is refused');
     A.eq(s.pages.length, 6, 'refusals never reach the page');

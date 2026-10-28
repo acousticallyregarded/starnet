@@ -45,10 +45,10 @@ function hangingStation() {
     A.ok(p && typeof p.then === 'function', 'pollFeedState returns its read (PollGate awaits it)');
     p.then(() => { settled = true; }, () => { settled = true; });
     await drain();
-    A.eq(st.asked.length, 3, 'it asks the station for channels, cron and routing triggers');
+    A.eq(st.asked.length, 3, 'it asks the farm for channels, cron and routing triggers');
     A.ok(st.asked.every(a => a.signal), 'every one of those reads carries a deadline signal (they had none)');
     A.eq(st.deadlines.map(d => d.ms).join(','), '15000,15000,15000', 'each deadline is 15 s, like the other bounded polls');
-    A.eq(settled, false, 'fixture: the station never answers');
+    A.eq(settled, false, 'fixture: the farm never answers');
     st.deadlines.forEach(d => d.fire());
     await drain();
     A.eq(settled, true, 'at the deadline the read gives up and the beat settles (it stayed open for good)');
@@ -129,7 +129,7 @@ function hangingStation() {
     A.ok(watchReads.length >= 8, 'fixture: the watch kept beating for 3 minutes (' + watchReads.length + ' list reads)');
     A.ok(watchReads.every(r => r.signal), 'every watch list read carries a deadline signal (it had none)');
     A.ok(watchReads.filter(r => r.abortedAt != null).length >= watchReads.length - 1 && watchReads.every(r => r.abortedAt == null || r.abortedAt - r.at === 15000), 'each hung watch read is aborted 15 s after it went out: ' + JSON.stringify(watchReads.map(r => r.abortedAt == null ? null : r.abortedAt - r.at)));
-    A.ok(maxOpen <= 1, 'a station that never answers the list holds at most ONE watch read open (' + maxOpen + '; it was 12 after 3 min)');
+    A.ok(maxOpen <= 1, 'a farm that never answers the list holds at most ONE watch read open (' + maxOpen + '; it was 12 after 3 min)');
     A.eq(open <= 1, true, '…and no hung read is left behind it');
     A.ok(watchReads.slice(1).every((r, i) => r.at - watchReads[i].at >= 15000), 'each read is given its full 15 s before the next one asks');
     G._resetForTest();

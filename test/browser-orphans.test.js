@@ -48,13 +48,13 @@ function fakeFs(files) {
   A.eq(O.profileArg('chromium --user-data-dir=/tmp/p about:blank'), '/tmp/p', 'a trailing start URL is not part of the path');
   A.eq(O.profileArg('chrome --no-first-run'), null, 'no profile flag: no identity');
   A.ok(O.sameDir(PROFILE_WIN + '\\', PROFILE_WIN.toLowerCase(), 'win32'), 'Windows compare ignores case and a trailing separator');
-  A.ok(!O.sameDir(PROFILE_WIN + '-old', PROFILE_WIN, 'win32'), 'a look-alike profile path is NOT the station profile (no prefix match)');
+  A.ok(!O.sameDir(PROFILE_WIN + '-old', PROFILE_WIN, 'win32'), 'a look-alike profile path is NOT the farm profile (no prefix match)');
 
   /* ---- classify: ours vs orphans; the Commander's own Chrome never appears at all ---- */
   const c = O.classify(table(), PROFILE_WIN, { selfPid: SELF, platform: 'win32' });
   A.eq(c.ours.map(p => p.pid), [200, 201], 'the browser THIS sidecar launched (and its helper) is ours');
   A.eq(c.orphans.map(p => p.pid).sort(), [300, 301, 302], 'the browser whose parent sidecar is gone (and its helpers) are the orphans');
-  A.ok(!c.procs.some(p => [400, 500, 600].includes(p.pid)), "the Commander's Chrome, a look-alike profile and a bare Chrome never match");
+  A.ok(!c.procs.some(p => [400, 500, 600].includes(p.pid)), "the Farmer's Chrome, a look-alike profile and a bare Chrome never match");
   A.eq(c.orphans.filter(p => p.browser).map(p => p.pid), [300], 'only pid 300 is a browser root (helpers carry --type=)');
 
   /* ---- sweep: end ONLY the orphans, confirm by re-listing, leave our live browser and the locks alone ---- */
@@ -65,7 +65,7 @@ function fakeFs(files) {
     const ffs = fakeFs(['lockfile', 'DevToolsActivePort']);
     const r = await O.sweep({ profileDir: PROFILE_WIN, platform: 'win32', selfPid: SELF, listProcesses: async () => rows, kill, sleep: async () => {}, fs: ffs });
     A.eq(killed[0], 300, 'the orphan browser ROOT is ended first');
-    A.ok(!killed.some(p => [SELF, 200, 201, 400, 500, 600].includes(p)), 'nothing of ours and nothing of the Commander is ever killed');
+    A.ok(!killed.some(p => [SELF, 200, 201, 400, 500, 600].includes(p)), 'nothing of ours and nothing of the Farmer is ever killed');
     A.ok(r.ok && r.found === 3 && r.survivors.length === 0, 'receipt: 3 orphan processes found, none survive');
     A.eq(r.ours, [200, 201], 'receipt names our own live browser');
     A.eq(r.locks.removed, [], 'locks are NOT cleared while our own browser still runs on the profile');
@@ -141,7 +141,7 @@ function fakeFs(files) {
       orphanSweep: async o => { order.push('sweep:' + path.basename(o.profileDir)); return { ok: true, found: 1, killed: [300], survivors: [], ours: [], locks: { removed: ['lockfile'], failed: [] }, error: null }; }
     }));
     await d.navigate('https://example.com/');
-    A.eq(order, ['sweep:' + path.basename(dir), 'spawn'], 'a held station profile is swept for orphans BEFORE the new browser is spawned');
+    A.eq(order, ['sweep:' + path.basename(dir), 'spawn'], 'a held farm profile is swept for orphans BEFORE the new browser is spawned');
     A.ok(d.lastOrphanSweep() && d.lastOrphanSweep().killed[0] === 300, 'the driver keeps the sweep receipt');
     await d.close();
     fs.rmSync(dir, { recursive: true, force: true });
@@ -196,7 +196,7 @@ function fakeFs(files) {
     A.ok(err && /could not load www\.etsy\.com: net::ERR_PROXY_CONNECTION_FAILED/.test(err.message), 'the message names the host and the real network error: ' + (err && err.message));
     A.ok(err && !/unsafe redirect|only http\(s\)/.test(err.message), 'and it is NOT reported as an unsafe redirect');
     A.ok(!d.alive(), 'a browser whose proxy is down reads as dead, so the session starts a fresh browser + proxy');
-    A.ok(err && !err.revealTools, 'StarNet restarts its own browser itself, so nothing is pointed at browser.reset');
+    A.ok(err && !err.revealTools, 'Homestead restarts its own browser itself, so nothing is pointed at browser.reset');
     await d.close();
     // a browser started by an EARLIER StarNet session is the one case told to run browser.reset - which is deferred,
     // so the error must also make it callable (the registry carries revealTools onto the error result)
@@ -295,7 +295,7 @@ function fakeFs(files) {
     await tools.session.navigate('https://example.com/');
     const out = await reset.run({}, {});
     A.eq(closed.length, 1, "reset closed this run's own browser");
-    A.eq(swept, [PROFILE_WIN], 'and swept the STATION profile for orphans');
+    A.eq(swept, [PROFILE_WIN], 'and swept the FARM profile for orphans');
     A.ok(/Closed this run's browser/.test(out.content) && /ended 1 of 1 orphaned/.test(out.content) && /cleared stale profile lock/.test(out.content), 'receipt text: ' + out.content);
     A.eq(out.summary, 'browser reset', 'summary says reset');
     const again = await tools.session.navigate('https://example.com/again');
@@ -310,7 +310,7 @@ function fakeFs(files) {
     });
     const out = await tools.tools.find(t => t.name === 'browser.reset').run({}, {});
     A.eq(out.summary, 'browser reset incomplete', 'a surviving orphan is never reported as a clean reset');
-    A.ok(/still running \(pid 300\)/.test(out.content) && /RESET STATION BROWSER/.test(out.content), 'and the agent is told the human recovery path: ' + out.content);
+    A.ok(/still running \(pid 300\)/.test(out.content) && /RESET FARM BROWSER/.test(out.content), 'and the agent is told the human recovery path: ' + out.content);
   }
 
   A.report('browser-orphans.test');

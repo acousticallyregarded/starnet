@@ -101,7 +101,7 @@ for (const [text, pure, why] of [
   ['Read the API docs at docs.example.com and write a short summary into the notes folder', false, '"the notes folder"'],
   ['Read the docs at docs.example.com/v1/api and write a short summary', true, 'a URL path is not a file destination'],
   ['Read https://docs.example.com/guide/intro and write a short summary', true, 'an explicit URL is not a file destination'],
-  ['Read the API docs at docs.example.com and write a short summary to the Commander', true, 'a summary "to the Commander" is the answer'],
+  ['Read the API docs at docs.example.com and write a short summary to the Farmer', true, 'a summary "to the Farmer" is the answer'],
   ['Read the API docs at docs.example.com and write a short summary in plain English', true, 'a summary "in plain English" is the answer'],
   ["Read example.com's pricing page", true, 'a pure read'],
   ['read the pricing page on example.com', true, 'a pure read'],

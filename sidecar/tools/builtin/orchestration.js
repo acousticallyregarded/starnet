@@ -953,7 +953,7 @@
               result: (partial ? partial + '\n\n' : '')
                 + '[STOPPED — this worker used up its ' + Math.round(wallMs / 1000) + 's slice of the dispatch wall clock'
                 + (partial ? '; the text above is its PARTIAL work' : ' before returning any text')
-                + '. Do not present it as complete: either re-dispatch this subtask alone, or tell the Commander this part is unfinished.]',
+                + '. Do not present it as complete: either re-dispatch this subtask alone, or tell the Farmer this part is unfinished.]',
               usd: (res && res.usd) || 0,
               taintedBy: taintOfRun(res) || undefined
             };

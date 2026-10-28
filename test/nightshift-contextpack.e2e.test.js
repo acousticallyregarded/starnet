@@ -217,7 +217,7 @@ function seedLogs(ws, now) {
       // empty activity, the precheck returns not-ok → binding 'readiness'.
       await fetch(B2 + '/api/autonomy/posture', { method: 'POST', headers: headers2, body: JSON.stringify({ posture: { initiative: 'leash', reach: 'observe', leashPerDay: 12 }, beliefs: { known: [], beliefs: {} } }) });
       const st2 = await (await fetch(B2 + '/api/nightshift/status', { headers: headers2 })).json();
-      A.eq(st2.beatsUsedToday, 0, 'COLD-LEASH: a brand-new station has spent NO leash');
+      A.eq(st2.beatsUsedToday, 0, 'COLD-LEASH: a brand-new farm has spent NO leash');
       // the binding is either 'present' (if the boot-seeded away clock hasn't elapsed) or 'readiness' (if away). In
       // BOTH cases NO leash was spent — the point of the fix. We assert the readiness precheck is reachable by
       // confirming the binding is one of the pre-spend/local gates, never a spent-leash state.

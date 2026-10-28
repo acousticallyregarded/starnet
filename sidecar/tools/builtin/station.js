@@ -232,7 +232,7 @@
           let scan; try { scan = scanText(args.text); } catch (e) { scan = { ok: false, error: 'the instruction scan failed' }; }
           if (!scan || scan.ok !== true) {
             return refuse('the new ' + String(args.field || 'document') + ' text contains a pattern that tries to override instructions or leak credentials'
-              + (scan && scan.patternId ? ' (' + scan.patternId + ')' : '') + '. Tell the Commander what was blocked; they can edit the Dossier by hand', 'blocked by instruction scan');
+              + (scan && scan.patternId ? ' (' + scan.patternId + ')' : '') + '. Tell the Farmer what was blocked; they can edit the Dossier by hand', 'blocked by instruction scan');
           }
         }
         const out = await ask('station.update_agent', args || {});
@@ -418,7 +418,7 @@
       run: async (args) => {
         const a = args && typeof args === 'object' ? args : {}, q = {};
         if (a.look != null && a.look !== false && a.look !== '') {
-          const look = a.look === true || /^(true|station|all|everything|the station|whole|the whole station)$/i.test(String(a.look).trim()) ? true : String(a.look).slice(0, 60);
+          const look = a.look === true || /^(true|station|farm|all|everything|the station|the farm|whole|the whole station|the whole farm)$/i.test(String(a.look).trim()) ? true : String(a.look).slice(0, 60);
           const out = await ask('station.map', { look });
           if (!out.ok) return refuse(out.error);
           const v = out.result || {};
@@ -478,7 +478,7 @@
           + 'Each room is furnished wall to wall in its style (floor, walls, feature wall, centrepiece, plants) and the paths are planted and lit. Room styles: ' + roomText() + '. A room given lines is a conveyor hall (works); a works room without lines is kept clear for lines to come. '
           + 'replace: true lays the whole farm out again around the main room: every other room is replaced, the main room, agents and conversations stay, and the old layout is backed up for RESTORE PREVIOUS. Use it when the Farmer wants the farm redone, or when there is no clear space round the main room. '
           + '2 ROOMS where the Farmer says: { "rooms": [ { name, style | zones | lines, size, beside, side, path, align, type } or { into: an existing room, style | zones | lines } ], "paths": [ { from, to } ] } (straight, or round one corner when the rooms stand diagonally apart). size: small 12×8, medium 18×11, large 24×14, giant 36×20, or { w, h }. beside: a room name ("bridge" or "main" = the main room); side: north, south, east, west; path: true (default), false (open plan) or 2-8 long. With no beside or side, a new room takes the farm\'s next free place (on the diamond grid, or down its concourse), at its size; a conveyor hall is giant unless sized.'
-          + '3 ONE LINE: { line | shape | purpose, where, beside, side, path, name, steps, dailyCap, tries }; with no where it goes into a conveyor hall that has room for it, else a room of its own on the grid, and lines sharing a room stand in rows with walkways between. LINES: ' + menuText() + '. shape = stages in order: a role ("RESEARCHER"), { together: [roles] }, { turns: [roles] }, { sort: { code: role, research: role } }, { review: true, tries: 3 }. steps (or a line\'s staff): [ { "step": 1, "agent": "lead", "instructions": "…" } ] (step = the step\'s NUMBER in run order), agent = a crew name or "lead"; "new" recruits a new specialist ONLY when the Commander asks for new crew (each gets a desk by its line); otherwise leave agent out and the card lists the step as still to do. '
+          + '3 ONE LINE: { line | shape | purpose, where, beside, side, path, name, steps, dailyCap, tries }; with no where it goes into a conveyor hall that has room for it, else a room of its own on the grid, and lines sharing a room stand in rows with walkways between. LINES: ' + menuText() + '. shape = stages in order: a role ("RESEARCHER"), { together: [roles] }, { turns: [roles] }, { sort: { code: role, research: role } }, { review: true, tries: 3 }. steps (or a line\'s staff): [ { "step": 1, "agent": "lead", "instructions": "…" } ] (step = the step\'s NUMBER in run order), agent = a crew name or "lead"; "new" recruits a new specialist ONLY when the Farmer asks for new crew (each gets a desk by its line); otherwise leave agent out and the card lists the step as still to do. '
           + '4 { kit | preset, replace, where, name }: KITS ' + kitText() + '; PRESETS ' + presetText() + ' (replace: true swaps the whole farm for the preset). '
           + '5 { zones: [ { area, style } | { area, line | purpose | shape, … } ], where, name, size, beside, side }: area left, right, back, front, back-left, back-right, front-left, front-right or whole; zone styles ' + styleText() + '. '
           + '6 { restyle: { room, type, floorStyle, floorMat, name } } changes a floor or a name only. '

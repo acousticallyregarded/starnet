@@ -160,7 +160,7 @@ function render(model, ui, size, now) {
   const hits = [], areas = {};
   const hit = (x0, x1, y, act) => { if (act && y >= 0 && x1 > x0) hits.push({ x0, x1, y, act }); };
   if (W < 46 || H < 16) {
-    g.put(0, 0, trunc('homestead needs at least 46×16 — this terminal is ' + W + '×' + H, W), 'am');
+    g.put(0, 0, trunc('starnet needs at least 46×16 — this terminal is ' + W + '×' + H, W), 'am');
     const small = g.out(); small.hits = hits; small.areas = areas;
     return small;
   }
@@ -252,7 +252,7 @@ function render(model, ui, size, now) {
   } else {
     // the one-line mark, the counts on it; NOW and FLOWS under it only when they have something to say
     let x = 0;
-    'HOMESTEAD'.split('').forEach((ch, i) => { x = g.put(x, 0, ch, 'logo b'); if (i < 6) x = g.put(x, 0, ' ', ''); });
+    'HOMESTEAD'.split('').forEach((ch, i) => { x = g.put(x, 0, ch, 'logo b'); if (i < 8) x = g.put(x, 0, ' ', ''); });
     const xc = putCounts(0, x + 3);
     if (!narrow && xc - x > 30) g.put(x + 3, 0, trunc(ui.stationLabel || '', xc - x - 6), 'dim');
     y = 1;

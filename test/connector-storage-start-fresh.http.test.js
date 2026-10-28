@@ -94,7 +94,7 @@ const { FORMAT } = require('../sidecar/connector-vault.js');
     assert.equal(s.reason, 'reset-interrupted');
     assert.equal(s.canStartFresh, true);
     assert.match(s.error, /START FRESH was interrupted.*Press START FRESH to finish it/, 'the lock says what happened: ' + s.error);
-    assert.doesNotMatch(s.error, /damaged|newer StarNet/, 'and does not call intact files damaged');
+    assert.doesNotMatch(s.error, /damaged|newer Homestead/, 'and does not call intact files damaged');
     assert.ok(s.error.includes('unreadable-crashed'), 'the lock names the folder that holds the copies: ' + s.error);
     const finished = await app.json('POST', '/api/connectors/storage/start-fresh', { confirm: true });
     assert.equal(finished.status, 200, 'START FRESH finishes an interrupted reset: ' + JSON.stringify(finished.body));
@@ -116,7 +116,7 @@ const { FORMAT } = require('../sidecar/connector-vault.js');
       // its own field: the page heads every `notice` 'not encrypted', which a sealed store is not, and it claims nothing
       // about the leftover file beyond what StarNet knows
       assert.match(String(s.migrationNotice || ''), /could not be removed/, 'the panel is told, in plain words: ' + s.migrationNotice);
-      assert.doesNotMatch(String(s.migrationNotice || ''), /sealed/, 'no claim about a file StarNet could not remove');
+      assert.doesNotMatch(String(s.migrationNotice || ''), /sealed/, 'no claim about a file Homestead could not remove');
       assert.equal(s.notice, null, 'not reported as an unencrypted store');
       const kept = await app.json('POST', '/api/connectors', { id: 'after-leftover', transport: 'http', url: 'http://127.0.0.1:1/mcp', enabled: false });
       assert.equal(kept.status, 200, 'saving still works: ' + JSON.stringify(kept.body));
@@ -145,8 +145,8 @@ const { FORMAT } = require('../sidecar/connector-vault.js');
     s = (await busyStorage()).credentialStorage;
     assert.equal(s.reason, 'busy', 'a held file is a busy lock: ' + JSON.stringify(s));
     assert.ok(String(s.error).includes('EBUSY'), 'the lock names the read error: ' + s.error);
-    assert.match(s.error, /Restart StarNet to try again\. If it is still locked after a restart, START FRESH/, 'a restart first, START FRESH after: ' + s.error);
-    assert.doesNotMatch(s.error, /damaged|newer StarNet/, 'and does not call an intact file damaged');
+    assert.match(s.error, /Restart Homestead to try again\. If it is still locked after a restart, START FRESH/, 'a restart first, START FRESH after: ' + s.error);
+    assert.doesNotMatch(s.error, /damaged|newer Homestead/, 'and does not call an intact file damaged');
     assert.equal(s.canStartFresh, true, 'START FRESH stays the exit for a file that is still locked after a restart');
     assert.equal(fs.readFileSync(busyFile, 'utf8'), heldBytes, 'the held store is not touched');
     await busyApp.stop();

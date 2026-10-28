@@ -86,7 +86,7 @@ async function runWith(provider, extra) {
     A.eq(up.posts.length, 2, 'two silent attempts, then stop (was 7 x the idle window)');
     A.eq([res.failureStage, res.failureCode], ['provider_stream', 'provider_stalled'], 'failureCode provider_stalled');
     const err = seq.find(e => e.name === 'agent.run.error');
-    A.ok(err && /^model stalled: 2 consecutive attempts on fixture-model hit the response idle timeout/.test(err.payload.message), 'the Commander reads that the model stopped responding: ' + (err && err.payload.message));
+    A.ok(err && /^model stalled: 2 consecutive attempts on fixture-model hit the response idle timeout/.test(err.payload.message), 'the Farmer reads that the model stopped responding: ' + (err && err.payload.message));
     A.ok(/idle timed out after 40ms/.test(err.payload.message), 'with the watchdog\'s own evidence');
     A.eq(err.payload.transient, true, 'a stall is transient (try again later)');
     A.eq(waits, [400], 'one ordinary rung between the two stalls, then no further waiting');

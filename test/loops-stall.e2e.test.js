@@ -110,7 +110,7 @@ async function until(B, headers, pred, label, ms) {
     SKYNET_FULL_ACCESS: '1'
   };
   // scrub any inherited budget env so the assertion is about the shipped default, not this machine's shell
-  for (const k of Object.keys(process.env)) if (/^(SKYNET|STARNET)_BUDGET_/.test(k)) env[k] = '';
+  for (const k of Object.keys(process.env)) if (/^(SKYNET|HOMESTEAD)_BUDGET_/.test(k)) env[k] = '';
   let child, port;
   try {
     const OBJ = 'keep the release folder complete and correct';
@@ -202,7 +202,7 @@ async function until(B, headers, pred, label, ms) {
     A.eq(rl.stallStreak, 0, 'with a clean streak');
     A.eq(rl.recent.filter(r => r.stall).length, 3, 'and the stalled rows still on the record');
     const next = await until(B, headers, s => s.loops[0].iterationCount >= 5, 'the resumed loop to run one more pass', 15000);
-    A.ok(next.loops[0].iterationCount >= 5, 'it ran again once the Commander said so');
+    A.ok(next.loops[0].iterationCount >= 5, 'it ran again once the Farmer said so');
   } finally {
     try { if (child) child.kill(); } catch (_) {}
     try { mock.server.close(); } catch (_) {}

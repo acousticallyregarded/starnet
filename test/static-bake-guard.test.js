@@ -31,7 +31,10 @@ A.ok(/cache = [^;]*\? handed\.bake : StationBake\.bake\(geo\);\s*bakedAnchorKey 
 
 // a furnished room: tables against the north wall (where lamps anchor) and out in the middle
 const st = WM.create(); st.projectGeometry();
-A.ok(st.addRoom({ kind: 'hab', rect: { x1: 30, y1: 0, x2: 60, y2: 20 } }).ok, 'room laid');
+const laid = st.addRoom({ kind: 'hab', rect: { x1: 30, y1: 0, x2: 60, y2: 20 } });
+A.ok(laid.ok, 'room laid');
+// a farm barn is built in wainscot, which keeps its own art and takes no wall lamps: clad this one in bulkhead so it has lamps to anchor
+A.ok(st.setWalls(laid.id, { mat: 'bulkhead' }).ok, 'room walls set to a lamp-bearing material');
 const room = st.doc().rooms[st.doc().order[0]] || Object.values(st.doc().rooms)[0];
 const r = room.rect || { x1: 30, y1: 0, x2: 60, y2: 20 };
 const placed = [];

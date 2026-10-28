@@ -184,7 +184,7 @@ const card = (fns, st, outboxId) => { const b = { innerHTML: '', querySelector: 
   let fns = panelOn(st, { comp: compA });
   let say = strip(fns.onwardNote());
   A.ok(/^ Its SEND TO LINE B is set, but nothing will be sent on: LINE B has no agent on its first BAY yet\.$/.test(say), 'an uncrewed target: the send box says nothing will be sent on, and why — ' + say);
-  A.ok(!/starts a job of its own/.test(say), '…never the promise of a paid job the station would refuse');
+  A.ok(!/starts a job of its own/.test(say), '…never the promise of a paid job the farm would refuse');
   A.ok(/lands in this line’s OUTBOX and is also filed in DELIVERABLES\. Its SEND TO LINE B is set, but nothing will be sent on: LINE B has no agent on its first BAY yet\./.test(strip(fns.sendDynHTML(null))), 'SEND IT DOWN THE LINE says it too');
   A.ok(/LINE B has no agent on its first BAY yet — nothing is sent on until it has one\./.test(strip(card(fns, st, a.outbox))), 'the OUTBOX card says the same refusal (one predicate)');
   for (const id of b.bays) st.assignPropAgent(id, 'ag_' + id);

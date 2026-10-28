@@ -229,7 +229,7 @@ test('spoken delegated approvals await confirmed exact-prompt settlement and pre
   assert.deepEqual(Channels.pendingAllOf(ws.id).map(p=>p.promptId),['voice-mira']);assert.deepEqual(spoken,['Always allowed.']);
   assert.deepEqual(events,[['permission.response','voice-rook']]);
   reply={ok:true,decision:'deny'};c.approvalCommand('approve');await drain();
-  assert.equal(Channels.pendingAllOf(ws.id).length,0);assert.equal(spoken.at(-1),'Denied.','say the decision the station applied');
+  assert.equal(Channels.pendingAllOf(ws.id).length,0);assert.equal(spoken.at(-1),'Denied.','say the decision the farm applied');
   Channels.setPending(ws.id,{promptId:'question',tool:'brief.ask'});const before=calls;
   assert.equal(c.approvalCommand('approve'),false);assert.equal(calls,before,'a question is never answered as a tool approval');
   Channels.clearPending(ws.id,Date.now(),'question');Channels.setPending(ws.id,{promptId:'late',tool:'fs.write'});

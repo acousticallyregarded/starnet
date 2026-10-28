@@ -147,7 +147,7 @@ const splitOf = plan => Object.keys(plan.junctions).find(k => plan.junctions[k].
   A.eq(s('newsletter'), null, '"news" inside "newsletter" is not research (word boundaries)');
   A.eq(s(''), null, 'no words, no card');
   for (const id of ['revision_loop', 'research_line', 'code_foundry', 'build_test', 'second_opinion']) A.ok(WM.BLUEPRINTS.some(b => b.id === id), 'the suggested line exists in the catalog: ' + id);
-  A.ok(/for \(const k of \['goals', 'ambition', 'pain'\]\)/.test(build) && /WorkflowLine\.suggestLineFor\(t\)/.test(build), 'the goal is the Commander\'s own dossier words');
+  A.ok(/for \(const k of \['goals', 'ambition', 'pain'\]\)/.test(build) && /WorkflowLine\.suggestLineFor\(t\)/.test(build), 'the goal is the Farmer\'s own dossier words');
   // (2026-09-30: the quote is the goal tile's hover tip and accessible description — no sentence under a tile)
   A.ok(/FOR YOUR GOAL/.test(build) && /addLineCell\(grid, goal\.bp, '“' \+ goal\.quote \+ '” — ' \+ goal\.why, true\)/.test(build) && /b\.dataset\.tip = name [^\n]*\(why \? '\\n' \+ why : ''\)/.test(build), 'the card quotes them and is the same line card (fit + MAKE ROOM included)');
 }
@@ -157,7 +157,7 @@ const splitOf = plan => Object.keys(plan.junctions).find(k => plan.junctions[k].
   A.ok(!/id="trg-create-only"/.test(panel) && !/SAVE ONLY/.test(panel) && !/SAVE · TURN SCHEDULING ON/.test(panel), 'the INBOX pair collapsed: no SAVE ONLY, no second save key');
   A.ok(/id="trg-create"[^\n]*>▸ SAVE SCHEDULE<\/button>/.test(panel), 'one SAVE SCHEDULE key');
   A.ok(/S\.cron\.armSet \? 'Scheduling is off — you turned it off\. Saving keeps it off; press ▶ TURN SCHEDULING ON when you want it to run\.'/.test(panel)
-    && /'Scheduling is off\. Saving turns it on for the whole station, so every saved schedule runs at its time\.'/.test(panel), 'the help line says what this save will do: on when never set, off kept after an explicit OFF');
+    && /'Scheduling is off\. Saving turns it on for the whole farm, so every saved schedule runs at its time\.'/.test(panel), 'the help line says what this save will do: on when never set, off kept after an explicit OFF');
   A.ok(/runsLine: true, arm: true \}\)/.test(panel) && !/api\('\/api\/cron\/arm', 'POST', \{ enabled: true \}\)\.catch/.test(panel), 'the save asks the server (arm:true, the SCHEDULES form\'s rule) — no second arm call from the form');
   A.ok(/'✓ saved · scheduling is now on — fires at '/.test(panel) && /scheduling is off \(you turned it off\), so it will not run: press ▶ TURN SCHEDULING ON above/.test(panel), 'the result is said as it happened');
   A.ok(/\$\('#trg-create'\)\.onclick = \(\) => create\(\);/.test(panel), 'one save path');

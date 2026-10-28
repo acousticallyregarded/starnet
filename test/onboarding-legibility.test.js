@@ -78,11 +78,11 @@ const Glossary = require('../frontend/app/glossary.js');
   const stationUiSrc = fs.readFileSync(path.join(root, 'frontend', 'app', 'stationui.js'), 'utf8');
   const appSrc = fs.readFileSync(path.join(root, 'frontend', 'app', 'app.js'), 'utf8');
   A.ok(/Workstreams\.reset\(\);[\s\S]{0,240}Tutorial\.reset\(\)/.test(appSrc),
-    'the real new-Commander reset funnel clears tutorial ownership before entering the station');
+    'the real new-Commander reset funnel clears tutorial ownership before entering the farm');
   A.ok(indexSrc.includes('agent setup in CREW › AGENTS') && indexSrc.includes('model in COMMS') && indexSrc.includes('SYSTEM › SETTINGS'),
     'Genesis routes editable setup to the real agent, model, and settings surfaces');
-  A.eq(indexSrc.includes('everything here is re-editable later in the Commander Dossier'), false,
-    'Genesis no longer sends agent configuration to the Commander Dossier');
+  A.eq(indexSrc.includes('everything here is re-editable later in the Farmer Dossier'), false,
+    'Genesis no longer sends agent configuration to the Farmer Dossier');
   A.ok(/\{ id: 'tasks', k: 'tasks', label: 'TASKS', tip: '[^']*[Pp]lanned work[^']*' \}/.test(stationUiSrc),
     'WORK describes TASKS as planned board work instead of claiming every run lives there');
   A.ok(stationUiSrc.includes('<b>NO TASKS</b>') && /id="kb-in"[^>]*aria-label="New task"/.test(stationUiSrc),

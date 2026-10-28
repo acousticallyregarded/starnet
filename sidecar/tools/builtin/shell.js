@@ -909,7 +909,7 @@
           ? environment.workspaceRoot(aid) : cwd;
         const shellDialect = environment && environmentBackendId !== 'local' ? 'posix' : (isWin ? 'cmd' : 'posix');
         const safetyDeny = remoteOwner ? null : commandSafetyRisk(cmd, { cwd: hostCwd, fs: fs, pathMod: P, dialect: shellDialect, isWin });
-        if (safetyDeny) throw new Error('refused [' + safetyDeny.kind + ']: this command ' + safetyDeny.reason + '. StarNet task processes preserve the user\'s control of their computer; use browser.test_* for local UI/game verification.');
+        if (safetyDeny) throw new Error('refused [' + safetyDeny.kind + ']: this command ' + safetyDeny.reason + '. Homestead task processes preserve the user\'s control of their computer; use browser.test_* for local UI/game verification.');
         if (!environment) { try { fs.mkdirSync(cwd, { recursive: true }); } catch (_) {} }
         const checkpoint = typeof ctx.checkpointMutation === 'function'
           ? Promise.resolve().then(function () { return ctx.checkpointMutation(hostCwd, 'shell.exec', { always: true }); }).catch(function () { return null; })
@@ -1192,7 +1192,7 @@
            exactly that instead of "Killed". Remote backends that report plain ok keep their old wording. */
         if (r && r.incomplete) {
           const err = new Error('Kill INCOMPLETE for background process ' + id + ': ' + (r.error || 'processes are still running')
-            + '. Surviving PID(s): ' + (r.survivors || []).join(', ') + '. Its receipt is kept so the next StarNet start reaps them.');
+            + '. Surviving PID(s): ' + (r.survivors || []).join(', ') + '. Its receipt is kept so the next Homestead start reaps them.');
           err.toolSummary = 'kill incomplete';
           throw err;
         }

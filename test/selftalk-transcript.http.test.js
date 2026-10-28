@@ -30,16 +30,16 @@ const server = http.createServer((req, res) => {
   async function globalTurns() { const r = await fixture.json('GET', '/api/transcript?stream=global'); assert.equal(r.status, 200); return r.body.turns; }
   try {
     await fixture.start();
-    const titlePrompt = 'Survey the ocelot habitat corridor\n\nAssistant reply (context only): The ocelot corridor runs';
+    const titlePrompt = 'Survey the ocelot habitat path\n\nAssistant reply (context only): The ocelot path runs';
     await run({ internal: true, isTask: false, system: 'Reply with ONLY a title.', messages: [{ role: 'user', content: titlePrompt }] });
     let turns = await globalTurns();
     assert(!turns.some(t => /ocelot/i.test(String(t.content))), 'the quiet title call is not shown as global dialogue: ' + JSON.stringify(turns));
     await run({ messages: [{ role: 'user', content: 'COMMANDER_GLOBAL: note the ocelot count' }] });
     turns = await globalTurns();
-    assert.deepEqual(turns.filter(t => t.role === 'user').map(t => t.content), ['COMMANDER_GLOBAL: note the ocelot count'], 'a Commander run on global keeps its own rows');
+    assert.deepEqual(turns.filter(t => t.role === 'user').map(t => t.content), ['COMMANDER_GLOBAL: note the ocelot count'], 'a Farmer run on global keeps its own rows');
     await fixture.restart();
     turns = await globalTurns();
     assert.deepEqual(turns.filter(t => t.role === 'user').map(t => t.content), ['COMMANDER_GLOBAL: note the ocelot count'], 'the stamp survives a restart');
-    console.log('selftalk-transcript: a streamless internal run is filed as self-talk; a Commander global run is unchanged; both survive restart PASS');
+    console.log('selftalk-transcript: a streamless internal run is filed as self-talk; a Farmer global run is unchanged; both survive restart PASS');
   } finally { await fixture.dispose(); server.closeAllConnections(); await new Promise(r => server.close(r)); }
 })().catch(e => { console.error(e.stack || e); process.exitCode = 1; });

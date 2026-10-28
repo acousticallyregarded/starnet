@@ -473,7 +473,7 @@ function runDashboard(station, opts) {
     { name: 'work', desc: 'the WORK page: workflows, routines, the away shift' },
     { name: 'comms', desc: 'back to the conversation' },
     { name: 'theme', aliases: ['themes'], desc: 'the terminal colors: ' + theme.NAMES.join(' · '), argsHint: '[' + theme.NAMES.join('|') + ']' },
-    { name: 'quit', aliases: ['exit'], desc: 'quit homestead' }
+    { name: 'quit', aliases: ['exit'], desc: 'quit starnet' }
   ].map(c => Object.assign({ source: 'terminal', aliases: [], argsHint: '', here: true }, c));
   const HANDLED_HERE = ['help', 'quit', 'exit', 'stat', 'crew', 'work', 'comms', 'theme', 'themes', 'model', 'new', 'clear', 'resume', 'stop', 'flow', 'retry', 'status', 'whoami', 'version', 'skills', 'history', 'cron',
     'agents', 'insights', 'memory', 'bundles', 'blueprint', 'reload-mcp', 'reload-skills', 'steer', 'copy', 'compress', 'reasoning', 'fast', 'debug', 'queue', 'background', 'loop', 'save', 'goal', 'subgoal', 'yolo', 'personality'];
@@ -601,7 +601,7 @@ function runDashboard(station, opts) {
     const a = model.state.agents.get(act.agentId);
     if (!folderLib.isLocalHost(client.host)) return flash('a file opens only from a farm on this computer');
     let tickets;
-    try { tickets = require(require('node:path').join(__dirname, '..', '..', 'sidecar', 'apitickets.js')); } catch (_) { return flash('this homestead cannot sign a file link (the farm’s ticket module is missing)', 'bad', 8000); }
+    try { tickets = require(require('node:path').join(__dirname, '..', '..', 'sidecar', 'apitickets.js')); } catch (_) { return flash('this starnet cannot sign a file link (the farm’s ticket module is missing)', 'bad', 8000); }
     let project = typeof act.root === 'string' ? act.root : null;
     if (project === null) {
       const r = act.runId ? await get('/api/runs?agent=*&runId=' + encodeURIComponent(act.runId), 8000) : null;
@@ -832,7 +832,7 @@ function runDashboard(station, opts) {
     if (!theme.known(want)) return sayHere('/theme', ['No theme named ' + want + '. Pick one of: ' + theme.NAMES.join(', ') + '.'], false, 'THEME');
     themeName = theme.apply(want, themeTargets);
     let kept = '';
-    try { theme.save(themeName, env, themeFile); kept = ' — kept for the next homestead'; } catch (e) { kept = ' — for this session only (it could not be saved: ' + e.message + ')'; }
+    try { theme.save(themeName, env, themeFile); kept = ' — kept for the next starnet'; } catch (e) { kept = ' — for this session only (it could not be saved: ' + e.message + ')'; }
     if (env.STARNET_THEME && env.STARNET_THEME.toLowerCase().trim() !== themeName) kept += '; STARNET_THEME=' + env.STARNET_THEME + ' still wins at the next start';
     redrawAll();
     sayHere('/theme', ['Theme: ' + themeName + ', ' + theme.BLURB[themeName] + kept + '.'], true, 'THEME');
@@ -1047,7 +1047,7 @@ function runDashboard(station, opts) {
     if (!a) return sayHere('/background', ['No agent shown.'], false);
     const sid = core.cliStreamId(a.id) + '-' + Date.now().toString(36);
     send(a.id, text, '/background ' + text, sid);
-    sayHere('/background', ['Running in a new conversation of its own — /resume opens it. It stops if you quit homestead.']);
+    sayHere('/background', ['Running in a new conversation of its own — /resume opens it. It stops if you quit starnet.']);
   }
   /* /loop <interval> <prompt> | status | off: the same prompt on a clock, in this conversation (the app's rules: a minute at
      the least — every tick is a real model turn — 20 runs at most, gone when starnet quits; /routine is the lasting form) */
@@ -1089,7 +1089,7 @@ function runDashboard(station, opts) {
     if (low === 'off' || low === 'stop' || low === 'clear') { if (!loopStop(id, 'you stopped it')) sayHere('/loop', ['No loop is running in this conversation.']); return; }
     if (!raw || low === 'status') {
       if (!cur) return sayHere('/loop', ['No loop in this conversation. /loop <interval> <prompt> — e.g. /loop 5m check whether the build went green.']);
-      return sayHere('/loop', ['Loop: every ' + cur.label + ', ' + cur.fired + '/' + LOOP_MAX_ITERS + ' runs done' + (cur.skipped ? ', ' + cur.skipped + ' tick' + (cur.skipped === 1 ? '' : 's') + ' skipped (a run or an ask had the floor)' : '') + ' — "' + cur.prompt.slice(0, 60) + '".' + (cur.sid === streamOf(id) ? '' : ' It belongs to an earlier conversation and fires only while that one is shown (/resume opens it).') + ' It stops if you quit homestead; /routine makes it permanent.']);
+      return sayHere('/loop', ['Loop: every ' + cur.label + ', ' + cur.fired + '/' + LOOP_MAX_ITERS + ' runs done' + (cur.skipped ? ', ' + cur.skipped + ' tick' + (cur.skipped === 1 ? '' : 's') + ' skipped (a run or an ask had the floor)' : '') + ' — "' + cur.prompt.slice(0, 60) + '".' + (cur.sid === streamOf(id) ? '' : ' It belongs to an earlier conversation and fires only while that one is shown (/resume opens it).') + ' It stops if you quit starnet; /routine makes it permanent.']);
     }
     const sp = raw.search(/\s/);
     const m = sp > 0 ? /^(\d+)\s*(s|sec|secs|m|min|mins|h|hr|hrs)?$/.exec(raw.slice(0, sp).toLowerCase()) : null;
@@ -1313,7 +1313,7 @@ function runDashboard(station, opts) {
     const a = model.state.agents.get(ui.focus);
     if (!a) return sayHere('/personality', ['No agent shown.'], false);
     let mods;
-    try { mods = require('./app-modules.js').load(); } catch (e) { return sayHere('/personality', ['The app\'s personalities could not load beside this homestead (' + ((e && e.message) || e) + ').'], false); }
+    try { mods = require('./app-modules.js').load(); } catch (e) { return sayHere('/personality', ['The app\'s personalities could not load beside this starnet (' + ((e && e.message) || e) + ').'], false); }
     const P = mods.Personas, key = String(args || '').trim().toLowerCase();
     if (key && P.exists && P.exists(key)) {
       const id = P.resolve ? P.resolve(key) : key;
@@ -1742,7 +1742,7 @@ function runDashboard(station, opts) {
     if (stopped) return;
     if (!(rt.ok && rt.status === 200)) {
       stop(core.EXIT.STATION);
-      process.stderr.write('homestead: could not read the farm roster (' + (rt.error || 'HTTP ' + rt.status) + ')\n');
+      process.stderr.write('starnet: could not read the farm roster (' + (rt.error || 'HTTP ' + rt.status) + ')\n');
       return;
     }
     await Promise.all([loadSnapshot(), loadBudget(), loadLines().catch(() => {}), locateFolder().catch(() => {})]);
@@ -1765,7 +1765,7 @@ function runDashboard(station, opts) {
     timers.push(setInterval(paint, 100));   // the working spinner turns at 10 frames a second (paint writes only rows that changed)
     timers.push(setInterval(flushQueued, 500));   // a queued message goes the moment its conversation is free
     checkOnboarding().catch(() => {});   // a station with no agent yet: the awakening, here
-  })().catch(e => { stop(0); process.stderr.write('homestead: ' + ((e && e.message) || e) + '\n'); });
+  })().catch(e => { stop(0); process.stderr.write('starnet: ' + ((e && e.message) || e) + '\n'); });
   return exited;
 }
 

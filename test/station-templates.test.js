@@ -157,7 +157,7 @@ for(const c of T.catalog.filter(c=>c.group==='work')) assert.ok(c.pitch&&c.pitch
   assert.match(ow,/ex\.roles\.some\(r => !r\.agentId\)\) \{ openPresetExample\(\); return; \}/,'WORKFLOWS opens the setup guide while a preset step is unstaffed');
   assert.match(build,/if \(ri && ri\.name\) spec\.agentName = ri\.name;/,'summonForRole names a borrowed-class recruit for its step');
   assert.match(build,/inboxBtn\.onclick = \(\) => \{ closeP\(\); try \{ rebake\(\); openFlowCard\(e\.inboxId\); \}/,'the guide\'s Inbox button opens that Inbox in the Workflow panel');
-  assert.match(onb,/c\.purposeLabel \? ' — ' \+ c\.purposeLabel/,'the station question labels each choice with its purpose');
+  assert.match(onb,/c\.purposeLabel \? ' — ' \+ c\.purposeLabel/,'the farm question labels each choice with its purpose');
   assert.match(ob,/WORK › AUTOMATE › WORKFLOWS walks you through who works each step/,'the pick\'s closing line points at WORKFLOWS');
   assert.match(build,/querySelector\('\.refit-firstrun, \.refit-preset-example, \.refit-station-builds'\)\)\) fireFirstRide\(\)/,'the first ride never narrates over the presets dialog or the setup guide (one voice)');
   // (org wire AUTO-P17-1) the guide's doc quotes the keys the card really wears — a key renamed in build.js renames them in the doc too

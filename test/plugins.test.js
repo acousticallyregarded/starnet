@@ -160,7 +160,7 @@ async function writePlugin(id, source, manifest) {
       const loader = makePluginLoader({ fsp, pathMod: path, dir: path.join(DIR, 'nope'), allowFile: ALLOW, requireModule: require, hash: sha });
       const { plugins, errors } = await loader.discover();
       A.eq(plugins.length, 0, 'no plugins directory -> no plugins');
-      A.eq(errors.length, 0, 'and no complaints — most stations will never install one');
+      A.eq(errors.length, 0, 'and no complaints — most farms will never install one');
       A.eq((await loader.load(makeHooks())).loaded.length, 0, 'load() is a clean no-op');
     }
     // ---- 9. REVOKE — a consent gate with no way back is a one-way door, not a gate ----

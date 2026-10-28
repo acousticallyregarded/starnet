@@ -91,8 +91,8 @@
   const DESC_MAX = 1024;
   const FIELD_MAX = 300;
   const SCHEMA_DEPTH_MAX = 24;
-  const ROLE_TAG = /<\s*\/?\s*(?:system|developer|assistant|user|tool|tool_call|tool_result|function|function_call|function_calls|function_results|invoke|parameter|instructions?|commander|owner|im_start|im_end)\b[^>]*>/gi;
-  const ROLE_CLAIM = /\b(system|developer|assistant|commander|owner|administrator|admin)(\s*(?:prompt|message|instructions?|override|note|notice))?\s*:/gi;
+  const ROLE_TAG = /<\s*\/?\s*(?:system|developer|assistant|user|tool|tool_call|tool_result|function|function_call|function_calls|function_results|invoke|parameter|instructions?|commander|farmer|owner|im_start|im_end)\b[^>]*>/gi;
+  const ROLE_CLAIM = /\b(system|developer|assistant|commander|farmer|owner|administrator|admin)(\s*(?:prompt|message|instructions?|override|note|notice))?\s*:/gi;
   function untrustedText(value, max) {
     let t = String(value == null ? '' : value);
     if (t.length > max * 4) t = t.slice(0, max * 4);   // bound the work before the regexes run

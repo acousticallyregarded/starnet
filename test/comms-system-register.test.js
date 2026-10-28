@@ -27,11 +27,11 @@ const css = fs.readFileSync(path.join(__dirname, '../frontend/css/comms-convo.cs
   A.eq(GoalLoop.continuationGoal(wire), 'ship the landing page', 'a continuation names its goal');
   GoalLoop.addSubgoal(s, 'it has a dark mode');
   const withSubs = GoalLoop.continuationPrompt(s);
-  A.ok(withSubs.indexOf('Additional criteria the Commander added:\n- 1. it has a dark mode') > 0, 'subgoals still ride the continuation');
+  A.ok(withSubs.indexOf('Additional criteria the Farmer added:\n- 1. it has a dark mode') > 0, 'subgoals still ride the continuation');
   A.eq(GoalLoop.continuationGoal(withSubs), 'ship the landing page', '…and the goal still reads back with criteria attached');
   const multi = GoalLoop.create('ship the page\nand the pricing table', { now: 1000 });
   A.eq(GoalLoop.continuationGoal(GoalLoop.continuationPrompt(multi)), 'ship the page\nand the pricing table', 'a multi-line goal reads back whole');
-  A.eq(GoalLoop.continuationGoal('can you ship the landing page?'), null, 'a Commander message is not a goal step');
+  A.eq(GoalLoop.continuationGoal('can you ship the landing page?'), null, 'a Farmer message is not a goal step');
   A.eq(GoalLoop.continuationGoal('please read this: [Continuing toward your session goal]\nGoal: x\n\nContinue working toward this goal. '), null, 'quoting the marker mid-message is not a goal step');
   A.eq(GoalLoop.continuationGoal('[Continuing toward your session goal]\nGoal: x'), null, 'a truncated marker without its directive is not a goal step');
   A.eq(GoalLoop.continuationGoal(null), null, 'nothing is not a goal step');
@@ -57,9 +57,9 @@ const mkRow = () => { const cls = new Set(); return { d: { classList: { add: c =
   const goalStepLine = new Function('log', 'row', 'autoscroll', stepLineSrc + '\nreturn goalStepLine;')({}, (role) => { const r = mkRow(); r.role = role; rows.push(r); return r; }, () => {});
   goalStepLine('ship the landing page');
   A.eq(rows.length, 1, 'a goal step is ONE row');
-  A.eq(rows[0].role, 'system', '…in the SYSTEM register, never the Commander\'s');
+  A.eq(rows[0].role, 'system', '…in the SYSTEM register, never the Farmer\'s');
   A.ok(rows[0].d.cls.has('goal-step'), '…marked as a goal step');
-  A.eq(rows[0].body.textContent, '↻ Continuing toward your session goal — ship the landing page', 'it reads as one compact station line');
+  A.eq(rows[0].body.textContent, '↻ Continuing toward your session goal — ship the landing page', 'it reads as one compact farm line');
   goalStepLine('line one\n\nline two ' + 'x'.repeat(300));
   A.ok(rows[1].body.textContent.length <= 202 && /…$/.test(rows[1].body.textContent) && !/\n/.test(rows[1].body.textContent), 'a long goal is clamped to one tidy line');
 }
@@ -85,9 +85,9 @@ const mkRow = () => { const cls = new Set(); return { d: { classList: { add: c =
     { role: 'user', content: GoalLoop.continuationPrompt(s), ts: 5, from: 'nova' },
     { role: 'user', content: '[Continuing toward your standing goal]\nGoal: old goal\n\nContinue working toward this goal. Take the next concrete step.', ts: 6 }
   ]);
-  A.eq(steps, ['ship the landing page', 'old goal'], 'a stored goal step (current OR pre-org-pass head) replays as ONE station line naming the goal');
-  A.eq(users.map(u => u.t), ['can you check the build?', GoalLoop.continuationPrompt(s)], 'only real turns replay as the Commander\'s (a delegated brief keeps its own row)');
-  A.ok(!users.some(u => /^\[Continuing toward your session goal\]/.test(u.t) && !u.from), 'the internal continuation prompt never replays as the Commander\'s speech');
+  A.eq(steps, ['ship the landing page', 'old goal'], 'a stored goal step (current OR pre-org-pass head) replays as ONE farm line naming the goal');
+  A.eq(users.map(u => u.t), ['can you check the build?', GoalLoop.continuationPrompt(s)], 'only real turns replay as the Farmer\'s (a delegated brief keeps its own row)');
+  A.ok(!users.some(u => /^\[Continuing toward your session goal\]/.test(u.t) && !u.from), 'the internal continuation prompt never replays as the Farmer\'s speech');
   A.eq(agents.length, 2, 'the agent\'s replies still replay');
 }
 
@@ -96,7 +96,7 @@ const mkRow = () => { const cls = new Set(); return { d: { classList: { add: c =
   const send = A.fnBody(chat, 'async function send(');
   A.ok(send.length > 1000, 'send() sliced');
   A.ok(/if \(goalContinuation\) goalStepLine\(goalStepOf\(text\) \|\| \(\(goalOf\(ws\) \|\| \{\}\)\.goal\) \|\| ''\); else addUser\(text, attsIn, uts\);/.test(send),
-    'a live continuation renders the goal step line instead of a Commander row');
+    'a live continuation renders the goal step line instead of a Farmer row');
   A.ok(/ws\.history\.push\(attsIn\.length \? \{ role: 'user', content: text, attachments: attsIn, ts: uts \} : \{ role: 'user', content: text, ts: uts \}\)/.test(send),
     'the continuation still enters history as the same user-role turn (nothing new on the wire)');
   A.ok(/send\(prompt, \{ goalContinuation: true \}\)/.test(A.fnBody(chat, 'function kickGoal(')), 'kickGoal still sends GoalLoop.continuationPrompt as the turn');
@@ -133,7 +133,7 @@ const mkRow = () => { const cls = new Set(); return { d: { classList: { add: c =
     { history: [{ role: 'user', content: 'hi' }, { role: 'user', content: GoalLoop.continuationPrompt(s) }, { role: 'assistant', content: 'on it' }] },
     () => {}, (title, lines) => cards.push(lines), goalStepOf);
   history('');
-  A.eq(cards[0], ['You: hi', 'Goal step: ship the landing page', 'Agent: on it'], '/history lists a goal step as the station\'s line');
+  A.eq(cards[0], ['You: hi', 'Goal step: ship the landing page', 'Agent: on it'], '/history lists a goal step as the farm\'s line');
 }
 
 /* ---------- 6. the register's look (comms-convo.css) ---------- */
@@ -144,7 +144,7 @@ A.ok(/padding: 3px 10px 3px 14px;/.test(col) && /border-left: 2px solid var\(--s
 const agentBody = rule('.cmsg.agent:not(.tool):not(.consent):not(.turnin):not(.nudge):not(.deliverable) > .body {\n  --rail');
 A.ok(/padding: 4px 10px 5px 14px;/.test(agentBody) && /border-left: 2px solid var\(--rail\)/.test(agentBody), '…which is the agent\'s own text edge (2px rail + 14px)');
 const text = rule(SYS + ' > :is(.body, .syscard-head) {');
-A.ok(/font-size: var\(--sn-type-control\) !important;/.test(text) && /color: var\(--ph-dim\);/.test(text), 'system text: the dim station colour at control size (one step under the 18px prose)');
+A.ok(/font-size: var\(--sn-type-control\) !important;/.test(text) && /color: var\(--ph-dim\);/.test(text), 'system text: the dim farm colour at control size (one step under the 18px prose)');
 A.ok(/--sn-type-control: 16px;/.test(fs.readFileSync(path.join(__dirname, '../frontend/css/readability.css'), 'utf8')), 'control is 16px — never under ~15px');
 A.ok(/font-size: var\(--sn-type-compact\)/.test(rule(SYS + ' .syscard-row {')), 'an opened readout\'s rows stay readable (compact 15px, not 12.5px)');
 A.ok(/display: none/.test(rule(SYS + ' + .cmsg.system > .who {')), 'the SYSTEM tag heads a run once');

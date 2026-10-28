@@ -573,13 +573,13 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
   A.eq(gotSpec.purpose, 'find things', 'a custom purpose is forwarded');
   const parsed = JSON.parse(out.content);
   A.eq(parsed.agentId, 'researcher-2', 'the new agentId comes back for the lead to delegate to');
-  A.ok(!('workstation' in parsed), 'a bare-id ack claims NO desk (the station never said it placed one)');
+  A.ok(!('workstation' in parsed), 'a bare-id ack claims NO desk (the farm never said it placed one)');
   A.ok(!/desk/i.test(out.summary), 'and the summary stays silent about furniture it cannot source');
   A.ok(/team\.dispatch/.test(out.summary), 'the summary nudges the lead to delegate to the new worker');
   /* CREW INTO THIS CHAT (rc walk 10-14): "bring two crew in to help me write a launch post" summoned two, then background-
      dispatched them — the chat never got them. The result names both next steps by the Commander's words, and reveals the
      deferred station.control so seating the hire here is one call away. */
-  A.ok(/to work IN this chat with the Commander: station\.control \{"action": "group\.add", "args": \{"agents": \["Researcher"\]\}\}; a job in its own thread: team\.dispatch/.test(parsed.next), 'the result names group.add for this chat and team.dispatch for a job: ' + parsed.next);
+  A.ok(/to work IN this chat with the Farmer: station\.control \{"action": "group\.add", "args": \{"agents": \["Researcher"\]\}\}; a job in its own thread: team\.dispatch/.test(parsed.next), 'the result names group.add for this chat and team.dispatch for a job: ' + parsed.next);
   A.eq(out.control && out.control.revealTools, ['team.dispatch', 'station.control'], 'and reveals both');
 }
 
@@ -587,14 +587,14 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 {
   const { dispatchTool, summonTool } = makeOrchestrationTools({ runOnce: fakeRunOnce(), roster: () => new Map(), key: 'k', model: 'm', newId: counter() });
   A.ok(/^Delegate subtasks to your specialist crew, each worker in its own thread \(never in this chat\)\./.test(dispatchTool.description), 'team.dispatch\'s first sentence (tool_search\'s gist) says a worker never sits in this chat');
-  A.ok(/To bring crew INTO this chat to work with the Commander, use station\.control group\.add instead \(tool_search "group add"\)/.test(dispatchTool.description), 'and names the call that does');
+  A.ok(/To bring crew INTO this chat to work with the Farmer, use station\.control group\.add instead \(tool_search "group add"\)/.test(dispatchTool.description), 'and names the call that does');
   A.ok(/Returns the new agentId: bring it INTO this chat with station\.control group\.add, or hand it work with team\.dispatch/.test(summonTool.description), 'team.summon names both next steps');
 }
 // the declined summon is said to the Commander, never about them
 {
   const { summonTool } = makeOrchestrationTools({ runOnce: fakeRunOnce(), roster: () => new Map(), key: 'k', model: 'm', newId: counter() });
   const out = await summonTool.run({ name: 'Ghost' }, { agentId: 'agent', summon: async () => null });
-  A.ok(!/the Commander declined/i.test(out.content.replace(/never "the Commander declined"/, '')) && /say it to the Commander as "you"/.test(out.content), 'a declined summon is said to the Commander as "you": ' + out.content);
+  A.ok(!/the Farmer declined/i.test(out.content.replace(/never "the Farmer declined"/, '')) && /say it to the Farmer as "you"/.test(out.content), 'a declined summon is said to the Farmer as "you": ' + out.content);
 }
 
 // ---- THE DESK RIDES ALONG: the station acks { agentId, desk } and the tool reports WHERE it landed ----
@@ -606,7 +606,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
   A.eq(parsed.agentId, 'scout-2', 'the object ack still yields the new agentId');
   A.eq(parsed.workstation, 'BRIDGE', 'the seeded workstation room reaches the lead');
   A.ok(/workstation in BRIDGE/.test(out.summary), 'the summary states where the workstation is (true whether it was built or adopted)');
-  A.ok(summonTool.description.indexOf('workstation with it') > 0, 'the tool tells the lead never to ask the Commander to build the desk');
+  A.ok(summonTool.description.indexOf('workstation with it') > 0, 'the tool tells the lead never to ask the Farmer to build the desk');
 }
 
 // ---- an object ack with NO desk (placement failed / no room) must not claim one ----
@@ -629,7 +629,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 {
   const { summonTool } = makeOrchestrationTools({ runOnce: fakeRunOnce(), roster: () => new Map(), key: 'k', model: 'm', newId: counter() });
   const out = await summonTool.run({ name: 'X' }, { agentId: 'worker' });   // no summon on ctx (autonomous run)
-  A.eq(out.summary, 'unavailable', 'summon without a live station is unavailable, not a crash');
+  A.eq(out.summary, 'unavailable', 'summon without a live farm is unavailable, not a crash');
 }
 
 // ---- nothing to summon: neither name nor specId -> noop, never calls ctx.summon ----
@@ -775,7 +775,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
   A.eq(ro.calls.length, 20, 'the default dispatch starts all twenty requested workers');
   A.eq(rows.filter(r => r.reason === 'done').length, 20, 'all twenty workers finish and are reported');
   A.eq(rows.filter(r => r.reason === 'not-dispatched').length, 0, 'no hidden per-call ceiling drops work');
-  A.eq(peak, 20, 'all twenty workers may execute concurrently when no station ceiling is configured');
+  A.eq(peak, 20, 'all twenty workers may execute concurrently when no farm ceiling is configured');
 }
 
 // ---- OPT-IN CAPS STAY HONEST (2026-07-26 audit finding C): asking for MORE than maxWorkers used to slice(0,4) and say
@@ -992,7 +992,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
   A.eq(rows.length, 2, 'both workers are reported even when the gate is saturated');
   A.ok(rows.every(r => r.reason === 'refused'), 'a saturated gate yields refused rows, not fabricated results');
   A.ok(rows.every(r => r.retried === true), 'each refusal was retried once before being reported');
-  A.ok(/MAX_CONCURRENT_AGENTS in SETTINGS/.test(rows[0].result), 'the refusal names the control the Commander can actually change');
+  A.ok(/MAX_CONCURRENT_AGENTS in SETTINGS/.test(rows[0].result), 'the refusal names the control the Farmer can actually change');
   A.ok(ro.calls.length === 4, 'two workers x (first attempt + one retry) = four admission attempts');
 }
 
@@ -1016,7 +1016,7 @@ function fakeStation(sessions, opts) {
     seen,
     request: async (verb, args) => {
       seen.push({ verb, args });
-      if (opts.down) return { ok: false, error: 'no station page answered', unattended: true };
+      if (opts.down) return { ok: false, error: 'no farm page answered', unattended: true };
       if (verb === 'station.sessions') return { ok: true, result: { sessions: sessions } };
       if (verb === 'station.dispatch_start') return { ok: true, result: { started: true } };
       if (verb === 'station.dispatch_end') return { ok: true, result: { settled: true } };
@@ -1120,8 +1120,8 @@ for (const reason of ['done', 'budget', 'max_iters', 'aborted']) {
   const ro = fakeRunOnce();
   const { dispatchTool } = sessionTools(fakeStation(SESSIONS, { down: true }), ro);
   const out = await dispatchTool.run({ workers: [{ agentId: 'researcher', prompt: 'p', session: 'research' }] }, leadCtx());
-  A.eq(ro.calls.length, 0, 'an unreachable station starts no work');
-  A.ok(/could not read this station's session list/.test(JSON.parse(out.content)[0].result), 'the failure says the list was unreadable, never "no such session"');
+  A.eq(ro.calls.length, 0, 'an unreachable farm starts no work');
+  A.ok(/could not read this farm's session list/.test(JSON.parse(out.content)[0].result), 'the failure says the list was unreadable, never "no such session"');
 }
 
 // no bridge wired at all (bare host): honest refusal, and NO session param means byte-identical old behaviour
@@ -1131,7 +1131,7 @@ for (const reason of ['done', 'budget', 'max_iters', 'aborted']) {
   const { dispatchTool } = makeOrchestrationTools({ runOnce: ro, roster: () => roster, key: 'k', model: 'lead', newId: counter() });
   const out = await dispatchTool.run({ workers: [{ agentId: 'researcher', prompt: 'p', session: 'research' }] }, leadCtx());
   A.eq(ro.calls.length, 0, 'without a bridge a session target is refused, not ignored');
-  A.ok(/no live station page is attached/.test(JSON.parse(out.content)[0].result), 'the refusal is honest about why');
+  A.ok(/no live farm page is attached/.test(JSON.parse(out.content)[0].result), 'the refusal is honest about why');
   const ro2 = fakeRunOnce();
   const t2 = makeOrchestrationTools({ runOnce: ro2, roster: () => roster, key: 'k', model: 'lead', newId: counter() });
   const out2 = await t2.dispatchTool.run({ workers: [{ agentId: 'researcher', prompt: 'p' }] }, leadCtx());
@@ -1150,7 +1150,7 @@ for (const reason of ['done', 'budget', 'max_iters', 'aborted']) {
   const row = JSON.parse(out.content)[0];
   A.eq(row.reason, 'done', 'the work itself still completed');
   A.eq(row.session, undefined, 'the row does NOT claim the session when the fold failed');
-  A.ok(/could not show it there/.test(row.sessionNote), 'it carries an honest note about what the Commander will actually see');
+  A.ok(/could not show it there/.test(row.sessionNote), 'it carries an honest note about what the Farmer will actually see');
 }
 
 // one dispatch, two workers, two different sessions — each lands in its own
@@ -1521,7 +1521,7 @@ for (const mode of ['invalid', 'error', 'refused']) {
   A.eq(row.reason, 'timeout', 'the slice really ran out');
   A.ok(/\[STOPPED/.test(row.result), 'the lead still gets the model-directed note');
   const shown = delivered.find(d => d.streamId === 'ws_child');
-  A.ok(shown && shown.text === 'half a draft' && !/\[STOPPED/.test(shown.dispatchDelivery.text), 'the Commander\'s thread shows the partial work only, never the lead\'s instruction');
+  A.ok(shown && shown.text === 'half a draft' && !/\[STOPPED/.test(shown.dispatchDelivery.text), 'the Farmer\'s thread shows the partial work only, never the lead\'s instruction');
 }
 
 // ---- the path guard's hand-off exception: an exact granted file, read-only ----

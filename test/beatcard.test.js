@@ -117,7 +117,7 @@ ctl.reset();
 const answered = ctl.claim({ kind: 'nudge', runId: 'run-answered', node: { id: 'nudge-answered', isConnected: true } });
 let answeredIgnored = 0;
 answered.ifCurrent(rec => { rec.onExpire = () => { answeredIgnored += 1; }; });
-A.eq(answered.decide(), true, 'the Commander answered the aside');
+A.eq(answered.decide(), true, 'the Farmer answered the aside');
 ctl.scheduleExpire('thread', 20);
 clock.tick(20);
 A.eq(answeredIgnored, 0, 'a decided card is never swept as ignored');
@@ -155,9 +155,9 @@ A.eq(ctl.sweepExpire(), false, 'a direct sweep also refuses a decided card');
   A.eq(staleIgnored, 1, 'the card the sweeps ARMED against is retired exactly once (its ignore is real)');
   A.eq(gone.indexOf('study-stale') >= 0, true, 'the stale card vanished');
   A.ok(fresh && fresh.isCurrent(), 'THE FIX: the freshly rendered card survives the other two sweeps in the batch');
-  A.eq(freshIgnored, 0, 'a card the Commander never saw a frame of can never tally an ignore');
+  A.eq(freshIgnored, 0, 'a card the Farmer never saw a frame of can never tally an ignore');
   A.eq(c.visibleBeat(), 'study', 'the fresh card still owns the one slot');
-  A.eq(gone.indexOf('study-fresh'), -1, 'and it was never vanished out from under the Commander');
+  A.eq(gone.indexOf('study-fresh'), -1, 'and it was never vanished out from under the Farmer');
 
   // ── S4 IGNORE-TALLY FAIRNESS: even a sweep correctly aimed at a card frees the slot but does NOT tally an
   //    ignore until that card has been visible for the minimum age.
@@ -178,7 +178,7 @@ A.eq(ctl.sweepExpire(), false, 'a direct sweep also refuses a decided card');
   clk.tick(50);
   c.scheduleExpire('thread', 5);
   clk.tick(5);
-  A.eq(heldIgnored, 1, 'a card the Commander really did leave undecided still tallies its ignore');
+  A.eq(heldIgnored, 1, 'a card the Farmer really did leave undecided still tallies its ignore');
 
   // a sweep armed while NOTHING held the slot may never retire whatever arrives later
   c.reset();

@@ -64,7 +64,7 @@ function startMockModel() {
     A.ok(/default-src 'self'/.test(page.headers.get('content-security-policy') || ''), 'with a strict CSP');
     A.ok(/StarNet Remote/.test(await page.text()), 'it is the Remote deck');
     A.eq((await fetch(relayUrl + '/phone-client.js')).status, 200, 'the phone client is served next to it');
-    A.eq((await fetch(relayUrl + '/vt323.woff2')).status, 200, 'and the station font');
+    A.eq((await fetch(relayUrl + '/vt323.woff2')).status, 200, 'and the farm font');
     A.eq((await fetch(relayUrl + '/../sidecar/index.js')).status === 200, false, 'nothing outside the app folder');
 
     await fx.start();
@@ -72,13 +72,13 @@ function startMockModel() {
     const on = await fx.json('POST', '/api/remote/enable', { on: true });
     A.eq(on.body.enabled, true, 'Remote on');
     A.eq(on.body.listening, false, 'no LAN door unless asked for');
-    await waitUntil(async () => ((await fx.json('GET', '/api/remote')).body.relay || {}).state === 'online', 10000, 'station online at the relay');
+    await waitUntil(async () => ((await fx.json('GET', '/api/remote')).body.relay || {}).state === 'online', 10000, 'farm online at the relay');
     const pr = await fx.json('POST', '/api/remote/pair', {});
     A.eq(pr.status, 200, 'pairing code');
     A.ok(pr.body.pairUrl.indexOf(relayUrl + '/#pair=') === 0, 'the pairing link opens the app on the relay, secret in the fragment');
     const blob = JSON.parse(Buffer.from(pr.body.pairBlob.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'));
     A.eq(blob.r, relayUrl, 'the link names the relay');
-    A.eq(await Phone.fingerprint(blob.s), pr.body.fingerprint, 'phone and desk show the same station code');
+    A.eq(await Phone.fingerprint(blob.s), pr.body.fingerprint, 'phone and desk show the same farm code');
 
     const key = await Phone.makeDeviceKey();
     const paired = await Phone.pairRelay({ relay: blob.r, stationPub: blob.s, pairingId: blob.p, code: blob.c, name: 'E2E phone', key });

@@ -10,12 +10,12 @@ const path = require('path');
 const A = require('./_assert.js');
 const { questBlock, withQuests, _internals } = require('../sidecar/questinject.js');
 
-const SYS = 'You are an autonomous STARNET station agent.';
+const SYS = 'You are an autonomous HOMESTEAD farm agent.';
 
 /* ---------- empty list → the MINIMAL minting-doctrine block (NOT '' — a no-quest agent should still mint, §E) ---------- */
 {
   const mb = questBlock([]);
-  A.ok(mb.indexOf('STATION QUESTS') === 0, 'empty ledger → a minimal block still headed STATION QUESTS (never the empty string)');
+  A.ok(mb.indexOf('FARM QUESTS') === 0, 'empty ledger → a minimal block still headed FARM QUESTS (never the empty string)');
   A.ok(/no open quests/.test(mb), 'the minimal block says there are no open quests right now');
   A.ok(mb.indexOf('op:"mint"') >= 0, 'the minimal block carries the minting doctrine (quest.update op:"mint")');
   A.ok(mb.indexOf('groundedIn') >= 0, 'the minting doctrine demands grounding (groundedIn a concrete fact)');
@@ -38,7 +38,7 @@ A.eq(withQuests(SYS, questBlock([])), SYS + '\n\n' + questBlock([]), 'an empty l
     steps: [{ key: 'a', label: 'gather the columns', done: true }, { key: 'b', label: 'write the script', done: false }],
     groundedIn: 'dossier: exports CSVs by hand every morning' };
   const b = questBlock([q]);
-  A.ok(b.indexOf('STATION QUESTS') === 0, 'block starts with the STATION QUESTS header');
+  A.ok(b.indexOf('FARM QUESTS') === 0, 'block starts with the FARM QUESTS header');
   A.ok(b.indexOf('quest.update') >= 0, 'header tells the agent to use the quest.update tool');
   A.ok(b.indexOf('op:"mint"') >= 0 && b.indexOf('At most ONE mint per run') >= 0, 'the full block carries the minting doctrine too (rides every task run)');
   A.ok(b.indexOf('[q:1] Automate the CSV export') >= 0, 'stanza carries id + title');
@@ -54,7 +54,7 @@ A.eq(withQuests(SYS, questBlock([])), SYS + '\n\n' + questBlock([]), 'an empty l
   const q = { id: 'q:2', title: 'Draft the launch email', contract: { type: 'attest', key: '' },
     steps: [], declineNote: { at: 5, note: 'the draft was too generic' } };
   const b = questBlock([q]);
-  A.ok(b.indexOf('attest with concrete evidence and the Commander confirms') >= 0, 'attest contract phrased for attest+confirm');
+  A.ok(b.indexOf('attest with concrete evidence and the Farmer confirms') >= 0, 'attest contract phrased for attest+confirm');
   A.ok(b.indexOf('your last completion claim was declined: the draft was too generic') >= 0, 'declineNote surfaced verbatim');
   A.ok(b.indexOf('address it before re-attesting') >= 0, 'declineNote tells the agent to address it before re-attesting');
   A.ok(b.indexOf('next step') < 0, 'a quest with no steps shows no next-step line');
@@ -64,7 +64,7 @@ A.eq(withQuests(SYS, questBlock([])), SYS + '\n\n' + questBlock([]), 'an empty l
 A.ok(_internals.completesWhen({ type: 'prop' }).indexOf('capability goes live') >= 0, 'prop → capability goes live');
 A.ok(_internals.completesWhen({ type: 'fact' }).indexOf('harness learns') >= 0, 'fact → harness learns');
 A.ok(_internals.completesWhen({ type: 'artifact' }).indexOf('deliverable exists') >= 0, 'artifact → deliverable exists');
-A.ok(_internals.completesWhen({ type: 'attest' }).indexOf('Commander confirms') >= 0, 'attest → Commander confirms');
+A.ok(_internals.completesWhen({ type: 'attest' }).indexOf('Farmer confirms') >= 0, 'attest → Farmer confirms');
 A.ok(_internals.completesWhen({}).indexOf('harness proves it') >= 0, 'unknown type → safe default');
 
 /* ---------- nextStep helper: first not-done, or null ---------- */

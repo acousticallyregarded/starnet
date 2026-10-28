@@ -69,7 +69,7 @@ const POLL = { name: 'shell_exec', args: { command: 'curl -s https://deploy.inva
   {
     const provider = scripted(repeat(12, () => [POLL]));
     const { res, seq, messages } = await run(provider, async () => ok('{"state":"pending"}\n[exit 0]'), { limits: { maxIters: 9, grace: false } });
-    A.eq(res.reason, 'max_iters', 'interactive: warn only — runs to the Commander\'s own ceiling');
+    A.eq(res.reason, 'max_iters', 'interactive: warn only — runs to the Farmer\'s own ceiling');
     A.eq(errors(seq).length, 0, 'no stop on a watched run');
     A.eq(nudges(messages).length, 1, 'one nudge (it fires once per streak)');
     A.ok(!/unattended/.test(nudges(messages)[0].content), 'the interactive nudge promises no stop');

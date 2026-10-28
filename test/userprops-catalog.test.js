@@ -83,7 +83,7 @@ A.eq(PropSprites.CATALOG.length, n0 - 1, 'the catalog shrinks by one');
 A.eq(PropSprites.spec(row.id), null, 'spec no longer knows it');
 A.eq(PropSprites.ruleFor(row.id), null, 'a deleted made prop is pruned from saves');
 PropSprites.markUserDeleted(['user_old_deleted_aaaaaa']);
-A.eq(PropSprites.ruleFor('user_old_deleted_aaaaaa'), null, 'a tombstoned id from the station is pruned too');
+A.eq(PropSprites.ruleFor('user_old_deleted_aaaaaa'), null, 'a tombstoned id from the farm is pruned too');
 A.eq(PropSprites.ruleFor('user_still_protected_bbbbbb'), { mount: null, stack: false, surface: false, flat: false }, 'other unregistered made props stay protected');
 
 // ---- SIZE: pure geometry, row resize, and a copy saved at another size draws SCALED into its own box

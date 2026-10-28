@@ -209,7 +209,7 @@ async function run() {
     A.ok(/▸ production/.test(edits[0].t), 'the edit stamps the chosen option');
     A.eq(edits[0].m, 'msg7', 'it edits the message the keyboard was actually attached to');
     A.eq(runs[1].messages[runs[1].messages.length - 1], { role: 'user', content: 'production' },
-      'the tap re-enters the run as the option\'s OWN text — identical to the Commander typing it');
+      'the tap re-enters the run as the option\'s OWN text — identical to the Farmer typing it');
     A.ok(store.hist.get('tg_555').some(m => m.role === 'user' && m.content === 'production'),
       'and it is persisted to the transcript like any other user turn');
 

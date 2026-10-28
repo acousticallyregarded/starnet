@@ -24,7 +24,7 @@ const keyCheckFailure = new Function(mFail[0] + '\nreturn keyCheckFailure;')();
 A.eq(keyCheckFailure(200, { error: 'provider rejected this key (HTTP 401)' }, ''), 'provider rejected this key (HTTP 401)', 'a provider verdict passes through verbatim');
 A.eq(keyCheckFailure(200, {}, '{}'), 'the provider did not verify this key', 'a 200 with no reason keeps the old wording');
 const origin = keyCheckFailure(403, {}, 'forbidden origin');
-A.ok(/station refused the key check \(HTTP 403 forbidden origin\)/.test(origin), 'a 403 origin refusal names the station, not the provider: ' + origin);
+A.ok(/farm refused the key check \(HTTP 403 forbidden origin\)/.test(origin), 'a 403 origin refusal names the farm, not the provider: ' + origin);
 A.ok(/address/.test(origin), 'the origin refusal says what to do');
 A.ok(/reload the page/.test(keyCheckFailure(403, {}, 'forbidden token')), 'a stale-token refusal says reload');
 // a page the station KEPT its key from (Harness tokenWithheld = the peerowner reason) is not a restarted station: every
@@ -38,7 +38,7 @@ A.ok(/reload the page/.test(keyCheckFailure(403, {}, 'forbidden token')), 'a sta
 }
 A.ok(/localhost/.test(keyCheckFailure(403, {}, 'forbidden host')), 'a host refusal names the loopback rule');
 A.ok(/HTTP 423\)$/.test(keyCheckFailure(423, {}, '<html>frozen</html>')), 'an HTML/JSON-ish body is not pasted into the message');
-A.ok(!/did not verify/.test(origin), 'the misleading "provider did not verify" never appears for a station refusal');
+A.ok(!/did not verify/.test(origin), 'the misleading "provider did not verify" never appears for a farm refusal');
 
 // ---- key cleaning: browser and sidecar strip ALL whitespace + zero-width chars ----
 const mClean = /const cleanKey = k => String\(k == null \? '' : k\)\.replace\(\/\[\\s\\u200b-\\u200d\\u2060\\ufeff\]\+\/g, ''\);/.exec(harness);
@@ -83,15 +83,15 @@ A.ok(/noteApiRefusal\(req, 'forbidden token'\);/.test(sidecar), 'a stale-token r
     new Set(), require('../sidecar/apiauth.js'), require('../sidecar/apitickets.js'), 8787, () => {}, () => {}, { warn: l => lines.push(l) });
   const note = noter();
   note({ method: 'GET', url: '/api/state', headers: { host: '127.0.0.1:8787', origin: 'http://127.0.0.1:8787' } }, 'forbidden token');
-  A.ok(lines[0] && !/before a sidecar restart/.test(lines[0]) && /no station key/.test(lines[0]), 'a key-less request is not called a stale page: ' + lines[0]);
+  A.ok(lines[0] && !/before a sidecar restart/.test(lines[0]) && /no farm key/.test(lines[0]), 'a key-less request is not called a stale page: ' + lines[0]);
   note({ method: 'GET', url: '/api/state', headers: { host: '127.0.0.1:8787', origin: 'http://127.0.0.1:8787', 'x-starnet-token': 'old-launch-key' } }, 'forbidden token');
   A.ok(lines[1] && /before a sidecar restart; reload it/.test(lines[1]), 'a wrong key is still a page from before a restart: ' + lines[1]);
   // the header-less shapes (the COMMS EventSource, the unload save beacon) carry their key as a ?ticket=: a stale
   // ticket is a stale page, not a page the station kept its key from
   noter()({ method: 'GET', url: '/api/channels/events?ticket=old-launch-ticket', headers: { host: '127.0.0.1:8787', origin: 'http://127.0.0.1:8787' } }, 'forbidden token');
-  A.ok(lines[2] && /before a sidecar restart; reload it/.test(lines[2]) && !/no station key/.test(lines[2]), 'a stale ?ticket= is a page from before a restart: ' + lines[2]);
+  A.ok(lines[2] && /before a sidecar restart; reload it/.test(lines[2]) && !/no farm key/.test(lines[2]), 'a stale ?ticket= is a page from before a restart: ' + lines[2]);
   noter()({ method: 'GET', url: '/api/channels/events', headers: { host: '127.0.0.1:8787', origin: 'http://127.0.0.1:8787' } }, 'forbidden token');
-  A.ok(lines[3] && /no station key/.test(lines[3]), 'the same shape with no ticket carried no key: ' + lines[3]);
+  A.ok(lines[3] && /no farm key/.test(lines[3]), 'the same shape with no ticket carried no key: ' + lines[3]);
 }
 A.ok(/if \(apiRefusalsSeen\.has\(sig\) \|\| apiRefusalsSeen\.size >= 64\) return;/.test(sidecar), 'refusal notes are once per cause and bounded');
 

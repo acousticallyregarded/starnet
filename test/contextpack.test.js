@@ -23,7 +23,7 @@ const redact = (s) => String(s == null ? '' : s).replace(/sk-secret-[A-Za-z0-9]+
 function baseInputs(over) {
   return Object.assign({
     runs: [
-      { title: 'Ship the StarNet beta', ts: ago(1), streamId: '' },            // user run (empty stream = default)
+      { title: 'Ship the Homestead beta', ts: ago(1), streamId: '' },            // user run (empty stream = default)
       { title: 'Refactor the belt router', ts: ago(2), streamId: 'ws-main' },  // user run (named workstream)
       { title: 'night-shift: Busywork', ts: ago(0), streamId: 'nightshift-abc' }, // INTERNAL — must be excluded
       { title: 'cron digest', ts: ago(0), streamId: 'cron-xyz' },              // INTERNAL — must be excluded
@@ -54,7 +54,7 @@ function baseInputs(over) {
 (function exclusions() {
   const pack = CP.assemble(baseInputs(), { now: T });
   const worked = (pack.sections.find(s => s.label === 'What they worked on recently') || {}).lines || [];
-  A.ok(worked.some(l => /Ship the StarNet beta/.test(l)), 'a user run appears');
+  A.ok(worked.some(l => /Ship the Homestead beta/.test(l)), 'a user run appears');
   A.ok(worked.some(l => /Refactor the belt router/.test(l)), 'a named-workstream user run appears');
   A.ok(!worked.some(l => /Busywork|cron digest|workshop build/.test(l)), 'internal-stream runs are excluded');
   A.ok(!worked.some(l => /Ancient task/.test(l)), 'out-of-window (>7d) run is excluded');
@@ -138,11 +138,11 @@ A.eq(CP.dayTag(0, T), '', 'undated → empty tag');
   const selfTalk = 'INTERNAL — GOAL DECOMPOSITION. Do not run any tools. Reason only, then reply in the exact format below.';
   const p = CP.assemble({
     runs: [{ title: selfTalk.slice(0, 120), ts: ago(0), streamId: 'ws-main', internal: true }, { title: 'Draft the launch post', ts: ago(0), streamId: 'ws-main' }],
-    chats: [{ role: 'user', content: selfTalk + '\nYour Commander has this goal: …', ts: ago(0), streamId: 'ws-main' },
+    chats: [{ role: 'user', content: selfTalk + '\nYour Farmer has this goal: …', ts: ago(0), streamId: 'ws-main' },
             { role: 'user', content: 'Can you draft the launch post for Friday?', ts: ago(0), streamId: 'ws-main' }]
   }, { now: T });
-  A.ok(!p.activityLines.some(l => /GOAL DECOMPOSITION/.test(l)), 'an internal call never reads as the Commander\'s recent work or asks');
-  A.ok(p.activityLines.some(l => /Draft the launch post/.test(l)) && p.activityLines.some(l => /launch post for Friday/.test(l)), 'the Commander\'s own runs and asks on the same stream are kept');
+  A.ok(!p.activityLines.some(l => /GOAL DECOMPOSITION/.test(l)), 'an internal call never reads as the Farmer\'s recent work or asks');
+  A.ok(p.activityLines.some(l => /Draft the launch post/.test(l)) && p.activityLines.some(l => /launch post for Friday/.test(l)), 'the Farmer\'s own runs and asks on the same stream are kept');
 }
 // Exercise the real host projection, then the real pure pack: a source regex cannot prove that private
 // provenance survives filtering or that a completed brief actually belongs to a clean owner's directive.
@@ -201,9 +201,9 @@ A.eq(CP.dayTag(0, T), '', 'undated → empty tag');
     id: 'tb_owner-original', originalRunId: 'owner-original', agentId: 'owner-agent', streamId: 'ws-main', originalDirective, completedAt: T
   }, over || {});
 
-  const selfTalk = 'INTERNAL GOAL DECOMPOSITION fixture for the station';
-  const taintedSelfTalk = 'INTERNAL TAINTED STATION PLANNING fixture';
-  const quotedSelfTalk = 'INTERNAL QUOTED STATION PLANNING fixture';
+  const selfTalk = 'INTERNAL GOAL DECOMPOSITION fixture for the farm';
+  const taintedSelfTalk = 'INTERNAL TAINTED FARM PLANNING fixture';
+  const quotedSelfTalk = 'INTERNAL QUOTED FARM PLANNING fixture';
   const clean = owner('Owner release plan on a mixed-trust stream');
   const multiline = owner('Owner next task\nKeep the verification command');
   const result = host({
@@ -255,7 +255,7 @@ A.eq(CP.dayTag(0, T), '', 'undated → empty tag');
   const surfaced = result.pack.text + '\n' + result.pack.activityLines.join('\n');
   A.ok(surfaced.includes(clean.content) && surfaced.includes('Owner next task'),
     'one tainted row does not suppress clean owner activity elsewhere in its stream');
-  A.ok(!/sentinel|INTERNAL (?:GOAL DECOMPOSITION|TAINTED STATION|QUOTED STATION)/.test(surfaced), 'rejected and internal content never enters the prompt or evidence pool');
+  A.ok(!/sentinel|INTERNAL (?:GOAL DECOMPOSITION|TAINTED FARM|QUOTED FARM)/.test(surfaced), 'rejected and internal content never enters the prompt or evidence pool');
 
   A.eq(result.projectionCount, 2, 'host separately assembles general activity and trusted learning activity');
   A.ok(result.trustedProjected.runs.length === 3 && result.trustedProjected.runs.every(r => r.internal),
@@ -265,7 +265,7 @@ A.eq(CP.dayTag(0, T), '', 'undated → empty tag');
   const trustedText = result.pack.trustedActivityLines.join('\n');
   A.ok(trustedText.includes(clean.content) && trustedText.includes('Owner next task'),
     'clean owner requests remain available to topic learning');
-  A.ok(!/Legacy clean run|Explicit clean run|sentinel|INTERNAL (?:GOAL DECOMPOSITION|TAINTED STATION|QUOTED STATION)/.test(trustedText),
+  A.ok(!/Legacy clean run|Explicit clean run|sentinel|INTERNAL (?:GOAL DECOMPOSITION|TAINTED FARM|QUOTED FARM)/.test(trustedText),
     'legacy ordinary run titles, tainted rows and internal self-talk cannot become trusted topic evidence');
 
   const oldInternalText = 'Old station-only planning outside the recent run window';
@@ -329,7 +329,7 @@ A.eq(CP.dayTag(0, T), '', 'undated → empty tag');
     // The general Commander evidence reader must consume this filtered host pack in either preference mode.
     // No raw run/transcript stores are provided here: a private bypass cannot satisfy the activity assertion.
     const evidenceFn = A.fnBody(src, 'function commanderEvidenceInputs(evidence)');
-    A.ok(evidenceFn.length < 4000 && /return \{ dossier:/.test(evidenceFn), 'extract the shared Commander evidence reader');
+    A.ok(evidenceFn.length < 4000 && /return \{ dossier:/.test(evidenceFn), 'extract the shared Farmer evidence reader');
     let packReads = 0;
     const evidence = vm.runInNewContext('(' + evidenceFn + ')()', {
       Date: { now: () => T },

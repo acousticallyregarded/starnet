@@ -61,7 +61,7 @@ function fakeDriver() {
     const attach = B.tools.find(t => t.name === 'browser.attach');
     const detach = B.tools.find(t => t.name === 'browser.detach');
     A.ok(!!attach, 'browser.attach is registered');
-    A.eq(attach.requiresConsent, true, 'attaching to the Commander\'s own browser ALWAYS asks first');
+    A.eq(attach.requiresConsent, true, 'attaching to the Farmer\'s own browser ALWAYS asks first');
     A.eq(attach.scope, 'execute', 'and it is execute scope, not read');
     A.eq(attach.capability, 'web', 'it rides the web capability like the rest of the browser surface');
     A.eq(detach.requiresConsent, false, 'LETTING GO costs no prompt — a gated release is a release that does not happen');
@@ -117,7 +117,7 @@ function fakeDriver() {
     });
     const tabs = await driver.tabs();
     A.eq(tabs[0].title, 'CURRENT', 'tab 0 is the page Chrome is actually showing, not the first auto-attach event');
-    A.eq(tabs[0].active, true, 'the visible Commander tab is the initial action target');
+    A.eq(tabs[0].active, true, 'the visible Farmer tab is the initial action target');
     A.eq(tabs[1].title, 'BACKGROUND', 'other already-open tabs remain available without stealing focus');
     await driver.close();
   }
@@ -173,11 +173,11 @@ function fakeDriver() {
   {
     const B = makeBrowserTools({ driver: fakeDriver(), fetchImpl: devtoolsFetch() });
     const before = B.session.evalAllowed();
-    A.eq(before.ok, true, 'eval is allowed on an ordinary throwaway station browser');
+    A.eq(before.ok, true, 'eval is allowed on an ordinary throwaway farm browser');
 
     await B.session.attach(9222);
     const after = B.session.evalAllowed();
-    A.eq(after.ok, false, 'and REFUSED the moment the session drives the Commander\'s own browser');
+    A.eq(after.ok, false, 'and REFUSED the moment the session drives the Farmer\'s own browser');
     A.ok(/your own Chrome/.test(after.reason), 'the reason names the real hazard');
     await rejects(B.session.evalPublic('document.cookie'), /refused/, 'the refusal is enforced, not merely advertised');
   }
@@ -202,7 +202,7 @@ function fakeDriver() {
     A.ok(/still running/.test(msg), 'the answer states their browser was left alone');
     A.ok(/untouched/.test(msg), 'in words a human can check');
     A.eq(B.session.attachedToUser(), false, 'the session is no longer attached');
-    A.eq(B.session.evalAllowed().ok, true, 'and eval is available again on the station browser');
+    A.eq(B.session.evalAllowed().ok, true, 'and eval is available again on the farm browser');
     A.eq((await B.tools.find(t => t.name === 'browser.detach').run({}, {})).content, 'Not attached; nothing to detach.', 'a second detach is a no-op, not an error');
   }
 
@@ -220,12 +220,12 @@ function fakeDriver() {
       persistentProfile: { dir: 'C:/tmp/profile', acquire: () => { acquired++; return true; }, release: () => { released++; } }
     });
     await B.session.navigate('https://example.com');   // takes the lease the ordinary way
-    A.ok(acquired >= 1, 'an ordinary run takes the station profile lease');
+    A.ok(acquired >= 1, 'an ordinary run takes the farm profile lease');
     await B.session.attach(9222);
-    A.eq(released, 1, 'attaching RELEASES it — the station profile is not in play while attached');
+    A.eq(released, 1, 'attaching RELEASES it — the farm profile is not in play while attached');
     const attachBuild = built[built.length - 1];
     A.eq(attachBuild.attachPort, 9222, 'the driver is rebuilt in ATTACH mode against the probed port');
-    A.eq(!!attachBuild.profileIsPersistent, false, 'and NOT flagged as the persistent station profile');
+    A.eq(!!attachBuild.profileIsPersistent, false, 'and NOT flagged as the persistent farm profile');
   }
 
   // ---- 11. REFS DO NOT SURVIVE THE SWITCH ----

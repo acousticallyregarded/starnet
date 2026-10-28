@@ -182,7 +182,7 @@ const galleryAsks = requests => requests.filter(r => r.url.indexOf('/api/communi
 /* ---- 1. build mode's Presets sheet: SHARE TO COMMUNITY and the COMMUNITY MAPS gallery ---- */
 async function presets(live) {
   const station = M.create(M.starterDoc()); station.ensureWorkstation('agent');
-  A.ok(station.replaceLayout(T.build('software', M, Sprites, station.doc()._nid + 100)).ok, 'fixture: a Software Studio station');
+  A.ok(station.replaceLayout(T.build('software', M, Sprites, station.doc()._nid + 100)).ok, 'fixture: a Software Studio farm');
   const P = page(live, {
     station, StationTemplates: T, WorldModel: M, PropSprites: Sprites, BuildShare: B, esc: U.esc,
     cardCloseAll() {}, cardRegister() {}, currentPresetExample: () => null, openPresetExample() {}, fitCamera() {}
@@ -200,7 +200,7 @@ async function presetsCase(live, on) {
   if (!sheet) return;
   A.eq(vm.runInContext('CommunityMaps.live', P.ctx), on, label + 'CommunityMaps.live reads the switch');
   A.ok(!!sheet.querySelector('[data-build-section="shared"] [data-export-build]') && !!sheet.querySelector('[data-build-section="shared"] [data-import-build]'),
-    label + 'SHARED BUILDS keeps EXPORT THIS STATION and IMPORT A BUILD (files never needed the cloud)');
+    label + 'SHARED BUILDS keeps EXPORT THIS FARM and IMPORT A BUILD (files never needed the cloud)');
   A.ok(sheet.querySelectorAll('[data-station-build]').length >= T.catalog.length, label + 'every preset card is drawn');
   const share = sheet.querySelector('[data-share-community]'), gallery = sheet.querySelector('[data-build-section="community"]');
   const keys = texts(sheet, 'button'), heads = texts(sheet, 'h3');

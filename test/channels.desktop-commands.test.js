@@ -11,7 +11,7 @@ const A = require('./_assert.js');
 const { makeChannelHub, parseCommand, COMMANDS } = require('../sidecar/channels/hub.js');
 const slash = require('../sidecar/slash.js');
 
-const DESKTOP_ONLY = 'That command only works in the StarNet desktop app.';
+const DESKTOP_ONLY = 'That command only works in the Homestead desktop app.';
 function build(over) {
   const sends = [], runs = [], slashCalls = [], cleared = [];
   let ids = 0;

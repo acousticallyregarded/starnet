@@ -36,7 +36,7 @@ const mk = (extra) => makeShellHooks(Object.assign({ spawn, fsp, pathMod: path, 
       A.eq(s('prettier --write ""'), ['prettier', '--write', ''], 'an explicitly empty argument survives');
       let threw = false;
       try { s('node "unterminated'); } catch (_) { threw = true; }
-      A.ok(threw, 'an unbalanced quote is an ERROR — guessing at a half-quoted command is how you run something the Commander did not write');
+      A.ok(threw, 'an unbalanced quote is an ERROR — guessing at a half-quoted command is how you run something the Farmer did not write');
       // The shell metacharacters are DATA here, never operators. This is the injection guarantee.
       A.eq(s('echo a;rm -rf /'), ['echo', 'a;rm', '-rf', '/'], 'a `;` is just a character in an argument — no shell, no second command');
       A.eq(s('echo $HOME'), ['echo', '$HOME'], 'no variable expansion happens');
@@ -50,7 +50,7 @@ const mk = (extra) => makeShellHooks(Object.assign({ spawn, fsp, pathMod: path, 
       const spine = makeHooks();
       const r = await sh.install(spine);
       A.eq(r.installed.length, 0, 'an un-allowed hook is NOT installed');
-      A.eq(r.pending.length, 1, 'it is reported as waiting on the Commander, not dropped silently');
+      A.eq(r.pending.length, 1, 'it is reported as waiting on the Farmer, not dropped silently');
       A.eq((await spine.invoke('pre_tool_call', {})).blocked, false, 'and it cannot block anything while pending');
       A.eq((await sh.listPending()).length, 1, 'listPending surfaces it for an approval affordance');
     }
@@ -142,7 +142,7 @@ const mk = (extra) => makeShellHooks(Object.assign({ spawn, fsp, pathMod: path, 
       await writeHooks([{ event: 'on_whatever', command: script(''), name: 'ghost' }]);
       const r = await mk({ onError: () => {} }).install(makeHooks(), { accept: true });
       A.eq(r.installed.length, 0, 'a hook on a non-existent event is not installed');
-      A.ok(r.errors.some(e => /on_whatever|cannot register/.test(e)), 'and the Commander is told why');
+      A.ok(r.errors.some(e => /on_whatever|cannot register/.test(e)), 'and the Farmer is told why');
     }
 
     // ---- 9b. REVOKE — the other half of the gate ----
@@ -193,7 +193,7 @@ const mk = (extra) => makeShellHooks(Object.assign({ spawn, fsp, pathMod: path, 
       const sh = makeShellHooks({ spawn, fsp, pathMod: path, hooksFile: path.join(DIR, 'nope.json'), allowFile: ALLOW, cwd: DIR });
       const { hooks, errors } = await sh.load();
       A.eq(hooks.length, 0, 'no hooks file -> no hooks');
-      A.eq(errors.length, 0, 'and no complaints — most stations will never write one');
+      A.eq(errors.length, 0, 'and no complaints — most farms will never write one');
     }
   } finally { await fsp.rm(DIR, { recursive: true, force: true }); }
 

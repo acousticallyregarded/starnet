@@ -36,7 +36,7 @@ try {
   A.eq(green.status, 0, 'three exact same-model attempts produce a green receipt' + (green.stderr ? `: ${green.stderr.trim()}` : ''));
   const receipt = JSON.parse(readFileSync(receiptFile, 'utf8'));
   A.ok(receipt.result.pass && receipt.candidateBound && receipt.referenceBound, 'receipt is green and binds both executable identities');
-  A.eq(receipt.result.measurements.starnet.firstOutputMs.median, 202, 'receipt reports the StarNet median');
+  A.eq(receipt.result.measurements.starnet.firstOutputMs.median, 202, 'receipt reports the Homestead median');
   A.eq(receipt.result.measurements.reference.totalMs.median, 602, 'receipt reports the reference median');
   A.eq(receipt.evidence.probes.length, 3, 'receipt hashes every raw probe');
   const verify = spawnSync(process.execPath, ['scripts/eval/runner.mjs', 'verify-receipt', '--receipt', receiptFile], { cwd: root, encoding: 'utf8' });

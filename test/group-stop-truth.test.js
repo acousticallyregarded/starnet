@@ -55,7 +55,7 @@ const byClass = (root, c) => all(root).filter(e => e._cls && e._cls.has(c));
     execute: async o => { o.emit('agent.run.start', { runId: o.runId }); return execute(o); },
     readFile: async () => ({ name: 'x.md', content: 'aGk=', bytes: 2, hash: 'h' }), decodeFile: f => ({ text: 'hi', hash: f.hash }), uploadFile: (name, content) => ({ name, content, hash: 'h' }) };
   const api = makeGroupSessions(deps); await api.ready;
-  const said = ['I\'ll set up the line first. Let me look at what the station has.', 'The steps are locked; the system won\'t let me reconfigure them. Let me take a different approach and create a loop instead.', 'Good. Now I can create the loop:'];
+  const said = ['I\'ll set up the line first. Let me look at what the farm has.', 'The steps are locked; the system won\'t let me reconfigure them. Let me take a different approach and create a loop instead.', 'Good. Now I can create the loop:'];
   // the lead narrates across three model turns, then asks to create a loop and waits; the Commander stops it there
   execute = async o => {
     for (const s of said) o.emit('agent.token', { runId: o.runId, delta: s });

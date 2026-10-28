@@ -24,7 +24,7 @@ function planWith(objects) {
   const r = makeRouter();
   A.ok(r.setPlan(planWith(['computer', 'cabinet'])).ok, 'a deployable plan with bay caps is stored');
   const st = r.stationFor('coder');
-  A.ok(st && st.rooms.bay.objects.length === 2, 'stationFor builds the bay station from the plan objects');
+  A.ok(st && st.rooms.bay.objects.length === 2, 'stationFor builds the bay farm from the plan objects');
   A.eq(st.agents.coder.room, 'bay', 'the agent is assigned to its bay room');
   const res = resolveTools('coder', st);
   A.ok(res.hasCompute, 'a computer in the bay room grants compute');
@@ -47,7 +47,7 @@ function planWith(objects) {
   A.eq(r.resolveTarget({ tag: 'anything' }), null, '...and dispatch falls back (no routed target)');
 
   const st = r.stationFor('coder');
-  A.ok(st, 'but the bay still projects a station — capability does not ride on belt validity');
+  A.ok(st, 'but the bay still projects a farm — capability does not ride on belt validity');
   A.eq(st.rooms.bay.objects.length, 0, 'the unequipped bay stays unequipped');
   A.ok(!resolveTools('coder', st).hasCompute, 'a broken floor can never UPGRADE an agent to the default office');
 
@@ -94,15 +94,15 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
   stDoc.props.push({ id: 'conn1', t: 'connector_portal', x: 12, y: 1, w: 1, h: 1, connectorId: 'github' });
   stDoc._nid = 4;
   const r = makeRouter();
-  A.ok(r.setStation(stDoc).ok, 'a valid Station document is accepted by the sidecar router');
+  A.ok(r.setStation(stDoc).ok, 'a valid Farm document is accepted by the sidecar router');
   A.ok(r.setPlan(planWith(['computer', 'cabinet', 'workbench'])).ok, 'legacy routing plan with forged grants is still deployable');
   const resolved = resolveTools('coder', r.stationFor('coder'));
-  A.ok(resolved.hasCompute, 'sidecar-derived station grants the real dedicated workstation');
-  A.ok(resolved.tools.indexOf('web_search') >= 0, 'sidecar-derived station grants the real room dish');
+  A.ok(resolved.hasCompute, 'sidecar-derived farm grants the real dedicated workstation');
+  A.ok(resolved.tools.indexOf('web_search') >= 0, 'sidecar-derived farm grants the real room dish');
   A.eq(resolved.tools.filter(t => t.indexOf('fs.') === 0).length, 0, 'forged plan cabinet grants no fs tools');
   A.eq(resolved.tools.indexOf('shell.exec'), -1, 'forged plan workbench grants no shell tool');
   const conn = r.stationFor('coder').rooms.bay.objects.find(o => o.objectType === 'connector');
-  A.ok(conn && conn.connectorId === 'github', 'sidecar-derived station preserves bound connector portal identity');
+  A.ok(conn && conn.connectorId === 'github', 'sidecar-derived farm preserves bound connector portal identity');
 }
 
 // setStation is transactional: an invalid Station update is refused and leaves the last-good station active.
@@ -111,10 +111,10 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
   stDoc.props.push({ id: 'bay1', t: 'bay', x: 4, y: 1, w: 2, h: 2, agentId: 'coder' });
   stDoc.props.push({ id: 'pc1', t: 'console', x: 7, y: 1, w: 2, h: 1, agentId: 'coder' });
   const r = makeRouter();
-  A.ok(r.setStation(stDoc).ok, 'valid Station document installs as last-good');
-  A.ok(!r.setStation({ schema: 'starnet.station', version: 1, rooms: {}, order: [], props: [] }).ok, 'invalid empty Station document is refused');
+  A.ok(r.setStation(stDoc).ok, 'valid Farm document installs as last-good');
+  A.ok(!r.setStation({ schema: 'starnet.station', version: 1, rooms: {}, order: [], props: [] }).ok, 'invalid empty Farm document is refused');
   r.setPlan(planWith(['cabinet']));
-  A.ok(resolveTools('coder', r.stationFor('coder')).hasCompute, 'last-good station stays active after invalid update');
+  A.ok(resolveTools('coder', r.stationFor('coder')).hasCompute, 'last-good farm stays active after invalid update');
 }
 
 // sidecar station authority also owns routing: once a Station document is installed, resolveTarget follows the
@@ -130,9 +130,9 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
     props: [{ id: 'i', t: 'intake', x: 0, y: 0, w: 1, h: 1 }, { id: 'b', t: 'bay', x: 4, y: 0, w: 2, h: 2, agentId: 'fake' }]
   });
   const r = makeRouter();
-  A.ok(r.setStation(stDoc).ok, 'authoritative Station with deployable routing is accepted');
+  A.ok(r.setStation(stDoc).ok, 'authoritative Farm with deployable routing is accepted');
   A.ok(r.setPlan(forged).ok, 'forged legacy RoutingPlan is still syntactically deployable');
-  A.eq(r.resolveTarget({}), 'real', 'server-derived Station routing overrides the forged legacy RoutingPlan');
+  A.eq(r.resolveTarget({}), 'real', 'server-derived Farm routing overrides the forged legacy RoutingPlan');
 }
 
 // non-deployable Station routing updates are transactional: the last-good Station-derived routing plan stays active.
@@ -153,9 +153,9 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
   A.ok(Pipeline.compileRoutingPlan(WM.deserialize(bad).projectGeometry()).errors.some(e => e.code === 'CYCLE'),
     'the bad fixture is non-deployable for a REAL reason (CYCLE)');
   const r = makeRouter();
-  A.ok(r.setStation(good).ok, 'good Station routing installs first');
-  A.ok(!r.setStation(bad).ok, 'non-deployable Station routing update is refused');
-  A.eq(r.resolveTarget({}), 'real', 'last-good Station routing survives the refused update');
+  A.ok(r.setStation(good).ok, 'good Farm routing installs first');
+  A.ok(!r.setStation(bad).ok, 'non-deployable Farm routing update is refused');
+  A.eq(r.resolveTarget({}), 'real', 'last-good Farm routing survives the refused update');
 
   /* refusal must NOT depend on install order (latent bug, fixed 2026-08-04): the old guard was
      `!v.routingOk && stationPlan`, so the SAME cyclic doc refused above was ACCEPTED when it was the
@@ -163,9 +163,9 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
      refuse it identically. */
   const first = makeRouter();
   const res = first.setStation(bad);
-  A.ok(!res.ok, 'a non-deployable Station is refused on FIRST install too (no prior station required)');
+  A.ok(!res.ok, 'a non-deployable Farm is refused on FIRST install too (no prior farm required)');
   A.ok(Array.isArray(res.codes) && res.codes.indexOf('CYCLE') >= 0, 'the first-install refusal names the real blocker (CYCLE)');
-  A.eq(first.getStation(), null, 'the refused first install stores no station document');
+  A.eq(first.getStation(), null, 'the refused first install stores no farm document');
   A.eq(first.resolveTarget({}), null, '...and arms no routing (dispatch falls back)');
 }
 
@@ -238,7 +238,7 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
     { id: 'bB', t: 'bay', x: 24, y: 1, w: 2, h: 2, agentId: 'writer' }, { id: 'cabB', t: 'war_intelcab', x: 30, y: 1, w: 1, h: 2 });
   doc._nid = 5;
   let saved = checkedStation({ station: doc });
-  A.ok(saved, 'fixture: the two-room station validates');
+  A.ok(saved, 'fixture: the two-room farm validates');
   const types = st => st ? st.rooms.bay.objects.map(o => o.objectType).sort() : null;
   const listed = (agentId, propId, objects) => ({ agentId, propId, objects });
   const plan = (bays) => ({ errors: [], hash: 'h-' + bays.map(b => b.propId).join('-'), sources: [], belts: [], bays: [], dockBays: bays });
@@ -263,7 +263,7 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
   A.eq(types(r.stationFor('writer')), ['dish'], 'with no plan at all, a crewed agent still runs in its saved room (no wider office)');
 
   // ---- the saved floor crews the agent in no bay: the plan's room ∩ the default office, never null ----
-  A.ok(r.setPlan(plan([listed('coder', 'ghost', WIDE)])).ok, 'a plan naming a bay no saved station holds is stored');
+  A.ok(r.setPlan(plan([listed('coder', 'ghost', WIDE)])).ok, 'a plan naming a bay no saved farm holds is stored');
   A.eq(types(r.stationFor('coder')), ['cabinet', 'computer', 'connector', 'dish'], 'an agent the saved floor does not crew: the plan\'s room within the default office (no workbench, plugin, orchestrator, builder)');
   r.setPlan(plan([listed('coder', 'ghost', [])]));
   A.eq(types(r.stationFor('coder')), [], 'an unequipped plan bay for an agent the saved floor does not crew grants nothing (not the full office)');
@@ -273,18 +273,18 @@ A.eq(makeRouter().stationFor('coder'), null, 'no posted plan -> stationFor null'
   // ---- no saved station, an unreadable one, an invalid one: the same bound, never null ----
   saved = null;
   r.setPlan(plan([listed('writer', 'bA', WIDE)]));
-  A.eq(types(r.stationFor('writer')), ['cabinet', 'computer', 'connector', 'dish'], 'no saved station: the plan\'s room within the default office');
-  A.ok((types(r.stationFor('writer')) || [null]).every(t => t === 'connector' || FULL.indexOf(t) >= 0), 'no saved station: nothing outside the default office');
+  A.eq(types(r.stationFor('writer')), ['cabinet', 'computer', 'connector', 'dish'], 'no saved farm: the plan\'s room within the default office');
+  A.ok((types(r.stationFor('writer')) || [null]).every(t => t === 'connector' || FULL.indexOf(t) >= 0), 'no saved farm: nothing outside the default office');
   r.setPlan(plan([listed('writer', 'bA', [])]));
-  A.eq(types(r.stationFor('writer')), [], 'no saved station: an unequipped bay still grants no compute (the floor\'s NO COMPUTE holds)');
+  A.eq(types(r.stationFor('writer')), [], 'no saved farm: an unequipped bay still grants no compute (the floor\'s NO COMPUTE holds)');
   const thrower = makeRouter({ savedStation: () => { throw new Error('unreadable'); } });
   thrower.setPlan(plan([listed('writer', 'bA', ['computer', 'workbench'])]));
-  A.eq(types(thrower.stationFor('writer')), ['computer'], 'an unreadable saved station: the plan\'s room within the default office');
+  A.eq(types(thrower.stationFor('writer')), ['computer'], 'an unreadable saved farm: the plan\'s room within the default office');
   thrower.setPlan(plan([listed('writer', 'bA', [])]));
-  A.eq(types(thrower.stationFor('writer')), [], 'an unreadable saved station: an unequipped bay grants nothing');
+  A.eq(types(thrower.stationFor('writer')), [], 'an unreadable saved farm: an unequipped bay grants nothing');
   const junk = makeRouter({ savedStation: () => ({ props: 'not a function' }) });
   junk.setPlan(plan([listed('writer', 'bA', [])]));
-  A.eq(types(junk.stationFor('writer')), [], 'a saved station that is not a station model: an unequipped bay grants nothing');
+  A.eq(types(junk.stationFor('writer')), [], 'a saved farm that is not a farm model: an unequipped bay grants nothing');
   A.eq(junk.stationFor('nobody'), null, 'an agent no plan and no saved floor crews is not bay-bound');
 }
 

@@ -69,7 +69,7 @@ try {
     cdp.on('Fetch.requestPaused',p=>{cdp.send('Fetch.fulfillRequest',{requestId:p.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/javascript'}],body:Buffer.from(source).toString('base64')}).catch(()=>{});});
   }
   await cdp.send('Page.navigate', { url: appUrl });
-  check('seeded station reaches the live floor', await waitDevReady(cdp, evalJS, { url: appUrl }));
+  check('seeded farm reaches the live floor', await waitDevReady(cdp, evalJS, { url: appUrl }));
 
 
   cdp.timeoutMs=90000;
@@ -91,7 +91,7 @@ try {
     recovered=await evalJS(cdp,'World._dbgCanvasLoss()');
     if(recovered.recoveries>floor.recoveries&&recovered.blank===false&&recovered.probeOff===false&&recovered.probe!=null)break;
   }
-  check('station floor recovers after cache loss',recovered.recoveries>floor.recoveries&&recovered.blank===false&&recovered.probeOff===false&&recovered.probe!=null,JSON.stringify(recovered));
+  check('farm floor recovers after cache loss',recovered.recoveries>floor.recoveries&&recovered.blank===false&&recovered.probeOff===false&&recovered.probe!=null,JSON.stringify(recovered));
   check('graphics recovery has no uncaught errors',diagnostics.exceptions.length===0,JSON.stringify(diagnostics.exceptions));
 
 } catch (error) {

@@ -26,13 +26,13 @@ const api = new Function('Harness', 'Date', consts + '\nconst _creditsReads = ne
   const settle = p => p.then(v => ({ ok: v }), e => ({ err: String(e && e.message) }));
   // a SETTINGS open = both reads fire, then repaints re-ask
   const a = await Promise.all([settle(api.creditsRead('/api/credits?history=0')), settle(api.creditsRead('/api/credits'))]);
-  A.ok(/404/.test(a[0].err) && /404/.test(a[1].err), 'a station with no cloud account answers 404 (the answer is passed through untouched)');
+  A.ok(/404/.test(a[0].err) && /404/.test(a[1].err), 'a farm with no cloud account answers 404 (the answer is passed through untouched)');
   A.eq(calls.length, 2, 'the first open reads each once');
   for (let i = 0; i < 6; i++) { await settle(api.creditsRead('/api/credits?history=0')); await settle(api.creditsRead('/api/credits')); now += 200; }
   A.eq(calls.length, 2, 'six more repaints in ~1.5 s cost zero requests');
   now += 5 * 60000;
   await settle(api.creditsRead('/api/credits'));
-  A.eq(calls.length, 2, '"no account linked" holds for minutes — it changes only when the Commander links');
+  A.eq(calls.length, 2, '"no account linked" holds for minutes — it changes only when the Farmer links');
   api.forgetCreditsReads();
   await settle(api.creditsRead('/api/credits'));
   A.eq(calls.length, 3, 'LINK / UNLINK / RETRY / REFRESH forget it and read afresh');
@@ -74,6 +74,6 @@ const api = new Function('Harness', 'Date', consts + '\nconst _creditsReads = ne
   const prov = A.fnBody(ui, 'function refreshCreditsProvider()'), store = A.fnBody(ui, 'function wireCredits(body)');
   A.ok(/creditsRead\('\/api\/credits\?history=0'/.test(prov) && /creditsRead\('\/api\/credits\/linkable'/.test(prov), 'the provider card reads through the shared read');
   A.ok(/creditsRead\('\/api\/credits'/.test(store) && /creditsRead\('\/api\/credits\/linkable'/.test(store), 'the STORE reads through the shared read');
-  A.ok(!/Harness\.api\.get\('\/api\/credits/.test(prov + store), 'neither re-asks the station directly on every repaint');
+  A.ok(!/Harness\.api\.get\('\/api\/credits/.test(prov + store), 'neither re-asks the farm directly on every repaint');
   A.report('credits-read-once');
 })().catch(e => { console.error(e); process.exit(1); });

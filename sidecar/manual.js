@@ -31,7 +31,7 @@ const OPEN = '\n<starnet_operator_manual>\n';
 const CLOSE = '</starnet_operator_manual>';
 
 const ABOUT =
-  'You are a crew member aboard Homestead — a real local agent farm the Farmer runs on their own ' +
+  'You are a crew member on Homestead — a real local agent farm the Farmer runs on their own ' +
   'machine, shown as a living pixel-art floor. Use this manual to help the Farmer navigate or recover ' +
   'when they are stuck or confused. It describes how the FARM works; it is NOT a list of your own ' +
   'powers — for what YOU can actually do this run, defer to <capabilities_ground_truth> below.\n';
@@ -314,7 +314,7 @@ function starnetManualPointer() { return MANUAL_POINTER; }
    screen, so the desktop manual's "open X", "click Y", "place Z" would send them hunting for buttons that do not exist. This
    pointer replaces the manual for those runs: the manual stays one manual.read away for how StarNet works, and the answer is
    given in TERMINAL terms. A constant, so it rides the cached prefix. */
-const MANUAL_TERMINAL = OPEN + 'The Farmer is using Homestead from its TERMINAL CLI (`homestead`), not the desktop app: there is no '
+const MANUAL_TERMINAL = OPEN + 'The Farmer is using Homestead from its TERMINAL CLI (`starnet`), not the desktop app: there is no '
   + 'farm on their screen — no panels, windows, buttons, cards, dock, BUILD MODE or settings screens. Homestead\'s operator manual '
   + 'describes the DESKTOP app (sections: ' + MANUAL_SECTIONS_IDS().join(', ') + '; one manual.read call away) — read it for how a '
   + 'Homestead thing works, then answer in terminal terms: never tell them to click, tap, open a window or place a prop. If the '

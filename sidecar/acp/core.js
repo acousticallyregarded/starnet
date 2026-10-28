@@ -341,7 +341,7 @@
       // account-level and configured in the station, so we do not silently adopt them — and we say so once
       // rather than letting the user wonder why their editor's MCP tools are absent.
       if (Array.isArray(p.mcpServers) && p.mcpServers.length) {
-        log('ignoring ' + p.mcpServers.length + ' client-supplied MCP server(s): Homestead connectors are configured in the farm');
+        log('ignoring ' + p.mcpServers.length + ' client-supplied MCP server(s): Homestead connectors are configured on the farm');
       }
       return { sessionId: sessionId };
     }

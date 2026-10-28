@@ -5,7 +5,7 @@
   if(['127.0.0.1','localhost'].includes(location.hostname)&&new URLSearchParams(location.search).get('worldPerf')==='1'){
     const panel=document.createElement('div');panel.id='world-perf';panel.style.cssText='position:fixed;right:12px;top:80px;z-index:99999;padding:8px;background:#101b20;color:#c6d8dc;border:1px solid #647a80;max-width:600px;font:12px VT323,monospace';
     const button=document.createElement('button');button.className='bb';button.textContent='Measure frame performance';
-    const overview=document.createElement('button');overview.className='bb';overview.textContent='Frame full station';overview.onclick=()=>{World.setCinecamIdle(86400000);World.frameReviewRoom('');};
+    const overview=document.createElement('button');overview.className='bb';overview.textContent='Frame full farm';overview.onclick=()=>{World.setCinecamIdle(86400000);World.frameReviewRoom('');};
     const recover=document.createElement('button');recover.className='bb';recover.textContent='Verify recovery';recover.onclick=async()=>{
       recover.disabled=true;const results=[];World.setCinecamIdle(86400000);
       try{for(let i=0;i<3;i++){
@@ -28,7 +28,7 @@
   for(const file of ['prop-catalog-data.js','prop-catalog-fixture.js'])await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='app/'+file;s.onload=resolve;s.onerror=reject;document.head.append(s);});
   const panel=document.createElement('aside');panel.id='runtime-audit';
   const css=document.createElement('style');css.textContent='#kepler-review,#skin-study-preview{display:none!important}#runtime-audit{position:fixed;z-index:99999;left:8px;top:50px;max-width:calc(100vw - 36px);background:#091214ed;color:#d7c89d;border:1px solid #746546;padding:8px;font:12px VT323,monospace}#runtime-audit button,#runtime-audit select{background:#172124;color:#d7c89d;border:1px solid #61716b;padding:4px;margin:2px;font:12px VT323,monospace}#runtime-audit output{display:block;white-space:pre-wrap;max-width:700px}#runtime-audit pre{max-height:200px;overflow:auto;font-size:10px}';document.head.append(css);
-  panel.innerHTML='<b>LOCAL RUNTIME AUDIT · disposable station</b><nav></nav><output id="runtime-summary">Waiting for World…</output><details><summary>Measured results</summary><pre id="runtime-results"></pre></details>';
+  panel.innerHTML='<b>LOCAL RUNTIME AUDIT · disposable farm</b><nav></nav><output id="runtime-summary">Waiting for World…</output><details><summary>Measured results</summary><pre id="runtime-results"></pre></details>';
   document.body.append(panel);const nav=panel.querySelector('nav'),out=panel.querySelector('output'),raw=panel.querySelector('pre');
   const pageSelect=document.createElement('select');pageSelect.setAttribute('aria-label','Catalog room');nav.append(pageSelect);
   const subject=document.createElement('select');subject.setAttribute('aria-label','Audit subject');nav.append(subject);

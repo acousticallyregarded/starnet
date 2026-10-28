@@ -127,7 +127,7 @@ try {
   await evalJS(cdp, 'IndustrialTextures.ready.then(() => 1)');
   const r = await evalJS(cdp, '(' + probe.toString() + ')()');
   assert.ok(r.textures.loaded, 'the industrial textures loaded, so every bake paints a dense plate');
-  assert.ok(r.chunks >= 4, 'the station bakes as several chunks (got ' + r.chunks + ')');
+  assert.ok(r.chunks >= 4, 'the farm bakes as several chunks (got ' + r.chunks + ')');
   const share = k => r.tally[k][1] / Math.max(1, r.tally[k][0]);
   console.log(`  ${r.rooms} rooms, ${r.W}x${r.H}, ${r.chunks} chunks: fillRect ${r.tally.fillRect[1]} of ${r.tally.fillRect[0]} off the canvas, drawImage ${r.tally.drawImage[1]} of ${r.tally.drawImage[0]}`);
   assert.ok(share('fillRect') < 0.08, 'a chunk bake makes few fillRects off its canvas (' + (share('fillRect') * 100).toFixed(1) + '%)');

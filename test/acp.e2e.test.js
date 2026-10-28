@@ -195,7 +195,7 @@ function makeAcpClient(port, onPermission) {
 
 (async () => {
   const mock = await startMockOpenRouter([
-    { when: 'say hello', text: 'Hello from the station.' },
+    { when: 'say hello', text: 'Hello from the farm.' },
     { when: 'write the notes file', tool: { name: 'fs.write', args: { path: 'acp-notes.md', content: 'written through ACP' } } },
     { when: 'write the secret file', tool: { name: 'fs.write', args: { path: 'acp-denied.md', content: 'must never exist' } } },
     { when: 'read the notes file', tool: { name: 'fs.read', args: { path: 'acp-notes.md' } } },
@@ -250,7 +250,7 @@ function makeAcpClient(port, onPermission) {
       }, 60000);
       A.ok(r.result, 'session/prompt answered: ' + JSON.stringify(r.error || '').slice(0, 300));
       A.eq(r.result.stopReason, 'end_turn', 'a clean turn stops with end_turn');
-      A.ok(client.textFor(sessionId).indexOf('Hello from the station.') >= 0,
+      A.ok(client.textFor(sessionId).indexOf('Hello from the farm.') >= 0,
         'the model text really streamed back through ACP: ' + JSON.stringify(client.textFor(sessionId)));
       A.ok(client.updates(sessionId).length >= 1, 'the answer arrived as session/update notifications, not in the response body');
     }
@@ -265,7 +265,7 @@ function makeAcpClient(port, onPermission) {
       A.ok(r.result, 'the write turn answered: ' + JSON.stringify(r.error || '').slice(0, 300));
 
       const perm = decisions.find(d => d.method === 'session/request_permission');
-      A.ok(perm, 'the station consent gate surfaced in the editor as session/request_permission');
+      A.ok(perm, 'the farm consent gate surfaced in the editor as session/request_permission');
       A.ok(/acp-notes\.md/.test(perm.title), 'the card names the file in words: ' + perm.title);
       A.eq(perm.params.toolCall.kind, 'edit', 'a write is presented as an EDIT');
       A.eq(perm.params.options.map(o => o.optionId).join(','), 'once,session,deny', 'the three real options are offered');
@@ -340,7 +340,7 @@ function makeAcpClient(port, onPermission) {
       A.eq(r.result.stopReason, 'cancelled', 'a user cancel reports stopReason CANCELLED, not a generic end_turn');
       const said = client.textFor(sessionId);
       A.ok(!/could not complete this turn/.test(said), 'a deliberate cancel is NOT reported as a transport failure: ' + JSON.stringify(said).slice(0, 200));
-      A.ok(!/the run failed inside StarNet/.test(said), 'and does NOT tell the user to go check the station log');
+      A.ok(!/the run failed inside Homestead/.test(said), 'and does NOT tell the user to go check the farm log');
       mock.release();   // drop the parked completion so the next phase starts from a clean inflight count
     }
 
@@ -396,14 +396,14 @@ function makeAcpClient(port, onPermission) {
     const lonely = makeAcpClient(9, () => null);
     try {
       const init = await lonely.send('initialize', { protocolVersion: 1, clientInfo: { name: 'e2e' } }, 20000);
-      A.ok(init.result, 'the bridge still initializes with no station — it must load in the editor to explain itself');
+      A.ok(init.result, 'the bridge still initializes with no farm — it must load in the editor to explain itself');
       const s = await lonely.send('session/new', { cwd: process.cwd() }, 20000);
       A.ok(s.result.sessionId, 'and still opens a session');
       const r = await lonely.send('session/prompt', { sessionId: s.result.sessionId, prompt: [{ type: 'text', text: 'hello' }] }, 30000);
-      A.ok(r.result, 'a prompt against a dead station still resolves the turn');
+      A.ok(r.result, 'a prompt against a dead farm still resolves the turn');
       const said = lonely.textFor(s.result.sessionId);
       A.ok(/could not complete this turn/.test(said), 'and says plainly that it could not run: ' + JSON.stringify(said).slice(0, 300));
-      A.ok(/StarNet is not running|not reachable/.test(said), 'naming the real cause rather than inventing an answer');
+      A.ok(/Homestead is not running|not reachable/.test(said), 'naming the real cause rather than inventing an answer');
     } finally { lonely.kill(); await sleep(150); }
   }
 

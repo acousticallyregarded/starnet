@@ -32,7 +32,7 @@ const last = s => s.routes[s.routes.length - 1];
   const POWER = ['plugin.revoke', 'plugin.delete', 'hook.revoke', 'hook.delete', 'limits.set'];
   for (const n of NEW) A.ok(ACTIONS[n] && !ACTIONS[n].power({}), n + ': an ordinary station.control action');
   for (const n of POWER) A.ok(ACTIONS[n] && ACTIONS[n].power({}), n + ': an escalation (station.power only)');
-  for (const n of ['quest.confirm', 'quest.report', 'estop.resume', 'halt.resume', 'update.prepare']) A.ok(!ACTIONS[n], n + ' does NOT exist: the Commander\'s alone');
+  for (const n of ['quest.confirm', 'quest.report', 'estop.resume', 'halt.resume', 'update.prepare']) A.ok(!ACTIONS[n], n + ' does NOT exist: the Farmer\'s alone');
 
   // ---- each route action: its button's route, method and body ----
   const cases = [
@@ -125,7 +125,7 @@ const last = s => s.routes[s.routes.length - 1];
     const s = stubs((m, url) => url === '/api/halt' && m === 'GET' ? { status: 200, json: { halted: false } } : { status: 200, json: { halted: true } });
     const r = await make(s).controlTool.run({ action: 'estop.engage', args: {} });
     A.ok(!refused(r) && /"engaging":true/.test(r.content) && !/"halted":true/.test(r.content), 'the result says ENGAGING — never that it is already halted');
-    A.ok(/stops this run too/.test(r.content) && /RESUME AUTOMATION/.test(r.content), 'and that it stops this run, and how the Commander resumes');
+    A.ok(/stops this run too/.test(r.content) && /RESUME AUTOMATION/.test(r.content), 'and that it stops this run, and how the Farmer resumes');
     A.eq(s.routes.map(x => x.method + ' ' + x.url), ['GET /api/halt'], 'the halt has NOT fired while the result is being written');
     A.eq(s.timers.length, 1, 'one deferred halt'); A.ok(s.timers[0].ms >= 1000, 'deferred long enough for the result to land');
     s.timers[0].fn(); await new Promise(r2 => setImmediate(r2));

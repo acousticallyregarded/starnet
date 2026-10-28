@@ -225,7 +225,7 @@ async function readNdjson(res) {
     const prior = ((await (await fetch(B + '/api/save?agent=agent', { headers })).json()) || {}).save;
     const sv = await fetch(B + '/api/save', { method: 'POST', headers,
       body: JSON.stringify({ schema: 'starnet.save', version: 5, _saveRevision: (prior && prior._saveRevision) || 0, updatedAt: Date.now(), agent: { id: 'agent' }, station: stDoc }) });
-    A.ok(sv.status === 200 && ((await sv.json()) || {}).ok === true, 'the station the line runs on (two computer-only bays) is saved');
+    A.ok(sv.status === 200 && ((await sv.json()) || {}).ok === true, 'the farm the line runs on (two computer-only bays) is saved');
     const posted = await fetch(B + '/api/routing', { method: 'POST', headers, body: JSON.stringify(plan) });
     A.eq(posted.status, 200, 'the two-stage floor deploys');
 
@@ -246,7 +246,7 @@ async function readNdjson(res) {
        a floorless routine's system is byte-identical to the pre-brief behavior. */
     const sysOf = req => ((req.messages || []).find(m => m.role === 'system') || {}).content || '';
     const preFloor = mock.requests.slice(0, callsBefore);
-    A.ok(preFloor.length >= 1 && preFloor.every(r => sysOf(r).indexOf('YOUR STANDING BRIEF FOR THIS STATION') < 0),
+    A.ok(preFloor.length >= 1 && preFloor.every(r => sysOf(r).indexOf('YOUR STANDING BRIEF FOR THIS FARM') < 0),
       'before a floor is posted, a Run Now carries NO brief header (pre-brief behavior intact)');
     const stage1 = mock.requests.slice(callsBefore).find(r =>
       (r.messages || []).some(m => m.role === 'user' && String(m.content || '').indexOf('gather relevant AI news') >= 0));
@@ -259,7 +259,7 @@ async function readNdjson(res) {
     A.ok(preFloor.some(r => toolNamesOf(r).indexOf('web_fetch') >= 0), 'before a floor is posted, Run Now runs in the default office (web_fetch offered)');
     A.ok(stage1 && toolNamesOf(stage1).indexOf('web_fetch') < 0 && toolNamesOf(stage1).indexOf('web_request') < 0,
       "a bay-bound Run Now runs in its computer-only bay room like the scheduled fire: no dish, no web tools");
-    A.ok(sysOf(stage1).indexOf('YOUR STANDING BRIEF FOR THIS STATION:\nDig three primary sources and cite them.') >= 0,
+    A.ok(sysOf(stage1).indexOf('YOUR STANDING BRIEF FOR THIS FARM:\nDig three primary sources and cite them.') >= 0,
       "stage one's system carries the dock's standing brief under the hub's exact section header");
     /* A HOP IS NOT A RESUME (token-burn audit 2026-10-17). The downstream stage arrives as ONE handoff turn on the fire's
        shared cron-<runId> stream; runOnceCore's resume seed used to prepend that stream's transcript — stage one's directive,

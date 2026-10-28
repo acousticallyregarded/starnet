@@ -157,7 +157,7 @@ function ctxFor(runId) {
       const r = await t.listTool.run({ goal: 'send my newsletter to subscribers', scope: 'available' }, ctx);
       A.ok(!ctx.emitted.some(e => e.name === 'connector_required' && e.payload.connectorId === 'gmail'), 'no CONNECT chip for a disabled sign-in');
       A.ok(/CANNOT BE CONNECTED IN THIS BUILD/.test(r.content) && /- gmail — Google sign-in is not available in this build\./.test(r.content), 'the model is told gmail cannot be connected, with the reason');
-      A.ok(/never tell them to sign in/.test(r.content), 'the model is told not to send the Commander to sign in');
+      A.ok(/never tell them to sign in/.test(r.content), 'the model is told not to send the Farmer to sign in');
       // blocked cards must not take the 3 slots from connectable ones (review nit 2026-09-28)
       const allBlocked = makeConnectorTools({ connectors: { list: () => [] }, connectorCatalog: catalog,
         signInUnavailable: e => (e && e.id !== 'composio' ? 'off in this build' : '') });

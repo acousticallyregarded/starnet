@@ -82,12 +82,12 @@ async function settle(state) { let last = -1, since = Date.now(); const until = 
   try {
     const reviews = () => mock.state.calls.filter(c => c.failReview).length;
     // a run the per-run cap stops: no review after it
-    const ev = await driveRun(fixture, 'cap-agent', 'CAPRUN inspect the station over and over');
+    const ev = await driveRun(fixture, 'cap-agent', 'CAPRUN inspect the farm over and over');
     A.eq(endReason(ev), 'budget', 'the run was stopped by its spending cap');
     await settle(mock.state);
     A.eq(reviews(), 0, 'no failure review was called after a run its cap stopped (it would spend past the cap)');
     // a run that fails another way still gets its review: the gate is the cap, not the failure
-    const ev2 = await driveRun(fixture, 'err-agent', 'FAILRUN inspect the station then push the update');
+    const ev2 = await driveRun(fixture, 'err-agent', 'FAILRUN inspect the farm then push the update');
     A.eq(endReason(ev2), 'error', 'fixture: a run ending error');
     await settle(mock.state);
     A.eq(reviews(), 1, 'a run that failed for another reason still gets its one review');

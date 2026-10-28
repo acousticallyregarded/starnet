@@ -74,13 +74,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       request: () => { calls++; return calls === 1 ? sleep(200).then(() => ({ ok: true, status: 200, json: { agents: [{ agentId: 'agent', name: 'ULTRON' }] } })) : never(); } } };
     const exited = runDashboard(late, { stdout: t.out, stdin: t.inp, env: { STARNET_LOGO: 'plain', NO_COLOR: '1' } });
     await sleep(50);
-    A.eq(calls, 1, 'late roster: the dashboard is waiting on its first read of the station');
+    A.eq(calls, 1, 'late roster: the dashboard is waiting on its first read of the farm');
     process.emit('SIGTERM', 'SIGTERM');
     stoppedAt = calls;
     await Promise.race([exited, sleep(2000)]);
     const at = t.text().length;
     await sleep(400);   // past the roster's answer
-    A.eq(calls - stoppedAt, 0, 'late roster: nothing more is asked of the station after the stop');
+    A.eq(calls - stoppedAt, 0, 'late roster: nothing more is asked of the farm after the stop');
     A.eq(t.text().slice(at), '', 'late roster: nothing more is drawn after the stop');
   }
   A.report('cli-dashboard-signal.test');

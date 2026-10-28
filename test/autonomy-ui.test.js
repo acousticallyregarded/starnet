@@ -27,7 +27,7 @@ A.eq((rungs.find(r => r.id === 'leash') || {}).label, 'SMALL JOBS', 'the leash r
 A.ok(/data-reach="sandbox"[^>]*>LOCAL ONLY<\/button>/.test(src), 'REACH sandbox reads LOCAL ONLY on the button');
 A.ok(!/>BUILD<\/button>/.test(src) && !/>SANDBOX<\/button>/.test(src), 'no dial button still reads BUILD or SANDBOX');
 A.ok(/initiativeLabel,/.test(src), 'StationUI exports initiativeLabel for trust offers and notices');
-A.ok(!/data-reach="(observe|sandbox|reach)" title=/.test(src) && /data-reach="sandbox" data-tip="/.test(src), 'the REACH rungs carry station data-tips, never a native title');
+A.ok(!/data-reach="(observe|sandbox|reach)" title=/.test(src) && /data-reach="sandbox" data-tip="/.test(src), 'the REACH rungs carry farm data-tips, never a native title');
 // every OTHER surface that names a rung reads the same table — AUTOMATE's ON ITS OWN rail header and the desktop
 // lifecycle note kept a private copy that still said BUILD (org pass fix).
 const autoSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/windows/automation.js'), 'utf8');

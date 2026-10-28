@@ -300,7 +300,7 @@ async function run() {
     const mk = (patterns) => mkAdapter({ botUsername: 'starnetbot', mentionPatterns: patterns });
 
     let a = mk(['StarNet']);
-    a.ad._internals.dispatch(groupMsg({ text: 'StarNet, check the logs' }));
+    a.ad._internals.dispatch(groupMsg({ text: 'Homestead, check the logs' }));
     A.eq(a.got.length, 1, 'being called by name wakes the bot');
     a = mk(['StarNet']);
     a.ad._internals.dispatch(groupMsg({ text: 'hey starnet can you look at this' }));
@@ -329,7 +329,7 @@ async function run() {
     a.ad._internals.dispatch(groupMsg({ text: '@starnetbot still works' , mentions: ['starnetbot'] }));
     A.eq(a.got.length, 1, 'and an @mention still works alongside it');
 
-    const { wakeWords } = mkAdapter({ mentionPatterns: ['  StarNet  ', 'starnet', '', 'x', null, 'Ana'] }).ad._internals;
+    const { wakeWords } = mkAdapter({ mentionPatterns: ['  Homestead  ', 'starnet', '', 'x', null, 'Ana'] }).ad._internals;
     A.eq(wakeWords(), ['starnet', 'ana'], 'the list is trimmed, lowercased, de-duplicated, and stripped of anything too short');
   }
 

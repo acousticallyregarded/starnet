@@ -244,9 +244,9 @@ function world(opts) {
     await w.settle();
     const a = w.on('A'), b = w.on('B'), c = w.on('C');
     A.ok(a.length === 2 && b.length === 2 && c.length === 2, 'the job ran A (2 steps) → B (2 steps) → C (2 steps): ' + JSON.stringify(w.runs.map(r => r.line)));
-    A.ok(w.shipped.length >= 2 && w.shipped[0].entryTrusted === true && w.shipped[0].hostPowerKept === true, 'A\'s shipment carries the Commander job\'s verdicts');
+    A.ok(w.shipped.length >= 2 && w.shipped[0].entryTrusted === true && w.shipped[0].hostPowerKept === true, 'A\'s shipment carries the Farmer job\'s verdicts');
     const inLineHop = pick(a[1]);
-    A.eq(inLineHop, { untrusted: false, withheld: false, fullAccess: true, shellAllowed: true }, 'an IN-LINE hop of the Commander\'s job keeps Full Access (the baseline)');
+    A.eq(inLineHop, { untrusted: false, withheld: false, fullAccess: true, shellAllowed: true }, 'an IN-LINE hop of the Farmer\'s job keeps Full Access (the baseline)');
     A.eq(pick(b[0]), inLineHop, 'B\'s entry run gets the SAME verdict as an in-line hop: Full Access kept, the tainted shell step allowed');
     A.eq(b[0].initialTaint, 'upstream line output', '…while still starting tainted by the upstream line\'s output');
     A.eq(pick(b[1]), inLineHop, '…and so does B\'s own hop');

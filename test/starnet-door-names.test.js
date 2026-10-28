@@ -58,8 +58,8 @@ A.ok(!/label: 'PROVIDERS'/.test(station), 'no SETTINGS section is labelled PROVI
     A.ok(!/SETTINGS \\u2192 PROVIDERS|SETTINGS → PROVIDERS/.test(read('sidecar/userprops.js')), 'userprops.js names no SETTINGS → PROVIDERS door anywhere');
     // the starnet credential error (index.js providerCredentialError) points at the real page
     const idx = read('sidecar/index.js');
-    A.ok(/if \(id === 'starnet'\) return 'link this station to a StarNet account \(SETTINGS -> AI & MODELS -> STARNET MANAGED\) to run on credits';/.test(idx),
-      'a StarNet credential error names SETTINGS -> AI & MODELS -> STARNET MANAGED');
+    A.ok(/if \(id === 'starnet'\) return 'link this farm to a StarNet account \(SETTINGS -> AI & MODELS -> STARNET MANAGED\) to run on credits';/.test(idx),
+      'a Homestead credential error names SETTINGS -> AI & MODELS -> STARNET MANAGED');
     A.ok(!/SETTINGS -> PROVIDERS -> STARNET MANAGED/.test(idx), 'the old PROVIDERS door is gone from index.js');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
   A.report('starnet-door-names');

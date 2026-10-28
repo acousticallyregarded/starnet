@@ -44,7 +44,7 @@ function loadSfx(now) {
   now.t += 200; SFX.close();
   A.eq(played.slice(-1), ['open@0.85'], 'close is the same sample pitched down (direction reads)');
   now.t += 200; SFX.click();
-  A.ok(played.length === 4 && /^click@/.test(played[3]), 'click() is still the Click_02 tick for the rest of the station');
+  A.ok(played.length === 4 && /^click@/.test(played[3]), 'click() is still the Click_02 tick for the rest of the farm');
 }
 
 // ---- B. the delegated layer: press inside #chat-panel, click outside, yield to an explicit cue ----

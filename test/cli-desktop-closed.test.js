@@ -62,9 +62,9 @@ const tail = s => s.trim().split('\n').slice(-3).join(' | ');
     const before = fs.readdirSync(ws).sort().join(',');
 
     const r = await cli(['-p', 'say hello', '--timeout', '5'], env, 60000);
-    A.eq(r.code, 3, 'no app to start: exit 3 (no station), the terminal does not boot the app\'s station keyless (stderr: ' + tail(r.err) + ')');
+    A.eq(r.code, 3, 'no app to start: exit 3 (no farm), the terminal does not boot the app\'s farm keyless (stderr: ' + tail(r.err) + ')');
     A.ok(/app was not found/.test(r.err) && /STARNET_APP_EXE/.test(r.err) && /--workspace <dir>/.test(r.err), 'it says the app was not found, and the two ways on');
-    A.ok(!/booting a station/.test(r.err) && !/starting it in the background/.test(r.err), 'no station was booted, and nothing claimed to start');
+    A.ok(!/booting a farm/.test(r.err) && !/starting it in the background/.test(r.err), 'no farm was booted, and nothing claimed to start');
     A.eq(r.out, '', 'nothing on stdout');
     A.eq(fs.readdirSync(ws).sort().join(','), before, 'nothing was written into the app\'s workspace');
     A.eq(fs.readFileSync(path.join(ws, 'agent.save.json'), 'utf8'), save, 'the save is untouched');
@@ -76,15 +76,15 @@ const tail = s => s.trim().split('\n').slice(-3).join(' | ');
 
     // --spawn alone boots the DEFAULT workspace — which is this same station — so it is refused, naming both ways
     const f = await cli(['--spawn', '-p', 'say hello', '--timeout', '5'], env, 60000);
-    A.eq(f.code, 3, '--spawn: exit 3, the app\'s station is not booted keyless (stderr: ' + tail(f.err) + ')');
-    A.ok(/plain `starnet`/.test(f.err) && /--workspace <dir>/.test(f.err) && !/open the StarNet app/i.test(f.err), '--spawn: it says plain starnet starts it with its keys, or name a separate --workspace');
-    A.ok(!/booting a station/.test(f.err), '--spawn: no station was booted');
+    A.eq(f.code, 3, '--spawn: exit 3, the app\'s farm is not booted keyless (stderr: ' + tail(f.err) + ')');
+    A.ok(/plain `starnet`/.test(f.err) && /--workspace <dir>/.test(f.err) && !/open the Homestead app/i.test(f.err), '--spawn: it says plain starnet starts it with its keys, or name a separate --workspace');
+    A.ok(!/booting a farm/.test(f.err), '--spawn: no farm was booted');
     A.eq(fs.readdirSync(ws).sort().join(','), before, '--spawn: nothing was written into the app\'s workspace');
 
     const d = await cli(['status'], env, 30000);
-    A.eq(d.code, 3, 'status: exit 3, no station reachable');
-    A.ok(/StarNet isn't running/.test(d.err) && /run `starnet` to start it/.test(d.err), 'status says StarNet isn\'t running and that `starnet` starts it (' + d.err.trim() + ')');
-    A.ok(!/open the StarNet app/i.test(d.err) && !/to boot one/.test(d.err), 'status never says to open the app, nor to boot the station from the terminal');
+    A.eq(d.code, 3, 'status: exit 3, no farm reachable');
+    A.ok(/Homestead isn't running/.test(d.err) && /run `starnet` to start it/.test(d.err), 'status says Homestead isn\'t running and that `starnet` starts it (' + d.err.trim() + ')');
+    A.ok(!/open the Homestead app/i.test(d.err) && !/to boot one/.test(d.err), 'status never says to open the app, nor to boot the farm from the terminal');
     A.ok(!/starting it in the background/.test(d.err), 'a question never starts the app');
   } finally {
     fs.rmSync(profile, { recursive: true, force: true });

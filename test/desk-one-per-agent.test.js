@@ -37,7 +37,7 @@ function station() {
 /* ---- 1. the station's own rule: worldmodel assignDesk ---- */
 {
   const { st, free, old } = station(), before = snap(st);
-  A.ok(typeof st.assignDesk === 'function', 'the station owns the one-desk-per-agent rule (station.assignDesk)');
+  A.ok(typeof st.assignDesk === 'function', 'the farm owns the one-desk-per-agent rule (station.assignDesk)');
   const r = st.assignDesk ? st.assignDesk(free, 'rex') : { ok: false };
   A.ok(r.ok, 'giving REX the Den desk succeeds');
   A.eq(desksOf(st, 'rex'), [free], 'REX holds exactly ONE workstation: the one it was given');

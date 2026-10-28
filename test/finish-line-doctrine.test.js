@@ -18,7 +18,7 @@ A.ok(/keep working until the requested result is actually complete/i.test(text),
 A.ok(/different query, arguments, strategy, or tool/i.test(text), 'doctrine requires an alternate route after a failed or partial tool path');
 A.ok(/tool\.search/.test(text), 'doctrine tells the agent to discover a capability before declaring it absent');
 A.ok(/browser\.login/.test(text) && /visible/i.test(text), 'doctrine names the first-class attended login path');
-A.ok(/irreducible human input/i.test(text), 'doctrine asks the Commander only for genuinely human-only input');
+A.ok(/irreducible human input/i.test(text), 'doctrine asks the Farmer only for genuinely human-only input');
 A.ok(/verify/i.test(text) && /fabricat/i.test(text), 'doctrine requires evidence and forbids invented success');
 A.ok(/safe, authorized, in-scope alternatives/i.test(text), 'persistence remains bounded by authority and safety');
 

@@ -45,7 +45,7 @@ const ctx = vm.createContext({ station: s, valPlan: null, cacheGeo: null, Pipeli
   localStorage: { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } } });
 function lineKey(which) { const r = which === 'a' ? a : b; return P.lineComponents(s.projectGeometry()).find(c => c.outboxes.includes(of(r, 'outbox'))).key; }
 vm.runInContext(slice(build, '  const FIN_KEY = st =>', '  /* ---------- STARTER GEAR')
-  + '; globalThis.setComps = v => { valComps = v; finKeySel = null; }; globalThis.finState = finState; globalThis.feedText = finFeedText; globalThis.pick = finPick; globalThis.mark = (k, f) => finMark(station, k, f); globalThis.focus = k => { finKeySel = k; };', ctx);
+  + '; globalThis.setComps = v => { valComps = v; finKeySel = null; }; globalThis.finState = finState; globalThis.feedText = finFeedText; globalThis.pick = finPick; globalThis.mark = (k, f) => finMark(farm, k, f); globalThis.focus = k => { finKeySel = k; };', ctx);
 function compile() {
   const geo = s.projectGeometry();
   ctx.valPlan = P.compileRoutingPlan(geo);

@@ -105,8 +105,8 @@ A.ok(!context.railRowTip(savedA, row(savedA), true).includes('right-click'), 'pr
   A.eq([row(quiet).dot, row(quiet).meta, row(quiet).busy], ['ws-dot working', '2 working', true], 'a fresh ledger with two running workers lights the asking conversation');
   fresh = false;
   const st = row(quiet);
-  A.ok(st.dot !== 'ws-dot working' && !st.busy, 'station unreachable: the row no longer pulses as working');
-  A.ok(!/working/.test(st.meta) && /unknown/.test(st.meta), 'station unreachable: the row says the crew state is unknown, not "2 working"');
+  A.ok(st.dot !== 'ws-dot working' && !st.busy, 'farm unreachable: the row no longer pulses as working');
+  A.ok(!/working/.test(st.meta) && /unknown/.test(st.meta), 'farm unreachable: the row says the crew state is unknown, not "2 working"');
   A.ok(/unreachable/.test(st.status) && /unknown/.test(st.status), 'the row tip says why the crew state is unknown');
   delete context.Overseer;
 }

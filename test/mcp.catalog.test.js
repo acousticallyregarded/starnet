@@ -214,7 +214,7 @@ const ID_RE = /^[A-Za-z0-9_-]{1,40}$/;
     A.eq(e.staticOauth.clientSecretRequired, false, id + ' does not require a customer client secret');
     A.eq(e.staticOauth.developerPreview, false, id + ' does not depend on Developer Preview');
     A.ok(/^https:\/\/developers\.google\.com\/identity\//.test(e.staticOauth.setupUrl), id + ' links the official complete setup guide');
-    A.ok(/StarNet supplies the Google application registration/i.test(e.staticOauth.setupNote), id + ' states the required Google Cloud enablement step');
+    A.ok(/Homestead supplies the Google application registration/i.test(e.staticOauth.setupNote), id + ' states the required Google Cloud enablement step');
     A.eq(C.installConfig(id), null, id + ' is not one-click-upsert installable (sign-in flow owns it)');
     A.ok(e.aliases.indexOf('google') >= 0 && e.aliases.indexOf('google workspace') >= 0, id + ' is findable by the google names');
   }
@@ -260,7 +260,7 @@ const ID_RE = /^[A-Za-z0-9_-]{1,40}$/;
     A.ok(!e.via, id + ' signs in directly — no aggregator detour');
     A.eq(e.staticOauth, null, id + ' rides dynamic registration, not a pre-registered client');
     A.eq(C.installConfig(id), null, id + ' is stood up by the sign-in flow, not one-click upsert');
-    A.ok(e.aliases.length >= 2, id + ' carries the names a Commander actually types');
+    A.ok(e.aliases.length >= 2, id + ' carries the names a Farmer actually types');
   }
   const oai = C.get('openai-devdocs');
   A.eq(oai.authType, 'none', 'OpenAI DevDocs is zero-setup');
@@ -281,7 +281,7 @@ const ID_RE = /^[A-Za-z0-9_-]{1,40}$/;
     A.ok(/^https:\/\/\S+/.test(e.url), id + ' has a concrete https endpoint');
     A.eq(e.staticOauth, null, id + ' rides dynamic registration');
     A.eq(C.installConfig(id), null, id + ' is stood up by the sign-in flow');
-    A.ok(e.aliases.length >= 2, id + ' carries the names a Commander actually types');
+    A.ok(e.aliases.length >= 2, id + ' carries the names a Farmer actually types');
   }
   const corpus = C.get('corpus-law');
   A.eq(corpus.authType, 'none', 'Corpus is zero-setup');

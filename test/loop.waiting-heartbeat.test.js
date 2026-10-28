@@ -200,7 +200,7 @@ const waits = seq => seq.filter(e => e.name === 'agent.waiting').map(e => e.payl
     const done = runAgentLoop(o);
     await flush();
     h.tick(15000);
-    A.eq(waits(h.seq).length, 0, 'visible text: no beat while the Commander is watching output');
+    A.eq(waits(h.seq).length, 0, 'visible text: no beat while the Farmer is watching output');
     g1.open(); await flush();
     h.tick(15000);
     h.tick(15000);

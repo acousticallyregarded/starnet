@@ -317,12 +317,12 @@ async function invokeTts(overrides, body) {
     });
     const failed = await offline.synthesizeStationVoice('hello');
     assert.equal(failed.ok, false);
-    assert.equal(edgeCalls, 1, 'an offline station waits through one Edge attempt, not two');
+    assert.equal(edgeCalls, 1, 'an offline farm waits through one Edge attempt, not two');
     assert.equal(fetches, 1, 'the keyed ladder still gets its turn');
     assert.match(failed.reason, /edge: offline/);
     fetches = 0; edgeCalls = 0;
     const keyedPin = await offline.synthesizeStationVoice('same speaker', { provider: 'gemini' });
-    assert.equal(keyedPin.ok, false, 'a reply pinned to a keyed provider this station cannot reach fails');
+    assert.equal(keyedPin.ok, false, 'a reply pinned to a keyed provider this farm cannot reach fails');
     assert.equal(fetches + edgeCalls, 0, 'without paying another provider or switching to Edge');
   }
 

@@ -1887,7 +1887,7 @@
      result to the Commander (2026-09-27 audit R2: the OUTBOX titled a line's result "PIPELINE HANDOFF — you are stage 2 of a work
      line on this stati…" and showed the whole machine prompt under WHAT YOU ASKED FOR). Reads only the fixed frame handoffPrompt
      writes; anything else is null. Pure. */
-  const HANDOFF_RE = /^PIPELINE HANDOFF — you are stage (\d+) of a work line on this station\.\n\nThe original request was:\n([\s\S]*?)\n\nThe upstream stage \(([^)]*)\) produced:\n/;
+  const HANDOFF_RE = /^PIPELINE HANDOFF — you are stage (\d+) of a work line on this (?:station|farm)\.\n\nThe original request was:\n([\s\S]*?)\n\nThe upstream stage \(([^)]*)\) produced:\n/;
   function parseHandoff(text) {
     const m = HANDOFF_RE.exec(String(text == null ? '' : text));
     return m ? { stage: +m[1], original: m[2], from: m[3] } : null;
@@ -1896,7 +1896,7 @@
      frame's fixed opening is read, so a run row's shortened title answers too. A hand-off's words are the LINE's — the step's
      standing instructions, the upstream stage's work — never the Commander's own: the run-end STUDY and THREAD passes skip such a
      run (2026-09-30: NOVA quoted a WRITER step's brief back to the Commander as «because you said …»). Pure. */
-  const HANDOFF_HEAD_RE = /^PIPELINE HANDOFF — you are stage \d+ of a work line on this station\./;
+  const HANDOFF_HEAD_RE = /^PIPELINE HANDOFF — you are stage \d+ of a work line on this (?:station|farm)\./;
   function isHandoff(text) { return HANDOFF_HEAD_RE.test(String(text == null ? '' : text).replace(/^\s+/, '')); }
   /* stripVerdictLine(text) -> the text without a trailing reviewer VERDICT line (one of its last 3 non-empty lines), for showing
      a work line's result: the line is the loop gate's control signal, not part of the work (R1; sidecar/routing/verdict.js holds

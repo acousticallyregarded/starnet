@@ -10,7 +10,7 @@ const Conveyor = require('../frontend/app/conveyor.js');
 /* ---------- belt model ---------- */
 const s = WM.create();                                   // HAB-01 {0..17,0..10}
 const r = s.roomById(s.spawnRoomId()).rects[0];
-A.eq(s.belts().length, 0, 'fresh station has no belts');
+A.eq(s.belts().length, 0, 'fresh farm has no belts');
 
 const run = s.placeBeltRun({ tx: r.x1 + 2, ty: r.y1 + 2 }, { tx: r.x1 + 6, ty: r.y1 + 2 });
 A.ok(run.ok && run.dir === 'E' && run.count === 5, 'an eastward run lays 5 E belts');

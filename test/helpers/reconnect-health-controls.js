@@ -106,7 +106,7 @@ module.exports = async function verifyReconnectHealth(A, chat) {
       f.requests[i].resolve({ ok: false, status: 503, text: async () => 'degraded: owner hold' }); await run;
       A.eq(f.delays(), [3000], 'degraded probe rearms once');
     }
-    A.eq(f.lines, ['station service degraded: owner hold — restart it from LINK DOWN at the top.'], 'same degraded reason announced once');
+    A.eq(f.lines, ['farm service degraded: owner hold — restart it from LINK DOWN at the top.'], 'same degraded reason announced once');
     A.eq(f.recoverCalls(), 0, 'degraded never healthy');
     const run = f.fire(3000); f.requests[2].resolve({ ok: true, status: 200 }); await flush();
     f.api.interrupt(); // arrives while successful health awaits continuation preparation

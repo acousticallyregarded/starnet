@@ -193,7 +193,7 @@ A.eq(R.hydrate(JSON.parse(JSON.stringify(s))).pending[0].streamId, 'cron-r1', 's
   const other = firstA === ia ? i2 : ia;
   st.setPropLabel(other, 'Research');
   A.eq(ctx.word({ line: lineA, jobId: 'j', name: '' }), 'LINE RESEARCH', 'a line is named by its first NAMED INBOX, as the floor names it (not intakes[0]\'s label or letter)');
-  A.eq(st.lineName(lineA), 'LINE RESEARCH', '…the same word the station gives every other surface');
+  A.eq(st.lineName(lineA), 'LINE RESEARCH', '…the same word the farm gives every other surface');
   A.ok(/word = e => lineOfEnd\(e\)/.test(station) && !/handoffLineWord/.test(station) && !/e && e\.lineId \?/.test(station), 'TO REVIEW reads the record\'s line key through the one helper, never the lineId records never carry');
   A.ok(!/lineComponents|projectGeometry/.test(station.slice(at, end)), 'the helper compiles nothing per mention (the floor already holds its lines)');
   // the ASK block's "handed on from …" is built AFTER the job record is read, from the record's FROM end

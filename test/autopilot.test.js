@@ -24,7 +24,7 @@ rd = Autopilot.readiness({ known: ['stack'], familiarity: 1 / 7 }, { stack: fres
 A.eq(rd.tier, 'warm', 'areas known but no goals → warm (knows something, not yet what they want — never acts)');
 
 rd = Autopilot.readiness({ known: ['goals'], familiarity: 1 / 7 }, { goals: fresh() }, t, {});
-A.eq([rd.tier, rd.groundedBy], ['hot', 'dossier'], 'a grounded goals belief alone → hot (a chosen posture acts on the aims the Commander gave)');
+A.eq([rd.tier, rd.groundedBy], ['hot', 'dossier'], 'a grounded goals belief alone → hot (a chosen posture acts on the aims the Farmer gave)');
 
 // ONLY CONFIRMED BELIEFS CROSS THE ACTING LINE (review of 41b2d015; AUTONOMY_DRIVER_PLAN §2 trust line; dossier.js
 // WEIGHTS): a goals area held only by SEEDS — the quick-setup chip's canned purpose, a thin run, a doc copy — is known
@@ -37,7 +37,7 @@ rd = Autopilot.readiness(
   { known: ['goals', 'identity', 'standing_orders'], familiarity: 3 / 7 },
   { goals: seedGoals(), identity: [{ text: 'solo founder', weight: 'seed' }], standing_orders: [{ text: 'never push', weight: 'seed' }] }, t, {});
 A.eq(rd.tier, 'warm', 'three doc-seeded areas still never reach hot (seeds never add up to grounding)');
-A.eq(D_earn(rd), ['earn', 'confidence'], 'an acting dial over a seed-only station EARNS (the curiosity branch still fires), CONFIDENCE binding');
+A.eq(D_earn(rd), ['earn', 'confidence'], 'an acting dial over a seed-only farm EARNS (the curiosity branch still fires), CONFIDENCE binding');
 rd = Autopilot.readiness({ known: ['goals'], familiarity: 1 / 7 }, { goals: seedGoals().concat([{ text: 'ship the pricing page', weight: 'synth', createdAt: t, updatedAt: t }]) }, t, {});
 A.eq([rd.tier, rd.goalsUsable], ['hot', true], 'a seed beside a grounded aim → hot (the grounded belief carries it)');
 ['stated', 'synth', 'observed'].forEach(w => {
@@ -94,15 +94,15 @@ A.eq(elig.map(a => a.id).sort(), ['advance-goal', 'maintain-extend', 'prep-next'
 A.eq(Autopilot.eligibleArchetypes([]).length, 0, 'no usable dims → no eligible archetypes (nothing to ground a job in)');
 
 // grounded(): the structural anti-slop floor
-A.eq(Autopilot.grounded('ship the StarNet beta', ['ship the StarNet beta to 100 users']), true, 'grounds that is a substring of a belief → grounded');
-A.eq(Autopilot.grounded('migrate the billing system', ['ship the StarNet beta', 'reduce churn']), false, 'grounds with no overlap → not grounded (invented)');
-A.eq(Autopilot.grounded('grow the StarNet community', ['ship the StarNet beta to users']), true, 'a shared significant token (starnet) → grounded (tolerates paraphrase)');
+A.eq(Autopilot.grounded('ship the Homestead beta', ['ship the Homestead beta to 100 users']), true, 'grounds that is a substring of a belief → grounded');
+A.eq(Autopilot.grounded('migrate the billing system', ['ship the Homestead beta', 'reduce churn']), false, 'grounds with no overlap → not grounded (invented)');
+A.eq(Autopilot.grounded('grow the Homestead community', ['ship the Homestead beta to users']), true, 'a shared significant token (starnet) → grounded (tolerates paraphrase)');
 
 // parseCandidates + the GROUNDING VETO
-const b2 = { goals: ['ship the StarNet beta to 100 users'], pain: ['manual release notes eat my fridays'] };
+const b2 = { goals: ['ship the Homestead beta to 100 users'], pain: ['manual release notes eat my fridays'] };
 const eligAll = Autopilot.eligibleArchetypes(['goals', 'pain', 'stack']);
 const reply = [
-  'JOB: Draft the beta launch checklist', 'KIND: advance-goal', 'GROUNDS: ship the StarNet beta to 100 users', 'CONFIDENCE: high', 'SPEC: a step-by-step pre-launch checklist', '',
+  'JOB: Draft the beta launch checklist', 'KIND: advance-goal', 'GROUNDS: ship the Homestead beta to 100 users', 'CONFIDENCE: high', 'SPEC: a step-by-step pre-launch checklist', '',
   'JOB: Draft release-notes template', 'KIND: kill-pain', 'GROUNDS: manual release notes eat my fridays', 'CONFIDENCE: medium', 'SPEC: a reusable release-notes template', '',
   'JOB: Rewrite your database layer', 'KIND: advance-goal', 'GROUNDS: migrate everything to Postgres', 'CONFIDENCE: high', 'SPEC: a migration plan'
 ].join('\n');
@@ -110,7 +110,7 @@ const cands = Autopilot.parseCandidates(reply, { eligible: eligAll, beliefs: b2 
 A.eq(cands.length, 2, 'the grounding veto drops the candidate whose GROUNDS is invented (not in the dossier)');
 A.eq(cands[0].archetype, 'advance-goal', 'a surviving candidate carries its kind');
 A.eq(cands[1].confidence, 'medium', 'confidence is parsed');
-A.eq(Autopilot.parseCandidates('JOB: x\nKIND: scout\nGROUNDS: ship the StarNet beta\nCONFIDENCE: high\nSPEC: y', { eligible: Autopilot.eligibleArchetypes(['goals']), beliefs: b2 }).length, 0, 'a KIND outside the eligible set is dropped (no scout without usable stack)');
+A.eq(Autopilot.parseCandidates('JOB: x\nKIND: scout\nGROUNDS: ship the Homestead beta\nCONFIDENCE: high\nSPEC: y', { eligible: Autopilot.eligibleArchetypes(['goals']), beliefs: b2 }).length, 0, 'a KIND outside the eligible set is dropped (no scout without usable stack)');
 
 // scoreAndSelect + the CONFIDENCE GATE
 const pick = Autopilot.scoreAndSelect(cands);
@@ -252,11 +252,11 @@ A.eq(Autopilot.eligibleArchetypes([], { activityGrounded: true }).length, Autopi
 A.eq(Autopilot.eligibleArchetypes([]).length, 0, 'without the flag, empty dims → no eligible archetypes (unchanged)');
 
 // (c) the GROUNDING VETO evidence pool extends to activity lines: an activity-grounded candidate SURVIVES, invented dies.
-const activityLines = ['Ship the StarNet beta (yesterday)', '"help me automate release notes" (2d ago)'];
+const activityLines = ['Ship the Homestead beta (yesterday)', '"help me automate release notes" (2d ago)'];
 const vetoReply = [
   'JOB: Continue the beta ship',
   'KIND: advance-goal',
-  'GROUNDS: Ship the StarNet beta',            // cites a RECENT RUN line, NOT a dossier belief
+  'GROUNDS: Ship the Homestead beta',            // cites a RECENT RUN line, NOT a dossier belief
   'CONFIDENCE: high',
   'SPEC: a checklist',
   '',
@@ -275,7 +275,7 @@ A.eq(Autopilot.parseCandidates(vetoReply, { eligible: Autopilot.ARCHETYPES, beli
 
 // (d) the DIRECTIVE carries the recent-activity block + the "continue their work" rule, only when there IS activity.
 const cdAct = Autopilot.buildCandidateDirective({ beliefs: b2, activity: activityLines, eligible: eligAll });
-A.ok(/worked on recently/i.test(cdAct) && /Ship the StarNet beta/.test(cdAct), 'the candidate directive renders the recent-activity block with dated lines');
+A.ok(/worked on recently/i.test(cdAct) && /Ship the Homestead beta/.test(cdAct), 'the candidate directive renders the recent-activity block with dated lines');
 A.ok(/CONTINUE THEIR WORK/i.test(cdAct), 'with activity present, the directive adds the continue/unblock/extend rule');
 const cdNoAct = Autopilot.buildCandidateDirective({ beliefs: b2, eligible: eligAll });
 A.ok(!/worked on recently/i.test(cdNoAct) && !/CONTINUE THEIR WORK/i.test(cdNoAct), 'with NO activity, no activity block + no continue rule (never invites fabrication)');

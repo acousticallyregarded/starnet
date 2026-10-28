@@ -37,10 +37,10 @@ const tick = () => new Promise(r => setImmediate(r));
       const r = driverRig();
       const B = makeBrowserTools({ makeDriver: r.make, lookup: null, preferVisible: true, forceHeadless: false, noAttach: true });
       await B.session.navigate('https://example.com/', { visible: false });
-      A.eq(r.built[0].d.headed, true, 'the station browser launches as a real window even when a call asked visible:false');
+      A.eq(r.built[0].d.headed, true, 'the farm browser launches as a real window even when a call asked visible:false');
       await B.session.navigate('http://127.0.0.1:5173/', { local: true });
       A.eq(r.built.length, 1, 'a local test page does not relaunch it headless');
-      A.eq(B.session.handoffSurface().visible, true, 'the station reads it as visible');
+      A.eq(B.session.handoffSurface().visible, true, 'the farm reads it as visible');
       await B.session.handoffSurface().front();
       A.eq(r.built[0].fronted, 1, 'front() raises the real window');
 
@@ -59,7 +59,7 @@ const tick = () => new Promise(r => setImmediate(r));
 
       // ---- attach refused ----
       let attachErr = ''; try { await B.session.attach(9612); } catch (e) { attachErr = e.message; }
-      A.ok(/not available here/.test(attachErr), 'browser.attach is refused on the station browser (it never becomes some other Chrome)');
+      A.ok(/not available here/.test(attachErr), 'browser.attach is refused on the farm browser (it never becomes some other Chrome)');
       A.eq(r.built.length, 2, '…and nothing was relaunched');
     }
     // ---- the headless pin still wins ----
@@ -68,7 +68,7 @@ const tick = () => new Promise(r => setImmediate(r));
       const r = driverRig();
       const B = makeBrowserTools({ makeDriver: r.make, lookup: null, preferVisible: true, forceHeadless: false });
       await B.session.navigate('https://example.com/');
-      A.eq(r.built[0].d.headed, false, 'STARNET_BROWSER_HEADLESS=1 keeps even the station browser hidden (CI, gates)');
+      A.eq(r.built[0].d.headed, false, 'STARNET_BROWSER_HEADLESS=1 keeps even the farm browser hidden (CI, gates)');
       A.eq(B.session.handoffSurface().visible, false, 'and it reads as hidden');
       delete process.env.STARNET_BROWSER_HEADLESS;
     }
@@ -98,7 +98,7 @@ const tick = () => new Promise(r => setImmediate(r));
       A.eq(w.fronted, 1, '…and raises it (they typed it: show it)');
       A.eq(V.list().station.visible, true, 'the list says the browser is a visible window');
       clk.advance(3 * 60 * 60 * 1000); await tick();
-      A.eq(w.closed, 0, 'a visible station browser is still open after three hours untouched by the station');
+      A.eq(w.closed, 0, 'a visible farm browser is still open after three hours untouched by the farm');
       A.ok((await V.front()).ok && w.fronted === 2, 'front() raises it on request');
 
       const h = mk(false);

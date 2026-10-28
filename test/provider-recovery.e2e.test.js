@@ -134,7 +134,7 @@ async function eventsOf(response) {
 
     const history = [];
     for (let i = 0; i < 8; i++) history.push({ role: i % 2 ? 'assistant' : 'user', content: 'history turn ' + i + ' with enough content to fold' });
-    history.push({ role: 'user', content: 'finish this after inspecting the station' });
+    history.push({ role: 'user', content: 'finish this after inspecting the farm' });
     const request = {
       provider: 'anthropic', model: 'claude-test', key: PRIMARY, keyPool: [BACKUP],
       baseUrl: provider.baseUrl, internal: true, isTask: false, messages: history

@@ -106,11 +106,11 @@ test('real image bytes use imagewire while effect and tree remain readable', asy
   assert.equal(out.images[0].data, png); assert.equal(JSON.parse(out.content).elements[0].element_token, 'fresh');
   assert.ok(!out.content.includes(png), 'base64 does not bloat textual evidence'); await tool.close();
 });
-test('an action aimed at StarNet\'s own pid is refused before CUA starts; reads and the paired owner stay open', async () => {
+test('an action aimed at Homestead\'s own pid is refused before CUA starts; reads and the paired owner stay open', async () => {
   const calls = [];
   const tools = makeCuaComputerTools({ allowPhysicalInput: true, binary: 'fixture', selfPids: [3184], connect: async () => ({
     call: async (name, args) => { calls.push(name); return { structuredContent: { effect: 'dispatched' } }; }, close: async () => {} }) });
-  await assert.rejects(tools.useTool.run({ action: 'click', parameters: { pid: 3184, window_id: 1, element_token: 't' } }, FULL), /StarNet itself.*station builder/);
+  await assert.rejects(tools.useTool.run({ action: 'click', parameters: { pid: 3184, window_id: 1, element_token: 't' } }, FULL), /Homestead itself.*farm builder/);
   assert.deepEqual(calls, []);
   await tools.useTool.run({ action: 'get_window_state', parameters: { pid: 3184, window_id: 1 } }, FULL);
   await tools.useTool.run({ action: 'click', parameters: { pid: 55, window_id: 1, element_token: 't' } }, FULL);

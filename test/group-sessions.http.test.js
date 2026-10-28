@@ -84,10 +84,10 @@ const server = http.createServer((req, res) => {
     const qaReqs = requests.filter(r => sysOf(r).includes('IDENTITY_QA') && (r.tools || []).length);
     assert.ok(leadReqs.length && qaReqs.length, 'both participants ran with tools');
     assert.ok(leadReqs.every(r => r.tools.some(t => t.function.name === 'station_layout')), 'the group lead can read the assembly lines');
-    assert.ok(leadReqs.every(r => /station_build/.test(sysOf(r)) && /you lead this group chat/.test(sysOf(r))), 'the group lead is told where the station builder is');
+    assert.ok(leadReqs.every(r => /station_build/.test(sysOf(r)) && /you lead this group chat/.test(sysOf(r))), 'the group lead is told where the farm builder is');
     // a build follows the approval setting (Full Access asks nothing): the lead is never promised a card on every build
-    assert.ok(leadReqs.every(r => !/approves each build/.test(sysOf(r)) && /follows the Commander's approval setting/.test(sysOf(r))), 'the group lead is told builds follow the approval setting');
-    assert.ok(qaReqs.every(r => !r.tools.some(t => /^station_(layout|build|plan|map)$/.test(t.function.name)) && !/station_build/.test(sysOf(r))), 'a non-lead participant gets no station kit');
+    assert.ok(leadReqs.every(r => !/approves each build/.test(sysOf(r)) && /follows the Farmer's approval setting/.test(sysOf(r))), 'the group lead is told builds follow the approval setting');
+    assert.ok(qaReqs.every(r => !r.tools.some(t => /^station_(layout|build|plan|map)$/.test(t.function.name)) && !/station_build/.test(sysOf(r))), 'a non-lead participant gets no farm kit');
     const download = await fixture.request('/api/groups?id=' + g.id + '&file=' + state.artifacts[0].id);
     assert.equal(await download.text(), 'EXACT_SHARED_VERSION_1');
     const attached = await request('POST', '', { op: 'create', members: ['agent'], title: 'Message attachment proof' });

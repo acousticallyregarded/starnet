@@ -36,7 +36,7 @@ const { starnetManual } = require('../sidecar/manual.js');
   A.ok(/COMMS/.test(m), 'names COMMS (where you task an agent)');
   A.ok(/SCHEDULES/.test(m), 'names SCHEDULES (built-in scheduled work, AUTOMATE)');
   // the 0.13 dock (sweep 2026-10-02): every menu path the agent tells the Commander exists — no 0.12.5 dock buttons
-  A.ok(!/⇄ ABILITIES|✉ CHANNELS|AUTOMATION \(dock|MCP CONNECTORS|Add a custom API key|BUILD STATION/.test(m), 'names no 0.12.5 dock button or removed tab');
+  A.ok(!/⇄ ABILITIES|✉ CHANNELS|AUTOMATION \(dock|MCP CONNECTORS|Add a custom API key|BUILD FARM/.test(m), 'names no 0.12.5 dock button or removed tab');
   A.ok(/CONNECT › ABILITIES/.test(m) && /CONNECT › CHANNELS/.test(m) && /MY WORK/.test(m) && /AUTOMATE/.test(m), 'names the 0.13 menus');
   A.ok(/Recruitment Bay/.test(m), 'names the Recruitment Bay (summon)');
   A.ok(/APPROVAL/.test(m), 'names APPROVAL/APPROVALS');
@@ -45,7 +45,7 @@ const { starnetManual } = require('../sidecar/manual.js');
   A.ok(/NO COMPUTE/.test(m), 'troubleshoots the NO COMPUTE / needs-a-workstation case');
   A.ok(/CALL station\.inspect first/.test(m), 'live harness-state questions route to the authoritative inspector');
   A.ok(/needs no placed prop or approval/.test(m), 'self-inspection is correctly described as a base read');
-  A.ok(/Never[\s\S]{0,160}invent a StarNet CLI command/.test(m), 'manual forbids guessing a diagnostic command');
+  A.ok(/Never[\s\S]{0,160}invent a Homestead CLI command/.test(m), 'manual forbids guessing a diagnostic command');
   A.ok(/place the matching prop/i.test(m), 'tells the agent to place the matching prop for a missing power');
   A.ok(/Windows Task Scheduler/.test(m) && /OS crontab/.test(m), 'routine guidance points away from OS schedulers');
 
@@ -64,7 +64,7 @@ const { starnetManual } = require('../sidecar/manual.js');
         So the agent authoritatively sent Commanders into REFIT to place a portal that is both unnecessary and
         a dead end (a portal binds a connectorId that only exists after ABILITIES configured it). */
   A.ok(/ACCOUNT-LEVEL/.test(m), 'states that a connector is account-level, not a placed prop');
-  A.ok(/NEVER send the Commander to BUILD MODE to connect a platform/i.test(m), 'forbids the BUILD MODE dead end');
+  A.ok(/NEVER send the Farmer to BUILD MODE to connect a platform/i.test(m), 'forbids the BUILD MODE dead end');
   A.ok(!/CONNECTOR PORTAL → an MCP/.test(m), 'CONNECTOR PORTAL is no longer listed as a prop that grants a connector');
 
   /* 9) ANTI-INVENTION. The agent has no catalog in its prompt, so absent the connectors.list tool (block 10)

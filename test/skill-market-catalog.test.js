@@ -31,7 +31,7 @@ const read = market.readCatalog(JSON.parse(raw));
 A.eq(read.rejected, [], 'the app accepts every entry');
 const entries = read.entries;
 A.ok(entries.length >= 70, 'the launch catalog has at least 70 skills (' + entries.length + ')');
-A.eq(entries[0].shelf, 'originals', 'StarNet Originals come first');
+A.eq(entries[0].shelf, 'originals', 'Homestead Originals come first');
 
 const library = new Map(catalog.loadDir(path.join(ROOT, 'sidecar', 'skills', 'library'), fs, path).map(r => [r.slug, r]));
 let bundled = 0, filesOk = true, badFile = '';

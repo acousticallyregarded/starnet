@@ -112,20 +112,20 @@ function boot(options = {}) {
 
   /* #121 (I121-4): a build is reported SAVED only when the station file holds it. Like station.update_agent: queue the
      live save, flush it, read the station file back and compare the floor; otherwise durable:false with a reason. */
-  A.ok(ack.result.durable === false && /station file has not confirmed/.test(ack.result.durability || ''), 'without durable storage on the page a build is never reported saved');
+  A.ok(ack.result.durable === false && /farm file has not confirmed/.test(ack.result.durability || ''), 'without durable storage on the page a build is never reported saved');
   const order = [];
   const sigOf = doc => JSON.stringify(doc);
   const durableCase = (cloud) => boot({ sigOf, persist: () => { order.push('persist'); return false; }, cloud });
   {
     const b = durableCase({ flush: async o => { order.push('flush:' + !!(o && o.force)); return true; }, pull: async () => { order.push('pull'); return { station: { revision: 1 } }; } });
     const r = (await b.call('station.build', { planId: await b.plan() })).result;
-    A.ok(r.built === true && r.durable === true && !r.durability, 'a build the station file reads back is reported durable');
-    A.eq(order, ['persist', 'flush:true', 'pull'], 'the live save is queued, force-flushed, then read back from the station file');
+    A.ok(r.built === true && r.durable === true && !r.durability, 'a build the farm file reads back is reported durable');
+    A.eq(order, ['persist', 'flush:true', 'pull'], 'the live save is queued, force-flushed, then read back from the farm file');
   }
   for (const [name, cloud] of [
     ['refused flush', { flush: async () => false, pull: async () => ({ station: { revision: 1 } }) }],
     ['read-back shows the old floor', { flush: async () => true, pull: async () => ({ station: { revision: 0 } }) }],
-    ['read-back has no station', { flush: async () => true, pull: async () => null }],
+    ['read-back has no farm', { flush: async () => true, pull: async () => null }],
     ['flush throws', { flush: async () => { throw new Error('network'); }, pull: async () => null }]
   ]) {
     const b = durableCase(cloud);
@@ -141,7 +141,7 @@ function boot(options = {}) {
     A.ok(!!wait, 'the station-file proof has its own deadline inside the six-second bridge timeout');
     if (wait) wait.fn();
     const a = await pending;
-    A.ok(a.ok && a.result.built && a.result.durable === false, 'a hung station file answers durable:false through the bridge');
+    A.ok(a.ok && a.result.built && a.result.durable === false, 'a hung farm file answers durable:false through the bridge');
     A.ok(![...hung.timers.values()].some(t => t.ms === 3000), 'the proof clears its deadline once settled');
   }
   A.report();

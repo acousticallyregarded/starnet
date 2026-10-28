@@ -77,7 +77,7 @@ const noop = async () => 'NONE';
   A.ok(F.lowValue('A pure-drafting task (writing Etsy listings from provided details) needs no connectors or gate tools; produce the text output directly instead of blocking on an optional "brief-gate"/skill call that isn\'t required to deliver the work.'), 'a lesson that calls the task brief optional is floor-dropped');
   A.ok(!F.lowValue('When a tool call fails, don\'t retry it verbatim with reworded parameters; after the second identical error, re-read what the tool requires or choose a different route.'), 'a sound retry lesson is kept');
   A.ok(!F.lowValue('Never skip the approval step before deleting files in the project folder.'), 'advice NOT to skip an approval is kept (negation)');
-  A.ok(!F.lowValue('Ask for the Commander\'s approval before sending any email on their behalf.'), 'a lesson that honours approvals is kept');
+  A.ok(!F.lowValue('Ask for the Farmer\'s approval before sending any email on their behalf.'), 'a lesson that honours approvals is kept');
   A.ok(/never internal tool names/.test(F.buildPrompt({ reason: 'error', messages: [] })) && /Never advise skipping, bypassing or treating/.test(F.buildPrompt({ reason: 'error', messages: [] })), 'the prompt asks for plain words and forbids routing around required steps');
   A.ok(F.lowValue('The run failed.'), 'a bare restatement of the failure is floor-dropped');
   A.ok(F.lowValue('It timed out'), 'a bare timeout restatement is floor-dropped');

@@ -35,7 +35,7 @@ const focusHeader = "TONIGHT'S FOCUS: alpha — because you worked in alpha — 
   const doDir = AP.buildDoDirectiveV2({ title: 'fix empty invoice list', spec: 'guard empty list' }, { runId: 'r1', dir: 'workshop/r1', backlogId: 'b1', focusHeader, projectSnapshot: snap, targetRoot: 'C:/repo/alpha' });
   A.ok(/git apply/i.test(doDir), 'the DO directive instructs a git-apply-able patch');
   A.ok(doDir.indexOf('C:/repo/alpha') >= 0, 'and names the exact target root');
-  A.ok(/new branch/i.test(doDir), 'and tells the agent the Commander applies it to a new branch (it never touches the repo)');
+  A.ok(/new branch/i.test(doDir), 'and tells the agent the Farmer applies it to a new branch (it never touches the repo)');
 })();
 
 A.report();

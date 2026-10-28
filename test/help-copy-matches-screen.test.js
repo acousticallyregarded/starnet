@@ -41,7 +41,7 @@ A.ok(/fmEntry\('NO REPLY', 'Check the connection', 'Open <b>SYSTEM › SETTINGS 
 // ---- the glossary ----
 const gsrc = read('frontend/app/glossary.js');
 const entry = key => { const m = gsrc.match(new RegExp('\\n\\s+' + key + ':\\s+\'([^\']*)\'')); return m ? m[1] : ''; };
-A.ok(/your first agent; it leads and delegates/.test(entry('overseer')) && !/station itself/.test(entry('overseer')),
+A.ok(/your first agent; it leads and delegates/.test(entry('overseer')) && !/farm itself/.test(entry('overseer')),
   'the overseer is the first agent that leads and delegates: ' + entry('overseer'));
 A.ok(/CONNECT › ABILITIES/.test(entry('capability')) && !/SKILLS tab/.test(entry('capability')),
   'a capability readout points at ABILITIES, not a SKILLS tab: ' + entry('capability'));
@@ -110,7 +110,7 @@ A.ok(app && !/START FRESH/.test(app.about) && /ERASE EVERYTHING/.test(app.about)
       A.ok(!(/settings-app/.test(clause) && /START FRESH/.test(clause)), 'manual ' + s.id + ' never puts START FRESH under APP & BACKUP: ' + clause.slice(0, 120));
     }
   }
-  A.ok(/START FRESH \(sets the old station aside\) is only on the startup recovery screen/.test(Manual.starnetManual()), 'CONCEPTS says where START FRESH really is');
+  A.ok(/START FRESH \(sets the old farm aside\) is only on the startup recovery screen/.test(Manual.starnetManual()), 'CONCEPTS says where START FRESH really is');
   A.ok(/id="btn-unreachable-fresh"|btn-unreachable-fresh/.test(read('frontend/app/app.js')), 'the startup recovery screen owns the START FRESH key');
   A.ok(!/START FRESH/.test(read('frontend/app/stationui.js')), 'the SETTINGS window renders no START FRESH key');
 }
@@ -129,7 +129,7 @@ A.ok(/YOUR CHROME[^\n]*not offered/.test(read('frontend/app/outputbrowser.js')),
 const Friendly = require('../frontend/app/friendlyerror.js');
 for (const o of [undefined, { cancelSource: 'estop_by_run' }]) {
   const line = Friendly.stopLine('cancelled', o);
-  A.ok(!/E-STOP/.test(line) && /Pause Automation in the StarNet tray menu/.test(line), 'stop line names the tray\'s Pause Automation: ' + line);
+  A.ok(!/E-STOP/.test(line) && /Pause Automation in the Homestead tray menu/.test(line), 'stop line names the tray\'s Pause Automation: ' + line);
 }
 
 /* ---- org P05: "where do I paste my key?" has one answer per kind of key ----

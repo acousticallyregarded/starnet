@@ -36,7 +36,7 @@ try {
   {
     const s = scratch();
     const r = bootstrapWorkspace(s.ws, opts, s.env);
-    A.ok(r.wrote, 'a clean machine: the headless bootstrap writes its one-agent station');
+    A.ok(r.wrote, 'a clean machine: the headless bootstrap writes its one-agent farm');
     A.eq(wrote(s.ws).length, 2, '…save and roster');
   }
   {
@@ -45,8 +45,8 @@ try {
     fs.mkdirSync(snaps, { recursive: true });
     fs.writeFileSync(path.join(snaps, '20261001.starnet-backup.json'), '{}');
     const r = bootstrapWorkspace(s.ws, opts, s.env);
-    A.ok(!r.wrote && r.refused, 'an update snapshot of a prior station: refused');
-    A.ok(/open the StarNet app to recover it/.test(r.reason || ''), 'with the dashboard\'s words: ' + r.reason);
+    A.ok(!r.wrote && r.refused, 'an update snapshot of a prior farm: refused');
+    A.ok(/open the Homestead app to recover it/.test(r.reason || ''), 'with the dashboard\'s words: ' + r.reason);
     A.eq(wrote(s.ws), [], 'and nothing written into the app\'s workspace');
   }
   {
@@ -55,7 +55,7 @@ try {
     fs.mkdirSync(legacy, { recursive: true });
     fs.writeFileSync(path.join(legacy, 'agent.save.json'), '{}');
     const r = bootstrapWorkspace(s.ws, opts, s.env);
-    A.ok(!r.wrote && r.refused, 'a station in a legacy root (pre-rebrand Skynet folder): refused');
+    A.ok(!r.wrote && r.refused, 'a farm in a legacy root (pre-rebrand Skynet folder): refused');
     A.eq(wrote(s.ws), [], 'nothing written');
   }
   {
@@ -69,7 +69,7 @@ try {
     const s = scratch();
     fs.writeFileSync(path.join(s.ws, 'transcript.jsonl'), '{}\n');
     const r = bootstrapWorkspace(s.ws, opts, s.env);
-    A.ok(!r.wrote && r.refused, 'station state with its save gone (a transcript, no save): refused — the app\'s gate owns that');
+    A.ok(!r.wrote && r.refused, 'farm state with its save gone (a transcript, no save): refused — the app\'s gate owns that');
   }
   {
     const s = scratch();
@@ -78,7 +78,7 @@ try {
     fs.writeFileSync(path.join(snaps, '20261001.starnet-backup.json'), '{}');
     const named = path.join(root, 'named-ws');
     const r = bootstrapWorkspace(named, Object.assign({ workspace: named }, opts), s.env);
-    A.ok(r.wrote, 'a workspace the operator named (--workspace) is a separate station by choice: it still boots');
+    A.ok(r.wrote, 'a workspace the operator named (--workspace) is a separate farm by choice: it still boots');
   }
   // the real command, as a shell runs it: `starnet init` on a machine whose prior station sits in an update snapshot.
   // The snapshot goes beside the workspace the CLI itself picks on THIS OS (APPDATA on Windows, XDG_DATA_HOME on Linux,
@@ -91,8 +91,8 @@ try {
     fs.writeFileSync(path.join(snaps, '20261001.starnet-backup.json'), '{}');
     const env = Object.assign({}, process.env, s.env, { HOME: home, USERPROFILE: home, STARNET_WORKSPACES: '', SKYNET_WORKSPACES: '', STARNET_DEV: '', SKYNET_DEV: '' });
     const r = spawnSync(process.execPath, [path.join(__dirname, '..', 'bin', 'starnet.js'), 'init', '--model', 'test/model'], { env, encoding: 'utf8', timeout: 60000 });
-    A.eq(r.status, 3, '`starnet init` over a prior station exits 3 (' + String(r.stderr).trim() + ')');
-    A.ok(/open the StarNet app to recover it/.test(r.stderr), 'and says to open the app to recover it');
+    A.eq(r.status, 3, '`starnet init` over a prior farm exits 3 (' + String(r.stderr).trim() + ')');
+    A.ok(/open the Homestead app to recover it/.test(r.stderr), 'and says to open the app to recover it');
     A.ok(String(r.stderr).indexOf(cliWs) >= 0, 'about the workspace the app uses on this OS: ' + cliWs);
     A.eq(wrote(cliWs), [], 'nothing written');
   }

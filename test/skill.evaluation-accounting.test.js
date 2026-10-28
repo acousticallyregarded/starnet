@@ -56,7 +56,7 @@ for (const managed of [true, false, undefined]) {
   local.onStream({ runId: 'local', spentUsd: 0, accountingIncomplete: true });
   local.onRun({ runId: 'local', result: { reason: 'done', usd: 0, tokens: 540, turns: 1, unpricedUsage: [{ model: 'qwen3:8b', tokensIn: 500, tokensOut: 40 }] } });
   assert.equal(local.canContinue(), true, 'unpriced unmetered usage is not unknown spend');
-  assert.equal(localLedger.health().complete, true, 'station spend history stays complete');
+  assert.equal(localLedger.health().complete, true, 'farm spend history stays complete');
   assert.equal(localStrict.check(null, 'other', 0), null, 'a strict cap still admits every other agent');
   assert.deepEqual([localRows[0].usd, localRows[0].tokens, localRows[0].unmetered], [0, 540, true], 'booked as a $0 unmetered row with its tokens');
   local.beforeRun({ runId: 'local-error' });

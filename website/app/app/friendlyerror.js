@@ -76,17 +76,17 @@
     // provider's 5xx/overloaded must never land here — a message naming a component owes proof it is at fault,
     // and blaming the local service for an Anthropic/OpenRouter overload had users reporting "StarNet's servers
     // are down" during every industry load spike (2026-07-30, the report wave behind this split).
-    server_error:  { retryable: true,  action: null,       msg: 'The local StarNet service hit an error — give it a moment and try again.' },
+    server_error:  { retryable: true,  action: null,       msg: 'The local Homestead service hit an error — give it a moment and try again.' },
     // The PROVIDER's servers answered with an error/overload (5xx, "overloaded", "temporarily unavailable").
     // StarNet is healthy and says so; retry is the primary door because provider load spikes pass.
-    provider_server_error: { retryable: true, action: null, msg: "The AI provider's servers are having trouble right now (overloaded or erroring) — StarNet itself is fine. Wait a moment and try again; if it keeps failing, switch model or provider in COMMS." },
-    network:       { retryable: true,  action: null,       msg: "Can't reach StarNet's local service — if the app closed, restart it; if it restarted, reload this window, then try again." },
+    provider_server_error: { retryable: true, action: null, msg: "The AI provider's servers are having trouble right now (overloaded or erroring) — Homestead itself is fine. Wait a moment and try again; if it keeps failing, switch model or provider in COMMS." },
+    network:       { retryable: true,  action: null,       msg: "Can't reach Homestead's local service — if the app closed, restart it; if it restarted, reload this window, then try again." },
     rate_limit:    { retryable: true,  action: null,       msg: 'The model provider is busy (too many requests) — wait a few seconds and try again.' },
     // The sidecar is fine; its call OUT to the model provider failed (see isUpstreamFetchFailure). Say that, and
     // say StarNet is healthy — the failure mode this replaces had users restarting and reinstalling for days over
     // a message that named the wrong component. `action: null` on purpose: a provider blip is usually transient,
     // so RETRY must stay the primary chip rather than a SETTINGS door that fixes nothing.
-    provider_unreachable: { retryable: true, action: null, msg: "StarNet is running fine, but it couldn't reach the AI provider — that's usually your internet connection, a VPN or proxy, or the provider having a moment. Try again; if it keeps failing, switch provider or model in SETTINGS." },
+    provider_unreachable: { retryable: true, action: null, msg: "Homestead is running fine, but it couldn't reach the AI provider — that's usually your internet connection, a VPN or proxy, or the provider having a moment. Try again; if it keeps failing, switch provider or model in SETTINGS." },
     /* A SPENT ALLOWANCE is not a busy moment. A ChatGPT-subscription weekly quota resets in DAYS, so offering
        "wait a few seconds and try again" made every retry doomed and told the user nothing they could act on.
        The copy names the meter that was actually spent — the ChatGPT subscription, NOT API billing — and the
@@ -109,18 +109,18 @@
     managed_credit:{ retryable: false, action: 'store',    msg: "You're out of StarNet credits — top up under SETTINGS → AI & MODELS, or connect your own provider key." },
     // The balance check FAILED (the account service was slow, erroring or unreachable) — the balance is unknown, NOT
     // $0. Reading this as managed_credit told a customer holding $79.24 to top up (2026-10-06). Retry is the door.
-    managed_credit_unavailable: { retryable: true, action: null, msg: "StarNet couldn't check your credit balance just now — your credits are safe and nothing was charged. Try again in a moment." },
+    managed_credit_unavailable: { retryable: true, action: null, msg: "Homestead couldn't check your credit balance just now — your credits are safe and nothing was charged. Try again in a moment." },
     // The service reported $0 because THIS station's running StarNet runs hold the balance (each reserves up to its PER
     // RUN limit and refunds what it doesn't spend; budgetcaps.managedRefusalMessage). Waiting is the first fix (retry),
     // then lowering PER RUN so runs can share the balance (the SPENDING LIMITS door); topping up stays the last
     // door — a small wallet's hold may come back as cents. Audit B11.
-    managed_credit_held: { retryable: true, action: 'budget', msg: "Your StarNet balance is held by StarNet runs that are still working — nothing is lost: each run reserves up to its PER RUN limit and refunds what it doesn't spend. Wait for them to finish, lower PER RUN in SETTINGS › SPENDING LIMITS, or top up under SETTINGS → AI & MODELS." },
+    managed_credit_held: { retryable: true, action: 'budget', msg: "Your StarNet balance is held by Homestead runs that are still working — nothing is lost: each run reserves up to its PER RUN limit and refunds what it doesn't spend. Wait for them to finish, lower PER RUN in SETTINGS › SPENDING LIMITS, or top up under SETTINGS → AI & MODELS." },
     // The account service ANSWERED and refused this station's token (unlinked on the account page, or linked to a
     // different account). Topping up fixes nothing; relinking does — same PROVIDERS door as the STARNET card.
-    managed_credit_link: { retryable: false, action: 'store', msg: "Your StarNet account didn't accept this station's link (it was unlinked, or it belongs to another account) — your credits are safe. Relink it under SETTINGS → AI & MODELS → STARNET MANAGED." },
+    managed_credit_link: { retryable: false, action: 'store', msg: "Your StarNet account didn't accept this farm's link (it was unlinked, or it belongs to another account) — your credits are safe. Relink it under SETTINGS → AI & MODELS → STARNET MANAGED." },
     // capdenied copy is REBUILT per-error in friendlyError() to name the exact power + gear; this is the fallback
     // when the capability can't be parsed. The door is BUILD MODE (place the gear), NOT the SKILLS list.
-    capdenied:     { retryable: false, action: 'refit',    msg: "This task needed a tool this agent doesn't have on station yet — open BUILD MODE to place the gear it's missing." },
+    capdenied:     { retryable: false, action: 'refit',    msg: "This task needed a tool this agent doesn't have on farm yet — open BUILD MODE to place the gear it's missing." },
     timeout:       { retryable: true,  action: null,       msg: 'That took too long and timed out — try again.' },
     user_abort:    { retryable: false, action: null,       msg: 'Stopped.' },
     context_overflow: { retryable: false, action: null,    msg: 'This conversation got too long for the model — start a fresh chat or shorten it.' },
@@ -130,7 +130,7 @@
     // real second half of the unlock chain. The door is TOOLSETS (its JUKEBOX row carries ▶ CONNECT SPOTIFY —
     // Settings has NO spotify surface; the old 'settings' door landed on PROVIDERS with no connect control),
     // NOT BUILD MODE (the gear is already on station) — distinct from `capdenied` which fires when no JUKEBOX exists.
-    spotify_not_connected: { retryable: false, action: 'toolsets', msg: 'The JUKEBOX is on station, but Spotify isn’t connected yet — connect it in ABILITIES, then try again.' },
+    spotify_not_connected: { retryable: false, action: 'toolsets', msg: 'The JUKEBOX is on farm, but Spotify isn’t connected yet — connect it in ABILITIES, then try again.' },
     // the one-run-at-a-time mutex: the SIDECAR message names the holder (age/source) + recovery steps.
     // Keep those details instead of flattening to `unknown` (2026-07-07 escape:
     // the user got "Something went wrong" in a loop while the real answer was one sentence away).
@@ -138,32 +138,32 @@
     // the SIDECAR's own token gate said no (a 403 with "forbidden token/origin/host"): after a sidecar
     // crash+respawn the page still holds the OLD X-StarNet-Token, so EVERY action 403s. Retrying is doomed and
     // "add a key" is the wrong door — the page needs the fresh boot token, which only a reload fetches.
-    stale_session: { retryable: false, action: 'reload',   msg: 'The station restarted — reload this page to reconnect.' },
+    stale_session: { retryable: false, action: 'reload',   msg: 'The farm restarted — reload this page to reconnect.' },
     // (a page the station KEPT its key from gets the same 403 but is no restart — see withheldNotice() below)
     /* StarNet's OWN spend ledger can't say what was spent (sidecar/loop.js stopForSpend, failureCode
        spend_history_unavailable): a limit the Commander chose can't be checked, so the run was stopped. NOT a provider
        out of credit (never `billing`), and never the generic "Something went wrong — try again": a retry hits the same
        refusal until the cause is fixed. The copy is REBUILT per cause in friendlyError() (spendUnknownMessage); this is
        the fallback. The door is SETTINGS › SPENDING LIMITS, where the cause and its fix are listed. */
-    spend_unknown: { retryable: false, action: 'budget',   msg: "Your spending limits can't be checked because StarNet's spend history is unknown, so this run was stopped — open SETTINGS › SPENDING LIMITS to fix it." },
+    spend_unknown: { retryable: false, action: 'budget',   msg: "Your spending limits can't be checked because Homestead's spend history is unknown, so this run was stopped — open SETTINGS › SPENDING LIMITS to fix it." },
     /* HARNESS STOPS (2026-10-11 — "they start a task and then stop repeatedly with no explanation"). The loop's own
        stop messages (loop guard, loop breaker, unkept promises, output-limit cuts, hooks, checkpoints) fell through to
        `unknown` and led with "Something went wrong on that turn". Each now leads with what happened + what to do;
        the per-message copy is built by explainStop() below — these msgs are the fallback/metadata only. */
-    loop_stuck:         { retryable: true,  action: null, msg: 'The agent got stuck repeating one step, so StarNet stopped the run. Say what to try differently, then ask again.' },
-    unknown_tools:      { retryable: true,  action: null, msg: 'The model kept calling tools that don’t exist, so StarNet stopped the run. Try again, or switch to a stronger model.' },
-    tool_keeps_failing: { retryable: true,  action: null, msg: 'A tool kept failing, so StarNet stopped this unattended run. Check its error, fix the cause, then run it again.' },
-    no_progress:        { retryable: true,  action: null, msg: 'A tool kept returning the same result, so StarNet stopped this unattended run as stuck.' },
+    loop_stuck:         { retryable: true,  action: null, msg: 'The agent got stuck repeating one step, so Homestead stopped the run. Say what to try differently, then ask again.' },
+    unknown_tools:      { retryable: true,  action: null, msg: 'The model kept calling tools that don’t exist, so Homestead stopped the run. Try again, or switch to a stronger model.' },
+    tool_keeps_failing: { retryable: true,  action: null, msg: 'A tool kept failing, so Homestead stopped this unattended run. Check its error, fix the cause, then run it again.' },
+    no_progress:        { retryable: true,  action: null, msg: 'A tool kept returning the same result, so Homestead stopped this unattended run as stuck.' },
     incomplete_work:    { retryable: true,  action: null, msg: 'The agent stopped before finishing: it kept saying what it would do next without doing it. Say "continue" to push it on.' },
     memory_unverified:  { retryable: true,  action: null, msg: 'The agent said it saved something to memory, but nothing was written — ask it again to save it.' },
     output_limit:       { retryable: false, action: null, msg: 'The reply hit the model’s output limit while writing a large tool call, so nothing from it was saved. Ask for it in smaller parts.' },
-    checkpoint_failed:  { retryable: true,  action: null, msg: 'StarNet couldn’t save this run’s progress to disk, so it stopped. Check free disk space, then try again.' },
+    checkpoint_failed:  { retryable: true,  action: null, msg: 'Homestead couldn’t save this run’s progress to disk, so it stopped. Check free disk space, then try again.' },
     hook_blocked:       { retryable: false, action: null, msg: 'One of your hooks blocked this run. Change or turn off that hook to let it run.' },
     /* GH#111: the OLLAMA card points at a server that is not Ollama (LM Studio answers Ollama's chat with a 200 "no such
        route"). A resend reaches the same server, so no retry; the door is the CUSTOM card that speaks to it. The headline is
        the adapter's own sentence (it names the server); this msg is only the fallback. */
     endpoint_mismatch:  { retryable: false, action: 'settings', msg: 'The OLLAMA card points at a server that is not Ollama. Add that server under SETTINGS → AI & MODELS → CUSTOM with its /v1 URL instead.' },
-    local_model_memory: { retryable: false, action: 'settings', msg: 'The local model ran out of memory. Close other local models or memory-heavy apps, or choose a smaller model from the model picker in COMMS before trying again. If the station is still blank or disconnected, restart StarNet after freeing memory.' },
+    local_model_memory: { retryable: false, action: 'settings', msg: 'The local model ran out of memory. Close other local models or memory-heavy apps, or choose a smaller model from the model picker in COMMS before trying again. If the farm is still blank or disconnected, restart Homestead after freeing memory.' },
     unknown:      { retryable: true,  action: null,       msg: 'Something went wrong on that turn — try again.' }
   };
 
@@ -234,13 +234,13 @@
      Matched BEFORE any provider classification: these are StarNet's own decisions, not API failures. */
   const STOP_EXPLAINERS = [
     { kind: 'loop_stuck', re: /loop guard: (.+?) failed (\d+) times with identical arguments/i,
-      text: m => 'The agent got stuck repeating one step: ' + m[1] + ' failed ' + m[2] + ' times in a row with the same input, so StarNet stopped the run. Say what to try differently, or fix what that step needs, then ask again.' },
+      text: m => 'The agent got stuck repeating one step: ' + m[1] + ' failed ' + m[2] + ' times in a row with the same input, so Homestead stopped the run. Say what to try differently, or fix what that step needs, then ask again.' },
     { kind: 'unknown_tools', re: /loop breaker: the model called tools that do not exist \(([^)]*)\)/i,
-      text: m => 'The model kept calling tools that don’t exist (' + m[1] + '), so StarNet stopped the run. Try again, or switch to a stronger model.' },
+      text: m => 'The model kept calling tools that don’t exist (' + m[1] + '), so Homestead stopped the run. Try again, or switch to a stronger model.' },
     { kind: 'tool_keeps_failing', re: /loop breaker: (.+?) failed (\d+) times in a row/i,
-      text: m => m[1] + ' kept failing (' + m[2] + ' times in a row, with different inputs), so StarNet stopped this unattended run. Check its error, fix the cause, then run it again.' },
+      text: m => m[1] + ' kept failing (' + m[2] + ' times in a row, with different inputs), so Homestead stopped this unattended run. Check its error, fix the cause, then run it again.' },
     { kind: 'no_progress', re: /loop breaker: (.+?) returned the identical result (\d+) turns in a row/i,
-      text: m => m[1] + ' kept returning the same result (' + m[2] + ' turns in a row), so StarNet stopped this unattended run as stuck. Check what it was waiting for, then run it again.' },
+      text: m => m[1] + ' kept returning the same result (' + m[2] + ' turns in a row), so Homestead stopped this unattended run as stuck. Check what it was waiting for, then run it again.' },
     { kind: 'incomplete_work', re: /Work is incomplete: the model kept announcing/i,
       text: () => 'The agent stopped before finishing: it kept saying what it would do next without actually doing it. Say "continue" to push it on, or switch to a stronger model.' },
     { kind: 'memory_unverified', re: /memory update is unverified|promise to remember above is unverified/i,
@@ -248,11 +248,11 @@
     { kind: 'output_limit', re: /hit the model's output limit while writing a large (\S+) call/i,
       text: m => 'The reply hit the model’s output limit while writing a large ' + m[1] + ' call, so it never ran and nothing from it was saved. Ask for it in smaller parts (for example "write it section by section"), or switch to a model with a larger output limit.' },
     { kind: 'checkpoint_failed', re: /run checkpoint failed/i,
-      text: () => 'StarNet couldn’t save this run’s progress to disk, so it stopped rather than risk losing work. Check free disk space, then try again.' },
+      text: () => 'Homestead couldn’t save this run’s progress to disk, so it stopped rather than risk losing work. Check free disk space, then try again.' },
     { kind: 'hook_blocked', re: /blocked by your hook(?: `([^`]*)`)?: ?(.*)$/i,
       text: m => 'Your hook' + (m[1] ? ' `' + m[1] + '`' : '') + ' blocked this run' + (m[2] ? ': ' + m[2].replace(/\.\s*$/, '') : '') + '. Change or turn off that hook to let it run.' },
     { kind: 'context_overflow', re: /context still too large after compacting/i,
-      text: () => 'This conversation got too long for the model, even after StarNet compacted it. Start a fresh conversation, or switch to a model with a larger context window.' }
+      text: () => 'This conversation got too long for the model, even after Homestead compacted it. Start a fresh conversation, or switch to a model with a larger context window.' }
   ];
   function explainStop(message) {
     const s = String(message == null ? '' : message);
@@ -281,8 +281,8 @@
     }
     if (r === 'refusal') return 'the model declined that request — try rephrasing it';
     if (r === 'cancelled') {
-      if (o.cancelSource === 'estop_by_run') return 'stopped — this run paused all automation (what Pause Automation in the StarNet tray menu does); RESUME AUTOMATION (top bar) is yours alone';
-      return 'stopped from outside this chat — a STOP elsewhere (desk screen, HUD, phone, or Pause Automation in the StarNet tray menu) ended it before it finished';
+      if (o.cancelSource === 'estop_by_run') return 'stopped — this run paused all automation (what Pause Automation in the Homestead tray menu does); RESUME AUTOMATION (top bar) is yours alone';
+      return 'stopped from outside this chat — a STOP elsewhere (desk screen, HUD, phone, or Pause Automation in the Homestead tray menu) ended it before it finished';
     }
     if (r === 'error') return 'it stopped on an error before it finished — try again';
     if (!r || r === 'done' || r === 'clarifying') return '';
@@ -296,7 +296,7 @@
      Harness's own withheld notice and offer NO door: the notice itself says whether a reload can help (it re-runs the
      check, so only for a transient reason) and names the owner's hatch. The kind stays stale_session (its
      post-mortem already reads "the message is the fix"). '' = this page holds its key (or no Harness: node/tests). */
-  const TOKEN_WITHHELD_MSG = 'StarNet could not confirm this browser runs as your own user account, so it won’t take commands from this page. Open StarNet from the desktop app, or if this is your own browser, restart StarNet with STARNET_TRUST_LOCAL_PEERS=1.';
+  const TOKEN_WITHHELD_MSG = 'Homestead could not confirm this browser runs as your own user account, so it won’t take commands from this page. Open Homestead from the desktop app, or if this is your own browser, restart Homestead with STARNET_TRUST_LOCAL_PEERS=1.';
   function withheldNotice() {
     if (typeof Harness === 'undefined' || !Harness || typeof Harness.tokenWithheld !== 'function' || !Harness.tokenWithheld()) return '';
     return (typeof Harness.tokenWithheldNotice === 'function' && Harness.tokenWithheldNotice()) || TOKEN_WITHHELD_MSG;
@@ -364,7 +364,7 @@
   function transportMessage(engineAlive) {
     if (engineAlive === false) return KINDS.network.msg;
     if (engineAlive === true) {
-      return "The reply stream stopped before it finished — StarNet's local service answered a health check, so "
+      return "The reply stream stopped before it finished — Homestead's local service answered a health check, so "
         + 'the app itself is running; this was the connection carrying the reply. Try again.';
     }
     return 'The connection dropped before the reply finished — try again. If it keeps happening, use "copy '
@@ -403,7 +403,7 @@
   function capdeniedMessage(cap) {
     const info = cap && CAP_INFO[cap];
     if (!info) return KINDS.capdenied.msg;
-    return 'This task needs ' + info.power + ' — ' + info.gear + " isn't on station. Open BUILD MODE to place it and try again.";
+    return 'This task needs ' + info.power + ' — ' + info.gear + " isn't on farm. Open BUILD MODE to place it and try again.";
   }
 
   // browser fallback: classify the UI-level error string + optional HTTP status into a kind, using the SAME
@@ -459,13 +459,13 @@
   function spendUnknownMessage(raw) {
     const low = String(raw || '').toLowerCase();
     if (/interrupted before its spend was recorded/.test(low)) {
-      return "Your spending limits can't be checked — an earlier run stopped before StarNet recorded what it spent, so this run was stopped. Settle that run in SETTINGS › SPENDING LIMITS.";
+      return "Your spending limits can't be checked — an earlier run stopped before Homestead recorded what it spent, so this run was stopped. Settle that run in SETTINGS › SPENDING LIMITS.";
     }
     if (/line of the spend record is damaged/.test(low)) {
-      return "Your spending limits can't be checked — a line of StarNet's spend record is damaged, so what it recorded is unknown and this run was stopped. Settle it in SETTINGS › SPENDING LIMITS.";
+      return "Your spending limits can't be checked — a line of Homestead's spend record is damaged, so what it recorded is unknown and this run was stopped. Settle it in SETTINGS › SPENDING LIMITS.";
     }
     if (/could not be saved to disk/.test(low)) {
-      return "Your spending limits can't be checked — StarNet couldn't save its spend history to disk, so this run was stopped. Restart StarNet to recover it; SETTINGS › SPENDING LIMITS shows the details.";
+      return "Your spending limits can't be checked — Homestead couldn't save its spend history to disk, so this run was stopped. Restart Homestead to recover it; SETTINGS › SPENDING LIMITS shows the details.";
     }
     return KINDS.spend_unknown.msg;
   }
@@ -592,8 +592,8 @@
     // ONLY "out of managed credit" means an empty wallet: "Managed credits are unavailable" also says "managed credit",
     // and matching that as managed_credit told funded customers to top up whenever a balance check failed.
     if (/managed credits? (?:are |is )?unavailable/.test(raw.toLowerCase())) {
-      kind = /refused this station'?s link|relink/.test(raw.toLowerCase()) ? 'managed_credit_link' : 'managed_credit_unavailable';
-    } else if (/managed credits? (?:are |is )?held|balance is held by \d+ running starnet run/.test(raw.toLowerCase())) {
+      kind = /refused this (?:station|farm)'?s link|relink/.test(raw.toLowerCase()) ? 'managed_credit_link' : 'managed_credit_unavailable';
+    } else if (/managed credits? (?:are |is )?held|balance is held by \d+ running (?:starnet|starnet) run/.test(raw.toLowerCase())) {
       kind = 'managed_credit_held';   // the balance sits in this station's own running runs' holds — never "out of credit"
     } else if (/managed credit|add credits in the store|out of managed credit/.test(raw.toLowerCase())) {
       kind = 'managed_credit';
@@ -722,8 +722,8 @@
       const low = raw.toLowerCase();
       const named = raw.match(/connect an? (.+?) api key\b/i);   // the sidecar guard: providerCredentialError()
       let userMessage = k.msg;
-      if (/link this station to a starnet account/.test(low)) {
-        userMessage = "This station isn't linked to StarNet credits yet — link it under SETTINGS → AI & MODELS → STARNET MANAGED, or connect your own provider key.";
+      if (/link this (?:station|farm) to a starnet account/.test(low)) {
+        userMessage = "This farm isn't linked to StarNet credits yet — link it under SETTINGS → AI & MODELS → STARNET MANAGED, or connect your own provider key.";
       } else if (named) {
         userMessage = 'No ' + named[1].trim().replace(/\s+api$/i, '') + ' API key is connected yet — add it under SETTINGS → AI & MODELS, or pick a model from a provider you have already connected.';
       } else if (/configure the (.+?) base url/i.test(raw)) {
@@ -795,13 +795,13 @@
      cloud failure (sidecar/index.js linkStartFailure). Lower-case lead, no trailing period (callers add their own). */
   function linkStartFailure(info) {
     const i = info || {}, j = i.j || {};
-    if (i.local) return 'StarNet\'s engine on this computer isn\'t answering, so the link could not start — restart StarNet, then try again';
-    if (i.status === 503 && j.degraded) return 'StarNet\'s engine on this computer stopped after an error, so the link could not start — restart StarNet, then try again';
-    if (i.status === 404 && j.error === 'linking_unavailable') return 'account linking isn\'t available in this build of StarNet';
+    if (i.local) return 'Homestead\'s engine on this computer isn\'t answering, so the link could not start — restart Homestead, then try again';
+    if (i.status === 503 && j.degraded) return 'Homestead\'s engine on this computer stopped after an error, so the link could not start — restart Homestead, then try again';
+    if (i.status === 404 && j.error === 'linking_unavailable') return 'account linking isn\'t available in this build of Homestead';
     const detail = j.detail ? ' (' + String(j.detail) + ')' : '';
-    if (j.reason === 'tls') return 'security software on this computer (an antivirus HTTPS scan or a proxy) is blocking StarNet\'s secure connection to the StarNet account service' + detail + ' — allow StarNet, then try again';
+    if (j.reason === 'tls') return 'security software on this computer (an antivirus HTTPS scan or a proxy) is blocking Homestead\'s secure connection to the StarNet account service' + detail + ' — allow Homestead, then try again';
     if (j.reason === 'timeout') return 'the StarNet account service did not answer in time — check a VPN or firewall, then try again';
-    if (j.reason === 'dns' || j.reason === 'unreachable') return 'StarNet could not reach the StarNet account service from this computer' + detail + ' — check a VPN or firewall, then try again';
+    if (j.reason === 'dns' || j.reason === 'unreachable') return 'Homestead could not reach the StarNet account service from this computer' + detail + ' — check a VPN or firewall, then try again';
     if (j.reason === 'cloud_5xx') return 'the StarNet account service is having trouble right now — try again in a minute';
     if (/^cloud_\d+$/.test(String(j.reason || ''))) return 'the StarNet account service turned the link request down (http ' + String(j.reason).slice(6) + ') — try again';
     return 'could not reach the link service — try again';

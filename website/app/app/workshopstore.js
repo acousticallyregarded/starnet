@@ -113,7 +113,7 @@ const WorkshopStore = (() => {
   function queueConfirmLine(name) {
     const who = String(name || 'it').trim() || 'it';
     return '◈ queued for the away workshop — ' + who + ' will build this in its private sandbox on its next away shift '
-      + '(recurring, roughly every 6 hours while the station is up). the result arrives as a new ⚒ session in your rail — '
+      + '(recurring, roughly every 6 hours while the farm is up). the result arrives as a new ⚒ session in your rail — '
       + 'see the build list (and a “build now” button) on the agent’s dossier › CONFIG.';
   }
 
@@ -177,7 +177,7 @@ const WorkshopStore = (() => {
       const j = await r.json().catch(() => null);
       if (r.ok && j && j.ok) return { ok: true };
       return { ok: false, error: (j && (j.error || j.message)) || 'could not enable it' };
-    } catch (_) { return { ok: false, error: 'could not reach the station' }; }
+    } catch (_) { return { ok: false, error: 'could not reach the farm' }; }
   }
 
   // decide a return card. decision: 'keep' (destPath required) | 'later' | 'discard'.
@@ -207,7 +207,7 @@ const WorkshopStore = (() => {
           savedOnly: j && j.savedOnly === true, patchRefused: (j && j.patchRefused) || null };
       }
       return { ok: false, error: (j && j.error) || 'could not save your decision' };
-    } catch (_) { return { ok: false, error: 'decision failed to reach the station' }; }
+    } catch (_) { return { ok: false, error: 'decision failed to reach the farm' }; }
   }
 
   /* IMPLEMENT-AS-BUILD (2026-08-14) — POST /api/workshop/implement and run what a PLAN deliverable describes.
@@ -245,7 +245,7 @@ const WorkshopStore = (() => {
       const m = (await fetchRaw()).find(x => x && String(x.runId) === rid) || null;
       if (!m) return { ok: true, pending: false };
       return await decide(m.agentId || agentId || 'agent', rid, 'discard');
-    } catch (_) { return { ok: false, error: 'could not reach the station' }; }
+    } catch (_) { return { ok: false, error: 'could not reach the farm' }; }
   }
 
   // read a file inside the deliverable for the viewer, via the EXISTING jailed read-only route /api/file
@@ -276,7 +276,7 @@ const WorkshopStore = (() => {
   // W7 — OS launch is intentionally unavailable: neither loopback API possession nor
   // renderer IPC proves a fresh human gesture. The caller presents manual-open guidance.
   async function openFile(agentId, runId, relPath) {
-    return { ok: false, error: 'Open this file manually; StarNet cannot launch desktop applications from a run.' };
+    return { ok: false, error: 'Open this file manually; Homestead cannot launch desktop applications from a run.' };
   }
 
   // the sensible default Keep destination (the Commander's Desktop, when the desktop shell knows it).

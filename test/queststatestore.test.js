@@ -40,7 +40,7 @@ const waved = [];
 global.CuriosityStore = { markDismissed: d => waved.push(d) };
 
 const { QuestStateStore } = require('../frontend/app/queststatestore.js');
-const dq = (key, status) => ({ id: 'dim:' + key, kind: 'dossier', status, title: 'Tell the station your ' + key, reward: 'sharper agents' });
+const dq = (key, status) => ({ id: 'dim:' + key, kind: 'dossier', status, title: 'Tell the farm your ' + key, reward: 'sharper agents' });
 const mq = (id, status) => ({ id: 'ms:' + id, kind: 'milestone', status, title: id.toUpperCase(), reward: 'recognition' });
 
 /* ---------- resume baseline: already-done quests are backfilled silently ---------- */
@@ -103,12 +103,12 @@ QuestStateStore.reset();
 A.eq(global.localStorage.getItem('starnet.queststate.v1'), null, 'reset removes the self-persisted key');
 A.eq(QuestStateStore.sync(), [], 'a reset store degrades to no-ops until the next init');
 QuestStateStore.init();
-A.eq(QuestStateStore.isDismissed('dim:stack'), false, 'after reset+init, no prior Commander history remains');
+A.eq(QuestStateStore.isDismissed('dim:stack'), false, 'after reset+init, no prior Farmer history remains');
 
 /* ---------- source-level locks: the browser wiring (stationui/app/index.html are not node-loadable) ---------- */
 const stSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/stationui.js'), 'utf8');
 A.ok(/\b(QuestStateStore|QSS)\.visible\(/.test(stSrc), 'buildQuests filters the projection through QuestStateStore.visible (dismissed never re-renders)');
-A.ok(/QuestStateStore\.sync\(\)/.test(stSrc), 'the station keeps the quest memory synced (completion detection is driven, not render-only)');
+A.ok(/QuestStateStore\.sync\(\)/.test(stSrc), 'the farm keeps the quest memory synced (completion detection is driven, not render-only)');
 A.ok(/q-dismiss/.test(stSrc), 'the quest log offers a dismiss affordance');
 A.ok(/\b(QuestStateStore|QSS)\.dismiss\(/.test(stSrc), '…that routes through QuestStateStore.dismiss (kind-gated by the engine)');
 A.ok(/isCelebrating/.test(stSrc) && /q-celebrate/.test(stSrc), 'a freshly-completed row renders the gold q-celebrate flourish');

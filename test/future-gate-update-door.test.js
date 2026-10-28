@@ -43,9 +43,9 @@ function makeGate(updates) {
     const msg = g.nodes['future-msg'].textContent;
     A.ok(!/checking for an update/.test(msg), 'the gate no longer claims it is still checking');
     A.ok(/Pre-update recovery point failed - ENOENT/.test(msg), 'it names why the install paused');
-    A.ok(/keeps your station/.test(msg), 'and says the full installer keeps the station');
+    A.ok(/keeps your farm/.test(msg), 'and says the full installer keeps the farm');
     const dl = g.nodes['btn-future-download'];
-    A.ok(!!dl && g.actions.children.indexOf(dl) >= 0, 'a DOWNLOAD LATEST door appears beside UPDATE STARNET');
+    A.ok(!!dl && g.actions.children.indexOf(dl) >= 0, 'a DOWNLOAD LATEST door appears beside UPDATE HOMESTEAD');
     A.eq(dl && dl.className, 'btn-xl', 'in the gate\'s own button skin (no OS paint)');
     if (dl) await dl.onclick();
     A.eq(opened, 1, 'the door opens the public releases page through Updates.openReleasesPage');

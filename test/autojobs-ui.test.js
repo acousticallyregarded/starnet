@@ -79,7 +79,7 @@ A.ok(/maxPendingDeliveries: cronStore.MAX_PENDING_DELIVERIES/.test(idx), 'GET /a
 /* ---------- org P16 (2026-10-14): one arm rule, a true status line, one switch name, RUN BY ---------- */
 {
   // the create-state line tells the truth for each of the four states (never "will not run until you enable" while saving arms)
-  A.ok(src.includes("'Scheduling is off. Saving turns it on for the whole station, so every saved schedule runs at its time.'"), 'a never-set switch: the line says scheduling is off and saving turns it on — the INBOX form\'s own words');
+  A.ok(src.includes("'Scheduling is off. Saving turns it on for the whole farm, so every saved schedule runs at its time.'"), 'a never-set switch: the line says scheduling is off and saving turns it on — the INBOX form\'s own words');
   A.ok(src.includes('id="rt-add">▸ SAVE SCHEDULE<'), 'the SCHEDULES save key wears the INBOX key\'s ▸');
   A.ok(src.includes("(j && j.armSet) ? 'Scheduling is off — you turned it off. Saving keeps it off"), 'an explicit OFF: saving keeps it off (armSet from GET /api/cron)');
   A.ok(!src.includes('it will not run automatically until you enable scheduling'), 'the old line that contradicted arm-on-save is gone');
@@ -87,7 +87,7 @@ A.ok(/maxPendingDeliveries: cronStore.MAX_PENDING_DELIVERIES/.test(idx), 'GET /a
   const autoSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/windows/automation.js'), 'utf8');
   const jobsPage = (autoSrc.match(/const labels = \{ routines: '([^']+)'/) || [])[1];
   A.eq(jobsPage, 'Scheduled jobs', 'fixture: AUTOMATE labels the routines page Scheduled jobs');
-  A.ok(!/Active Routines/.test(src), 'no line sends the Commander to an "Active Routines" no page is called');
+  A.ok(!/Active Routines/.test(src), 'no line sends the Farmer to an "Active Routines" no page is called');
   A.ok(src.includes('Saving keeps it stopped: it runs only after you press ▶ TURN SCHEDULING ON in ' + jobsPage + '.') && src.includes('Saving keeps it off: press ▶ TURN SCHEDULING ON in ' + jobsPage + ' when'), 'the E-STOP and OFF lines name the key and the page it is on');
   A.ok(src.includes('nothing fires until you press ▶ TURN SCHEDULING ON in AUTOMATE › SCHEDULES › ' + jobsPage + "'") && !/until you resume it in AUTOMATE/.test(src), 'the E-STOP save toast names the key, never a RESUME there is none of');
   // one switch name: ▶ TURN SCHEDULING ON / ⏸ TURN SCHEDULING OFF

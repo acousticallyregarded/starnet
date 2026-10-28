@@ -232,8 +232,8 @@ for (let seed = 1; seed <= 36; seed++) {
   }
 }
 for (const s of shown) console.log('  MISMATCH ' + s);
-A.ok(geos >= 30, 'enough random stations exercised (' + geos + ')');
-A.ok(lanesSeen >= 3, 'some stations clamp feet into north mouth lanes (' + lanesSeen + ')');
+A.ok(geos >= 30, 'enough random farms exercised (' + geos + ')');
+A.ok(lanesSeen >= 3, 'some farms clamp feet into north mouth lanes (' + lanesSeen + ')');
 A.ok(routed > 1500 && nulls > 300 && empties > 60, 'routes, refusals and already-there answers all exercised (' + routed + '/' + nulls + '/' + empties + ')');
 A.eq(mismatches, 0, 'path() answers exactly what the old BFS answered on every query (' + calls + ' calls, ' + cold + ' on a fresh geo)');
 
@@ -258,6 +258,6 @@ A.eq(mismatches, 0, 'path() answers exactly what the old BFS answered on every q
   A.eq(again, first, 'a warm geo answers exactly what it answered cold');
 }
 
-console.log('  ' + geos + ' stations (' + lanesSeen + ' with doorway lanes), ' + calls + ' calls: ' + routed + ' routed (longest '
+console.log('  ' + geos + ' farms (' + lanesSeen + ' with doorway lanes), ' + calls + ' calls: ' + routed + ' routed (longest '
   + longest + ' waypoints), ' + nulls + ' refused, ' + empties + ' already there, ' + mismatches + ' mismatches');
 A.report('path-oracle');

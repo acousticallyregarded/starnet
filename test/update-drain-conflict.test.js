@@ -101,13 +101,13 @@ const prepared = c => c.calls.includes('POST /api/update/prepare') || c.calls.in
     A.eq(c.installCalls(), 0, 'the native installer does not run');
     A.eq(prepared(c), false, 'no recovery point is cut over the unsaved window');
     A.eq(/try again in a moment/i.test(state.error), false, 'the card no longer says "try again in a moment" (got: ' + state.error + ')');
-    A.ok(/conflict with the station file/i.test(state.error), 'the card names the conflict');
-    A.ok(/kept separately on the station/i.test(state.error), 'and says this window’s copy is kept on the station');
+    A.ok(/conflict with the farm file/i.test(state.error), 'the card names the conflict');
+    A.ok(/kept separately on the farm/i.test(state.error), 'and says this window’s copy is kept on the farm');
     A.ok(/save notice at the top/i.test(state.error) && /Restore this window’s sessions/.test(state.error), 'and points at the save notice’s Restore button');
-    A.ok(/Reload current station/.test(state.error), 'or its Reload button');
+    A.ok(/Reload current farm/.test(state.error), 'or its Reload button');
     A.ok(/update was not installed/i.test(state.error), 'and says the update was not installed');
     A.ok(c.refreshes() >= 1, 'the save notice is drawn (StationUI.refreshSave) so the buttons it names are on screen');
-    A.ok(c.notices.some(n => /conflict with the station file/.test(String(n[0]))), 'the toast names the conflict too');
+    A.ok(c.notices.some(n => /conflict with the farm file/.test(String(n[0]))), 'the toast names the conflict too');
   }
   {
     // the station was RESET: the notice offers Download + Open the fresh station (no restore)
@@ -115,7 +115,7 @@ const prepared = c => c.calls.includes('POST /api/update/prepare') || c.calls.in
     await c.ready();
     const state = await c.updates.install();
     A.eq(c.installCalls(), 0, 'a reset refusal does not install either');
-    A.ok(/station was reset/i.test(state.error) && /Open the fresh station/.test(state.error), 'a reset names the reset and the notice’s Open the fresh station button (got: ' + state.error + ')');
+    A.ok(/farm was reset/i.test(state.error) && /Open the fresh farm/.test(state.error), 'a reset names the reset and the notice’s Open the fresh farm button (got: ' + state.error + ')');
     A.eq(/Restore this window/.test(state.error), false, 'and never offers a restore the notice does not show');
   }
   {
@@ -123,7 +123,7 @@ const prepared = c => c.calls.includes('POST /api/update/prepare') || c.calls.in
     const c = makeCase({ recovery: false });
     await c.ready();
     const state = await c.updates.install();
-    A.ok(/Download this window’s save/.test(state.error) && /Reload current station/.test(state.error), 'without a preserved copy the card names Download then Reload (got: ' + state.error + ')');
+    A.ok(/Download this window’s save/.test(state.error) && /Reload current farm/.test(state.error), 'without a preserved copy the card names Download then Reload (got: ' + state.error + ')');
     A.eq(/Restore this window/.test(state.error), false, 'and no Restore button');
   }
   {
@@ -135,9 +135,9 @@ const prepared = c => c.calls.includes('POST /api/update/prepare') || c.calls.in
     const state = await c.updates.install();
     A.eq(c.installCalls(), 0, 'an erased-work refusal does not install either');
     A.eq(/Restore this window/.test(state.error), false, 'erased work never names a Restore button the notice does not show (got: ' + state.error + ')');
-    A.ok(/Download this window’s save/.test(state.error) && /Reload current station/.test(state.error), 'it names the notice’s Download then Reload current station buttons');
-    A.ok(/from before this computer’s station was reset/.test(state.error), 'and says the copy is from before the reset, as the notice does');
-    A.ok(/kept separately on the station/i.test(state.error) && /update was not installed/i.test(state.error), 'and that the copy is kept and the update was not installed');
+    A.ok(/Download this window’s save/.test(state.error) && /Reload current farm/.test(state.error), 'it names the notice’s Download then Reload current farm buttons');
+    A.ok(/from before this computer’s farm was reset/.test(state.error), 'and says the copy is from before the reset, as the notice does');
+    A.ok(/kept separately on the farm/i.test(state.error) && /update was not installed/i.test(state.error), 'and that the copy is kept and the update was not installed');
   }
   A.report('update-drain-conflict');
 })().catch(e => { console.log('FAIL: unhandled ' + (e && e.stack || e)); process.exit(1); });

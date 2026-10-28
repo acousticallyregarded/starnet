@@ -12,7 +12,7 @@ const { makeClock } = require('../shared/clock-rng.js');
   const run = { agentId: 'ag', runId: 'run_7', messages: [
     { role: 'system', content: 'SYS — should be stripped' },
     { role: 'user', content: 'I prefer terse answers and I deploy with npm publish' },
-    { role: 'assistant', content: 'Understood, Commander.' }
+    { role: 'assistant', content: 'Understood, Farmer.' }
   ] };
   const stub = () => 'PREFERENCE: user prefers terse answers\nFACT: deploys with npm publish\nrandom chatter, no tag\nSKILL: can tag releases';
 
@@ -181,7 +181,7 @@ const { makeClock } = require('../shared/clock-rng.js');
   A.eq(recordFromProposal({ kind: 'fact', content: 'f' }, { now: 0 }).title, 'Fact', 'fact -> "Fact" label');
   A.eq(recordFromProposal({ kind: 'weird', content: 'w' }, { now: 0 }).title, 'Note', 'unknown kind -> "Note" label');
   // ORIGIN: unattended runs reflect now, so a committed record must say which surface formed it
-  A.eq(rec.origin, 'commander', 'no origin supplied -> commander (the historical meaning of an untagged record)');
+  A.eq(rec.origin, 'commander', 'no origin supplied -> farmer (the historical meaning of an untagged record)');
   A.eq(recordFromProposal(prop, { now: 0, id: 'n', origin: 'channel:telegram' }).origin, 'channel:telegram', 'a run-supplied origin is stamped on the record');
   A.eq(recordFromProposal({ kind: 'fact', content: 'f', origin: 'nightshift' }, { now: 0 }).origin, 'nightshift', 'a proposal that already carries an origin keeps it');
 
@@ -205,7 +205,7 @@ const { makeClock } = require('../shared/clock-rng.js');
   A.eq(highStakes('keeps a shared secret in the config'), true, 'a "secret" mention is high-stakes');
   A.eq(highStakes('rotate the access credentials monthly'), true, 'a "credentials" mention is high-stakes');
   // POSITIVES — PII
-  A.eq(highStakes('reach the Commander at andrew@example.com'), true, 'an email address is high-stakes');
+  A.eq(highStakes('reach the Farmer at andrew@example.com'), true, 'an email address is high-stakes');
   A.eq(highStakes('the office number is +1 (415) 555-0199'), true, 'a phone number is high-stakes');
   A.eq(highStakes('ships packages to 1600 Pennsylvania Avenue'), true, 'a street address is high-stakes');
   // POSITIVES — standing instructions

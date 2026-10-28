@@ -46,7 +46,7 @@ A.eq(crewCap([], { railH: 774, spare: 600 }), 0, 'an empty roster asks for no ca
 // fractional layout must never round DOWN into the row it is meant to reveal
 A.eq(crewCap([52.4, 101.6], { railH: 300, spare: 600 }), 102, 'a fractional row cut rounds UP so the last row stays whole');
 
-A.ok(ROWS_MIN >= 3 && ROWS_MIN <= 4, 'the rail promises 3-4 agents visible whole (Commander directive)');
+A.ok(ROWS_MIN >= 3 && ROWS_MIN <= 4, 'the rail promises 3-4 agents visible whole (Farmer directive)');
 A.ok(SHARE > 0 && SHARE < 1, 'the roster keeps a fractional share of the column, never all of it');
 A.ok(WS_FLOOR > 0, 'SESSIONS keeps a floor no matter how deep the crew gets');
 

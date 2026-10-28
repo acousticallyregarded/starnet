@@ -24,7 +24,7 @@ A.eq(d.dims.stack[0].source, 'commander', 'source is recorded');
 A.eq(d.dims.stack[0].createdAt, 100, 'createdAt uses the injected clock');
 D.upsert(d, 'goals', { text: 'Ship the dossier' }, 101);
 A.eq(d.dims.goals[0].id, 'cd_2', 'ids are monotonic across the whole dossier');
-A.eq(d.dims.goals[0].source, 'commander', 'source defaults to commander');
+A.eq(d.dims.goals[0].source, 'commander', 'source defaults to farmer');
 
 /* updating by id edits text in place (does not add a second belief) */
 D.upsert(d, 'stack', { id: 'cd_1', text: 'TypeScript, Rust, and Node' }, 200);
@@ -100,10 +100,10 @@ A.ok(block1.indexOf('Identity') < 0, 'composeBlock omits blank dimensions (never
 A.eq(D.composeBlock(cb, {}), block1, 'composeBlock is byte-identical for identical state (cache-warm)');
 // the pain lead — the one hand-written, non-trivial lead — must compose so every agent SEES the Commander's pain (Slice 6)
 D.upsert(cb, 'pain', { text: 'writing standup reports by hand' }, 3);
-A.ok(D.composeBlock(cb, {}).indexOf('Pain points (what eats their time') >= 0, 'composeBlock renders the pain lead so downstream pitches see the Commander pain');
+A.ok(D.composeBlock(cb, {}).indexOf('Pain points (what eats their time') >= 0, 'composeBlock renders the pain lead so downstream pitches see the Farmer pain');
 // the ambition lead — pain's matched pull — must compose too so pitches can aim at what the Commander actually wants (Slice 7)
 D.upsert(cb, 'ambition', { text: 'launch a newsletter' }, 4);
-A.ok(D.composeBlock(cb, {}).indexOf('Ambitions (what they keep meaning to do') >= 0, 'composeBlock renders the ambition lead so downstream pitches see the Commander ambitions');
+A.ok(D.composeBlock(cb, {}).indexOf('Ambitions (what they keep meaning to do') >= 0, 'composeBlock renders the ambition lead so downstream pitches see the Farmer ambitions');
 // the cap backs off on a word boundary and never throws
 const big = D.fresh();
 for (let i = 0; i < 6; i++) D.upsert(big, 'identity', { text: 'word'.repeat(20) + ' ' + i }, i);
@@ -160,8 +160,8 @@ A.eq(new Set(fixed.dims.identity.map(b => b.id)).size, 4, 'a post-hydrate add ne
 /* ---------- V3 §5: evidence WEIGHT — the readiness gate's substrate ---------- */
 {
   const d = D.fresh();
-  D.upsert(d, 'pain', { text: 'typed by the commander', source: 'onboarding' }, 10);
-  A.eq(d.dims.pain[0].weight, 'stated', 'a plain upsert defaults to weight stated (the Commander\'s words)');
+  D.upsert(d, 'pain', { text: 'typed by the farmer', source: 'onboarding' }, 10);
+  A.eq(d.dims.pain[0].weight, 'stated', 'a plain upsert defaults to weight stated (the Farmer\'s words)');
   D.upsert(d, 'goals', { text: 'a synthesized mission', source: 'onboarding', weight: 'synth' }, 11);
   A.eq(d.dims.goals[0].weight, 'synth', 'a declared weight is honored');
   D.upsert(d, 'stack', { text: 'observed from work', source: 'study', observedAt: 12 }, 12);
@@ -201,7 +201,7 @@ A.eq(new Set(fixed.dims.identity.map(b => b.id)).size, 4, 'a post-hydrate add ne
   A.eq(manualOf(r1), 'Reply in short bullet points', 'an edited Overseer manual replaces its untouched seed — the old order is gone from the prompt');
   A.eq(r1.dims.standing_orders[0].id, id, '…in place (same belief, no duplicate)');
   A.ok(r1.dims.standing_orders[0].source === 'onboarding' && r1.dims.standing_orders[0].weight === 'seed', '…still a mechanical seed (it never starts counting toward readiness)');
-  A.ok(D.composeBlock(r1).indexOf('long paragraphs') < 0 && D.composeBlock(r1).indexOf('short bullet points') > 0, 'the composed COMMANDER block carries only the current order');
+  A.ok(D.composeBlock(r1).indexOf('long paragraphs') < 0 && D.composeBlock(r1).indexOf('short bullet points') > 0, 'the composed FARMER block carries only the current order');
   // negative: a seed the Commander EDITED is theirs — a later manual change never overwrites it
   const r2 = D.fresh();
   D.seedFromDocs(r2, { manual: 'Be concise' }, 100, { resync: true });
@@ -216,12 +216,12 @@ A.eq(new Set(fixed.dims.identity.map(b => b.id)).size, 4, 'a post-hydrate add ne
   A.eq(r3.dims.standing_orders.length, 0, 'negative: a forgotten seed never comes back on a doc edit');
   // negative: a non-canonical caller (a specialist's own docs) never rewrites the station's seeds
   const r4 = D.fresh();
-  D.seedFromDocs(r4, { manual: 'Station order' }, 100, { resync: true });
+  D.seedFromDocs(r4, { manual: 'Farm order' }, 100, { resync: true });
   D.seedFromDocs(r4, { manual: 'Specialist order' }, 200);
-  A.eq(manualOf(r4), 'Station order', 'negative: without resync (another agent\'s docs) the seed is untouched');
+  A.eq(manualOf(r4), 'Farm order', 'negative: without resync (another agent\'s docs) the seed is untouched');
   // negative: an empty doc is not treated as a deletion (unloaded and cleared look the same)
   D.seedFromDocs(r4, { manual: '' }, 300, { resync: true });
-  A.eq(manualOf(r4), 'Station order', 'negative: an empty doc never wipes the seed');
+  A.eq(manualOf(r4), 'Farm order', 'negative: an empty doc never wipes the seed');
   // the record of what was copied survives a save/reload
   const back = D.hydrate(JSON.parse(JSON.stringify(r1)));
   A.eq(back.seedText.manual, 'Reply in short bullet points', 'hydrate keeps what each seed copied');

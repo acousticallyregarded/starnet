@@ -30,9 +30,9 @@ const T0 = 1_800_000_000_000;
   const st = [{ id: 's1', runIds: ['r9'], history: [{ role: 'user', content: 'Go' }, { role: 'assistant', sourceRunId: 'r9', content: 'Part one.\n[steering] Also list the biggest files\nPart two.' }] }];
   A.eq(H.replyOfRun('r9', 's1', st), 'Part one.\n\nPart two.', 'a direction echoed into the reply is never shown as the agent\'s result');
   A.eq(H.replyOfRun('r9', 's1', [{ id: 's1', history: [{ role: 'assistant', sourceRunId: 'r9', content: '\n[steering] 1 steering note arrived as this run was ending and was NOT applied\n' }] }]), '', 'a reply that is only steering echoes is no reply');
-  A.ok(by('r-com').canStop && by('r-com').canSteer, 'a run the station can stop offers STOP and a direction');
+  A.ok(by('r-com').canStop && by('r-com').canSteer, 'a run the farm can stop offers STOP and a direction');
   A.ok(!by('r-line').canStop && !by('r-line').canSteer, 'a work-line step /api/cancel cannot reach offers neither (no "Stop requested." for a stop that never happens)');
-  A.ok(by('r-old').canStop, 'an older station that does not say keeps the controls');
+  A.ok(by('r-old').canStop, 'an older farm that does not say keeps the controls');
   const workers = [
     { id: 'w1', agentId: 'researcher', status: 'stale', prompt: 'Dig up the docs', completedAt: T0 - 1000 },
     { id: 'w2', agentId: 'researcher', status: 'refused', prompt: 'Do the thing', completedAt: T0 - 2000 },
@@ -41,14 +41,14 @@ const T0 = 1_800_000_000_000;
   ];
   const items = H.workItems({ feed: H.createFeed(), workers, now: T0 });
   const w = id => items.find(x => x.workerId === id);
-  A.eq([w('w1').state, w('w1').status], ['fault', 'Lost when the station restarted'], 'a worker lost to a restart is a fault, not "done"');
+  A.eq([w('w1').state, w('w1').status], ['fault', 'Lost when the farm restarted'], 'a worker lost to a restart is a fault, not "done"');
   A.eq([w('w2').state, w('w2').status], ['fault', 'Refused'], 'a refused worker is a fault');
   A.eq([w('w3').state, w('w3').status], ['stopped', 'Ended (weird)'], 'an ending the HUD does not know is never painted done');
   A.eq([w('w4').state, w('w4').status], ['fault', 'Stopped: made no progress'], 'a worker the liveness check stopped is never blamed on a restart that did not happen');
   const js = fs.readFileSync(path.join(ROOT, 'frontend/app/hudmode.js'), 'utf8');
   A.ok(!js.includes('No result was recorded') && js.includes("'Its reply isn’t shown here.'") && js.includes("'Its reply is in the conversation.'"),
     'a finished card with no reply on this page says where the reply is, never that there was none');
-  A.ok(js.includes("setText(v.clock, down ? 'NO LINK'") && js.includes("v.node.dataset.state = down ? 'fault' : tile.state;"), 'the widget stops its clocks and says NO LINK when the station stops answering');
+  A.ok(js.includes("setText(v.clock, down ? 'NO LINK'") && js.includes("v.node.dataset.state = down ? 'fault' : tile.state;"), 'the widget stops its clocks and says NO LINK when the farm stops answering');
   A.ok(js.includes('if (S.followId === id && S.followKey === key && cameraOn(id)) return;'), 'a follow the world could not take (or dropped) is retried, never marked done');
   A.ok(js.includes("if (S.busy) { S.exitAfter = true;") && js.includes("invoke('starnet_hud_status').then(v => (v && v.active ? invoke('starnet_hud_set', { active: false }) : null))") && js.includes('else exit(); };'),
     'leaving is never dropped: during entry it runs right after, and a page that lost the HUD still hands the window back');
@@ -84,7 +84,7 @@ const T0 = 1_800_000_000_000;
   const world = fs.readFileSync(path.join(ROOT, 'frontend/app/world.js'), 'utf8');
   A.ok(world.includes('function cameraState()') && world.includes('function restoreCamera(st)') && world.includes('cameraState, restoreCamera,'), 'the world hands a borrowed camera back exactly');
   const rs = fs.readFileSync(path.join(ROOT, 'src-tauri/src/hud_mode.rs'), 'utf8');
-  A.ok(rs.includes('rect = Some(unfolded_rect(r, g.unfolded_w, h));') && rs.includes('let back = station_rect_back('), 'the HUD never walks off-screen on exit, and the station never comes back on a monitor that is gone');
+  A.ok(rs.includes('rect = Some(unfolded_rect(r, g.unfolded_w, h));') && rs.includes('let back = station_rect_back('), 'the HUD never walks off-screen on exit, and the farm never comes back on a monitor that is gone');
 }
 
 // ---- nothing asserted before the first snapshot ----
@@ -131,7 +131,7 @@ const T0 = 1_800_000_000_000;
   // a lost run.end: the snapshot stops listing the run → it is gone
   H.applySnapshot(f, { runs: [], prompts: [], queues: [] }, T0 + 8000);
   v = H.view(f, who, T0 + 8000);
-  A.eq([v.live.length, v.summary.text], [0, 'STATION IDLE'], 'a confirmed run the snapshot drops is not kept alive by a stale event');
+  A.eq([v.live.length, v.summary.text], [0, 'FARM IDLE'], 'a confirmed run the snapshot drops is not kept alive by a stale event');
   // an event-only run survives a short grace (snapshot older than its run.start), then must be confirmed
   H.onRunStart(f, { agentId: 'agent', runId: 'fresh', trigger: 'directive', model: 'm' }, T0 + 9000);
   H.applySnapshot(f, { runs: [], prompts: [], queues: [] }, T0 + 10_000);
@@ -156,7 +156,7 @@ const T0 = 1_800_000_000_000;
   A.eq([v.recent[0].text, v.recent[0].tone], ['FAULT', 'bad'], 'a fault reads as one');
   H.onRunEnd(f, { agentId: 'researcher', runId: 'q1', reason: 'clarifying', turns: 1, usd: 0 }, T0 + 40);
   v = H.view(f, who, T0 + 50);
-  A.eq([v.recent[0].name, v.recent[0].text, v.recent[0].tone], ['ORION', 'ASKED YOU', 'ask'], 'an agent that ended by asking a question is flagged for the Commander');
+  A.eq([v.recent[0].name, v.recent[0].text, v.recent[0].tone], ['ORION', 'ASKED YOU', 'ask'], 'an agent that ended by asking a question is flagged for the Farmer');
   H.onRunStart(f, { agentId: 'ghost-agent-9', runId: 'g1', trigger: 'directive', model: 'm' }, T0);
   A.eq(H.view(f, who, T0).live[0].name, 'GHOST-AGEN', 'an agent missing from the roster shows its id, not a made-up name');
   for (let i = 0; i < 9; i++) H.onRunStart(f, { agentId: 'agent', runId: 'm' + i, trigger: 'directive', model: 'm' }, T0 + i);
@@ -204,14 +204,14 @@ const T0 = 1_800_000_000_000;
   const [cron, ask, live, worker, stopped, old] = items;
   A.eq([cron.state, cron.status, cron.task, cron.name, cron.time], ['ask', 'Needs your OK', 'Scheduled routine', 'ORION', '1m 30s'], 'a routine waiting on a permission prompt');
   A.eq([live.state, live.status, live.task, live.streamId, live.canSteer, live.canStop], ['live', 'Using WEB.SEARCH', 'Summarise today\'s inbox', 'ws1', true, true],
-    'a live run names its tool and the Commander\'s own words from the conversation that owns it; it can be steered and stopped');
+    'a live run names its tool and the Farmer\'s own words from the conversation that owns it; it can be steered and stopped');
   A.eq([worker.kind, worker.status, worker.task, worker.canSteer, worker.generation, worker.directions], ['worker', 'Working', 'Fix the flaky test', true, 2, ['Direction applied: use the fixture']],
     'a delegated worker is its ledger record, with its steer history');
   A.eq([old.state, old.status, old.time, old.result, old.tools], ['done', 'Completed', '2m ago', 'Found them.\n\nLinks below.', ['WEB.SEARCH', 'GITHUB::GET.ISSUE']],
     'a finished run shows what it said (its own transcript rows, error markers left out) and each tool once');
   A.eq([ask.state, ask.status, ask.result], ['ask', 'Asked you a question', 'Which account?'], 'a run that ended on a question reads as one');
   A.eq([stopped.state, stopped.status, stopped.outputs, stopped.canStop], ['stopped', 'Stopped', ['notes.md'], false], 'a stopped worker keeps its outputs and loses its hands');
-  A.eq(H.workItems({ feed: H.createFeed(), now: T0 }), [], 'nothing on the station: no cards');
+  A.eq(H.workItems({ feed: H.createFeed(), now: T0 }), [], 'nothing on the farm: no cards');
   const lone = H.createFeed();
   H.applySnapshot(lone, { runs: [{ runId: 'tg', agentId: 'ghost', startedAt: T0, source: 'telegram' }], prompts: [], queues: [] }, T0);
   A.eq(H.workItems({ feed: lone, now: T0 }).map(x => [x.name, x.task]), [['GHOST', 'Message from Telegram']], 'no conversation on this page: the run says where it came from, under the agent\'s id');
@@ -249,7 +249,7 @@ A.eq([H.fmtAgo(10_000), H.fmtAgo(5 * 60_000), H.fmtAgo(2 * 3_600_000)], ['just n
   const store = { getItem: k => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)) };
   A.eq(H.readPrefs(store), { pinned: true, rect: null, widget: null }, 'defaults: pinned, no remembered rect or widget size');
   H.writePrefs(store, { pinned: false, rect: { x: 10, y: 20, w: 400, h: 640 }, widget: { w: 520, h: 410 } });
-  A.eq(H.readPrefs(store), { pinned: false, rect: { x: 10, y: 20, w: 400, h: 640 }, widget: { w: 520, h: 410 } }, 'prefs round-trip, the widget size the Commander chose included');
+  A.eq(H.readPrefs(store), { pinned: false, rect: { x: 10, y: 20, w: 400, h: 640 }, widget: { w: 520, h: 410 } }, 'prefs round-trip, the widget size the Farmer chose included');
   mem.set('starnet.hud', '{not json');
   A.eq(H.readPrefs(store), { pinned: true, rect: null, widget: null }, 'corrupt prefs read as defaults');
   A.eq(H.readPrefs({ getItem() { throw new Error('blocked'); } }), { pinned: true, rect: null, widget: null }, 'blocked storage reads as defaults');
@@ -264,10 +264,10 @@ A.eq([H.fmtAgo(10_000), H.fmtAgo(5 * 60_000), H.fmtAgo(2 * 3_600_000)], ['just n
   A.ok(html.indexOf('<script src="app/hudmode.js"></script>') > html.indexOf('<script src="app/chatresize.js"></script>'), 'hudmode.js loads after chatresize.js');
   const css = read('frontend/css/hudmode.css');
   const hide = /html body\.hud-mode #screen-game\.active > :is\(([^)]*)\) \{ display: none !important; \}/.exec(css);
-  A.ok(!!hide, 'HUD hides an explicit list of station regions');
+  A.ok(!!hide, 'HUD hides an explicit list of farm regions');
   const hidden = hide ? hide[1].split(',').map(s => s.trim()) : [];
   for (const id of ['#topbar', '#left', '#stage-wrap', '#bottombar']) A.ok(hidden.includes(id), 'HUD hides ' + id);
-  A.ok(!hidden.includes('#terms') && !hidden.includes('#chat-panel'), 'station windows (#terms) and COMMS stay reachable in the HUD');
+  A.ok(!hidden.includes('#terms') && !hidden.includes('#chat-panel'), 'farm windows (#terms) and COMMS stay reachable in the HUD');
   A.ok(/html body\.hud-mode\.sn-chrome #sn-titlebar \{ display: none !important; \}/.test(css), 'the MAXIMIZE titlebar is not offered on a corner panel');
   const glass = read('frontend/app/glass-demo.js');
   A.ok(/const shown = r => \(r && r\.width > 0 && r\.height > 0 \? r : null\);/.test(glass) && /shown\(rect\(document\.querySelector\('#bottombar'\)\)\)/.test(glass),
@@ -278,26 +278,26 @@ A.eq([H.fmtAgo(10_000), H.fmtAgo(5 * 60_000), H.fmtAgo(2 * 3_600_000)], ['just n
   A.ok(has(js, "fetch('/api/state/snapshot'"), 'live work is the authoritative run snapshot');
   A.ok(has(js, "get('/api/subagents')", "get('/api/runs?agent=*&limit=40')"), 'delegated and finished work are the worker ledger and the run history');
   A.ok(has(js, "'/api/subagents/steer'", "'/api/subagents/interrupt'", "'/api/run/steer'", "'/api/cancel'"),
-    'every card can be steered and stopped through the routes the station already has');
+    'every card can be steered and stopped through the routes the farm already has');
   A.ok(has(js, 'App.openWorkstream(mine[0].id)', 'Workstreams.get(sid)'), 'OPEN CONVERSATION goes to the conversation that owns the work, else the agent\'s own (never rebinds the blank thread on screen)');
   A.ok(has(js, "S.view = 'widget';", "classList.toggle('hud-view-widget', small)", "setView('activity')"), 'the HUD opens SMALL on the widget, and a click opens ACTIVITY');
   A.ok(has(js, 'World.lockBody(id, fr.zoom, { seatAt: fr.seatAt })', 'if (small) worldStart(true); else { worldStop();', 'World.setFrameCap(capped ? WIDGET_FRAME_MS : 0)') && !js.includes('SPRITES.drawBody'),
-    'the widget is the REAL station (the world renderer, its camera following the agent), never a staged scene; the world runs only while the widget shows it');
-  A.ok(css.includes('#screen-game.active > #stage-wrap {') && css.includes('#stage-wrap .cam-hud { display: none !important; }'), 'the widget shows the world alone: no camera frame, no station controls');
-  A.ok(css.includes('body:not(.hud-mode) #chat-panel .hud-ctl { display: none !important; }'), 'back in the full station the COMMS header shows none of the HUD controls');
+    'the widget is the REAL farm (the world renderer, its camera following the agent), never a staged scene; the world runs only while the widget shows it');
+  A.ok(css.includes('#screen-game.active > #stage-wrap {') && css.includes('#stage-wrap .cam-hud { display: none !important; }'), 'the widget shows the world alone: no camera frame, no farm controls');
+  A.ok(css.includes('body:not(.hud-mode) #chat-panel .hud-ctl { display: none !important; }'), 'back in the full farm the COMMS header shows none of the HUD controls');
   A.ok(css.includes('grid-template-rows: minmax(120px, 1fr) auto;') && !/#stage-wrap \{[^}]*width: 300px/.test(css), 'the widget picture fills its window (no fixed 300x190 box)');
   A.ok(js.includes("root.addEventListener('resize', onWindowResize);") && js.includes('S.widgetUser = { w, h }') && js.includes('S.widgetUser = prefs.widget || null;') && js.includes('|| S.widgetUser) return;'),
-    'a size the Commander drags the widget to is kept (no auto-fit fights it) and remembered');
-  A.ok(js.includes('if (e && e.isTrusted === false) return;'), 'the HUD\'s own synthetic resize (after a view change) is never mistaken for the Commander sizing the widget');
-  A.ok(js.includes('World.setOverlays(!capped)'), 'the widget turns the in-world readouts off, and the station gets them back');
-  A.ok(js.includes('World.lockBody(id, fr.zoom, { seatAt: fr.seatAt })') && js.includes('function widgetFraming()') && js.includes('World.restoreCamera(S.stationCam)') && js.includes('keepStationCamera();'), 'the widget frames its agent closer (a seated one with its desk in view) and gives the station its zoom back');
-  A.ok(js.includes('return { zoom: WIDGET_ZOOM, seatAt:') && !js.includes('Math.min(1.33'), 'a bigger agent cam shows more station, never a bigger agent (Andrew: "WAY TOO BIG")');
+    'a size the Farmer drags the widget to is kept (no auto-fit fights it) and remembered');
+  A.ok(js.includes('if (e && e.isTrusted === false) return;'), 'the HUD\'s own synthetic resize (after a view change) is never mistaken for the Farmer sizing the widget');
+  A.ok(js.includes('World.setOverlays(!capped)'), 'the widget turns the in-world readouts off, and the farm gets them back');
+  A.ok(js.includes('World.lockBody(id, fr.zoom, { seatAt: fr.seatAt })') && js.includes('function widgetFraming()') && js.includes('World.restoreCamera(S.stationCam)') && js.includes('keepStationCamera();'), 'the widget frames its agent closer (a seated one with its desk in view) and gives the farm its zoom back');
+  A.ok(js.includes('return { zoom: WIDGET_ZOOM, seatAt:') && !js.includes('Math.min(1.33'), 'a bigger agent cam shows more farm, never a bigger agent (Andrew: "WAY TOO BIG")');
   const w2 = read('frontend/app/world.js');
   A.ok(w2.includes('const fy = (camLock.seatAt && (lb.seated || lb.sitting)) ? camLock.seatAt : 0.56;') && w2.includes('function lockBody(id, zoom, opts)'), 'World.lockBody takes an optional seated framing (omitted = 0.56 for every body)');
-  A.ok(read('frontend/app/world.js').includes('sc: clampz(zoom > 0 ? zoom : Math.max(scale, 3), MINZ, MAXZ)'), 'World.lockBody takes an optional zoom (omitted = the station rule)');
+  A.ok(read('frontend/app/world.js').includes('sc: clampz(zoom > 0 ? zoom : Math.max(scale, 3), MINZ, MAXZ)'), 'World.lockBody takes an optional zoom (omitted = the farm rule)');
   const world = read('frontend/app/world.js');
   A.ok(world.includes('function setOverlays(on) { overlaysOn = on !== false; }') && world.includes('    if (overlaysOn) {\n    drawRunClocks(now);') && world.includes('setOverlays, setCinecamIdle'),
-    'World.setOverlays gates the in-world readout block (default on: the station frame is unchanged)');
+    'World.setOverlays gates the in-world readout block (default on: the farm frame is unchanged)');
   A.ok(has(read('src-tauri/src/hud_mode.rs'), 'width: Option<f64>', 'fn folded_width', 'keep_right'), 'the desktop window hugs the widget in width too, keeping its corner');
   A.ok(has(js, "el('section', 'project-home hud-activity')", "el('details', 'ph-card')"), 'ACTIVITY is the project activity feed markup (so it wears the project feed\'s glass)');
   A.ok(!css.includes('#chat-panel > h3 { display: none') && !css.includes('#chat-input {'), 'COMMS keeps its designed header and composer inside the HUD');
@@ -321,7 +321,7 @@ A.eq([H.fmtAgo(10_000), H.fmtAgo(5 * 60_000), H.fmtAgo(2 * 3_600_000)], ['just n
   }
   const side = read('sidecar/index.js');
   A.ok(has(side, "source: 'interactive', streamId: streamId || '', internal: internal }", 'if (meta && meta.internal) row.internal = true;') && has(js, 'r.internal || workerRuns.has'),
-    'live self-talk is marked by the sidecar and never shown as the Commander\'s work');
+    'live self-talk is marked by the sidecar and never shown as the Farmer\'s work');
 }
 
 // ---- desktop wiring ----
@@ -333,15 +333,15 @@ A.eq([H.fmtAgo(10_000), H.fmtAgo(5 * 60_000), H.fmtAgo(2 * 3_600_000)], ['just n
   A.ok(/starnet_set_close_to_tray,\s*hud_mode::starnet_hud_status,\s*hud_mode::starnet_hud_set,\s*hud_mode::starnet_hud_pin,\s*hud_mode::starnet_hud_fold\s*\]\)/.test(main),
     'HUD commands are registered after the lifecycle commands');
   A.ok(/MenuItem::with_id\(app, "lifecycle_hud", "HUD Mode", true, None::<&str>\)\?;/.test(main), 'tray offers HUD Mode');
-  A.ok(/Menu::with_items\(app, &\[&open_item, &hud_item, &status_item, &sep, &pause_item, &quit_item\]\)/.test(main), 'HUD Mode sits under Open StarNet');
-  A.ok(/"lifecycle_open" => \{\s*hud_mode::request\(app, false\);\s*show_main_window\(app\);\s*\}/.test(main), 'Open StarNet hands a HUD back to the full station');
+  A.ok(/Menu::with_items\(app, &\[&open_item, &hud_item, &status_item, &sep, &pause_item, &quit_item\]\)/.test(main), 'HUD Mode sits under Open Homestead');
+  A.ok(/"lifecycle_open" => \{\s*hud_mode::request\(app, false\);\s*show_main_window\(app\);\s*\}/.test(main), 'Open Homestead hands a HUD back to the full farm');
   A.ok(/"lifecycle_hud" => \{\s*show_main_window\(app\);\s*hud_mode::request\(app, true\);\s*\}/.test(main), 'HUD Mode reveals the window and asks the page to fold');
   A.eq((main.match(/WebviewWindowBuilder::new\(/g) || []).length, 1, 'still exactly one window builder: the HUD is the main window, not a second one');
   A.ok(/\.min_inner_size\(960\.0, 600\.0\)/.test(main) && /const MAIN_MIN_W: f64 = 960\.0;/.test(hud) && /const MAIN_MIN_H: f64 = 600\.0;/.test(hud),
     'leaving the HUD restores the main window\'s real minimum size');
   A.ok(/pub\(crate\) const HUD_EVENT: &str = "starnet-hud";/.test(hud) && /const TAURI_EVENT = 'starnet-hud';/.test(read('frontend/app/hudmode.js')),
     'tray event name matches on both sides');
-  A.ok(/win\.set_always_on_top\(false\);\s*let _ = win\.set_min_size\(Some\(LogicalSize::new\(MAIN_MIN_W, MAIN_MIN_H\)\)\);/.test(hud), 'exit unpins before restoring the station floor');
+  A.ok(/win\.set_always_on_top\(false\);\s*let _ = win\.set_min_size\(Some\(LogicalSize::new\(MAIN_MIN_W, MAIN_MIN_H\)\)\);/.test(hud), 'exit unpins before restoring the farm floor');
   const fsCmd = main.slice(main.indexOf('fn starnet_toggle_fullscreen('), main.indexOf('fn starnet_toggle_fullscreen(') + 500);
   A.ok(/^fn starnet_toggle_fullscreen\(app: AppHandle\) -> Result<bool, String> \{[\s\S]*?if hud_mode::is_active\(&app\) \{\s*return Ok\(false\);\s*\}\s*let win = app/.test(fsCmd),
     'F11 cannot blow the pinned HUD up to fullscreen (checked before the window is touched)');

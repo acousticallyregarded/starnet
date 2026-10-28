@@ -140,7 +140,7 @@ const PDF_B64 = Buffer.from('%PDF-1.4\n% fake').toString('base64');
       fetchImpl: async () => ({ json: async () => ({ Browser: 'Chrome/141', webSocketDebuggerUrl: 'ws://127.0.0.1:9222/x' }) })
     });
     await S.attach(9222);
-    A.eq(S.attachedToUser(), true, 'the session is attached to the Commander\'s own Chrome');
+    A.eq(S.attachedToUser(), true, 'the session is attached to the Farmer\'s own Chrome');
     await rejects(S.intercept(['image']), /refused while attached/, 'intercept never reconfigures THEIR browser');
     await rejects(S.emulate({ locale: 'de-DE' }), /refused while attached/, 'emulate never spoofs THEIR browser');
     A.eq(await S.pdf({}), PDF_B64, 'pdf still renders — printing the page you are looking at is a read');
@@ -208,7 +208,7 @@ const PDF_B64 = Buffer.from('%PDF-1.4\n% fake').toString('base64');
 
     const resetMark = sent.length;
     await d.emulate(null);
-    A.ok(sent.slice(resetMark).some(m => m.method === 'Emulation.setDeviceMetricsOverride' && m.params.width === 1440 && m.params.screenWidth === 1440), 'reset restores the coherent station screen metrics');
+    A.ok(sent.slice(resetMark).some(m => m.method === 'Emulation.setDeviceMetricsOverride' && m.params.width === 1440 && m.params.screenWidth === 1440), 'reset restores the coherent farm screen metrics');
     A.ok(sent.some(m => m.method === 'Emulation.setTimezoneOverride' && m.params.timezoneId === ''), 'reset clears the timezone');
 
     // pdf over the wire: printBackground always, and the data comes back decoded by the tool layer.

@@ -66,9 +66,9 @@ test('the desk card: a glance line in the phrase, the whole request in INSPECT',
   /* THE CARD SAYS WHO GETS WHAT (rc walk 10-14: "NOVA wants to hand work to COPY and STRATEGY", the tasks raw JSON under
      Inspect). On the card itself each worker's task rides beside its name; every other surface keeps the short line. */
   const launch = { tool: 'team.dispatch', argsSummary: JSON.stringify({ background: true, workers: [
-    { agentId: 'copywriter', prompt: 'Write a launch post for StarNet 0.13.5, a local-first AI agent station with a pixel-art UI. Keep it under 120 words.' },
+    { agentId: 'copywriter', prompt: 'Write a launch post for Homestead 0.13.5, a local-first AI agent farm with a pixel-art UI. Keep it under 120 words.' },
     { agentId: 'strategist', prompt: 'Critique the positioning.\nName the one claim to cut.' }] }, null, 2) };
-  assert.equal(card.actionPhrase(launch, true), 'hand copywriter “Write a launch post for StarNet 0.13.5, a local-first AI agent…” and strategist “Critique the positioning” (in the background)');
+  assert.equal(card.actionPhrase(launch, true), 'hand copywriter “Write a launch post for Homestead 0.13.5, a local-first AI agent farm…” and strategist “Critique the positioning” (in the background)');
   assert.equal(card.actionPhrase(launch), 'hand work to copywriter and strategist (in the background)', 'toasts, the bell and NEEDS YOU keep the short line');
   const four = { tool: 'team.dispatch', argsSummary: JSON.stringify({ workers: ['a', 'b', 'c', 'd'].map(id => ({ agentId: id, prompt: 'Task for ' + id + ' with a fairly long description that keeps going' })) }) };
   const many = card.actionPhrase(four, true);
@@ -80,8 +80,8 @@ test('the desk card: a glance line in the phrase, the whole request in INSPECT',
   // the file a task names is its deliverable: a cut keeps it, losing the middle instead (review 10-14: "…into a file called…")
   const tagline = { tool: 'team.dispatch', argsSummary: JSON.stringify({ background: true, workers: [
     { agentId: 'copywriter', prompt: 'Write a 2-line launch tagline for StarNet 0.13.5 into a file called tagline.md.' },
-    { agentId: 'strategist', prompt: 'Review the positioning of the StarNet 0.13.5 launch and name the one claim to cut.' }] }) };
-  assert.equal(card.actionPhrase(tagline, true), 'hand copywriter “Write a 2-line launch tagline for StarNet 0.13.5 into a … tagline.md” and strategist “Review the positioning of the StarNet 0.13.5 launch and name the one…” (in the background)');
+    { agentId: 'strategist', prompt: 'Review the positioning of the Homestead 0.13.5 launch and name the one claim to cut.' }] }) };
+  assert.equal(card.actionPhrase(tagline, true), 'hand copywriter “Write a 2-line launch tagline for StarNet 0.13.5 into a … tagline.md” and strategist “Review the positioning of the Homestead 0.13.5 launch and name the…” (in the background)');
   assert.doesNotMatch(card.actionPhrase({ tool: 'team.dispatch', argsSummary: JSON.stringify({ workers: [{ agentId: 'a', prompt: 'Compare version 0.13.5 against 0.13.2 and list every regression you can find in the notes' }] }) }, true), / … 0\.13/, 'a version number is not a file');
   // a goal loop says what it repeats toward (it read "use loop create: …")
   assert.equal(card.actionPhrase({ tool: 'loop.create', argsSummary: JSON.stringify({ objective: 'Write and refine the final 2-sentence launch post', exitOn: 'never' }) }),
@@ -127,7 +127,7 @@ test('group chat clips its line and carries the whole request under it', () => {
   for (const ev of [{ tool: 'plugin__acme__sync', argsSummary: JSON.stringify({ query: 'q1' }, null, 2) }, { tool: 'team.summon', argsSummary: JSON.stringify({ name: 'SCOUT', spec: 'researcher' }, null, 2) }, { tool: 'shell.bg.write', argsSummary: JSON.stringify({ id: 'bg1', eof: true }, null, 2) }])
     assert.ok(!/[{}"]/.test(card.actionPhrase(ev)), 'no JSON in: ' + card.actionPhrase(ev));
   assert.ok(!/[{}"]/.test(card.actionPhrase({ tool: 'loop.create', argsSummary: JSON.stringify({ every: 5, spec: { a: 1 } }) })), 'no JSON punctuation reaches the phrase');
-  assert.match(group, /detail\.open = inspectOpen\.has\(pid\)/, 'a re-render keeps the panel the Commander opened');
+  assert.match(group, /detail\.open = inspectOpen\.has\(pid\)/, 'a re-render keeps the panel the Farmer opened');
 });
 
 test('a chat message (Telegram/Discord) fits the whole request or says it had to cut', async () => {
@@ -152,7 +152,7 @@ test('a chat message (Telegram/Discord) fits the whole request or says it had to
     const ask = sends.find(s => /Permission needed/.test(s.t));
     assert.ok(ask, 'the ask was sent');
     if (argsSummary.length < 3000) assert.ok(ask.t.includes(tail.trim()), 'a long command reaches the chat whole');
-    else { assert.match(ask.t, /more characters: open StarNet to read the whole request/); assert.ok(ask.t.length < 4096, 'under a Telegram message: ' + ask.t.length); }
+    else { assert.match(ask.t, /more characters: open Homestead to read the whole request/); assert.ok(ask.t.length < 4096, 'under a Telegram message: ' + ask.t.length); }
   }
 });
 
@@ -185,7 +185,7 @@ test('a choice answer preserves a parallel worker approval and its paused clock'
   const buttons = f.nodes[0].body.children.find(n => n.className === 'consent-btns');
   await buttons.children[0].onclick();
   assert.deepEqual(f.Channels.pendingAllOf(f.ws.id).map(p => p.promptId), ['p2']);
-  assert.ok(f.Channels.peek(f.ws.id).pausedAt, 'another worker is still waiting on the Commander');
+  assert.ok(f.Channels.peek(f.ws.id).pausedAt, 'another worker is still waiting on the Farmer');
   assert.equal(f.nodes[0].d.dataset.clarifyPrompt, 'q1', 'delegation Answer targets this exact card');
 });
 test('a conversation answer preserves a parallel worker approval', async () => {
@@ -297,7 +297,7 @@ for (const [said, applied, label] of [
   ['always allow', 'always', '✓ always allowed by voice'],
   ['approve', 'once', '✓ approved once by voice'],
   ['deny', 'deny', '✕ denied by voice']
-]) test('a spoken "' + said + '" settles the visible card as the grade the station applied, by voice', async () => {
+]) test('a spoken "' + said + '" settles the visible card as the grade the farm applied, by voice', async () => {
   const f = permissionFixture(), spoken = [];
   f.Channels.clearPending(f.ws.id, 150, 'question-2'); f.Channels.clearPending(f.ws.id, 150, 'approval-3');
   f.ctx.Harness = { consent: async () => ({ ok: true, decision: applied }) };
@@ -343,7 +343,7 @@ for (const [tool, said, sent, label, heard] of [
   const tags = f.nodes[0].body.children.filter(n => /^consent-result/.test(n.className || ''));
   assert.equal(tags.length, 1);
   assert.equal(tags[0].textContent, label, 'the receipt claims no standing grant the card cannot give');
-  assert.deepEqual(spoken, [heard], 'voice says what the station applied');
+  assert.deepEqual(spoken, [heard], 'voice says what the farm applied');
 });
 
 test('a phone answer graded "always" on a station.power card still settles as approved once', () => {
@@ -361,7 +361,7 @@ test('a phone answer graded "always" on a station.power card still settles as ap
 for (const decision of ['always', 'full']) test('a plugin.submit card offers only a yes and a no, and a "' + decision + '" answer settles as approved once', () => {
   const f = permissionFixture('plugin.submit');
   const buttons = f.nodes[0].body.children.find(n => n.className === 'consent-btns');
-  assert.deepEqual(buttons.children.map(b => b.textContent), ['Approve once', 'Deny'], 'no Always, no Full access on a card the station answers once');
+  assert.deepEqual(buttons.children.map(b => b.textContent), ['Approve once', 'Deny'], 'no Always, no Full access on a card the farm answers once');
   f.listeners.get('permission.response')({ promptId: f.p.promptId, decision });
   const tag = f.nodes[0].body.children.filter(n => /^consent-result/.test(n.className || ''))[0].textContent;
   assert.equal(tag, '✓ approved once from your phone');
@@ -447,7 +447,7 @@ test('a conversation question declined elsewhere says declined, never answered',
 test('a team.dispatch tool row names the workers', () => {
   const rail = { App: { agentName: id => ({ copywriter: 'COPY', strategist: 'STRATEGY' })[id] || '' } };
   vm.createContext(rail); vm.runInContext(extract(chat, '  function brief(s)', '\n  // NOTIFICATIONS THAT MEAN SOMETHING') + '\n' + extract(chat, '  let toolRail = null;', '  function ensureToolRail()'), rail);
-  assert.equal(rail.argDigest('{"background":true,"workers":[{"agentId":"copywriter","prompt":"Write a 2-line launch tagline for StarNet 0.13.5 into a file called ta', 'team_dispatch'), 'COPY … · background', 'a capped summary marks the cut, without inventing more workers');
+  assert.equal(rail.argDigest('{"background":true,"workers":[{"agentId":"copywriter","prompt":"Write a 2-line launch tagline for Homestead 0.13.5 into a file called ta', 'team_dispatch'), 'COPY … · background', 'a capped summary marks the cut, without inventing more workers');
   assert.equal(rail.argDigest('{"workers":[{"agentId":"copywriter","prompt":"a"},{"agentId":"strategist","prompt":"b"}]}', 'team.dispatch'), 'COPY, STRATEGY');
   assert.equal(rail.argDigest('{"path":"src/app.js","content":"x', 'fs_write'), 'src/app.js', 'every other tool keeps its salient argument');
 });

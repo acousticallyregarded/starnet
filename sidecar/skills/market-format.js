@@ -22,7 +22,7 @@ const catalog = require('./catalog.js');
 
 const FORMAT = 'starnet-skill-registry/v1';
 const REVOKED_FORMAT = 'starnet-skill-revocations/v1';
-const MARKET_NAME = 'Homestead Skill Market';
+const MARKET_NAME = 'StarNet Skill Market';
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERSION_RE = /^\d+\.\d+\.\d+$/;
 const SHELVES = ['originals', 'community'];

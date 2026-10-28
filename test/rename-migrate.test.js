@@ -39,7 +39,7 @@ function memStorage(init) {
   const n = LM.run(s);
   A.eq(n, 2, 'migrated two keys');
   A.eq(s.getItem('starnet.save'), 'AGENT', 'agent save reachable under the new key');
-  A.eq(s.getItem('starnet.station.v1'), 'LAYOUT', 'station layout reachable under the new key');
+  A.eq(s.getItem('starnet.station.v1'), 'LAYOUT', 'farm layout reachable under the new key');
   A.eq(s.getItem('skynet.save'), 'AGENT', 'legacy key LEFT IN PLACE (rollback safety)');
   A.eq(s.getItem('pref.x'), '1', 'foreign key untouched');
 }

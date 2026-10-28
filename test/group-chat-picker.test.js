@@ -68,7 +68,7 @@ const group = (members, extra = {}) => ({ id: 'direct', title: 'Direct', members
   for (const status of [401, 403, 500]) {
     app.request(async () => ({ status, ok: false, json: async () => { throw new SyntaxError('invalid JSON'); } }));
     await app.click('+ Add agents');
-    assert.match(text(app.find('gc-picker')), status === 500 ? /server could not load group chat/ : /Reconnect to this station/);
+    assert.match(text(app.find('gc-picker')), status === 500 ? /server could not load group chat/ : /Reconnect to this farm/);
     await app.click('CANCEL');
   }
   app.push(async () => { throw new Error('Roster sync failed'); });
@@ -206,7 +206,7 @@ const group = (members, extra = {}) => ({ id: 'direct', title: 'Direct', members
   assert.ok(peerRow, 'the picker lists Peer');
   assert.ok(!walk(peerRow).some(e => /\bgc-tag\b/.test(e.className || '')), 'no description line is built under the name');
   assert.ok(!/Answers with every claim sourced/.test(text(peerRow)), 'the sentence is not printed on the row');
-  assert.equal(peerRow.attrs.title, 'Answers with every claim sourced', 'the description is the row\'s hover tip (adopted into the station tooltip)');
+  assert.equal(peerRow.attrs.title, 'Answers with every claim sourced', 'the description is the row\'s hover tip (adopted into the farm tooltip)');
   assert.equal(peerRow.attrs['aria-description'], 'Answers with every claim sourced', 'and is still read to a screen reader');
   assert.equal(rowOf('third').attrs.title, undefined, 'no description, no tip (never an invented job title)');
   assert.match(text(tipped.find('gc-picker')), /Talk to one agent with/, 'the how-to line is kept (simplify = organization, never removal)');

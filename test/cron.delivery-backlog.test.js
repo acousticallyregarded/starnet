@@ -90,7 +90,7 @@ function setup(jobs, opts) {
     A.eq(byJob('market')[0] && byJob('market')[0].superseded, 1, 'naming the one it replaces');
     A.eq(byJob('once').map(x => x.runId), ['o-5'], 'a completed one-shot (not paused) still delivers its result');
     A.eq(byJob('once')[0] && byJob('once')[0].superseded, 0, 'with nothing superseded');
-    A.eq(byJob('paused').length, 0, 'a routine the Commander paused sends nothing on boot');
+    A.eq(byJob('paused').length, 0, 'a routine the Farmer paused sends nothing on boot');
     A.eq(s.sent.length, 3, 'three sends in total, not one per stuck digest (' + s.sent.length + ')');
 
     const daily = s.getJob('daily');
@@ -261,7 +261,7 @@ function setup(jobs, opts) {
     A.ok(cronStore.supersedeDeliveries(next, 'split', { now: T0 }) === next, 'nothing left to collapse returns the same store');
     const again = [Object.assign({}, next[0], { deliveryBacklog: next[0].deliveryBacklog.concat([next[0].finalization]), finalization: receipt('split', 's-0', 0, CHAT) })];
     A.eq(cronStore.supersedeDeliveries(again, 'split', { now: T0 })[0].finalization.superseded, 2, 'a result superseded again hands on the count it carried');
-    A.eq(cronStore.deliveriesHeld({ enabled: false, state: 'paused' }), true, 'paused by the Commander holds');
+    A.eq(cronStore.deliveriesHeld({ enabled: false, state: 'paused' }), true, 'paused by the Farmer holds');
     // who replaces whom
     const failed = (runId, days) => Object.assign(receipt('mix', runId, days, CHAT), { outcome: 'failed', result: '', error: 'down' });
     const silent = (runId, days) => Object.assign(receipt('mix', runId, days, CHAT), { outcome: 'silent', result: '[SILENT]' });
@@ -278,7 +278,7 @@ function setup(jobs, opts) {
     A.ok(cronStore.supersedeDeliveries(two, 'mix', { now: T0, busy: ['r-0'] }) === two, 'a busy newest result takes over nothing (its text is already on the wire)');
     A.ok(cronStore.supersedeDeliveries(two, 'mix', { now: T0, busy: ['r-1'] }) === two, 'a busy older result is never superseded');
     A.eq(cronStore.undeliveredCount(cronStore.supersedeDeliveries(two, 'mix', { now: T0 })[0]), 2, 'undeliveredCount counts the superseded result with its keeper');
-    A.eq(cronStore.deliveriesHeld({ enabled: false, state: 'error', disabledReason: 'consecutive-failures' }), false, 'an auto-paused routine still tells the Commander');
+    A.eq(cronStore.deliveriesHeld({ enabled: false, state: 'error', disabledReason: 'consecutive-failures' }), false, 'an auto-paused routine still tells the Farmer');
     A.eq(cronStore.deliveriesHeld({ enabled: false, state: 'completed' }), false, 'a completed one-shot still delivers');
   }
 

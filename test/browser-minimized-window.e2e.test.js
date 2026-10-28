@@ -56,7 +56,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await d.streamStart(() => { frames++; });
     await browser.send('Browser.setWindowBounds', { windowId, bounds: { windowState: 'minimized' } });
     await sleep(500);
-    A.eq(await winState(), 'minimized', 'the user minimized the station window');
+    A.eq(await winState(), 'minimized', 'the user minimized the farm window');
     // they click into the in-app picture and type
     await d.humanInput({ type: 'mouse', action: 'down', x: 250, y: 70, button: 'left', clickCount: 1 });
     await d.humanInput({ type: 'mouse', action: 'up', x: 250, y: 70, button: 'left', clickCount: 1 });

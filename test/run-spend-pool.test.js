@@ -566,7 +566,7 @@ try {
   // PRICED FAMILIES on a 200k window: the most a clone's call can cost is ~$6, more than these caps, so each call goes
   // out on its own and the family stops on the cap it really reached — never on a projection.
   // A clone's prompt here is the lead's own identity (selfSystem, ~3,000 tokens = ~$0.03 of input at $10/M).
-  const identity = n => 'You are the station lead. '.repeat(Math.ceil(n / 25)).slice(0, n);
+  const identity = n => 'You are the farm lead. '.repeat(Math.ceil(n / 25)).slice(0, n);
   {
     // THE CHEAP-LEAD CASE: PER RUN $0.05, the lead's spawning turn $0.01, four $0.04 clones. d42189a18 spent $0.17,
     // a1234b154 $0.09 (two clones stopped on a projection)

@@ -147,7 +147,7 @@ for (const prop of ['grid-template-rows', 'grid-template-columns', 'padding', 'g
   const left = (stripMultiplied(m[1]).match(/\b\d+(?:\.\d+)?px\b/g) || []).filter(s => parseFloat(s) !== 0);
   A.eq(left, [],
     `${prop} is cabinet — every px must be calc(<designed>px * var(--cz)), or the frame eats the ` +
-    `station again. Not riding the multiplier: ${left.join(', ') || 'none'}`);
+    `farm again. Not riding the multiplier: ${left.join(', ') || 'none'}`);
 }
 // --chat-w rides the multiplier too, so a width the Commander dragged means the same thing at
 // every text size instead of silently meaning 45% more at HUGE.

@@ -43,7 +43,7 @@ function startMockOpenRouter() {
         req.on('data', d => { body += d; });
         req.on('end', () => {
           res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' });
-          res.write('data: ' + JSON.stringify({ choices: [{ delta: { content: 'Acknowledged, Commander.' } }] }) + '\n\n');
+          res.write('data: ' + JSON.stringify({ choices: [{ delta: { content: 'Acknowledged, Farmer.' } }] }) + '\n\n');
           res.write('data: ' + JSON.stringify({ choices: [{ delta: {}, finish_reason: 'stop' }], usage: { prompt_tokens: 6, completion_tokens: 3, total_tokens: 9 } }) + '\n\n');
           res.write('data: [DONE]\n\n');
           res.end();
@@ -185,7 +185,7 @@ function parseToolResult(result) {
     // ── messages_send over the DEV channel: a REAL inbound->run->reply round-trip ─────────────────
     r = parseToolResult(await rpc.request('tools/call', { name: 'messages_send', arguments: { target: 'dev:mcpchat', message: 'ping from mcp bridge' } }));
     A.ok(r.data.ok === true && r.data.delivered === true, 'messages_send over dev channel delivered a real inbound message');
-    A.ok(Array.isArray(r.data.replies), 'dev messages_send returns the station replies array');
+    A.ok(Array.isArray(r.data.replies), 'dev messages_send returns the farm replies array');
 
     // ── events_poll: the SSE-fed queue (the dev run above should have produced station events) ────
     r = parseToolResult(await rpc.request('tools/call', { name: 'events_poll', arguments: { after_cursor: 0, limit: 50 } }));
@@ -206,7 +206,7 @@ function parseToolResult(result) {
     A.eq((stillList.tools || []).length, 10, 'tools/list still works with the sidecar down (server is independent)');
     r = parseToolResult(await rpc.request('tools/call', { name: 'conversations_list', arguments: {} }));
     A.ok(r.isError === true, 'a data tool marks isError when the sidecar is unreachable');
-    A.ok(r.data.sidecarReachable === false && /StarNet/i.test(r.data.error), 'the error tells the operator to start StarNet');
+    A.ok(r.data.sidecarReachable === false && /Homestead/i.test(r.data.error), 'the error tells the operator to start Homestead');
 
     // ⛔ STATION RESTART: THE SCRAPED TOKEN IS PER-LAUNCH AND GOES STALE. StarNet is a desktop app the
     // Commander closes and reopens; every launch mints a NEW api token. This bridge is spawned once by the MCP
@@ -226,7 +226,7 @@ function parseToolResult(result) {
       await sleep(400);
       r = parseToolResult(await rpc.request('tools/call', { name: 'conversations_list', arguments: { limit: 5 } }));
       A.ok(!r.isError && !/40[13]/.test(String(r.data.error || '')),
-        'THE FIX: after a station restart the bridge re-discovers the new token instead of 401ing forever');
+        'THE FIX: after a farm restart the bridge re-discovers the new token instead of 401ing forever');
       A.ok(Array.isArray(r.data.conversations), 'the re-authenticated call returns real data');
     }
 

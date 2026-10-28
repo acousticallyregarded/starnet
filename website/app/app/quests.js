@@ -114,7 +114,7 @@
     const st = input.station;
     if (st && typeof st === 'object') {
       const arc = [
-        { id: 'st:crew', done: (st.crew || 0) >= 2, title: 'Add a second agent', doing: 'summon a second mind — it takes a station of its own and your lead starts delegating.', reward: 'a crew your lead can point' },
+        { id: 'st:crew', done: (st.crew || 0) >= 2, title: 'Add a second agent', doing: 'summon a second mind — it takes a farm of its own and your lead starts delegating.', reward: 'a crew your lead can point' },
         // completes on a LIVE ROUTE (intake → belt → agent-bound bay, the same energized set the floor
         // draws) — never on bare belts-laid, which rewarded a cold dead line and taught the wrong model.
         { id: 'st:belt', done: (st.liveRoute || 0) >= 1, title: 'Send work to an agent automatically', doing: 'in BUILD MODE: place an INBOX and a BAY, drag from the INBOX onto the BAY to lay a belt, and click the bay to assign an agent — the line lights up when the route is complete.', reward: 'a live work route' },
@@ -137,7 +137,7 @@
       style: 'agents match how you like work done — depth, pace, and format.',
       standing_orders: 'rules every agent follows on every run, without being reminded.',
       pain: 'the work that eats your time becomes the work agents offer to take.',
-      ambition: 'the things you never find time for become work the station can pick up.',
+      ambition: 'the things you never find time for become work the farm can pick up.',
       people: 'output lands in the right voice for whoever it’s really for.',
       schedule: 'work and check-ins land when you’re actually at the desk.'
     };
@@ -145,7 +145,7 @@
       if (!d || !d.key) continue;   // a dimension needs a real key — no key, no quest (never a 'dim:null')
       const label = String(d.label || d.key).trim();
       if (!label) continue;
-      const q = { id: 'dim:' + d.key, kind: 'dossier', title: 'Tell the station your ' + label.toLowerCase(), desc: DIM_WHY[d.key] || 'every agent on the station will know this about you.', reward: 'sharper, personalized agents', status: d.known ? 'done' : 'open' };
+      const q = { id: 'dim:' + d.key, kind: 'dossier', title: 'Tell the farm your ' + label.toLowerCase(), desc: DIM_WHY[d.key] || 'every agent on the farm will know this about you.', reward: 'sharper, personalized agents', status: d.known ? 'done' : 'open' };
       (d.known ? done : open).push(q);
     }
 

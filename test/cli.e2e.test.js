@@ -95,7 +95,7 @@ function hermetic(profile) {
 
 (async () => {
   const mock = await startMockOpenRouter([
-    { when: 'say hello', text: 'Hello from the station.' },
+    { when: 'say hello', text: 'Hello from the farm.' },
     { when: 'write the notes file', tool: { name: 'fs.write', args: { path: 'cli-notes.md', content: 'written through the starnet CLI' } } },
     { when: 'write the secret file', tool: { name: 'fs.write', args: { path: 'cli-denied.md', content: 'must never exist' } } }
   ]);
@@ -117,9 +117,9 @@ function hermetic(profile) {
     {
       const r = await cli(['-p', 'say hello', '--port', String(port)], attachEnv);
       A.eq(r.code, 0, 'a clean run exits 0 (stderr: ' + r.err.slice(0, 300) + ')');
-      A.ok(r.out.indexOf('Hello from the station.') >= 0, 'the model text really streamed to stdout: ' + JSON.stringify(r.out));
-      A.ok(/▸ .*attached http:\/\/127\.0\.0\.1:/.test(r.err), 'stderr names the attached station');
-      A.ok(/■ done · 1 turn\(s\)/.test(r.err), 'stderr carries the station\'s own terminal reason: ' + r.err.split('\n').filter(l => l.indexOf('■') === 0).join(''));
+      A.ok(r.out.indexOf('Hello from the farm.') >= 0, 'the model text really streamed to stdout: ' + JSON.stringify(r.out));
+      A.ok(/▸ .*attached http:\/\/127\.0\.0\.1:/.test(r.err), 'stderr names the attached farm');
+      A.ok(/■ done · 1 turn\(s\)/.test(r.err), 'stderr carries the farm\'s own terminal reason: ' + r.err.split('\n').filter(l => l.indexOf('■') === 0).join(''));
       A.ok(!/^\s*[{[]/.test(r.out.trim()), 'stdout is prose, not JSON, without --json');
     }
 
@@ -130,17 +130,17 @@ function hermetic(profile) {
       let j = null; try { j = JSON.parse(r.out.trim()); } catch (_) {}
       A.ok(j && typeof j === 'object', 'stdout is exactly one JSON object: ' + r.out.slice(0, 200));
       A.ok(j.ok === true && j.reason === 'done' && j.proven === true && j.exitCode === 0, 'receipt: ok/done/proven/exit 0');
-      A.eq(j.text, 'Hello from the station.', 'receipt text is the streamed answer');
-      A.ok(/^[0-9a-f-]{36}$/.test(j.runId), 'receipt carries the station\'s runId: ' + j.runId);
+      A.eq(j.text, 'Hello from the farm.', 'receipt text is the streamed answer');
+      A.ok(/^[0-9a-f-]{36}$/.test(j.runId), 'receipt carries the farm\'s runId: ' + j.runId);
       A.eq(j.agentId, 'agent', 'the bare hero agent ran');
       A.eq(j.model + '/' + j.provider, 'test/model/openrouter', 'model + provider are what actually ran');
-      A.eq(j.station.mode, 'attached', 'station mode');
+      A.eq(j.station.mode, 'attached', 'farm mode');
       A.ok(j.turns === 1 && Array.isArray(j.toolCalls) && j.toolCalls.length === 0, 'turns + no tool calls');
-      A.ok(!/Hello from the station/.test(r.err), 'the answer is not duplicated on stderr');
+      A.ok(!/Hello from the farm/.test(r.err), 'the answer is not duplicated on stderr');
       // truthfulness: the station's OWN run history holds this runId
       const runs = await fetch(fixture.baseUrl + '/api/runs?limit=3', { headers: { 'X-StarNet-Token': fixture.token, Origin: fixture.baseUrl } });
       const hist = await runs.json();
-      A.ok((hist.runs || []).some(x => x.runId === j.runId && x.reason === 'done'), 'the receipt\'s runId is in the station\'s run history with the same reason');
+      A.ok((hist.runs || []).some(x => x.runId === j.runId && x.reason === 'done'), 'the receipt\'s runId is in the farm\'s run history with the same reason');
     }
 
     /* ---- 3. tool calls + the REAL consent gate ------------------------------------------------ */
@@ -153,7 +153,7 @@ function hermetic(profile) {
       A.ok(/pass --yes to approve/.test(denied.err), '…and says how to approve');
       A.ok(/↳ FAIL/.test(denied.err), 'the denied call is reported as failed');
       A.ok(!fs.existsSync(path.join(ws, 'agent', 'cli-denied.md')), 'the REJECTED write never happened');
-      A.eq(denied.code, 0, 'the run still finished (the agent reported the denial) — exit reflects the station\'s reason');
+      A.eq(denied.code, 0, 'the run still finished (the agent reported the denial) — exit reflects the farm\'s reason');
 
       const ok = await cli(['-p', 'write the notes file', '--port', String(port), '--yes'], attachEnv);
       A.ok(/✓ allowed fs\.write/.test(ok.err), '--yes approves the prompt');
@@ -170,25 +170,25 @@ function hermetic(profile) {
     {
       const s = await cli(['status', '--port', String(port)], attachEnv);
       A.eq(s.code, 0, 'status exits 0: ' + s.err.slice(0, 200));
-      A.ok(/station\s+http:\/\/127\.0\.0\.1:\d+ \(attached\)/.test(s.out), 'status names the station');
+      A.ok(/station\s+http:\/\/127\.0\.0\.1:\d+ \(attached\)/.test(s.out), 'status names the farm');
       A.ok(/providers\s+openrouter/.test(s.out), 'status lists configured providers by NAME');
       A.ok(s.out.indexOf('sk-or-v1') < 0 && s.err.indexOf('sk-or-v1') < 0, 'status never prints a key');
       A.ok(/version\s+harness /.test(s.out), 'status carries the version surface');
       const sj = JSON.parse((await cli(['status', '--port', String(port), '--json'], attachEnv)).out.trim());
       A.ok(sj.reachable === true && sj.providers.indexOf('openrouter') >= 0 && sj.version && sj.version.node === process.version, 'status --json shape');
-      A.eq(path.resolve(sj.workspace), path.resolve(ws), 'status --json reports the workspace the station disclosed');
+      A.eq(path.resolve(sj.workspace), path.resolve(ws), 'status --json reports the workspace the farm disclosed');
 
       const d = await cli(['doctor', '--port', String(port)], attachEnv);
       A.eq(d.code, 0, 'doctor exits 0');
-      A.ok(/StarNet diagnostics/.test(d.out) && /Credential:\s+configured/.test(d.out), 'doctor prints the static diagnostics report');
+      A.ok(/Homestead diagnostics/.test(d.out) && /Credential:\s+configured/.test(d.out), 'doctor prints the static diagnostics report');
       A.ok(d.out.indexOf('sk-or-v1') < 0, 'doctor never prints a key');
     }
 
     /* ---- 5. a NAMED dead port is an error, not a spawn; status never boots ------------------- */
     {
       const dead = await cli(['-p', 'say hello', '--port', '9'], attachEnv);
-      A.eq(dead.code, 3, 'a dead --port exits 3 (station): ' + dead.err.slice(0, 200));
-      A.ok(/no station is answering on port 9/.test(dead.err) && !/booting a station/.test(dead.err), 'and it did NOT spawn one');
+      A.eq(dead.code, 3, 'a dead --port exits 3 (farm): ' + dead.err.slice(0, 200));
+      A.ok(/no farm is answering on port 9/.test(dead.err) && !/booting a farm/.test(dead.err), 'and it did NOT spawn one');
       const st = await cli(['status', '--port', '9'], attachEnv);
       A.eq(st.code, 3, 'status on a dead port exits 3');
       const stj = JSON.parse((await cli(['status', '--port', '9', '--json'], attachEnv)).out.trim());
@@ -211,27 +211,27 @@ function hermetic(profile) {
     try {
       const r = await cli(['--spawn', '--workspace', ws2, '--name', 'ATLAS', '-p', 'say hello'], spawnEnv, 120000);
       A.eq(r.code, 0, 'the spawn path exits 0 (stderr: ' + r.err.slice(0, 400) + ')');
-      A.ok(r.out.indexOf('Hello from the station.') >= 0, 'the answer streamed from the private station: ' + JSON.stringify(r.out));
+      A.ok(r.out.indexOf('Hello from the farm.') >= 0, 'the answer streamed from the private farm: ' + JSON.stringify(r.out));
       A.ok(/bootstrapped .*ATLAS \(full power\)/.test(r.err), 'a fresh workspace was bootstrapped');
       A.ok(/provider openrouter from env:/.test(r.err), 'the provider was inferred from the environment credential');
-      A.ok(/booting a station on /.test(r.err) && /spawned http:\/\/127\.0\.0\.1:/.test(r.err), 'a private station was booted for the run');
+      A.ok(/booting a farm on /.test(r.err) && /spawned http:\/\/127\.0\.0\.1:/.test(r.err), 'a private farm was booted for the run');
       A.ok(/▸ ATLAS \(agent\)/.test(r.err), 'the bootstrapped agent is the one that ran');
       // what it left behind
       const roster = JSON.parse(fs.readFileSync(path.join(ws2, 'agent.roster.json'), 'utf8'));
       A.eq(roster.agents[0].agentId + ':' + roster.agents[0].name + ':' + roster.agents[0].approvalMode, 'agent:ATLAS:full', 'the roster on disk holds the full-power agent');
       const save = JSON.parse(fs.readFileSync(path.join(ws2, 'agent.save.json'), 'utf8'));
       A.eq(save.doc.schema + ':' + save.doc.agent.name, 'starnet.save:ATLAS', 'the save on disk is the desktop-resumable shape');
-      A.ok(fs.existsSync(path.join(ws2, 'runs.jsonl')), 'the run was recorded durably by the private station');
+      A.ok(fs.existsSync(path.join(ws2, 'runs.jsonl')), 'the run was recorded durably by the private farm');
       await sleep(300);
-      A.ok(!fs.existsSync(path.join(ws2, '.starnet-workspace-owner.json')), 'the private station released its workspace owner claim on exit');
+      A.ok(!fs.existsSync(path.join(ws2, '.starnet-workspace-owner.json')), 'the private farm released its workspace owner claim on exit');
 
       // second run on the SAME workspace: nothing re-bootstrapped, the persisted agent runs again
       const before = fs.readFileSync(path.join(ws2, 'agent.roster.json'), 'utf8');
       const r2 = await cli(['--spawn', '--workspace', ws2, '-p', 'say hello', '--json'], spawnEnv, 120000);
       A.eq(r2.code, 0, 'a second spawn run exits 0: ' + r2.err.slice(0, 300));
-      A.ok(!/bootstrapped/.test(r2.err), 'an existing station is never re-bootstrapped');
+      A.ok(!/bootstrapped/.test(r2.err), 'an existing farm is never re-bootstrapped');
       const j2 = JSON.parse(r2.out.trim());
-      A.ok(j2.ok && j2.agentName === 'ATLAS' && j2.station.mode === 'spawned' && path.resolve(j2.station.workspace) === path.resolve(ws2), 'the receipt names the spawned station and its workspace');
+      A.ok(j2.ok && j2.agentName === 'ATLAS' && j2.station.mode === 'spawned' && path.resolve(j2.station.workspace) === path.resolve(ws2), 'the receipt names the spawned farm and its workspace');
       A.eq(fs.readFileSync(path.join(ws2, 'agent.roster.json'), 'utf8'), before, 'the roster file is byte-identical after the second run');
 
       // THE DESKTOP READ-BACK: a real sidecar booted on that workspace serves the save the desktop resumes

@@ -47,7 +47,7 @@ const A = require('./_assert.js');
   global.Overseer = freshOverseer();
   const firstRead = global.Overseer.refresh();
   A.eq(global.Overseer.snapshot(), null, 'the first ledger read has not landed');
-  A.eq(global.Overseer.unreachable(), false, '…and nothing says the station is down');
+  A.eq(global.Overseer.unreachable(), false, '…and nothing says the farm is down');
   {
     const { rows, html } = card();
     A.eq(rows.map(s => [s.cls, s.live, s.unread]), [['unknown', 'checking…', 'checking'], ['unknown', 'checking…', 'checking'], ['unknown', 'checking…', 'checking']],
@@ -110,18 +110,18 @@ const A = require('./_assert.js');
   A.eq(global.Overseer.fresh(), false, 'the failed poll: the ledger is no longer current');
   {
     const { rows, html } = card();
-    A.eq(rows.map(s => s.cls + ':' + s.live), ['done:done', 'done:done', 'unknown:status unknown — station unreachable'], 'finished rows stay read; the running one claims nothing');
+    A.eq(rows.map(s => s.cls + ':' + s.live), ['done:done', 'done:done', 'unknown:status unknown — farm unreachable'], 'finished rows stay read; the running one claims nothing');
     A.eq(sumOf(html), '1 status unknown · 2 done', 'the header: ' + sumOf(html));
     A.ok(!/data-dg-stop=/.test(html) && /aria-expanded="true"/.test(html), 'no Stop key, and the card it was open on stays open');
   }
   // 4b. a page reopened while the station is down: its FIRST read fails — it says so, never "stopped"
   global.Overseer = freshOverseer();
   await global.Overseer.refresh();
-  A.eq([global.Overseer.snapshot(), global.Overseer.unreachable()], [null, true], 'the first read failed: no answer, station unreachable');
+  A.eq([global.Overseer.snapshot(), global.Overseer.unreachable()], [null, true], 'the first read failed: no answer, farm unreachable');
   {
     const { rows, html } = card();
-    A.eq(rows.map(s => [s.cls, s.live, s.unread]), [['unknown', 'status unknown — station unreachable', 'unreachable'], ['unknown', 'status unknown — station unreachable', 'unreachable'], ['unknown', 'status unknown — station unreachable', 'unreachable']],
-      'every worker reads status unknown — station unreachable');
+    A.eq(rows.map(s => [s.cls, s.live, s.unread]), [['unknown', 'status unknown — farm unreachable', 'unreachable'], ['unknown', 'status unknown — farm unreachable', 'unreachable'], ['unknown', 'status unknown — farm unreachable', 'unreachable']],
+      'every worker reads status unknown — farm unreachable');
     A.eq(sumOf(html), '3 status unknown', 'the header: ' + sumOf(html));
     A.ok(!claimsAnEnd(html) && /aria-expanded="false"/.test(html), 'nothing claims an end, and rows never seen running open nothing');
   }
@@ -132,7 +132,7 @@ const A = require('./_assert.js');
   A.eq(card().rows[0].live, 'checking…', 'a first read on its way: checking…');
   const realNow = Date.now;
   Date.now = () => realNow() + 60000;
-  try { A.eq(card().rows[0].live, 'status unknown — station unreachable', 'a first read hung past three beats: station unreachable'); }
+  try { A.eq(card().rows[0].live, 'status unknown — farm unreachable', 'a first read hung past three beats: farm unreachable'); }
   finally { Date.now = realNow; }
   data = ledger(kids.map((k, i) => done(k.id, i + 1)));
   release(); await stuck;

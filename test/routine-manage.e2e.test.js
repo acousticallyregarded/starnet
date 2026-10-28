@@ -200,7 +200,7 @@ function resultFor(events, callId) {
       A.ok(names.indexOf('agent.tool_call') >= 0, 'the model actually reached a tool (routine.manage was projected, not dark)');
       const started = events.find(e => e.name === 'agent.tool_call');
       A.eq(started.payload.name, 'routine.manage', 'the tool that ran is routine.manage');
-      A.ok(asked, 'mutating standing autonomous work asked the Commander first');
+      A.ok(asked, 'mutating standing autonomous work asked the Farmer first');
       A.eq(asked.tool, 'routine.manage', 'the consent card names routine.manage');
 
       const ended = resultFor(events, started.payload.callId);

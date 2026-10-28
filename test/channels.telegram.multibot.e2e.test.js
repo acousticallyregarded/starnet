@@ -197,7 +197,7 @@ const STATION = 'STATIONTOKEN', TOK_A = 'TOKAAA', TOK_B = 'TOKBBB';
     A.eq(roster.status, 200, 'test roster synchronized before agent-bot setup');
 
     // station bot polling (auto-started from env)
-    await waitUntil(() => tg.perToken[STATION].calls.some(c => c.method === 'getUpdates'), 5000, 'station bot polls');
+    await waitUntil(() => tg.perToken[STATION].calls.some(c => c.method === 'getUpdates'), 5000, 'farm bot polls');
 
     // ---- 1. bad token: the getMe probe refuses it with a clean 400; nothing persists ----
     const bad = await api('POST', '/api/channels/telegram/bots/connect', { token: 'NOTREAL', agentId: 'agent', model: 'test/model' });
@@ -206,8 +206,8 @@ const STATION = 'STATIONTOKEN', TOK_A = 'TOKAAA', TOK_B = 'TOKBBB';
 
     // ---- 2. the station bot token cannot double as an agent bot (one poller per token) ----
     const dupe = await api('POST', '/api/channels/telegram/bots/connect', { token: STATION, agentId: 'agent', model: 'test/model' });
-    A.eq(dupe.status, 400, 'station token as agent bot -> 400');
-    A.ok(/station bot/.test(dupe.j.error || ''), 'refusal explains it IS the station bot');
+    A.eq(dupe.status, 400, 'farm token as agent bot -> 400');
+    A.ok(/farm bot/.test(dupe.j.error || ''), 'refusal explains it IS the farm bot');
 
     // ---- 2b. a valid Telegram token with a broken bound-agent credential/model fails BEFORE persistence ----
     const badProvider = await api('POST', '/api/channels/telegram/bots/connect', { token: TOK_A, agentId: 'bad_agent', provider: 'openrouter', model: 'wrong/global-model' });
@@ -272,7 +272,7 @@ const STATION = 'STATIONTOKEN', TOK_A = 'TOKAAA', TOK_B = 'TOKBBB';
     A.eq(String(botAReply.chat_id), '900', 'bot A replied to its own chat');
     A.ok(tg.perToken[TOK_A].actions.some(a => a.action === 'typing' && String(a.chat_id) === '900'), 'bot A showed the typing indicator during the run');
     A.eq(tg.perToken[TOK_B].sends.length, botBSendsBeforeA, 'bot B sent NOTHING for bot A\'s chat (no cross-talk)');
-    A.eq(tg.perToken[STATION].sends.length, stationSendsBeforeA, 'the station bot sent NOTHING for bot A\'s chat');
+    A.eq(tg.perToken[STATION].sends.length, stationSendsBeforeA, 'the farm bot sent NOTHING for bot A\'s chat');
     // hard-lock: the durable CHANNEL history landed under the BOUND agent, not a tg_<chatId> fallback.
     // (read the channel store straight from disk — /api/transcript serves per-STREAM history, not per-agent.)
     const chanHist = (agentId) => {
@@ -312,12 +312,12 @@ const STATION = 'STATIONTOKEN', TOK_A = 'TOKAAA', TOK_B = 'TOKBBB';
     await waitUntil(() => inGroup(TOK_A, gA).some(s => /admitted/i.test(String(s.text || ''))), 8000, 'bot A confirms /allow in the group');
     const scoped = JSON.parse(fs.readFileSync(path.join(ws, 'channels', 'chatmap.json'), 'utf8')).chats || {};
     A.eq((scoped['111|' + GRP] || {}).admittedOn, 'telegram:111', 'the admission is stored in bot A\'s OWN scoped chat record, under its own channel');
-    A.ok(!(scoped[String(GRP)] || {}).admittedOn, 'the station bot\'s record for the same chat id is untouched');
+    A.ok(!(scoped[String(GRP)] || {}).admittedOn, 'the farm bot\'s record for the same chat id is untouched');
     gA = tg.perToken[TOK_A].sends.length;
     const gStation = tg.perToken[STATION].sends.length;
     tg.pushGroup(TOK_A, GRP, 88, '@NovaBot what do you think?');
     await waitUntil(() => inGroup(TOK_A, gA).some(s => String(s.text || '').indexOf('Bound answer') >= 0), 15000, 'bot A answers an @mention in the admitted group');
-    A.eq(tg.perToken[STATION].sends.length, gStation, 'the station bot said nothing for bot A\'s group');
+    A.eq(tg.perToken[STATION].sends.length, gStation, 'the farm bot said nothing for bot A\'s group');
     const gB = tg.perToken[TOK_B].sends.length;
     tg.pushGroup(TOK_B, GRP, 77, '@ScoutBot and you?');
     await sleep(1200);

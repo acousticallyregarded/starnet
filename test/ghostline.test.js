@@ -263,7 +263,7 @@ const geoChain = bound => ({
   }
   A.ok(crowded > 0, 'the chain line shows two captions at once at some point (' + crowded + ' frames)');
   A.eq(piled, 0, 'no two captions drawn in one frame overlap');
-  A.eq(outside, 0, 'every caption stays inside the box the caller keeps it in (the station, never space)');
+  A.eq(outside, 0, 'every caption stays inside the box the caller keeps it in (the farm, never space)');
   A.eq(oneSpot, crowded, 'when every candidate spot is the same spot, ONE caption is drawn there, never a pile');
   A.eq(refused, crowded, 'a caption whose every spot is taken by something real sits the pass out');
   A.ok(below > 0 && moved === below, 'a dock caption refused under its tile goes over it instead (' + moved + '/' + below + ' frames)');

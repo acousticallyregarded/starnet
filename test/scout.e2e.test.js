@@ -63,7 +63,7 @@ function startMock(replies) {
           };
           if (body.indexOf('intake analyst') >= 0) { calls.push('extraction'); text(replies.extraction, replies.extractionUsage); }        // interests.buildDirective's system marker
           else if (body.indexOf('recipe author') >= 0) { calls.push('recipe'); text(replies.recipe); }            // scout.buildRecipeDirective's system marker
-          else if (body.indexOf("station's recruiter") >= 0) { calls.push('recruiter'); text(replies.prospect || 'NONE'); }   // the LLM prospect authorship pass
+          else if (body.indexOf("farm's recruiter") >= 0) { calls.push('recruiter'); text(replies.prospect || 'NONE'); }   // the LLM prospect authorship pass
           else { calls.push('run'); text('ok, done.'); }                                                          // the main task run itself
         });
         return;
@@ -165,7 +165,7 @@ const QUIET = { SKYNET_THREAD_MINE: '0', SKYNET_SKILL_REVIEW: '0', SKYNET_SKILL_
 
       // sanity: pre-run, the scout is honestly COLD (no interests -> warm:false, gate binds 'cold').
       const cold = await (await fetch(B + '/api/scout', { headers: { 'X-StarNet-Token': token, Origin: B } })).json();
-      A.eq(cold.warm, false, 'pre-run the station is honestly cold (no interests yet)');
+      A.eq(cold.warm, false, 'pre-run the farm is honestly cold (no interests yet)');
       A.eq(cold.gate.binding, 'cold', 'the gate reports the cold binding pre-run');
 
       // drive REAL task runs — the post-run hook is the ONLY trigger used (no state poked mid-flight).
@@ -178,7 +178,7 @@ const QUIET = { SKYNET_THREAD_MINE: '0', SKYNET_SKILL_REVIEW: '0', SKYNET_SKILL_
         p => p.staged && p.staged.some(it => it.kind === 'recipe'),
         'a recipe draft staged by the live scout cycle');
       A.ok(true, 'ORCHESTRATION: a real run chain staged a recipe draft end-to-end');
-      A.eq(s.warm, true, 'the station is WARM off live-extracted interests (never pre-seeded)');
+      A.eq(s.warm, true, 'the farm is WARM off live-extracted interests (never pre-seeded)');
       const topic = (s.interests || []).find(t => /nvidia/.test(t.topic));
       A.ok(topic, 'the extracted interest persisted and is served by GET /api/scout');
       A.ok(topic && topic.evidence.some(q => q.indexOf('nvidia earnings call') >= 0), 'the interest carries its verbatim evidence quote');
@@ -224,7 +224,7 @@ const QUIET = { SKYNET_THREAD_MINE: '0', SKYNET_SKILL_REVIEW: '0', SKYNET_SKILL_
         'GEAR:',
         'PARAM: board | Board | main',
         'TASK: Build the {board} dashboard now.',
-        'WHY: because commanders love cheerful dashboards every sunrise'   // ungroundable: cites nothing real
+        'WHY: because farmers love cheerful dashboards every sunrise'   // ungroundable: cites nothing real
       ].join('\n')
     });
     const ws = fs.mkdtempSync(path.join(os.tmpdir(), 'sk-scout-e2e-'));
@@ -343,7 +343,7 @@ const QUIET = { SKYNET_THREAD_MINE: '0', SKYNET_SKILL_REVIEW: '0', SKYNET_SKILL_
       }
       A.ok(mock.held.extraction, 'PAUSE ARM: the live extraction call is in flight (held by the mock)');
       const off = await (await fetch(B + '/api/personalization', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: B }, body: JSON.stringify({ enabled: false }) })).json();
-      A.eq(off.enabled, false, 'PAUSE ARM: the Commander paused learning while the call was in flight');
+      A.eq(off.enabled, false, 'PAUSE ARM: the Farmer paused learning while the call was in flight');
       const interestsFile = path.join(ws, 'scout.interests.json');
       const before = fs.existsSync(interestsFile) ? fs.readFileSync(interestsFile, 'utf8') : null;
       mock.release();

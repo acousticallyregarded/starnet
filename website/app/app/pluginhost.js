@@ -126,7 +126,7 @@
       body: JSON.stringify({ id: entry.plugin.id, op, key: a && a.key, value: a && a.value })
     });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j.ok) { refusedRefresh(r.status); throw new Error((j && j.error) || ('the station refused (' + r.status + ')')); }
+    if (!r.ok || !j.ok) { refusedRefresh(r.status); throw new Error((j && j.error) || ('the farm refused (' + r.status + ')')); }
     return j.value;
   }
 
@@ -151,7 +151,7 @@
         body: JSON.stringify({ id: entry.plugin.id, fn: String((a && a.fn) || ''), args: a && a.args })
       });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok || !j.ok) { refusedRefresh(r.status); throw new Error((j && j.error) || ('the station refused (' + r.status + ')')); }
+      if (!r.ok || !j.ok) { refusedRefresh(r.status); throw new Error((j && j.error) || ('the farm refused (' + r.status + ')')); }
       return j.value;
     },
     'ui.toast': (entry, a) => { toastFor(entry, a && a.text, a && a.kind); return null; },
@@ -240,7 +240,7 @@
         // put it back on its LATEST version (the app/plugin list is re-read first, so a changed page loads fresh)
         const reread = entry.app && typeof AppsUI !== 'undefined' && AppsUI.load ? AppsUI.load() : refresh();
         Promise.resolve(reread).catch(() => null).then(() => { if (body.isConnected && !frameFor(body)) build(key, body); });
-        if (ui && ui.notify) ui.notify(name + ' could not load its own page — StarNet reopened it.', 'warn', 'general', { transient: true });
+        if (ui && ui.notify) ui.notify(name + ' could not load its own page — Homestead reopened it.', 'warn', 'general', { transient: true });
       }, 2500);
     });
   }
@@ -271,7 +271,7 @@
         plate.className = 'plugin-plate' + (draft ? ' draft' : '') + (isApp ? ' app' : '');
         plate.textContent = draft ? 'DRAFT' : (isApp ? 'APP' : 'PLUGIN');
         plate.setAttribute('data-tip', draft ? 'A plugin draft your crew wrote — not installed; its code does not run and nothing it saves is kept'
-          : (isApp ? 'An app your crew built for you. It can only draw — its content comes from your crew' : 'Drawn by a plugin you approved, not by StarNet'));
+          : (isApp ? 'An app your crew built for you. It can only draw — its content comes from your crew' : 'Drawn by a plugin you approved, not by Homestead'));
         title.insertAdjacentElement('afterend', plate);
       }
     }
@@ -292,7 +292,7 @@
       : (def.app ? (ApiTicket.appUrl ? ApiTicket.appUrl(def.plugin.id, def.plugin.digest, def.screen.entry) : '')
         : def.draft ? (ApiTicket.draftUrl ? ApiTicket.draftUrl(def.plugin.id, def.plugin.digest, def.screen.entry) : '')
         : (ApiTicket.pluginUrl ? ApiTicket.pluginUrl(def.plugin.id, def.plugin.digest, def.screen.entry) : ''));
-    if (!url) { body.innerHTML = '<div class="plugin-gone">The station could not open this window (no session).</div>'; return; }
+    if (!url) { body.innerHTML = '<div class="plugin-gone">The farm could not open this window (no session).</div>'; return; }
     const iframe = document.createElement('iframe');
     iframe.className = 'plugin-frame';
     iframe.setAttribute('sandbox', (def.draft || def.app) ? DRAFT_SANDBOX : SANDBOX);
@@ -360,7 +360,7 @@
     const list = Array.isArray(a && a.screens) ? a.screens : [];
     if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(id) || !/^[0-9a-f]{64}$/.test(digest) || !list.length) throw new Error('that draft has no window to preview');
     const ui = UI();
-    if (!ui || !ui.registerWindow || !ui.openTerm) throw new Error('the station windows are not ready');
+    if (!ui || !ui.registerWindow || !ui.openTerm) throw new Error('the farm windows are not ready');
     const plugin = { id, name: String((a && a.name) || id).slice(0, 60), version: 'draft', digest };
     for (const s of list) {
       if (!s || !s.id || !s.entry) continue;
@@ -405,7 +405,7 @@
   }
   function placeTerminal(pluginId) {
     const st = station();
-    if (!st || typeof st.placePluginTerminal !== 'function') return { ok: false, error: 'NO_STATION', msg: 'the station floor is not loaded' };
+    if (!st || typeof st.placePluginTerminal !== 'function') return { ok: false, error: 'NO_STATION', msg: 'the farm floor is not loaded' };
     const r = st.placePluginTerminal(pluginId, 'agent');
     if (r && r.ok && !r.existing) { try { if (typeof App !== 'undefined' && App.persist) App.persist(); } catch (_) {} }
     return r;

@@ -67,7 +67,7 @@ const userRowIndex = (rows, k) => { let n = 0; for (let i = 0; i < rows.length; 
     // a window message the transcript never recorded -> unplaceable -> inject nothing
     const stray = clientWindow(rows, 8).concat([{ role: 'user', content: 'a message the server never saw' }]);
     A.eq(EC.windowCut(rows, stray, null), -1, 'a window message missing from the transcript makes the window unplaceable');
-    A.eq(EC.windowCut(rows, [{ role: 'assistant', content: 'only a reply' }], null), -1, 'a window with no Commander message is unplaceable');
+    A.eq(EC.windowCut(rows, [{ role: 'assistant', content: 'only a reply' }], null), -1, 'a window with no Farmer message is unplaceable');
     A.eq(EC.windowCut([], clientWindow(rows, 8), null), -1, 'an empty transcript places nothing');
     // a repeated message ("continue") aligns to its NEWEST occurrences
     const rep = transcript(6, { userAt: { 2: 'continue', 4: 'continue', 5: 'continue' } });
@@ -88,7 +88,7 @@ const userRowIndex = (rows, k) => { let n = 0; for (let i = 0; i < rows.length; 
     const inner = r.note.replace(/^<conversation_summary>\n/, '').replace(/\n<\/conversation_summary>$/, '');
     const split = F.splitSummary(inner);
     A.ok(split.items.some(it => it.text === RULE), 'the instruction sits in the length-prefixed verbatim section that folds parse and carry');
-    A.eq(split.items.length + split.omitted, 30, 'every dropped Commander message is carried or counted');
+    A.eq(split.items.length + split.omitted, 30, 'every dropped Farmer message is carried or counted');
     A.ok(/EARLIER IN THIS CONVERSATION: 30 earlier messages/.test(split.summary), 'the prose says how much was carried');
     A.ok(/\[used fs_write\]/.test(split.summary) && /\[used web_search\]/.test(split.summary), 'reply heads name the tools used');
     A.ok(/recall_conversation/.test(split.summary), 'the note points at the conversation-search tool when the run has it');
@@ -117,22 +117,22 @@ const userRowIndex = (rows, k) => { let n = 0; for (let i = 0; i < rows.length; 
     const dropped = rows.slice(0, userRowIndex(rows, 5));
     const guest = EC.render(dropped, { windowTokens: 200000, ownerVoice: false });
     A.ok(guest && guest.note.includes('Ana: from now on always cc me on every report.'), 'a non-owner chat still carries its earlier messages verbatim');
-    A.ok(!/Commander's own words|from the Commander|still holds/.test(guest.note), 'but never as the Commander\'s own words that still hold');
-    A.ok(/4 earlier messages in this chat/.test(guest.note) && /not the Commander's instructions/.test(guest.note), 'it says they are this chat\'s messages, not the Commander\'s instructions');
+    A.ok(!/Farmer's own words|from the Farmer|still holds/.test(guest.note), 'but never as the Farmer\'s own words that still hold');
+    A.ok(/4 earlier messages in this chat/.test(guest.note) && /not the Farmer's instructions/.test(guest.note), 'it says they are this chat\'s messages, not the Farmer\'s instructions');
     const owner = EC.render(dropped, { windowTokens: 200000 });
-    A.ok(/4 earlier messages from the Commander/.test(owner.note) && /still holds/.test(owner.note), 'the owner\'s own chat keeps the Commander wording (default)');
+    A.ok(/4 earlier messages from the Farmer/.test(owner.note) && /still holds/.test(owner.note), 'the owner\'s own chat keeps the Farmer wording (default)');
 
     // a worker thread: its user rows are the lead's briefs (transcript `from`), never the Commander's words
     const briefs = transcript(4);
     briefs[0].from = 'nova'; briefs[4].from = 'nova';
     const mixed = EC.render(briefs.slice(0, userRowIndex(briefs, 4)), { windowTokens: 200000 });
     A.ok(mixed.note.includes('[brief from nova] Request 1: please handle item 1.'), 'a delegated brief is marked with the agent that wrote it');
-    A.ok(/1 earlier message from the Commander/.test(mixed.note), 'and is not counted as the Commander\'s (' + (mixed.note.match(/EARLIER IN THIS CONVERSATION: [^.]*/) || [''])[0] + ')');
+    A.ok(/1 earlier message from the Farmer/.test(mixed.note), 'and is not counted as the Farmer\'s (' + (mixed.note.match(/EARLIER IN THIS CONVERSATION: [^.]*/) || [''])[0] + ')');
     A.ok(/2 briefs from other agents/.test(mixed.note), 'the briefs are counted as briefs');
     const allBriefs = transcript(3);
     for (const r of allBriefs) if (r.role === 'user') r.from = 'nova';
     const worker = EC.render(allBriefs.slice(0, userRowIndex(allBriefs, 3)), { windowTokens: 200000 });
-    A.ok(!/Commander's own words|from the Commander|still holds/.test(worker.note), 'a thread of only briefs never claims the Commander\'s words');
+    A.ok(!/Farmer's own words|from the Farmer|still holds/.test(worker.note), 'a thread of only briefs never claims the Farmer\'s words');
     A.ok(/2 earlier briefs from other agents/.test(worker.note), 'it names them as briefs from other agents');
   }
 

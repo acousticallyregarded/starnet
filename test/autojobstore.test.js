@@ -49,12 +49,12 @@ global.Harness = hn;
 
 let scheduled = [];
 let boardHere = false;   // G4 feature 2: is a MISSION BOARD placed? toggled per-case below
-const SYSTEM = 'SYSTEM PROMPT\nWHAT YOU KNOW ABOUT YOUR COMMANDER: goals — ship StarNet.';
+const SYSTEM = 'SYSTEM PROMPT\nWHAT YOU KNOW ABOUT YOUR FARMER: goals — ship Homestead.';
 const deps = {
   getSystem: () => SYSTEM,
   getName: () => 'NOVA',
   readiness: () => ({ ready: true, reasons: [] }),
-  getBeliefs: () => ({ goals: ['ship StarNet'], pain: ['manual standups'] }),
+  getBeliefs: () => ({ goals: ['ship Homestead'], pain: ['manual standups'] }),
   getExistingJobs: () => Promise.resolve(['Morning brief']),
   scheduleJob: (body) => { scheduled.push(body); return Promise.resolve({ ok: true }); },
   boardPlaced: () => boardHere
@@ -67,7 +67,7 @@ function clearFakes() { hn.calls = []; dlg.opened = dlg.noded = dlg.closed = 0; 
 
 const TWO = [
   'JOB: Standup draft', 'WHY: kills the standup pain', 'GROUNDS: manual standups', 'CADENCE: morning', 'RUN: Draft the standup from what you know.',
-  '', 'JOB: Ship nudge', 'WHY: advances the goal', 'GROUNDS: ship StarNet', 'CADENCE: weekly', 'RUN: Draft the next ship step.'
+  '', 'JOB: Ship nudge', 'WHY: advances the goal', 'GROUNDS: ship Homestead', 'CADENCE: weekly', 'RUN: Draft the next ship step.'
 ].join('\n');
 
 /* ---------- init subscribes read-only ---------- */
@@ -108,7 +108,7 @@ global.Onboarding = undefined;
     A.eq(call.isTask, false, 'reason-only (isTask:false)');
     A.eq(call.placed, [], 'no capabilities (placed:[]) — it cannot touch tools');
     A.eq(call.internal, true, 'internal → harness suppresses run.start/end re-emit (the self-talk never counts)');
-    A.ok(call.messages[0].content.indexOf('ship StarNet') >= 0, 'the directive grounds on the real beliefs');
+    A.ok(call.messages[0].content.indexOf('ship Homestead') >= 0, 'the directive grounds on the real beliefs');
     A.ok(call.messages[0].content.indexOf('Morning brief') >= 0, 'the directive lists existing jobs (dedup)');
 
     A.eq(dlg.noded, 2, 'one approval node per proposal');
@@ -175,7 +175,7 @@ global.Onboarding = undefined;
     hn.next = { text: TWO };
     const rp = await AutoJobStore.propose({ proactive: true });
     A.eq(dlg.noded, 0, 'board mode does NOT run the inline Dialogue approval loop');
-    A.eq(scheduled.length, 0, 'board mode schedules nothing up front — the Commander decides at the board');
+    A.eq(scheduled.length, 0, 'board mode schedules nothing up front — the Farmer decides at the board');
     A.eq(rp.pinned, 2, 'both parsed proposals are pinned to the board');
     A.eq(AutoJobStore.pendingCount(), 2, 'the pending ledger holds the two pinned proposals');
     A.eq(AutoJobStore._state().proposed, true, 'a board-delivered proactive offer still spends the fire-once flag');
@@ -223,7 +223,7 @@ global.Onboarding = undefined;
     AutoJobStore.init(deps);
     const fr = await AutoJobStore.acceptPending(stickyId);
     A.eq(fr.ok, false, 'a failed POST reports failure');
-    A.ok(AutoJobStore.pendingCount() === 2, 'a failed approve leaves the card pinned so the Commander can retry');
+    A.ok(AutoJobStore.pendingCount() === 2, 'a failed approve leaves the card pinned so the Farmer can retry');
     deps.scheduleJob = realSched;
 
     /* no board → the Dialogue flow is untouched (the pin is a projection, never a gate) ---- */

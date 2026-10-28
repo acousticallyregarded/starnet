@@ -196,8 +196,8 @@ async function waitUntil(fn, ms, label) {
     const groups = atConnect.find(b => b.scope && b.scope.type === 'all_group_chats');
     A.ok(dflt && groups, 'default + all-groups menus published at connect');
     A.ok(!JSON.stringify(dflt).includes('deploy_prod'), 'the default (any DM) menu lists only the built-ins');
-    A.ok(groups.commands.some(c => c.command === 'deploy_prod'), 'groups can still tap the Commander\'s command by name');
-    A.ok(!JSON.stringify(atConnect).includes('10.0.0.5'), 'no stranger-visible menu carries the Commander\'s own description');
+    A.ok(groups.commands.some(c => c.command === 'deploy_prod'), 'groups can still tap the Farmer\'s command by name');
+    A.ok(!JSON.stringify(atConnect).includes('10.0.0.5'), 'no stranger-visible menu carries the Farmer\'s own description');
     A.ok(!atConnect.some(b => b.scope && b.scope.type === 'chat'), 'no owner scope before an owner exists');
 
     // ---- 2. pairing publishes the owner's own menu into the owner's DM only ----
@@ -213,7 +213,7 @@ async function waitUntil(fn, ms, label) {
     let mark = tg.sends.length, runs0 = llm.runs.length;
     tg.dm(OWNER, '/version');
     await waitUntil(() => sentTo(OWNER, mark).length > 0, 8000, 'the /version answer');
-    A.ok(/only works in the StarNet desktop app/.test(textOf(sentTo(OWNER, mark)[0])), '/version answers from the registry: ' + textOf(sentTo(OWNER, mark)[0]));
+    A.ok(/only works in the Homestead desktop app/.test(textOf(sentTo(OWNER, mark)[0])), '/version answers from the registry: ' + textOf(sentTo(OWNER, mark)[0]));
     mark = tg.sends.length;
     tg.dm(OWNER, '/routines');
     await waitUntil(() => sentTo(OWNER, mark).length > 0, 8000, 'the /routines answer');
@@ -229,7 +229,7 @@ async function waitUntil(fn, ms, label) {
     A.ok(/Routine created/.test(addReply) && /Results will come back to this chat\./.test(addReply), 'the reply says where results go: ' + addReply);
     const cron = await (await fetch(B + '/api/cron', { headers: H })).json();
     const job = ((cron && cron.jobs) || []).find(j => /morning digest for the phone/.test(String(j.prompt || j.name || '')));
-    A.ok(job, 'the routine is on the station');
+    A.ok(job, 'the routine is on the farm');
     A.eq(job && job.deliver, 'origin', 'it delivers to its origin');
     A.eq(job && job.origin && String(job.origin.chatId), String(OWNER), 'which is this chat');
     A.eq(job && job.origin && job.origin.channel, 'telegram', 'on this channel');
@@ -309,7 +309,7 @@ async function waitUntil(fn, ms, label) {
     A.eq(callsCarrying('/steer make', runs0).length, 0, 'the command word never reached the model');
     A.ok(!/\[steering\]/.test(finalText), 'no raw marker on the phone: ' + JSON.stringify(finalText));
     A.ok(/MODEL ANSWER \d+\n\n↪ make it about the sea and make it rhyme\n\nMODEL ANSWER \d+/.test(finalText), 'both answers, the note on its own line between them: ' + JSON.stringify(finalText));
-    A.ok(!sentTo(OWNER, mark).some(s => /only works in the StarNet desktop app/.test(textOf(s))), 'never the desktop-only refusal');
+    A.ok(!sentTo(OWNER, mark).some(s => /only works in the Homestead desktop app/.test(textOf(s))), 'never the desktop-only refusal');
   } finally {
     await stop(child);
     try { tg.close(); } catch (_) {}

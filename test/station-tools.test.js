@@ -37,7 +37,7 @@ function stubBridge(impl) {
   A.eq(bridge.seen[1].args.agentId, 'researcher', 'and the crew binding travels');
   A.eq(bridge.seen[1].args.focus, false, 'focus is never implied');
   const foc = await t.focusTool.run({ session: 'research' });
-  A.eq(JSON.parse(foc.content).title, 'research', 'session.focus returns where the Commander now is');
+  A.eq(JSON.parse(foc.content).title, 'research', 'session.focus returns where the Farmer now is');
   const peek = await t.peekTool.run({ session: 'research' });
   const pk = JSON.parse(peek.content);
   A.eq(pk.turns[0].speaker, 'researcher', "session.peek returns another session's real turns, attributed");
@@ -58,9 +58,9 @@ function stubBridge(impl) {
     A.ok(/^REFUSED:/.test(out.content), tool.name + ' without a bridge refuses explicitly');
     A.ok(/do not report this action as done/.test(out.content), 'and tells the model not to claim it');
   }
-  const down = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'no station page answered — open StarNet to run station commands', unattended: true })) });
+  const down = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'no farm page answered — open Homestead to run farm commands', unattended: true })) });
   const out = await down.createTool.run({ title: 'research' });
-  A.ok(/REFUSED: no station page answered/.test(out.content), 'an unattended station (cron/Night Shift) is named, not papered over');
+  A.ok(/REFUSED: no farm page answered/.test(out.content), 'an unattended farm (cron/Night Shift) is named, not papered over');
   const refused = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'a session called "research" already exists — delegate into it, focus it, or pick another name' })) });
   const dup = await refused.createTool.run({ title: 'research' });
   A.ok(/already exists/.test(dup.content), "the page's own refusal reaches the model verbatim");
@@ -82,10 +82,10 @@ function stubBridge(impl) {
   A.eq(out.summary, '2 session(s), 1 busy, 1 awaiting approval', 'the summary counts only what the snapshot says');
   const quiet = makeStationTools({ station: stubBridge(() => ({ ok: true, result: { active: 'b', workstreams: [{ id: 'b', busy: false }] } })) });
   A.eq((await quiet.statusTool.run({})).summary, '1 session(s), 0 busy', 'no approval clause when nothing waits');
-  const starting = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'the station is still starting up — no sessions are readable yet' })) });
-  A.ok(/^REFUSED: the station is still starting up/.test((await starting.statusTool.run({})).content), "the page's not-ready refusal reaches the model, never an empty 'all quiet'");
-  const headless = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'no station page answered — open StarNet to run station commands', unattended: true })) });
-  A.ok(/^REFUSED: no station page answered/.test((await headless.statusTool.run({})).content), 'no live page → explicit REFUSED, no implied station state');
+  const starting = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'the farm is still starting up — no sessions are readable yet' })) });
+  A.ok(/^REFUSED: the farm is still starting up/.test((await starting.statusTool.run({})).content), "the page's not-ready refusal reaches the model, never an empty 'all quiet'");
+  const headless = makeStationTools({ station: stubBridge(() => ({ ok: false, error: 'no farm page answered — open Homestead to run farm commands', unattended: true })) });
+  A.ok(/^REFUSED: no farm page answered/.test((await headless.statusTool.run({})).content), 'no live page → explicit REFUSED, no implied farm state');
   A.eq([t.statusTool.capability, t.statusTool.scope, t.statusTool.requiresConsent].join(','), 'orchestrator,read,false', 'lead-only, read-only, consent-free');
   A.ok(/never infer other sessions/i.test(t.statusTool.description), 'its description carries the anti-guessing rule');
 }
@@ -135,7 +135,7 @@ function stubBridge(impl) {
     "peek's description carries the anti-guessing rule — the tool exists because a lead denied real work");
   const reg = { registered: [], register(x) { this.registered.push(x.name); } };
   t.register(reg);
-  A.eq(reg.registered.join(','), 'session.list,session.create,session.peek,session.focus,station.status,task.list,task.create,task.manage,team.config,team.configure,station.layout,station.map,station.plan,station.build,station.make_prop,station.test_line,station.start_line', 'register() installs session, task, crew configuration, floor layout and station builder verbs');
+  A.eq(reg.registered.join(','), 'session.list,session.create,session.peek,session.focus,station.status,task.list,task.create,task.manage,team.config,team.configure,station.layout,station.map,station.plan,station.build,station.make_prop,station.test_line,station.start_line', 'register() installs session, task, crew configuration, floor layout and farm builder verbs');
 }
 
 /* ---- ⛔ THE CAPABILITY REGISTRY IS AN ALLOWLIST. A tool registered with the host but not declared in

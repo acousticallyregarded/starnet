@@ -99,7 +99,7 @@ function tick() { return new Promise(resolve => setImmediate(resolve)); }
     // The lead's handoff context is durable on the record so resume rebuilds the same opening message.
     let cmdHandle = null, finishCmd;
     const cmdDone = new Promise(resolve => { finishCmd = resolve; });
-    const cmdSteered = mgr.start({ leadId: 'lead', agentId: 'worker', prompt: 'commander steer',
+    const cmdSteered = mgr.start({ leadId: 'lead', agentId: 'worker', prompt: 'farmer steer',
       context: 'the repo root is /srv/app' }, async (h) => {
       cmdHandle = h; await cmdDone;
       return { status: 'done', reason: 'done', result: 'ok', usd: 0 };
@@ -107,9 +107,9 @@ function tick() { return new Promise(resolve => setImmediate(resolve)); }
     await tick();
     A.eq(mgr.get(cmdSteered.id).context, 'the repo root is /srv/app', 'the lead handoff context is durable on the record');
     A.eq(cmdSteered.context, 'the repo root is /srv/app', 'the view exposes the handoff context');
-    A.ok(mgr.steer(cmdSteered.id, undefined, cmdSteered.generation, 'switch to the staging DB', 'commander').ok, 'the Commander (no leadId) can steer a running worker');
-    A.eq(mgr.get(cmdSteered.id).steerHistory[0].origin, 'commander', 'steering history records the commander origin truthfully');
-    A.eq(cmdHandle.steer(), ['[from the Commander] switch to the staging DB'], 'a commander note names its source at drain');
+    A.ok(mgr.steer(cmdSteered.id, undefined, cmdSteered.generation, 'switch to the staging DB', 'commander').ok, 'the Farmer (no leadId) can steer a running worker');
+    A.eq(mgr.get(cmdSteered.id).steerHistory[0].origin, 'commander', 'steering history records the farmer origin truthfully');
+    A.eq(cmdHandle.steer(), ['[from the Commander] switch to the staging DB'], 'a farmer note names its source at drain');
     finishCmd(); await tick(); await tick();
 
     // A late settlement from an interrupted generation cannot clobber its resumed replacement.

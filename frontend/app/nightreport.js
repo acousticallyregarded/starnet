@@ -92,7 +92,7 @@
     const ms = status && Number(status.awayAfterMs);
     const mins = (Number.isFinite(ms) && ms > 0) ? Math.round(ms / 60000) : 0;
     const span = mins > 0 ? (mins + ' min without clicks or keys') : 'a stretch without clicks or keys';
-    return 'Leave the app running — “away” just means ' + span + '. Autonomy starts by itself once you stop using the station, and stands down the moment you’re back.';
+    return 'Leave the app running — “away” just means ' + span + '. Autonomy starts by itself once you stop using the farm, and stands down the moment you’re back.';
   }
 
   // ---- report composition ----------------------------------------------------------------------------------------

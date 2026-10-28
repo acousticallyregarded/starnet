@@ -60,7 +60,7 @@ const run = (st, id, op, args, opts) => LE.run(st, id, op, args, Object.assign({
   A.ok(prop(G) && prop(G).maxIter === 3 && prop(G).when === 'approved', 'the LOOP gate carries its passes and its verdict');
   A.ok(st.links().some(l => l.from.prop === G && l.from.port === 'done' && l.to.prop === O), 'the LOOP\'s DONE lane runs to the OUTBOX');
   // every machine and every belt stands where the station itself allows
-  for (const p of st.props()) if ({ intake: 1, bay: 1, outbox: 1, loop: 1 }[p.t]) A.ok(st.canPlaceProp(p.t, p.x, p.y, p.w, p.h, p.id).ok, p.t + ' ' + p.id + ' stands where the station allows');
+  for (const p of st.props()) if ({ intake: 1, bay: 1, outbox: 1, loop: 1 }[p.t]) A.ok(st.canPlaceProp(p.t, p.x, p.y, p.w, p.h, p.id).ok, p.t + ' ' + p.id + ' stands where the farm allows');
 }
 
 /* ---------- ONLY WHAT CHANGED MOVES, ONE UNDO PUTS IT BACK ---------- */
@@ -77,7 +77,7 @@ const run = (st, id, op, args, opts) => LE.run(st, id, op, args, Object.assign({
   const now = st.links();
   A.ok(kept.every(k => { const n = now.find(l => l.id === k.id); return n && JSON.stringify(n.path) === JSON.stringify(k.path); }), 'the belt the edit did not touch stays exactly where it was');
   A.eq(JSON.stringify(st.props().filter(p => p.id !== r.focus).map(p => [p.id, p.x, p.y])), posBefore, 'no machine that was there moves');
-  A.ok(st.undo().ok !== false && snapOf(st) === doc0, 'ONE undo puts the station back exactly');
+  A.ok(st.undo().ok !== false && snapOf(st) === doc0, 'ONE undo puts the farm back exactly');
   A.eq(beltsOf(st), beltsBefore, '…belts included');
 }
 
@@ -186,7 +186,7 @@ const run = (st, id, op, args, opts) => LE.run(st, id, op, args, Object.assign({
     run(st, B, 'addSorter', { from: B, to: B }),
   ];
   A.ok(bad.every(r => !r.ok && typeof r.msg === 'string' && r.msg.length > 10), 'every edit that cannot be made says why in plain words — ' + bad.map(r => r.error).join(', '));
-  A.ok(snapOf(st) === s0, '…and the station is untouched');
+  A.ok(snapOf(st) === s0, '…and the farm is untouched');
   // a floor with no room left: the new line is refused, never half-laid
   const full = fresh(), rm = full.rooms()[0].rects[0];
   for (let y = rm.y1; y <= rm.y2; y++) for (let x = rm.x1; x <= rm.x2; x++) if (full.canPlaceProp('crate', x, y, 1, 1).ok) full.addProp({ t: 'crate', x, y, w: 1, h: 1 });

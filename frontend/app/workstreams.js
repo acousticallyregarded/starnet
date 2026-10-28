@@ -611,7 +611,7 @@
     }
     const lines = ['# ' + title, '', '_Exported from Homestead. Hidden/system data and obvious credentials are excluded._', ''];
     for (const m of messages) {
-      if (m.goalStep != null) { lines.push('## Station', '', 'Goal step: ' + m.goalStep, ''); continue; }
+      if (m.goalStep != null) { lines.push('## Farm', '', 'Goal step: ' + m.goalStep, ''); continue; }
       lines.push('## ' + (m.role === 'user' ? 'Farmer' : 'Agent'), '', m.content, '');
     }
     return { format: 'markdown', mime: 'text/markdown', filename: 'starnet-' + slug + '.md', text: lines.join('\n') };

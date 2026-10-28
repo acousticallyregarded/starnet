@@ -119,7 +119,7 @@ function mockOllama(opts) {
     await sleep(30);
     const it = turn.stream({ model: 'qwen3:8b', messages: [{ role: 'user', content: 'hello' }], isTask: false })[Symbol.asyncIterator]();
     const first = await Promise.race([it.next(), sleep(1500).then(() => ({ timedOut: true }))]);
-    A.ok(/ · 1 other StarNet call still open there \(background\)$/.test((first.value && first.value.note) || ''), 'the turn names the open background call: ' + (first.value && first.value.note));
+    A.ok(/ · 1 other Homestead call still open there \(background\)$/.test((first.value && first.value.note) || ''), 'the turn names the open background call: ' + (first.value && first.value.note));
     s.release();
     for (;;) { const n = await it.next(); if (n.done) break; }
     await bgRun;
@@ -127,7 +127,7 @@ function mockOllama(opts) {
     const lone = makeOpenAICompatibleProvider({ fetch: s2.fetch, baseUrl: base, nativeOllama: true, waitNoteMs: 20 });
     const it2 = lone.stream({ model: 'qwen3:8b', messages: [{ role: 'user', content: 'again' }], isTask: false })[Symbol.asyncIterator]();
     const again = await Promise.race([it2.next(), sleep(1500).then(() => ({ timedOut: true }))]);
-    A.ok(!/other StarNet call/.test((again.value && again.value.note) || 'x'), 'once those calls ended, nothing else is counted: ' + (again.value && again.value.note));
+    A.ok(!/other Homestead call/.test((again.value && again.value.note) || 'x'), 'once those calls ended, nothing else is counted: ' + (again.value && again.value.note));
     s2.release();
     for (;;) { const n = await it2.next(); if (n.done) break; }
   }

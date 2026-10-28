@@ -77,7 +77,7 @@
      have…" line is a complaint, not a reusable correction). TRANSIENT: a one-off blip is noise, not a durable
      belief — unless the line itself describes a recurring/pattern shape, which the second alternative admits. */
   const RESTATE = /^(the\s+)?(run|task|job|attempt|it)\s+(failed|errored|crashed|was\s+(cancelled|aborted)|timed\s+out|hit\s+(the\s+)?(budget|limit|cap|max))\W*$/i;
-  const BLAME = /^(the\s+)?(user|commander|model|provider|agent)\s+(should\s+have|shouldn't\s+have|failed\s+to|was\s+(wrong|bad|at\s+fault)|didn'?t|is\s+to\s+blame)\b/i;
+  const BLAME = /^(the\s+)?(user|commander|farmer|model|provider|agent)\s+(should\s+have|shouldn't\s+have|failed\s+to|was\s+(wrong|bad|at\s+fault)|didn'?t|is\s+to\s+blame)\b/i;
   const TRANSIENT = /\b(one[-\s]?off|momentary|temporar(?:y|ily)|transient|blip|glitch|fluke)\b/i;
   const RECURRENT = /\b(recurr?(?:ing|ent|ed)|repeated(?:ly)?|pattern|every\s+(time|attempt|retry)|each\s+(time|attempt|retry)|consistently|again)\b/i;
   /* GATE-SKIP: a lesson that teaches the agent to route around a step the host REQUIRES. The first-hour walk

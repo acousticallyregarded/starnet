@@ -194,7 +194,7 @@ function reachable(r, G, ids, what) {
   r.open('p32');
   r.ctx.panX = -600; cam = r.camNow();
   r.close();
-  A.eq(r.camNow(), cam, 'a line panned off the glass by the Commander stays where they put it');
+  A.eq(r.camNow(), cam, 'a line panned off the glass by the Farmer stays where they put it');
   noBake(r, 'panned away');
 
   // the Commander reopened the library themselves (OPEN KIT) while the panel was open: DONE restores nothing, so moves nothing
@@ -204,7 +204,7 @@ function reachable(r, G, ids, what) {
   A.ok(!r.dock.classList.contains('is-collapsed'), 'setup: OPEN KIT reopened the library mid-panel');
   cam = r.camNow();
   r.close();
-  A.eq(r.camNow(), cam, 'a library the Commander reopened is not DONE\'s doing: the camera stays');
+  A.eq(r.camNow(), cam, 'a library the Farmer reopened is not DONE\'s doing: the camera stays');
   noBake(r, 'OPEN KIT mid-panel');
 
   // BUILD MODE itself closing (close() sets running=false before it closes the panel): nothing to keep in view

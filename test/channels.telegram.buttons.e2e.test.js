@@ -250,7 +250,7 @@ const lastUserTurn = (req) => {
 
     await waitUntil(() => llm.requests.length > beforeRuns, 8000, 'follow-up run');
     A.ok(llm.requests.some(r => lastUserTurn(r) === 'the production cluster'),
-      'the model receives the option\'s OWN TEXT as the next user turn — identical to the Commander typing it');
+      'the model receives the option\'s OWN TEXT as the next user turn — identical to the Farmer typing it');
     await waitUntil(() => tg.sends.some(s => /Deploying now\./.test(String(s.text || ''))), 8000, 'follow-up reply');
     A.ok(tg.sends.some(s => /Deploying now\./.test(String(s.text || ''))), 'the follow-up answer is delivered');
 
@@ -293,7 +293,7 @@ const lastUserTurn = (req) => {
     const prior = ((await (await fetch(B + '/api/save?agent=agent', { headers: saveHeaders })).json()) || {}).save;
     const sv = await fetch(B + '/api/save', { method: 'POST', headers: saveHeaders,
       body: JSON.stringify({ schema: 'starnet.save', version: 5, _saveRevision: (prior && prior._saveRevision) || 0, updatedAt: Date.now(), agent: { id: 'agent' }, station: stDoc }) });
-    A.ok(sv.status === 200 && ((await sv.json()) || {}).ok === true, 'the station with tg_4242\'s bay, workstation and cabinet is saved');
+    A.ok(sv.status === 200 && ((await sv.json()) || {}).ok === true, 'the farm with tg_4242\'s bay, workstation and cabinet is saved');
     const rr = await fetch(B + '/api/routing', {
       method: 'POST', headers: saveHeaders,
       body: JSON.stringify({ errors: [], hash: 'buttons-e2e', bays: [], dockBays: [{ agentId: 'tg_4242', propId: 'bay1', objects: ['computer', 'cabinet'] }] })

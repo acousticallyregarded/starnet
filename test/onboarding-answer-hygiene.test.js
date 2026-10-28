@@ -154,7 +154,7 @@ function awakening(answerFor) {
   A.ok(!/^\s*i could\b/i.test(grab.armed[0] || ''), 'the first task is not the agent’s own sentence: ' + grab.armed[0]);
   A.ok(/draft your launch checklist tonight/.test(grab.armed[0] || ''), '…it still carries the offer they picked: ' + grab.armed[0]);
   const g = grab.upserts.find(u => u.dim === 'goals' && /launch checklist/.test(u.text));
-  A.ok(g && !/to: i could/i.test(g.text), 'the goal belief reads as a fact about the Commander, not "Wants the station to: i could …": ' + (g && g.text));
+  A.ok(g && !/to: i could/i.test(g.text), 'the goal belief reads as a fact about the Farmer, not "Wants the farm to: i could …": ' + (g && g.text));
 
   const redir = deep('redirect', '🚀🔥💯🙏');
   await settle(() => redir.run.commits.some(c => c && c.purpose));

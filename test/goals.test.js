@@ -170,13 +170,13 @@ A.eq(edited.path, ['do alpha first', 'do beta second', 'do gamma third'], 'the E
 A.eq(G.resolveConfirmChoice({ custom: true, value: 'a1 x; b2 x; c3 x; d4 x; e5 x; f6 x' }, basePath).path.length, 5, 'an edited path is capped at 5');
 // THE FIX: a too-short edit is a REJECTION — decline, never silently persist the unedited model tree
 const short = G.resolveConfirmChoice({ custom: true, value: 'just do X' }, basePath);
-A.eq(short.action, 'decline', 'an edit under the 3-step floor DECLINES (the Commander rejected the tree)');
+A.eq(short.action, 'decline', 'an edit under the 3-step floor DECLINES (the Farmer rejected the tree)');
 A.eq(G.resolveConfirmChoice({ custom: true, value: '' }, basePath).action, 'decline', 'an empty edit declines too');
 
 // A chosen next step survives projection without rewriting the plan or completed history.
 const flexible = G.makeGoal('Make a useful app', ['Build the app', 'Prepare feedback', 'Review responses'], null, 100);
 const originalOrder = flexible.milestones.map(m => m.id);
-A.ok(G.chooseNext(flexible, originalOrder[1], 200, () => false), 'Commander can choose a later open step');
+A.ok(G.chooseNext(flexible, originalOrder[1], 200, () => false), 'Farmer can choose a later open step');
 A.eq(G.nextMilestone(flexible).id, originalOrder[1], 'chosen step becomes next');
 A.eq(flexible.milestones.map(m => m.id), originalOrder, 'choosing next preserves original plan order');
 A.eq(G.project([flexible]).find(q => q.isNext).milestoneId, originalOrder[1], 'quest projection follows the chosen next step');
@@ -192,5 +192,5 @@ A.eq(brief.progress.done, 1, 'return briefing counts completed plan steps');
 A.eq(flexible.status, 'active', 'work progress never confirms the overall outcome');
 flexible.status = 'done'; flexible.outcomeEvidence = 'Five people reported using it'; flexible.updatedAt = 600;
 A.eq(G.briefing([flexible]).completedGoal.outcomeEvidence, 'Five people reported using it', 'completed goal remains a readable chapter');
-A.eq(G.briefing([]).completedGoal, null, 'new Commander gets no invented history');
+A.eq(G.briefing([]).completedGoal, null, 'new Farmer gets no invented history');
 A.report('goals.test');

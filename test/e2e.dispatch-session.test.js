@@ -103,7 +103,7 @@ function attachStationPage(B, token, sessions, options) {
               : p.verb === 'station.deliver' ? (options && options.deliverError ? { ok: false, error: options.deliverError } : { ok: true, result: { folded: true, session: 'research' } })
                 : (p.verb === 'station.dispatch_start' || p.verb === 'station.dispatch_end')
                   ? { ok: true, result: { session: 'research' } }
-                  : { ok: false, error: 'unknown station verb: ' + p.verb };
+                  : { ok: false, error: 'unknown farm verb: ' + p.verb };
             await fetch(B + '/api/station/ack', {
               method: 'POST', headers: { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: B },
               body: JSON.stringify(Object.assign({ id: p.id }, out))
@@ -205,7 +205,7 @@ await run('targeted',
     // 3) the finished answer was delivered to the page, into the RESOLVED session
     const delivered = station.filter(c => c.verb === 'station.deliver');
     A.eq(delivered.length, 1, label + ': the answer was delivered to the page exactly once');
-    A.eq(delivered[0].args.streamId, 'ws_r1', label + ': delivered into the session the Commander named');
+    A.eq(delivered[0].args.streamId, 'ws_r1', label + ': delivered into the session the Farmer named');
     A.eq(delivered[0].args.sessionTitle, 'research', label + ': delivery carries the stable title that heals page-local id drift');
     A.eq(delivered[0].args.agentId, 'researcher', label + ': attributed to the worker that did it');
     A.ok(delivered[0].args.text.indexOf('Phobos') >= 0, label + ": the delivered text is the worker's real output");

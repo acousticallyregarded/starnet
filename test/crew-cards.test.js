@@ -74,7 +74,7 @@ function load(opts = {}) {
   c.emit('agent.run.start', { agentId: 'nova', runId: 'r1' });
   c.emit('permission.prompt', { promptId: 'p1', agentId: 'nova', tool: 'fs.write' });
   c.advance(120000);
-  A.ok(c.asking(), 'fixture: the first run is waiting on the Commander');
+  A.ok(c.asking(), 'fixture: the first run is waiting on the Farmer');
   c.cl.delete('working'); c.advance(1000); c.advance(9000);   // Stop: the row goes idle, the run never reports its end
   c.advance(3600000);
   c.cl.add('working');

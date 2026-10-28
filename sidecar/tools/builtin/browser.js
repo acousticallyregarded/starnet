@@ -3412,7 +3412,7 @@
         }
         return { ok: true, browser: String(v.Browser || 'Chrome'), port: port };
       } catch (e) {
-        return { ok: false, error: 'browser.attach: nothing is listening on 127.0.0.1:' + port + '. Use browser.login for a saved StarNet session. Advanced attachment requires Chrome launched with --remote-debugging-port=' + port + ' and a separate --user-data-dir; current Chrome does not expose its default profile this way.' };
+        return { ok: false, error: 'browser.attach: nothing is listening on 127.0.0.1:' + port + '. Use browser.login for a saved Homestead session. Advanced attachment requires Chrome launched with --remote-debugging-port=' + port + ' and a separate --user-data-dir; current Chrome does not expose its default profile this way.' };
       }
     }
     /* RESET (#61): the supported way out of a wedged station browser - what an agent used to try with a shell kill
@@ -3448,7 +3448,7 @@
       driver = null; driverHeaded = null;
       attachedToUserBrowser = false; attachedUserPort = null;
       version++; navEpoch++;
-      return 'Detached from your Chrome on port ' + port + '. It is still running and untouched; later browser actions use the station browser again.';
+      return 'Detached from your Chrome on port ' + port + '. It is still running and untouched; later browser actions use the farm browser again.';
     }
     /* THE GATE. Refuse page eval whenever this run is driving the PERSISTENT profile, because that
        profile carries the Commander's real logged-in sessions (browser.login put them there). On the
@@ -3778,7 +3778,7 @@
     }
     function authHint(status) {
       if (!canHandOff || !status || !status.authWall) return '';
-      return ' This page shows ' + (status.authSignal || 'a sign-in field') + '. You never type the Commander\'s credentials or codes: if the task needs this account, call browser.need_human {reason:"' + status.authWall + '"} so they can do it in this same browser; otherwise carry on without signing in.';
+      return ' This page shows ' + (status.authSignal || 'a sign-in field') + '. You never type the Farmer\'s credentials or codes: if the task needs this account, call browser.need_human {reason:"' + status.authWall + '"} so they can do it in this same browser; otherwise carry on without signing in.';
     }
     const tools = [
       Object.assign(read('browser.navigate', 'Navigate the AGENT-CONTROLLED browser to a public http(s) URL. HEADLESS in ordinary agent runs: it never opens a window or uses the user\'s input. Private, loopback, intranet, and unsafe redirects remain refused; use browser.test_navigate for a local dev server.', { type: 'object', required: ['url'], properties: navProps },
@@ -3791,7 +3791,7 @@
             try { host = new URL(url).host; } catch (e) { failNote('browser.load-fail.host', e); }
             const http = describeResponse(session.lastResponse && session.lastResponse());
             return {
-              content: 'Browser reached a human-verification wall at ' + host + http.text + '. This is not page content. If the Commander is available, use browser.attach for their own Chrome or browser.login when sign-in is required; otherwise report the wall plainly.' + stepInHint('captcha'),
+              content: 'Browser reached a human-verification wall at ' + host + http.text + '. This is not page content. If the Farmer is available, use browser.attach for their own Chrome or browser.login when sign-in is required; otherwise report the wall plainly.' + stepInHint('captcha'),
               summary: 'verification wall' + http.summary
             };
           }

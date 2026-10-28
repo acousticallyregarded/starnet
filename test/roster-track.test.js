@@ -70,7 +70,7 @@ A.ok(/^25\|/.test(fired[fired.length - 1].key), 'the republished key carries the
 // and a rating that flips the Commander-rating band republishes too (a different, independent source)
 const before = fired.length;
 for (let i = 0; i < 3; i++) XpStore.onEvent('memory.feedback', { agentId: 'researcher', id: 'm' + i, runId: 'r1', delta: 2, reason: 'work_great' });
-A.ok(fired.length > before, 'the Commander rating calibrating is itself a real credential change');
+A.ok(fired.length > before, 'the Farmer rating calibrating is itself a real credential change');
 A.ok(/25\|/.test(fired[fired.length - 1].key) && fired[fired.length - 1].key.split('|').filter(Boolean).length === 3, 'the key now carries tier + both bands');
 
 // the whole mechanism is a READOUT: none of it moved the ladder on its own

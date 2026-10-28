@@ -264,7 +264,7 @@ A.eq(runTeeView('agent.reasoning', { agentId: 'a1', runId: 'r1', on: true }), nu
   first.onerror();
   A.eq(bridge.source(), resumed, 'an obsolete source error cannot close its replacement');
   first.onmessage({ data: JSON.stringify({ name: 'queue.status', payload: { depth: 99 } }), lastEventId: 'a:1' });
-  A.eq(bridge.emitted.length, 0, 'obsolete source messages cannot mutate the station');
+  A.eq(bridge.emitted.length, 0, 'obsolete source messages cannot mutate the farm');
   const message = { data: JSON.stringify({ name: 'queue.status', payload: { depth: 2 } }), lastEventId: 'a:2' };
   resumed.onmessage(message); resumed.onmessage(message);
   A.eq(bridge.emitted.length, 1, 'a replayed duplicate is applied only once');

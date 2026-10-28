@@ -40,10 +40,10 @@
     const catalog = (ctx.catalogSummary || []).map(c => '• ' + (c.id || '?') + ' — ' + (c.tagline || '')).join('\n') || '(none)';
     const top = ctx.topRecommendation ? String(ctx.topRecommendation) : '';
     const lines = [];
-    lines.push('You are the station\'s recruiter, drafting ONE brand-new specialist role tailored to how the Commander ACTUALLY works.');
-    lines.push('A specialist is a REAL JOB with standing importance in the Commander\'s business, project, or craft — the kind of role they would hire for (think: retention editor, grant writer, community manager, supply buyer). Never a generalist assistant, never a vague "helper".');
+    lines.push('You are the farm\'s recruiter, drafting ONE brand-new specialist role tailored to how the Farmer ACTUALLY works.');
+    lines.push('A specialist is a REAL JOB with standing importance in the Farmer\'s business, project, or craft — the kind of role they would hire for (think: retention editor, grant writer, community manager, supply buyer). Never a generalist assistant, never a vague "helper".');
     lines.push('');
-    lines.push('WHAT YOU KNOW ABOUT THE COMMANDER:');
+    lines.push('WHAT YOU KNOW ABOUT THE FARMER:');
     if (ctx.dossierBlock) lines.push(String(ctx.dossierBlock).trim());
     if (ctx.worksignalSummary) lines.push('OBSERVED WORKFLOW: ' + String(ctx.worksignalSummary).trim());
     lines.push('');
@@ -69,7 +69,7 @@
     lines.push('MANUAL: <2-5 standing-order bullets separated by " | ">');
     lines.push('KIT: <comma-separated capability keys from the allowed set>');
     lines.push('SKILLS: <comma-separated skill slugs from the allowed set, or leave blank>');
-    lines.push('WHY: <one sentence grounding this in the Commander\'s observed work>');
+    lines.push('WHY: <one sentence grounding this in the Farmer\'s observed work>');
     return lines.join('\n');
   }
 

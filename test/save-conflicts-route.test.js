@@ -52,8 +52,8 @@ A.eq(route('GET', '/api/save/conflicts?after=1729000000000'), 'serveSaveConflict
 A.eq(route('GET', '/api/save/conflicts'), 'serveSaveConflicts', 'GET /api/save/conflicts (no query) still reaches serveSaveConflicts');
 A.eq(route('GET', '/api/save/conflicts?after=1&ticket=abc'), 'serveSaveConflicts', 'any further query param still reaches serveSaveConflicts');
 // the neighbours are unchanged
-A.eq(route('GET', '/api/save'), 'serveSaveLoad', 'GET /api/save still loads the station');
-A.eq(route('GET', '/api/save?agent=agent'), 'serveSaveLoad', 'GET /api/save?agent= still loads the station');
+A.eq(route('GET', '/api/save'), 'serveSaveLoad', 'GET /api/save still loads the farm');
+A.eq(route('GET', '/api/save?agent=agent'), 'serveSaveLoad', 'GET /api/save?agent= still loads the farm');
 A.eq(route('POST', '/api/save/conflicts/restore'), 'handleSaveConflictRestore', 'POST restore is unchanged');
 A.eq(route('POST', '/api/save?ticket=t'), 'handleSaveWrite', 'POST /api/save (unload beacon) is unchanged');
 A.eq(route('POST', '/api/save/recovery-ack'), 'handleSaveRecoveryAck', 'POST recovery-ack is unchanged');

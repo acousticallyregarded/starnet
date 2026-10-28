@@ -83,7 +83,7 @@ function startMock() {
     const by = Object.fromEntries((m.entries || []).map(e => [e.slug, e]));
     A.eq(by['feed-watch'] && by['feed-watch'].status, 'bundled', 'a bundled original reads BUILT IN (our text is exactly the published version)');
     A.eq(by[TARGET] && by[TARGET].status, 'available', 'a market-only original is available to install');
-    A.eq(by[TARGET] && by[TARGET].shelf, 'originals', 'on the StarNet Originals shelf');
+    A.eq(by[TARGET] && by[TARGET].shelf, 'originals', 'on the Homestead Originals shelf');
     A.ok(!(await library()).some(s => s.slug === TARGET), 'precondition: it is not in the library yet');
 
     // ---- 2. install ----
@@ -104,7 +104,7 @@ function startMock() {
     A.ok(row && row.market && row.enabled, 'after a restart it is still installed and switched on');
 
     // ---- 4b. (sweep 2026-10-02) an UPDATE keeps the Commander's off switch (it used to silently re-enable it) ----
-    A.eq((await fixture.json('POST', '/api/skills/toggle', { slug: TARGET, enabled: false })).status, 200, 'the Commander switches it off');
+    A.eq((await fixture.json('POST', '/api/skills/toggle', { slug: TARGET, enabled: false })).status, 200, 'the Farmer switches it off');
     const upd = await fixture.json('POST', '/api/skill-market/install', { slug: TARGET });
     A.eq([upd.body.ok, upd.body.action, upd.body.enabled], [true, 'update', false], 'updating it reports it still OFF: ' + JSON.stringify(upd.body).slice(0, 160));
     row = (await library()).find(s => s.slug === TARGET);
@@ -150,7 +150,7 @@ function startMock() {
     // ---- 8. a replayed older catalog can't bring it back ----
     await fixture.restart({ SKYNET_SKILL_MARKET_PULL_MS: '1000' });   // the fixture serves the original, older serial again
     m = await market();
-    A.ok(m.ok === false && /older than one this station already saw/.test(m.error || ''), 'the older catalog is refused: ' + m.error);
+    A.ok(m.ok === false && /older than one this farm already saw/.test(m.error || ''), 'the older catalog is refused: ' + m.error);
     await sleep(2500);   // two background checks against the older pulled list
     A.ok(!(await library()).some(s => s.slug === TARGET), 'and the skill stays off');
 

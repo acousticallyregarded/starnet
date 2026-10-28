@@ -37,12 +37,12 @@ const { JourneyStore } = require('../frontend/app/journeystore.js');
   A.ok(created.ok, 'metric create returns the sidecar acknowledgement');
   let post = calls.filter(c => c.url === '/api/journey').pop();
   A.eq(JSON.parse(post.opts.body).op, 'metric.create', 'metric create uses the narrow journey operation');
-  A.eq(JSON.parse(post.opts.body).epoch, 42, 'journey mutations carry the live Commander generation');
+  A.eq(JSON.parse(post.opts.body).epoch, 42, 'journey mutations carry the live Farmer generation');
   await JourneyStore.updateMetric('jm:1', 5, 'billing');
   post = calls.filter(c => c.url === '/api/journey').pop();
-  A.eq(JSON.parse(post.opts.body), { op: 'metric.update', id: 'jm:1', current: 5, note: 'billing', epoch: 42 }, 'metric update sends the explicit Commander value, note, and generation');
+  A.eq(JSON.parse(post.opts.body), { op: 'metric.update', id: 'jm:1', current: 5, note: 'billing', epoch: 42 }, 'metric update sends the explicit Farmer value, note, and generation');
   await JourneyStore.suppress('builder', 'building');
-  A.eq(JSON.parse(calls.filter(c => c.url === '/api/journey').pop().opts.body).op, 'adaptation.suppress', 'Commander correction reaches the reversible adaptation operation');
+  A.eq(JSON.parse(calls.filter(c => c.url === '/api/journey').pop().opts.body).op, 'adaptation.suppress', 'Farmer correction reaches the reversible adaptation operation');
   await JourneyStore.reset(99);
   A.eq(JSON.parse(calls.filter(c => c.url === '/api/journey').pop().opts.body), { op: 'journey.reset', epoch: 99 }, 'new-Commander reset clears the server-owned journey at its new generation');
 

@@ -90,7 +90,7 @@ const { rank, cosine, SEMANTIC_FLOOR } = require('../sidecar/context.js');
 
   // ---- hybrid rank: cosine admits a zero-overlap record; no vectors => byte-identical to BM25 ----
   const lesson = { id: 'L', kind: 'fact', title: 'Fact', content: 'registry pushes rate-limit after repeated attempts; batch retries with backoff', createdAt: 1000 };
-  const other = { id: 'O', kind: 'fact', title: 'Fact', content: 'the commander prefers dark mode', createdAt: 1000 };
+  const other = { id: 'O', kind: 'fact', title: 'Fact', content: 'the farmer prefers dark mode', createdAt: 1000 };
   // The upload/push + throttle/rate-limit aliases are now explicit lexical matches.
   // This paraphrase deliberately shares neither literal vocabulary nor those aliases.
   const q = 'package publication is rejected by quota enforcement';

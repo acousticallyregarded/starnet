@@ -62,7 +62,7 @@ for (const kind of Object.keys(BUCKET)) {
     A.ok(!NOT_FIXABLE_BY_RESEND.test(d.cause) && /resend in a moment/.test(d.cause), kind + ': the cause says a retry can go through: ' + d.cause);
     A.ok(KINDS[kind] === true, kind + ': a RETRY kind is one Friendly marks retryable');
   } else if (BUCKET[kind] === 'GENERIC') {
-    A.ok(/report it/.test(d.fix) && /diagnostics/.test(d.fix), kind + ': keeps the resend + report fix (it may be StarNet\'s own bug)');
+    A.ok(/report it/.test(d.fix) && /diagnostics/.test(d.fix), kind + ': keeps the resend + report fix (it may be Homestead\'s own bug)');
   }
 }
 
@@ -75,7 +75,7 @@ const refusedLink = refusalOf({ linkRefused: true }).message;
 const unanswered = refusalOf({}).message;
 const outOf = refusalOf({ exhausted: true }).message;
 const heldBy = refusalOf({ exhausted: true, held: { counted: true, runs: 2, usd: 4 }, balanceUsd: 0 }).message;
-A.ok(/refused this station's link/.test(refusedLink) && /did not answer/.test(unanswered) && /^Out of managed credit/.test(outOf) && /held by 2 running StarNet runs/.test(heldBy),
+A.ok(/refused this farm's link/.test(refusedLink) && /did not answer/.test(unanswered) && /^Out of managed credit/.test(outOf) && /held by 2 running Homestead runs/.test(heldBy),
   'the sidecar still emits the refused-link, unanswered, out-of-credit and held refusals');
 const postMortem = (text) => {
   const v = Friendly.friendlyError(new Error(text));
@@ -146,7 +146,7 @@ A.eq((listeners['agent.run.end'] || []).length, 1, 'the store subscribes to run.
   fire('agent.run.end', { agentId: 'agent', runId: 'run-link', reason: 'error', turns: 0, usd: 0 });
   A.eq(notifs.length, 1, 'a stalled build surfaces exactly one beat');
   A.ok(/price watcher/.test(notifs[0].txt) && /Relink it/.test(notifs[0].txt), 'a build stalled on a refused link says relink: ' + notifs[0].txt);
-  A.ok(!/report it|diagnostics/.test(notifs[0].txt), 'a refused link never tells the Commander to report StarNet');
+  A.ok(!/report it|diagnostics/.test(notifs[0].txt), 'a refused link never tells the Farmer to report Homestead');
   A.eq(notifs[0].cls, 'warn', 'the beat stays in the neutral WARN family');
 }
 {

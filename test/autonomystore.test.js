@@ -17,7 +17,7 @@ global.fetch=async(url,opts)=>{
 };
 (async()=>{
   mem[key]=JSON.stringify({initiative:'free',reach:'reach',leashPerDay:12});
-  await S.init();assert.equal(S.get().initiative,'propose','a new station reads the server default: propose, never act');assert.ok(calls.every(x=>x===null),'boot is read-only');
+  await S.init();assert.equal(S.get().initiative,'propose','a new farm reads the server default: propose, never act');assert.ok(calls.every(x=>x===null),'boot is read-only');
   assert.equal((await S.applyPreset('build')).ok,true);assert.equal(S.get().initiative,'leash');assert.equal(calls.at(-1).resumeHalt,true);
   assert.equal(JSON.parse(mem[key]).initiative,'leash');
   fail=true;assert.equal((await S.setInitiative('wait')).ok,false);assert.equal(S.get().initiative,'leash');assert.match(S.status().error,/disk full/);

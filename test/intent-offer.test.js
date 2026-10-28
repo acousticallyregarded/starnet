@@ -223,7 +223,7 @@ const iTaskGate = chat.indexOf('if (!meta || meta.isTask) {');
 const iFloor = chat.indexOf('if (earned && !takeover)');
 const iRecruitBeat = chat.indexOf('const rc = recruitCandidate()');
 A.ok(iTaskGate > 0 && fireIdx > iTaskGate, 'the offer fires only after the isTask salience gate (never on chatter)');
-A.ok(iFloor > 0 && fireIdx < iFloor, 'the offer sits ABOVE the work-earned floor (a fresh Commander still discovers the catalog)');
+A.ok(iFloor > 0 && fireIdx < iFloor, 'the offer sits ABOVE the work-earned floor (a fresh Farmer still discovers the catalog)');
 A.ok(iRecruitBeat > 0 && fireIdx < iRecruitBeat, 'the offer is checked before adaptive recruitment (it is the more specific, message-derived ask)');
 A.ok(/if \(!takeover && staged && maybeIntentOffer\(staged\)\) return;/.test(chat), 'takeover has precedence; a fired catalog offer takes the slot and returns');
 A.ok(!/try \{ maybeIntentOffer\(text\); \}/.test(chat), 'send() never renders the offer before the run can replace its choice row');

@@ -85,6 +85,6 @@ A.eq(offenders.bareType, [], 'no non-subject :has() rule ends in a bare type sel
 const app = fs.readFileSync(path.join(cssDir, 'app.css'), 'utf8');
 for (const v of ['--chat-w', '--crew-w']) {
   A.ok(new RegExp('@property\\s+' + v + '\\s*\\{[^}]*inherits:\\s*false', 's').test(app),
-    v + ' is registered non-inheriting, so a seam drag re-styles one element, not the station');
+    v + ' is registered non-inheriting, so a seam drag re-styles one element, not the farm');
 }
 A.report("css-style-invalidation (" + hasRules + " :has() selectors)");

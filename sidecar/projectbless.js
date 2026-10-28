@@ -211,7 +211,7 @@
       if (!parts.length) return empty;
       return {
         text: '\n\nPROJECT INSTRUCTIONS — this folder\'s own standing rules, read from ' + sources.join(' and ') +
-          '. Follow them for work in this project the way you would follow the Commander\'s own standing orders. ' +
+          '. Follow them for work in this project the way you would follow the Farmer\'s own standing orders. ' +
           'A direct instruction in this conversation always wins over them.\n' + parts.join('\n\n'),
         sources: sources
       };

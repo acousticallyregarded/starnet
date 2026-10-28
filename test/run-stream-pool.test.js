@@ -246,7 +246,7 @@ async function answer(st, c, decision) {
     pg.idle();
     await until(() => st.active === 1);
     A.eq(st.active, 1, 'after the idle wait only the SSE bridge holds a connection');
-    A.eq(st.rs.size(), 0, 'the station closed its side of the stream');
+    A.eq(st.rs.size(), 0, 'the farm closed its side of the stream');
     A.eq(pg.runStream.state().open, false, 'the page holds no run stream while idle');
 
     // the next run opens a fresh stream
@@ -292,9 +292,9 @@ async function answer(st, c, decision) {
     A.ok(await until(() => c.settled), 'the stopped chat() settles');
     A.ok(c.error && c.error.name === 'AbortError', 'a Stop rejects with the AbortError, as an aborted fetch did');
     A.ok(c.error && !c.error.starnetTransport, 'a Stop is never marked as a transport loss');
-    A.ok(await until(() => st.withdraws.length === 1), 'the page withdrew the stopped run on the station');
+    A.ok(await until(() => st.withdraws.length === 1), 'the page withdrew the stopped run on the farm');
     const run = [...st.runs.values()].find(r => r.agentId === 'crew1');
-    A.ok(run && run.gone, 'the station let the stopped run go (the page-gone path its own response closing took)');
+    A.ok(run && run.gone, 'the farm let the stopped run go (the page-gone path its own response closing took)');
     A.ok(!other.settled, 'the other run on the stream is untouched');
     await answer(st, other, 'once');
     A.ok(await until(() => other.settled) && other.result && other.result.text === 'reply from crew2', 'the other run finishes normally');
@@ -308,7 +308,7 @@ async function answer(st, c, decision) {
     const c = converse(pg, 'crew1', ac.signal);
     ac.abort();
     A.ok(await until(() => c.settled), 'a run stopped while connecting settles');
-    A.ok(c.error && /cannot reach the STARNET sidecar/.test(c.error.message) && !c.error.starnetTransport, 'it keeps the old Stop-while-connecting words, unmarked');
+    A.ok(c.error && /cannot reach the HOMESTEAD sidecar/.test(c.error.message) && !c.error.starnetTransport, 'it keeps the old Stop-while-connecting words, unmarked');
     for (let i = 0; i < 20; i++) await tick();
     A.eq(st.sent('/api/run'), 0, 'no POST /api/run left the page');
   }
@@ -320,10 +320,10 @@ async function answer(st, c, decision) {
     st.loseAnswer = true;
     const c = converse(pg, 'crew1');
     A.ok(await until(() => c.settled), 'the run whose answer was lost settles');
-    A.ok(c.error && c.error.starnetTransport === 'fetch' && /cannot reach the STARNET sidecar/.test(c.error.message), 'as the old lost POST: cannot reach the sidecar, a transport loss');
+    A.ok(c.error && c.error.starnetTransport === 'fetch' && /cannot reach the HOMESTEAD sidecar/.test(c.error.message), 'as the old lost POST: cannot reach the sidecar, a transport loss');
     A.ok(await until(() => st.withdraws.length === 1), 'the page withdrew it');
     const run = [...st.runs.values()].find(r => r.agentId === 'crew1');
-    A.ok(run && run.gone, 'the station let it go (the lost connection used to stop it)');
+    A.ok(run && run.gone, 'the farm let it go (the lost connection used to stop it)');
   }
 
   // ================= the stream is lost mid-run: every run on it reads as its own stream breaking =================
@@ -389,7 +389,7 @@ async function answer(st, c, decision) {
     A.eq(last && last.name, 'agent.run.end', 'done resolves with the routine\'s last line');
     A.eq(seen.join(','), 'agent.run.start,agent.token,agent.run.end', 'onEvent saw every line, in order');
     const refused = await pg.streamPost('/api/cron/run', { id: 'busy', detach: true });
-    A.ok(!refused.ok && refused.status === 409 && /already running/.test(refused.j.error || ''), 'a refused Run now resolves ok:false with the station\'s own words');
+    A.ok(!refused.ok && refused.status === 409 && /already running/.test(refused.j.error || ''), 'a refused Run now resolves ok:false with the farm\'s own words');
     A.eq(await refused.done, null, 'and has nothing to wait on');
     for (const c of convs) await answer(st, c, 'once');
     A.ok(await until(() => convs.every(c => c.settled && c.result)), 'the conversations finish');
@@ -407,7 +407,7 @@ async function answer(st, c, decision) {
   {
     const pg = page({ fetch: async () => { throw new TypeError('Failed to fetch'); } });
     const r = await pg.streamPost('/api/cron/run', { id: 'job1' });
-    A.ok(!r.ok && r.status === 0 && /could not be reached/.test(r.j.error || ''), 'an unreachable station resolves ok:false, status 0 (never throws)');
+    A.ok(!r.ok && r.status === 0 && /could not be reached/.test(r.j.error || ''), 'an unreachable farm resolves ok:false, status 0 (never throws)');
     let rejected = false;
     try { await r.done; } catch (_) { rejected = true; }
     A.ok(rejected, 'its done rejects');
@@ -441,7 +441,7 @@ async function answer(st, c, decision) {
     const b = converse(pg, 'crew2');
     A.ok(await until(() => b.prompt || b.settled), 'the run refused for a gone stream still starts');
     A.ok(!b.error, 'no error reaches the conversation' + (b.error ? ': ' + b.error.message : ''));
-    A.ok(st.log.some(x => x.phase === 'run' && x.agentId === 'crew2' && x.viaStream), 'the station refused it on the gone stream first');
+    A.ok(st.log.some(x => x.phase === 'run' && x.agentId === 'crew2' && x.viaStream), 'the farm refused it on the gone stream first');
     A.ok(st.log.some(x => x.phase === 'run' && x.agentId === 'crew2' && !x.viaStream), 'then it was sent once more on its own response');
     await answer(st, b, 'once');
     A.ok(await until(() => b.settled) && b.result && b.result.endReason === 'done', 'and it finishes');

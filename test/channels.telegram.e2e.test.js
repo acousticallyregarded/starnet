@@ -456,11 +456,11 @@ async function waitUntil(fn, ms, label) {
     const stationBadDisconnect = await fetch(B + '/api/channels/telegram/disconnect', {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: B }, body: '{bad'
     });
-    A.eq(stationBadDisconnect.status, 400, 'malformed station Telegram disconnect -> 400');
-    if (stationBeforeMalformed !== null) A.eq(fs.readFileSync(channelFile, 'utf8'), stationBeforeMalformed, 'malformed station disconnect leaves durable configuration byte-identical');
+    A.eq(stationBadDisconnect.status, 400, 'malformed farm Telegram disconnect -> 400');
+    if (stationBeforeMalformed !== null) A.eq(fs.readFileSync(channelFile, 'utf8'), stationBeforeMalformed, 'malformed farm disconnect leaves durable configuration byte-identical');
     const stationStatus = await (await fetch(B + '/api/channels/telegram/status', { headers: { 'X-StarNet-Token': token, Origin: B } })).json();
-    A.eq(stationStatus.connected, stationStatusBefore.connected, 'malformed station disconnect does not change the connected flag');
-    A.eq(stationStatus.state, stationStatusBefore.state, 'malformed station disconnect does not change the poll state');
+    A.eq(stationStatus.connected, stationStatusBefore.connected, 'malformed farm disconnect does not change the connected flag');
+    A.eq(stationStatus.state, stationStatusBefore.state, 'malformed farm disconnect does not change the poll state');
     tg.pushText(4242, 99, 'research AI trend now');
 
     await waitUntil(() => tg.sends.some(s => String(s.chat_id) === '4242' && String(s.text || '').indexOf('Telegram answer') >= 0), 8000, 'telegram sendMessage reply');
@@ -670,7 +670,7 @@ async function waitUntil(fn, ms, label) {
     await waitUntil(() => tg.sends.some(s => String(s.chat_id) === '7778'), 8000, '/start reply');
     const startReply = rendered((tg.sends.find(s => String(s.chat_id) === '7778') || {}).text);
     A.eq(llm.requests.length, llmBeforeStart, '/start is answered by the hub without spending a model turn');
-    A.ok(/STARNET online/.test(startReply), '/start greets the newcomer instead of answering "/start" as a question');
+    A.ok(/HOMESTEAD online/.test(startReply), '/start greets the newcomer instead of answering "/start" as a question');
     A.ok(/\/help/.test(startReply), '/start tells a first-time member what they can actually say');
 
     /* ---- /approvals ON must not COST the agent its office --------------------------------------------------

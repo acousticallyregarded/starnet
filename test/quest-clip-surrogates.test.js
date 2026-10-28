@@ -41,7 +41,7 @@ const ok = (label, s, cap) => { A.ok(!lone(s), label + ' has no lone surrogate: 
   const sq = SQ.hydrate({ gaps: { 'sq:a:web': { firstSeenAt: 1, agentId: 'a', cap: 'web', agentLabel: at(40, '\u{1F916}'), capLabel: at(24, '\u{1F310}'), propLabel: at(24, '\u{1F4E1}'), completedAt: null, dismissedAt: null } } });
   const gap = Object.values(sq.gaps)[0];
   A.ok(!!gap, 'stationquests hydrated the gap');
-  if (gap) { ok('station quest agent label (40 cap)', gap.agentLabel, 40); ok('station quest capability label (24 cap)', gap.capLabel, 24); ok('station quest prop label (24 cap)', gap.propLabel, 24); }
+  if (gap) { ok('farm quest agent label (40 cap)', gap.agentLabel, 40); ok('farm quest capability label (24 cap)', gap.capLabel, 24); ok('farm quest prop label (24 cap)', gap.propLabel, 24); }
   const MQ = require('../frontend/app/maintquests.js');
   const mq = MQ.hydrate({ quests: { 'mq:x': { firstSeenAt: 1, cause: 'x', title: at(80, '\u{1F527}'), fix: at(320, '\u{1F6E0}'), completedAt: null, dismissedAt: null } } });
   const mrow = Object.values(mq.quests)[0];
@@ -95,7 +95,7 @@ const ok = (label, s, cap) => { A.ok(!lone(s), label + ' has no lone surrogate: 
   A.ok(reg && reg.ok, 'journey registered the goal: ' + JSON.stringify(reg && reg.error));
   const onDisk = [...files.values()].join('\n');
   A.ok(onDisk.length > 0, 'journey wrote its file');
-  A.ok(!/\\ud8[0-9a-f]{2}(?!\\ud[c-f])/i.test(onDisk) && !lone(onDisk), 'the station journey file carries no lone surrogate');
+  A.ok(!/\\ud8[0-9a-f]{2}(?!\\ud[c-f])/i.test(onDisk) && !lone(onDisk), 'the farm journey file carries no lone surrogate');
 
   // ---- sidecar/index.js commanderGoals.set (not node-loadable): its caps carry the same guard ----
   const idx = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');

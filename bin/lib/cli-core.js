@@ -36,30 +36,30 @@ const DEFAULT_AGENT_ID = 'agent';
 
 // ---- argv --------------------------------------------------------------------------------------
 const USAGE = [
-  'homestead — run Homestead agents from a terminal (no farm UI required)',
+  'starnet — run Homestead agents from a terminal (no farm UI required)',
   '',
   'Usage:',
-  '  homestead                              the live crew dashboard (needs a terminal; keys below). On a farm with no agent',
+  '  starnet                              the live crew dashboard (needs a terminal; keys below). On a farm with no agent',
   '                                       yet it sets one up first: your Overseer, a brain to think with (ChatGPT, Claude,',
   '                                       Grok, Kimi, StarNet credits or Ollama), the awakening and its interview',
-  '  homestead -p "<prompt>"                run one task and stream the answer to stdout',
-  '  homestead run "<prompt>"               same as -p',
-  '  homestead -p -                         read the prompt from stdin',
-  '  homestead status                       is a farm reachable? version, workspace, providers (names only)',
-  '  homestead doctor                       the farm\'s static diagnostics report (no live probes)',
-  '  homestead init                         create the default workspace + one full-power agent for headless runs (no run;',
-  '                                       `homestead` then gives it the awakening the first time you open it)',
-  '  homestead ls                           every agent: status, what it is doing now, open asks',
-  '  homestead approve [agent] [--session]  allow the oldest open ask (of that agent); deny [agent] refuses it',
-  '  homestead watch                        print the live events of the farm, one line each (--json: one object each)',
-  '  homestead flow                         list workflows; flow run <name> "<text>" sends one job and waits',
+  '  starnet -p "<prompt>"                run one task and stream the answer to stdout',
+  '  starnet run "<prompt>"               same as -p',
+  '  starnet -p -                         read the prompt from stdin',
+  '  starnet status                       is a farm reachable? version, workspace, providers (names only)',
+  '  starnet doctor                       the farm\'s static diagnostics report (no live probes)',
+  '  starnet init                         create the default workspace + one full-power agent for headless runs (no run;',
+  '                                       `starnet` then gives it the awakening the first time you open it)',
+  '  starnet ls                           every agent: status, what it is doing now, open asks',
+  '  starnet approve [agent] [--session]  allow the oldest open ask (of that agent); deny [agent] refuses it',
+  '  starnet watch                        print the live events of the farm, one line each (--json: one object each)',
+  '  starnet flow                         list workflows; flow run <name> "<text>" sends one job and waits',
   '',
-  'Homestead app closed? homestead starts its farm in the background: the app\'s keys, no window (the tray shows it runs).',
-  '  When the last homestead session ends it closes again, unless routines are armed or Homestead is set to stay in the tray',
+  'Homestead app closed? starnet starts its farm in the background: the app\'s keys, no window (the tray shows it runs).',
+  '  When the last starnet session ends it closes again, unless routines are armed or Homestead is set to stay in the tray',
   '  (the same as closing its window). Opening Homestead while it runs shows that same farm (on macOS: its',
   '  menu-bar icon\'s Open Homestead — a Dock click does not bring that window back yet).',
   '',
-  'Folder: homestead works in the trusted project you start it in. Started in one not trusted yet, the dashboard asks',
+  'Folder: starnet works in the trusted project you start it in. Started in one not trusted yet, the dashboard asks',
   '  TRUST THIS FOLDER? (y trusts it, the same as adding it under PROJECTS in the app); your home folder is never asked',
   'Dashboard keys: tab switch agent · ↑↓ your earlier messages · @name message · y/n/v answer an ask · ctrl+c quit',
   'Dashboard pages: f1 STAT · f2 CREW · f3 COMMS · f4 WORK · f5 SKILLS (or /stat /crew /work) · esc back to COMMS',
@@ -70,7 +70,7 @@ const USAGE = [
   'Dashboard look: the Homestead logo as an image where the terminal draws Sixel (Windows Terminal, WezTerm, iTerm2), braille',
   '  dots elsewhere · STARNET_LOGO=dots|ascii|plain picks one · NO_COLOR=1 drops color · needs at least 46×16',
   '  /theme picks the colors: red (the default), amber, green, blue, purple, white — the app colors; kept for the next',
-  '  homestead (STARNET_THEME=<name> overrides it)',
+  '  starnet (STARNET_THEME=<name> overrides it)',
   '  where images draw, the foot of CREW is the farm camera on the agent you talk to, in ASCII: it wanders, walks to',
   '  its desk and types while it works; its rim glows in the theme color working, amber when it needs you, green when done',
   '',
@@ -92,7 +92,7 @@ const USAGE = [
   '  --name <NAME>      agent name used by a first-time bootstrap (default OVERSEER)',
   '  --no-spawn         never boot a farm; fail (exit 3) if none is reachable',
   '  --spawn            always boot a farm for this run (never attach to a running one); Homestead\'s own farm is',
-  '                     never booted without its keys: plain homestead starts it, add --workspace <dir> for a separate one',
+  '                     never booted without its keys: plain starnet starts it, add --workspace <dir> for a separate one',
   '',
   'Exit codes: 0 done · 1 run failed · 2 usage · 3 no farm / not configured · 4 cancelled · 5 stopped early · 6 nothing to answer',
   '',
@@ -175,9 +175,9 @@ function parseArgs(argv, env, ctx) {
   }
   // no command: the dashboard when a person is at a terminal, the usage text otherwise (a pipe, a script, CI)
   if (!out.cmd && !out.help && !out.version) { if (c.tty) out.cmd = 'dash'; else out.help = true; }
-  if (out.cmd === 'flow' && out.args[0] === 'run' && out.args.length < 3) throw new Error('flow run needs a workflow and the job text: homestead flow run <name> "<text>"');
+  if (out.cmd === 'flow' && out.args[0] === 'run' && out.args.length < 3) throw new Error('flow run needs a workflow and the job text: starnet flow run <name> "<text>"');
   if ((out.cmd === 'approve' || out.cmd === 'deny') && out.args.length > 1) throw new Error(out.cmd + ' takes at most one agent');
-  if (out.cmd === 'run' && !out.prompt && !out.promptFromStdin) throw new Error('run needs a prompt (homestead -p "…")');
+  if (out.cmd === 'run' && !out.prompt && !out.promptFromStdin) throw new Error('run needs a prompt (starnet -p "…")');
   if (out.spawn && out.noSpawn) throw new Error('--spawn and --no-spawn contradict each other');
   // env fallbacks (flags win)
   if (!out.port) {
@@ -211,8 +211,8 @@ function parseArgs(argv, env, ctx) {
         --no-spawn (a question: status, ls, …) → refuse, saying `starnet` starts it. --spawn alone refuses too:
         with no --workspace it boots the default workspace, which IS that station, so the reason names both ways;
      5. --no-spawn → refuse; otherwise → spawn. */
-const DESKTOP_CLOSED = 'Homestead isn\'t running — run `homestead` to start it (in the background: your keys stay in the app, no window opens)';
-const DESKTOP_CLOSED_SPAWN = '--spawn would boot Homestead\'s own farm without the keys the app keeps — run plain `homestead` to start it with them (no window opens), or add --workspace <dir> for a separate terminal-only farm';
+const DESKTOP_CLOSED = 'Homestead isn\'t running — run `starnet` to start it (in the background: your keys stay in the app, no window opens)';
+const DESKTOP_CLOSED_SPAWN = '--spawn would boot Homestead\'s own farm without the keys the app keeps — run plain `starnet` to start it with them (no window opens), or add --workspace <dir> for a separate terminal-only farm';
 const DESKTOP_NO_APP = 'Homestead\'s farm keeps its keys in the Homestead app, and the app was not found on this computer — reinstall Homestead, set STARNET_APP_EXE to the app, or add --workspace <dir> for a separate terminal-only farm';
 function chooseStation(input) {
   const o = input || {};
@@ -500,7 +500,7 @@ function bootstrapDocs(input) {
         docs: {
           identity, purpose,
           manual: 'Keep replies brief. Use your real tools when a task needs them and report what they actually returned. Say plainly when something is broken or out of reach.',
-          context: 'This farm was bootstrapped headlessly by the homestead CLI. The desktop app can open it at any time; the layout and crew grow from there.'
+          context: 'This farm was bootstrapped headlessly by the starnet CLI. The desktop app can open it at any time; the layout and crew grow from there.'
         },
         stats: { xp: 0, level: 1, lifetimeXp: 0, confidence: 50, samples: 0, counters: {}, milestones: [] }
       },

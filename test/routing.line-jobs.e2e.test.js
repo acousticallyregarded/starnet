@@ -88,7 +88,7 @@ test('a line job is one durable record; SET IT UP FOR ME drafts only an offered 
     // the same job again, after the change: the new record names the one it re-ran, newest first
     const again = await fixture.json('POST', '/api/routing/sample', { line, text: 'Two facts about the moon.', name: 'Moon facts', retryOf: sent.body.jobId });
     assert.equal(again.status, 200, JSON.stringify(again.body));
-    assert.ok(calls.slice(beforeAgain).some(c => !c.draft && c.raw.indexOf('Far too long, and cite no sources ever.') >= 0), 'the next run is told what the Commander disliked');
+    assert.ok(calls.slice(beforeAgain).some(c => !c.draft && c.raw.indexOf('Far too long, and cite no sources ever.') >= 0), 'the next run is told what the Farmer disliked');
     const both = (await fixture.json('GET', '/api/line-jobs?line=' + encodeURIComponent(line))).body.jobs;
     assert.deepEqual(both.map(j => j.id), [again.body.jobId, sent.body.jobId], 'newest first');
     assert.equal(both[0].retryOf, sent.body.jobId);

@@ -66,7 +66,7 @@ A.ok(/saveOpenFields\(\);/.test(pClose), "the panel's close path saves its open 
 const pSave = panel.slice(panel.indexOf('  function saveOpenFields() {'), panel.indexOf('/* ===== BAY'));
 for (const k of ['_saveName', '_saveBay', '_saveLimits', '_saveGate']) A.ok(pSave.indexOf(k) > 0, 'saveOpenFields saves ' + k);
 A.ok(/WorkflowPanel\.isOpen\(\)\) \{ WorkflowPanel\.close\(\); return; \}/.test(build), 'ESC closes the docked panel THROUGH its close path (saving) before it leaves REFIT');
-A.ok(/if \(typeof WorkflowPanel !== 'undefined' && WorkflowPanel\.isOpen\(\)\) WorkflowPanel\.close\(\);/.test(build.slice(build.indexOf('  function close() {'), build.indexOf('  const toggle'))), 'closing REFIT closes the panel through its save path while the station is still ours');
+A.ok(/if \(typeof WorkflowPanel !== 'undefined' && WorkflowPanel\.isOpen\(\)\) WorkflowPanel\.close\(\);/.test(build.slice(build.indexOf('  function close() {'), build.indexOf('  const toggle'))), 'closing REFIT closes the panel through its save path while the farm is still ours');
 
 // the ROOM card docks above the library now (2026-10-01 build-mode upgrade, phase 2): its rename saves on Enter or on leaving the field
 const roomBlock = build.slice(build.indexOf('function renderRoomCard'), build.indexOf('function renderGroupCard'));
@@ -122,18 +122,18 @@ A.ok(!/setItem\(ORDERS_KEY\(\), '1'\); \}[\s\S]*?done === steps\.length/.test(re
 
 const commitDrawBlock = build.slice(build.indexOf('function commitDraw('), build.indexOf('function commitMove('));
 A.ok(/if \(res && res\.ok\) \{[\s\S]*rememberDrawn\(rect\);[\s\S]*deselectTool\(\{ silent: true \}\);[\s\S]*\}/.test(commitDrawBlock),
-  'a successful room or hallway placement disarms the tool before its remembered footprint can self-overlap');
+  'a successful room or path placement disarms the tool before its remembered footprint can self-overlap');
 A.ok(commitDrawBlock.indexOf('deselectTool({ silent: true })') < commitDrawBlock.indexOf('feedback(res'),
   'the post-placement hover is neutral before feedback returns control to the pointer');
 A.ok(/const isHall = tool === 'hall'/.test(commitDrawBlock) && /feedback\(res, ev, isHall \?/.test(commitDrawBlock),
-  'the feedback label reads the tool captured BEFORE deselect — a hallway commit must never flash "room placed"');
+  'the feedback label reads the tool captured BEFORE deselect — a path commit must never flash "room placed"');
 
 /* ---------- 6. per-station latches + session-state hygiene ---------- */
 A.ok(/const ORDERS_KEY = \(\) => 'starnet\.refit\.orders\.dis\.' \+ stationKeyOf\(station\)/.test(build),
-  'the ORDERS dismissal is namespaced per station (it shipped global, with no suffix at all)');
+  'the ORDERS dismissal is namespaced per farm (it shipped global, with no suffix at all)');
 A.ok(/localStorage\.setItem\(ORDERS_KEY\(\), '1'\)/.test(build), '…and the writer uses the same per-station key');
-A.ok(/'starnet\.refit\.firstride\.' \+ stationKeyOf\(station\)/.test(build), 'the first ride is per station');
-A.ok(/'starnet\.refit\.finline\.' \+ stationKeyOf\(st \|\| station\)/.test(build), 'the finish-the-line registry is per station');
+A.ok(/'starnet\.refit\.firstride\.' \+ stationKeyOf\(station\)/.test(build), 'the first ride is per farm');
+A.ok(/'starnet\.refit\.finline\.' \+ stationKeyOf\(st \|\| station\)/.test(build), 'the finish-the-line registry is per farm');
 
 const openBlock = build.slice(build.indexOf('function open() {'), build.indexOf('function open() {') + 2500);
 A.ok(/for \(const k in layerFailed\) delete layerFailed\[k\];/.test(openBlock),
@@ -153,8 +153,8 @@ A.ok(/voiceSay\('hover'/.test(lockBlock), 'the lock badge speaks through the one
 // it — noteLineShipped, and finLiveStation behind lineShipSpent / markLineShipped — keeps the same live-station rule)
 for (const fn of ['function noteLineShipped', 'function finLiveStation']) {
   const noteBlock = build.slice(build.indexOf(fn), build.indexOf(fn) + 900);
-  A.ok(build.indexOf(fn) > 0 && /opts\.getStation\(\)[\s\S]*const st = live \|\| station;/.test(noteBlock),
-    fn.slice(9) + ' prefers the live station over the module-level one close() never nulls');
+  A.ok(build.indexOf(fn) > 0 && /opts\.getStation\(\)[\s\S]*const st = live \|\| farm;/.test(noteBlock),
+    fn.slice(9) + ' prefers the live farm over the module-level one close() never nulls');
 }
 A.ok(/function lineShipSpent\(lineId\) \{\s*const st = finLiveStation\(\);/.test(build) && /function markLineShipped\(lineId\) \{\s*const st = finLiveStation\(\);/.test(build),
   '…and lineShipSpent / markLineShipped resolve through it');

@@ -32,7 +32,7 @@ A.ok(/ON ITS OWN/.test(NR.bindingPhrase('halt')), 'halt phrase names the lift �
 // grounded knowledge: dossier/activity), never the raw "held back by the readiness gate" jargon.
 A.ok(NR.BINDING_PHRASE.readiness, 'BINDING_PHRASE carries a readiness entry');
 A.ok(!/readiness gate/i.test(NR.bindingPhrase('readiness')), 'readiness renders plain copy, not raw gate jargon');
-A.ok(/know|learn|task/i.test(NR.bindingPhrase('readiness')), 'readiness copy says what feeds the gate (the station learning you through real work)');
+A.ok(/know|learn|task/i.test(NR.bindingPhrase('readiness')), 'readiness copy says what feeds the gate (the farm learning you through real work)');
 
 /* ---------- compose(): the no-report rule (no absence / no decision → no beat) ---------- */
 const empty = NR.compose({ status: null, ledger: [], drafts: [], awaySince: 1000, nowMs: 9999, tzOffsetMin: 0 });
@@ -190,7 +190,7 @@ A.ok(/drafts only/i.test(pmNoGrant.modeText) && /grant/i.test(pmNoGrant.modeText
 A.eq(pmNoGrant.modeWarn, true, 'dial-promises-building-but-degraded IS a warning');
 const pmReach = NR.panelModel({ status: Object.assign({}, stBase, { buildMode: 'draft', draftReason: 'reach' }), tzOffsetMin: 0 });
 A.ok(/reach/i.test(pmReach.modeText), 'reach-gated draft mode names the REACH dial as the unlock');
-A.eq(pmReach.modeWarn, false, 'reach-gated drafting is the Commander’s setting, not a warning');
+A.eq(pmReach.modeWarn, false, 'reach-gated drafting is the Farmer’s setting, not a warning');
 A.eq(NR.panelModel({ status: stBase, tzOffsetMin: 0 }).modeText, '', 'an older sidecar without buildMode → empty modeText (never a guess)');
 // readiness: cold/warm tiers explain BOTH grounding paths (current aims, or a recent run); hot / absent → no line.
 // (bug 41b2d015) the bars are one aim / one run — the line names those, never an area count that no longer gates.
@@ -210,7 +210,7 @@ for (const [label, rd] of [
   const pm = NR.panelModel({ status: Object.assign({}, stBase, { binding: 'readiness', readiness: rd }), tzOffsetMin: 0 });
   A.eq(pm.why, NR.bindingPhrase('readiness'), label + ': the panel WHY is the readiness binding phrase');
   A.ok(/no current aim or recent run/.test(pm.why) && !/nothing of yours|doesn’t know/.test(pm.why), label + ': the WHY says no CURRENT aim or recent run — never "nothing of yours" or "doesn’t know"');
-  A.ok(!/doesn’t know/.test(pm.readinessText) && !/I know what you want/.test(NR.readinessPlain(rd)), label + ': neither readiness line claims the station does not know what they want');
+  A.ok(!/doesn’t know/.test(pm.readinessText) && !/I know what you want/.test(NR.readinessPlain(rd)), label + ': neither readiness line claims the farm does not know what they want');
 }
 {
   const pmStale = NR.panelModel({ status: Object.assign({}, stBase, { binding: 'readiness', readiness: Object.assign({}, rdWarm, { goalsStale: true }) }), tzOffsetMin: 0 });
@@ -278,17 +278,17 @@ A.ok(/still learning you/i.test(NR.readinessText(rdWarm)) && /0 of 1 recent run/
 // P09 review fix: the counts line names a NECESSARY condition, never a promise — with the dial on WAIT / SUGGEST, clearing a
 // bar does not make it act, and LAST REPORT shows this line with no dial context at all.
 A.ok(/; to act on its own it needs either your current aims or 1 recent run$/.test(NR.readinessText(rdWarm)) && !/starts acting|once either|lets it act|one of those is complete|won’t act on its own before/i.test(NR.readinessText(rdWarm)), 'readinessText names the bar it needs — EITHER current aims or 1 recent run, never read as both (g1 P09 final round) — and never promises it will act once a bar clears');
-A.eq(NR.readinessPlain({ tier: 'hot' }), '', 'a hot station has no hold-back reason');
+A.eq(NR.readinessPlain({ tier: 'hot' }), '', 'a hot farm has no hold-back reason');
 // a fully-hot, granted build station: present tense, the real pace from leashPerDay, each job a new session in the rail.
 const outBuild = NR.postureOutlook(Object.assign({}, stBase, { buildMode: 'build', draftReason: null, workshopGranted: true, readiness: { tier: 'hot' } }));
-A.eq(outBuild, 'While you’re away I’ll do up to 3 small jobs a day; each arrives as a new session in your rail.', 'a granted, hot station says what it will do, at the status pace');
+A.eq(outBuild, 'While you’re away I’ll do up to 3 small jobs a day; each arrives as a new session in your rail.', 'a granted, hot farm says what it will do, at the status pace');
 // (org P09/P31 wire) onboarding speaks postureOutlook in the Dialogue panel (VT323): no symbol glyph that falls back to another font
 for (const st of [outBuild, outCold, NR.postureOutlook({ buildMode: 'build', leashPerDay: 7 }), NR.postureOutlook({ buildMode: 'draft', draftReason: 'no-workshop-grant' })]) {
   A.ok(!/[\u2600-\u27BF\u2B00-\u2BFF]/.test(st), 'the posture outlook carries no fallback-font symbol glyph: ' + JSON.stringify(st));
 }
 A.ok(/up to 7 small jobs a day/.test(NR.postureOutlook({ buildMode: 'build', leashPerDay: 7 })), 'the job count follows status.leashPerDay, never a fixed number');
 A.ok(!/\d/.test(NR.postureOutlook({ buildMode: 'build', leashPerDay: null })), 'an unknown leashPerDay drops the number instead of inventing one');
-A.ok(!/still learning|I’ll start once/i.test(outBuild), 'a hot station adds no still-learning caveat');
+A.ok(!/still learning|I’ll start once/i.test(outBuild), 'a hot farm adds no still-learning caveat');
 A.ok(/set REACH to LOCAL ONLY/.test(NR.modeText({ buildMode: 'draft', draftReason: 'reach' })), 'the panel MODE line names the REACH rung by its rendered label, LOCAL ONLY');
 // a SUGGEST/WAIT pick (initiative below leash): the driver binds on 'posture', nothing ever runs unattended, so the
 // readout promises nothing — even though buildMode reads 'draft'/'reach' and a cold station has readiness detail.

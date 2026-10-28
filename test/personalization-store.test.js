@@ -13,12 +13,12 @@ const path = require('path').win32;
 
 (async () => {
   const store = P.makePersonalizationStore({ fs: memfs, path, workspaces: 'C:\\ws', writeDurable: (_deps, file, body) => files.set(file, String(body)) });
-  A.eq(store.read().enabled, true, 'personalization defaults on for existing stations');
+  A.eq(store.read().enabled, true, 'personalization defaults on for existing farms');
   const paused = await store.setEnabled(false, 10);
   A.eq(paused.enabled, false, 'pause is durable sidecar authority');
   A.eq(store.read().revision, 1, 'pause advances the auditable revision');
   const forgotten = await store.markForgotten(20);
-  A.eq(forgotten.enabled, false, 'forget does not silently undo the Commander pause');
+  A.eq(forgotten.enabled, false, 'forget does not silently undo the Farmer pause');
   A.eq(forgotten.revision, 2, 'forget advances the auditable revision');
   A.report('personalization-store.test');
 })().catch(e => { A.ok(false, e.stack || e); A.report('personalization-store.test'); });

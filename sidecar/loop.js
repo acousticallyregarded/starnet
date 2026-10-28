@@ -910,7 +910,7 @@
     const text = String((result && result.content) || '');
     const summary = String((result && result.summary) || '').trim();
     if (/^(?:capdenied|denied|declined|cancelled)$/i.test(summary)) return true;
-    return /Commander (?:explicitly )?(?:declined|denied|cancelled)|user-control denied|user denied|Do NOT retry|approval denied/i.test(text);
+    return /(?:Commander|Farmer) (?:explicitly )?(?:declined|denied|cancelled)|user-control denied|user denied|Do NOT retry|approval denied/i.test(text);
   }
 
   async function runAgentLoop(o) {

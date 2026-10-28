@@ -46,7 +46,7 @@ module.exports = (async () => {
     A.eq(typeof provider.isBatchOnlyModel, 'function', 'provider.js exports isBatchOnlyModel');
     A.eq(typeof provider.chatModelId, 'function', 'provider.js exports chatModelId');
     A.ok(provider.isBatchOnlyModel('openrouter', 'anthropic/claude-haiku-4.5:batch'), 'an OpenRouter :batch row is batch-only');
-    A.ok(provider.isBatchOnlyModel('starnet', 'anthropic/claude-haiku-4.5:batch'), 'a managed (StarNet) :batch row is batch-only');
+    A.ok(provider.isBatchOnlyModel('starnet', 'anthropic/claude-haiku-4.5:batch'), 'a managed (Homestead) :batch row is batch-only');
     A.ok(!provider.isBatchOnlyModel('openrouter', 'anthropic/claude-haiku-4.5'), 'the base row is a chat model');
     A.ok(!provider.isBatchOnlyModel('openrouter', 'meta-llama/llama-5-8b:free'), 'a :free variant still runs on chat/completions');
     A.ok(!provider.isBatchOnlyModel('ollama', 'mymodel:batch'), 'an Ollama tag that happens to read :batch is a local model, untouched');
@@ -137,9 +137,9 @@ module.exports = (async () => {
       Object.assign({}, helpers, { providerId, o, fallbackSaved: saved, effectiveFallbackChain: () => (saved != null ? saved : env) }));
     let r = chain('anthropic', {}, ['anthropic/claude-haiku-4.5:batch'], []);
     A.eq(JSON.stringify(r.savedProviderFallbacks), JSON.stringify([{ provider: 'openrouter', model: 'anthropic/claude-haiku-4.5' }]),
-      'a non-OpenRouter station\'s SAVED chain (OpenRouter routes) runs its :batch id on the base model');
+      'a non-OpenRouter farm\'s SAVED chain (OpenRouter routes) runs its :batch id on the base model');
     r = chain('starnet', {}, ['openai/gpt-6-sol:batch', 'openai/gpt-6-sol'], []);
-    A.eq(JSON.stringify(r.fallbackModels), JSON.stringify(['openai/gpt-6-sol', 'openai/gpt-6-sol']), 'a managed station\'s saved chain maps too');
+    A.eq(JSON.stringify(r.fallbackModels), JSON.stringify(['openai/gpt-6-sol', 'openai/gpt-6-sol']), 'a managed farm\'s saved chain maps too');
     r = chain('starnet', { fallbackModels: ['anthropic/claude-haiku-4.5:batch'] }, null, []);
     A.eq(JSON.stringify(r.fallbackModels), JSON.stringify(['anthropic/claude-haiku-4.5']), 'a per-run chain on a managed run maps by the run\'s provider');
     r = chain('ollama', { fallbackModels: ['mymodel:batch'] }, null, []);
@@ -195,7 +195,7 @@ module.exports = (async () => {
     roster.set('local', { provider: 'ollama', model: 'mymodel:batch', name: 'Local' });
 
     A.eq(api.channelRunConfigFor('cypher').model, 'openai/gpt-6-sol', 'a pinned agent\'s :batch roster model resolves to its base model');
-    A.eq(api.channelRunConfigFor('scout').model, 'anthropic/claude-haiku-4.5', 'an unpinned agent following a :batch station default resolves to the base model');
+    A.eq(api.channelRunConfigFor('scout').model, 'anthropic/claude-haiku-4.5', 'an unpinned agent following a :batch farm default resolves to the base model');
     A.eq(api.channelRunConfigFor('local').model, 'mymodel:batch', 'a local model tagged :batch is untouched');
 
     const probe = await api.probeChannelRunConfig(api.channelRunConfigFor('cypher'), 5000);
@@ -203,8 +203,8 @@ module.exports = (async () => {
     A.eq(sent[sent.length - 1], 'openai/gpt-6-sol', 'the setup probe sends the base id to chat/completions');
 
     const one = await api.stationOneShot({ system: 's', user: 'u' }, 'notright', 'the fix suggestion failed');
-    A.ok(one.ok === true && one.model === 'anthropic/claude-haiku-4.5', 'NOT RIGHT? / SET IT UP FOR ME run on the base station model, never a 502: ' + JSON.stringify(one));
-    A.eq(sent[sent.length - 1], 'anthropic/claude-haiku-4.5', 'the station one-shot sends the base id');
+    A.ok(one.ok === true && one.model === 'anthropic/claude-haiku-4.5', 'NOT RIGHT? / SET IT UP FOR ME run on the base farm model, never a 502: ' + JSON.stringify(one));
+    A.eq(sent[sent.length - 1], 'anthropic/claude-haiku-4.5', 'the farm one-shot sends the base id');
     A.eq(api.sampleRunConfigFor('agent').model, 'anthropic/claude-haiku-4.5', 'skill evaluation and restored verdict reviews read the base model (sampleRunConfigFor)');
 
     // a headless host with no roster falls back to the environment default
@@ -318,7 +318,7 @@ module.exports = (async () => {
     const sandbox = {
       console: { warn() {}, log() {} }, OR: 'https://openrouter.ai/api/v1', getProv: () => 'openrouter', getBaseUrl: () => '',
       fetchModelCatalog: async url => {
-        if (url.indexOf('/api/models/') === 0) { if (direct) throw new Error('station unreachable'); return CATALOG.map(m => Object.assign({}, m)); }
+        if (url.indexOf('/api/models/') === 0) { if (direct) throw new Error('farm unreachable'); return CATALOG.map(m => Object.assign({}, m)); }
         return CATALOG.map(m => Object.assign({}, m));   // the direct OpenRouter fallback: the raw upstream list
       }
     };

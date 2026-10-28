@@ -35,8 +35,8 @@ const path = require('node:path');
   // 1. the walk from the app's own pid: exactly StarNet's processes, none of the 2xx / 3xx WebView2 trees
   const tree = F.walkTree(rows, [100]);
   assert.deepEqual(tree.map(r => r.pid).sort((a, b) => a - b), [100, 101, 102, 103, 104, 105, 110, 111, 112]);
-  assert.ok(!tree.some(r => r.pid >= 200), 'no foreign msedgewebview2 is charged to StarNet');
-  assert.equal(rows.filter(r => r.name === 'msedgewebview2.exe').length, 17, 'a name filter would have charged 17 webview processes, 5 of them StarNet\'s');
+  assert.ok(!tree.some(r => r.pid >= 200), 'no foreign msedgewebview2 is charged to Homestead');
+  assert.equal(rows.filter(r => r.name === 'msedgewebview2.exe').length, 17, 'a name filter would have charged 17 webview processes, 5 of them Homestead\'s');
   // pid reuse: an orphan whose dead parent's pid was handed to a NEWER process is not that process's child
   const reused = rows.concat([{ pid: 500, ppid: 110, name: 'old.exe', cmd: 'old.exe', created: '2026-10-19T00:00:00.000Z' }]);
   assert.ok(!F.walkTree(reused, [100]).some(r => r.pid === 500), 'a child born before its "parent" is a pid-reuse orphan');

@@ -89,10 +89,10 @@ function hotBeliefs(now) {
   return {
     known: ['goals', 'pain', 'stack', 'ambition'],
     beliefs: {
-      goals: b('ship the StarNet beta to 100 users'),
+      goals: b('ship the Homestead beta to 100 users'),
       pain: b('manual release notes eat my fridays'),
       stack: b('node and a pixel-art canvas'),
-      ambition: b('a living agent station people watch')
+      ambition: b('a living agent farm people watch')
     }
   };
 }

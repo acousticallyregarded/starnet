@@ -55,7 +55,7 @@ function sub(over) {
   A.eq(plan.skipped, [], 'a good approved map is pulled');
   const p = plan.pulls[0];
   A.eq([p.slug, p.version, p.update], ['night-shift-foundry', 1, false], 'as version 1');
-  A.eq(p.buildText, BUILD, 'a build from the station exporter is already exactly what the cleaner keeps');
+  A.eq(p.buildText, BUILD, 'a build from the farm exporter is already exactly what the cleaner keeps');
   A.eq(p.meta.license, 'CC-BY-4.0', 'every map is CC BY 4.0');
   A.eq(p.meta.submission, { id: 'mp_abcdefgh12', owner: OWNER, digest: sub().digest }, 'with its submission on record');
   A.ok(p.meta.stats.rooms >= 3 && p.meta.stats.lines === 1, 'with the counts the cleaner reports');
@@ -159,7 +159,7 @@ function sub(over) {
   A.eq((await station.catalog({})).serial, 5, 'a newer signed gallery is read');
   served = {};
   err = ''; try { await station.catalog({ refresh: true }); } catch (e) { err = e.message; }
-  A.ok(/older than one this station already read/.test(err), 'then an older signed gallery is refused');
+  A.ok(/older than one this farm already read/.test(err), 'then an older signed gallery is refused');
   A.eq((await cm({ catalogUrl: () => '' }).catalog({})).off, true, 'STARNET_MAPS_URL=off switches the gallery off');
   // the highest serial survives a restart (kept on disk, like the Skill Market's)
   let saved = null;
@@ -168,7 +168,7 @@ function sub(over) {
   A.eq(saved, { serials: { 'https://starnetos.com/.well-known/starnet-maps.json': 5 } }, 'the serial is saved per gallery');
   served = {};
   err = ''; try { await cm({ loadState: () => saved }).catalog({}); } catch (e) { err = e.message; }
-  A.ok(/older than one this station already read/.test(err), 'a restarted station still refuses the older gallery');
+  A.ok(/older than one this farm already read/.test(err), 'a restarted farm still refuses the older gallery');
   // two readers at once share one fetch
   let reads = 0;
   const counting = cm({ fetchDocument: async (u, o) => { reads++; return fetchDocument(u, o); } });
@@ -177,8 +177,8 @@ function sub(over) {
 
   // ---- 4. sharing ----
   const unlinked = await cm().share({ title: 'X', build: BUILD, still: 'data:' });
-  A.eq([unlinked.ok, unlinked.status, unlinked.linked], [false, 401, false], 'an unlinked station is told to link');
-  A.ok(/Link this station/.test(unlinked.error), 'in a sentence');
+  A.eq([unlinked.ok, unlinked.status, unlinked.linked], [false, 401, false], 'an unlinked farm is told to link');
+  A.ok(/Link this farm/.test(unlinked.error), 'in a sentence');
   const calls = [];
   const cloudFetch = (status, reply) => async (url, init) => { calls.push({ url, init }); return { ok: status < 300, status, text: async () => JSON.stringify(reply) }; };
   const linked = cm({ cloud: () => ({ url: 'https://account.example/', token: 'dev_tok_123' }), fetch: cloudFetch(202, { ok: true, submission: { id: 'mp_x', status: 'pending' } }) });
@@ -191,8 +191,8 @@ function sub(over) {
     .share({ title: 'Night Shift Foundry', agree: true, build: BUILD, still: 'x' });
   A.eq([refused.ok, refused.status, refused.outcome], [false, 409, 'refused'], 'a refusal keeps its status, and says nothing was stored');
   const rejected = await cm({ cloud: () => ({ url: 'https://account.example', token: 'revoked' }), fetch: cloudFetch(401, { ok: false, error: { message: 'unauthorized' } }) }).share({ title: 'x' });
-  A.eq([rejected.linked, rejected.code], [true, 'token_rejected'], 'a cloud 401 on a linked station is a REJECTED link, never "not linked"');
-  A.ok(/no longer accepts this station's link/.test(rejected.error), 'and says to link it again');
+  A.eq([rejected.linked, rejected.code], [true, 'token_rejected'], 'a cloud 401 on a linked farm is a REJECTED link, never "not linked"');
+  A.ok(/no longer accepts this farm's link/.test(rejected.error), 'and says to link it again');
   const garbled = await cm({ cloud: () => ({ url: 'https://account.example', token: 't' }), fetch: async () => ({ ok: true, status: 202, text: async () => 'not json' }) }).share({ title: 'x' });
   A.eq(garbled.outcome, 'unknown', 'a 2xx with no readable answer is unknown, not refused');
   A.ok(/Another author/.test(refused.error), 'and the cloud\'s sentence');
@@ -204,11 +204,11 @@ function sub(over) {
   const skillCloud = cm({ cloud: () => ({ url: 'https://account.example', token: 'dev_tok_9' }), fetch: async (url, init) => { skillCalls.push({ url, init }); return { ok: true, status: 202, text: async () => JSON.stringify({ ok: true, submission: { id: 'sk_x', slug: 'meeting-recap', status: 'pending' } }) }; } });
   const sk = await skillCloud.shareSkill({ title: 'Meeting Recap', description: 'd', category: 'Productivity', license: 'MIT', credit: 'Ada', agree: true, skillText: '# Recap\n1. Read it.', refs: [{ name: 'a.md', content: 'x', extra: 1 }], stray: 'dropped' });
   A.eq([sk.ok, sk.submission.status], [true, 'pending'], 'a skill share comes back pending');
-  A.eq(skillCalls[0].url, 'https://account.example/v1/skills/submit', 'to the market\'s station door');
+  A.eq(skillCalls[0].url, 'https://account.example/v1/skills/submit', 'to the market\'s farm door');
   A.eq(Object.keys(JSON.parse(skillCalls[0].init.body)).sort(), ['agree', 'category', 'credit', 'description', 'license', 'refs', 'skillText', 'title'], 'carrying only the share fields');
   A.eq(JSON.parse(skillCalls[0].init.body).refs, [{ name: 'a.md', content: 'x' }], 'references are names and text only');
   const skUnlinked = await cm().shareSkill({ title: 'x' });
-  A.ok(!skUnlinked.ok && skUnlinked.linked === false && /share skills/.test(skUnlinked.error), 'an unlinked station is told to link, in a skill sentence');
+  A.ok(!skUnlinked.ok && skUnlinked.linked === false && /share skills/.test(skUnlinked.error), 'an unlinked farm is told to link, in a skill sentence');
 
   fs.rmSync(tmp, { recursive: true, force: true });
 

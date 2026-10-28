@@ -66,7 +66,7 @@ A.ok(green && typeof green.onclick === 'function', 'the green phosphor choice is
 green.onclick();
 A.eq(savedTheme, 'green', 'selection still persists through StationUI');
 A.ok(body.className.includes('theme-green'), 'selection still recolors the live screen');
-A.eq(clicks, 1, 'selection still emits one station click');
+A.eq(clicks, 1, 'selection still emits one farm click');
 A.eq(wrap.children.map(b => b.getAttribute('aria-pressed')), ['false', 'true', 'false', 'false', 'false', 'false'],
   'accessible selection moves to green with the visual selection');
 A.eq(wrap.children.filter(b => b.className.split(/\s+/).includes('sel')).map(b => b.dataset.t), ['green'],

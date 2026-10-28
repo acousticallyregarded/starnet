@@ -47,7 +47,7 @@ function write(root, rel, value) {
     await fixture.start();
     let save = await fixture.json('GET', '/api/save?agent=agent');
     A.eq(save.status, 200, 'erased generation boots and serves the real save route');
-    A.eq(save.body.save, null, 'first production boot does not resurrect the old station');
+    A.eq(save.body.save, null, 'first production boot does not resurrect the old farm');
     A.eq(save.body.lineage.onboardingAllowed, true, 'first production boot permits clean onboarding: ' + JSON.stringify(save.body.lineage));
     A.ok(fixture.output().includes('AUTO_RECOVERY_ERASED'), 'boot reports the actual erase authority');
     A.ok(save.body.lineage.autoRecovery.reason.includes('ERASE EVERYTHING'), 'lineage telemetry names the actual erase authority');
@@ -57,13 +57,13 @@ function write(root, rel, value) {
 
     await fixture.restart();
     save = await fixture.json('GET', '/api/save?agent=agent');
-    A.eq(save.body.save, null, 'next production boot remains a new station');
+    A.eq(save.body.save, null, 'next production boot remains a new farm');
     A.eq(save.body.lineage.onboardingAllowed, true, 'clean onboarding survives a sidecar restart: ' + JSON.stringify(save.body.lineage));
     A.eq(fs.readFileSync(path.join(fixture.workspace, '.fresh-start.json'), 'utf8'), markerBytes, 'restart preserves the erase marker');
 
     const lineage = await fixture.json('GET', '/api/lineage');
     const candidate = lineage.body.lineage.recovery.candidates.find(c => c.stationName === 'SYNTHETIC-OLD-STATION');
-    A.ok(candidate && candidate.recoverable, 'operator can still inspect the preserved old station');
+    A.ok(candidate && candidate.recoverable, 'operator can still inspect the preserved old farm');
     if (!candidate) throw new Error('synthetic recovery candidate missing');
     const requested = await fixture.json('POST', '/api/lineage/recover', { candidateId: candidate.id });
     A.eq(requested.status, 202, 'authenticated explicit restore is admitted after erase');
@@ -84,7 +84,7 @@ function write(root, rel, value) {
     A.eq(rollback && fs.readFileSync(path.join(parent, rollback, '.fresh-start.json'), 'utf8'), markerBytes, 'rollback keeps the exact superseded erase marker');
     await fixture.restart();
     save = await fixture.json('GET', '/api/save?agent=agent');
-    A.eq(save.body.save && save.body.save.agent.name, 'SYNTHETIC-OLD-STATION', 'explicitly restored live station survives another restart');
+    A.eq(save.body.save && save.body.save.agent.name, 'SYNTHETIC-OLD-STATION', 'explicitly restored live farm survives another restart');
   } finally {
     const parent = path.dirname(fixture.workspace), base = path.basename(fixture.workspace);
     await fixture.dispose();

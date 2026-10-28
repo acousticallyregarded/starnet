@@ -11,7 +11,7 @@ const call = (name, args) => ({ id: 'c1', name, args: args || {}, argsRaw: JSON.
 
 (async () => {
   const roster = new Map([
-    ['agent', { name: 'Commander Lead', role: 'orchestrator' }],
+    ['agent', { name: 'Farmer Lead', role: 'orchestrator' }],
     ['researcher-2', { name: 'Research Agent', role: 'researcher', purpose: 'web research and source synthesis' }],
     ['scribe-1', { name: 'Scribe', role: 'scribe' }]
   ]);
@@ -65,7 +65,7 @@ const call = (name, args) => ({ id: 'c1', name, args: args || {}, argsRaw: JSON.
     A.eq(body.routedTo, 'researcher-2', 'tool result reports the routed agent');
     A.eq(body.schedulerArmed, true, 'tool result reports the scheduler armed state');
     A.eq(body.job.id, 'job_1', 'tool result carries the created routine');
-    A.eq(createdSpec.enabledToolsets, null, 'no toolset list means station defaults (null)');
+    A.eq(createdSpec.enabledToolsets, null, 'no toolset list means farm defaults (null)');
   }
 
   // ---- enabledToolsets: an explicit [] is NO restriction, never "restrict to nothing" (#58 class) ----
@@ -435,8 +435,8 @@ const call = (name, args) => ({ id: 'c1', name, args: args || {}, argsRaw: JSON.
     });
     const out = await oTools.createTool.run({ name: 'Daily brief', prompt: 'summarize the standup', schedule: '0 9 * * *' }, { agentId: 'agent' });
     const kept = JSON.parse(out.content);
-    A.eq([kept.schedulerArmed, kept.schedulerOffByChoice, kept.schedulerArmedNow], [false, true, false], 'an explicit OFF survives an agent\'s create, and the result says it was the Commander\'s choice');
-    A.ok(/Commander turned it off/.test(String(kept.schedulerNote || '')) && /TURN SCHEDULING ON/.test(String(kept.schedulerNote || '')), 'the note names their choice and their switch: ' + kept.schedulerNote);
+    A.eq([kept.schedulerArmed, kept.schedulerOffByChoice, kept.schedulerArmedNow], [false, true, false], 'an explicit OFF survives an agent\'s create, and the result says it was the Farmer\'s choice');
+    A.ok(/Farmer turned it off/.test(String(kept.schedulerNote || '')) && /TURN SCHEDULING ON/.test(String(kept.schedulerNote || '')), 'the note names their choice and their switch: ' + kept.schedulerNote);
     A.ok(/will not run yet/.test(out.summary), 'the result summary never reads as a running schedule: ' + out.summary);
     setO = false;   // a switch nobody ever set: the create turns it on, and says so
     const on = JSON.parse((await oTools.createTool.run({ name: 'Weekly digest', prompt: 'digest the week', schedule: '0 9 * * 1' }, { agentId: 'agent' })).content);
@@ -462,8 +462,8 @@ const call = (name, args) => ({ id: 'c1', name, args: args || {}, argsRaw: JSON.
     'the tool-facing arm goes through the one arm rule (armOnSaveIfUnset)');
   const rule = src.slice(src.indexOf('function armOnSaveIfUnset() {'), src.indexOf('function armOnSaveIfUnset() {') + 220);
   A.ok(/if \(cronArmed \|\| cronArmSet\) return false;/.test(rule) && /if \(!cronHalted\) armCron\(\);/.test(rule) && !/cronHalted = false/.test(rule),
-    '…which never overrides an explicit OFF, and records the INTENT but never restarts a timer the Commander paused');
-  A.ok(/schedulerOffByChoice: \(\) => !cronArmed && !!cronArmSet/.test(seg), 'the Commander\'s explicit OFF is exposed to the tool so its response can say so');
+    '…which never overrides an explicit OFF, and records the INTENT but never restarts a timer the Farmer paused');
+  A.ok(/schedulerOffByChoice: \(\) => !cronArmed && !!cronArmSet/.test(seg), 'the Farmer\'s explicit OFF is exposed to the tool so its response can say so');
   A.ok(!/cronHalted = false/.test(seg), 'and it never clears the durable halt itself');
   A.ok(/schedulerHalted: \(\) => !!cronHalted/.test(seg), 'the halt is exposed to the tool so its response can disclose it');
   A.ok(/function liftCronHalt/.test(src), 'liftCronHalt is still the one documented lift seam');
@@ -490,7 +490,7 @@ const call = (name, args) => ({ id: 'c1', name, args: args || {}, argsRaw: JSON.
   const out = JSON.parse((await listTool.run({}, {})).content);
   const row = (out.jobs || out.routines || [])[0] || {};
   A.eq(row.when, 'every Monday at 10:00 AM (America/New_York)', 'routine.list carries the cadence in words');
-  A.eq(row.nextRunLocal, 'Mon, Oct 5 at 10:00 AM', 'and the next fire on the station clock');
+  A.eq(row.nextRunLocal, 'Mon, Oct 5 at 10:00 AM', 'and the next fire on the farm clock');
   const bare = makeRoutineTools({ roster: () => new Map(), listJobs: () => [j] }).listTool;
   A.eq(((JSON.parse((await bare.run({}, {})).content).jobs || [])[0] || {}).when, undefined, 'no describer wired -> no invented words');
 }

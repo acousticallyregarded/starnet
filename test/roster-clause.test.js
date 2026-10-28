@@ -38,9 +38,9 @@ X.stripLegacySoloClause(legacy);
 A.eq(legacy.docs.identity, fresh, 'migrated identity is BYTE-EQUAL to a fresh baseIdentity (rename default-detection preserved)');
 X.stripLegacySoloClause(legacy);
 A.eq(legacy.docs.identity, fresh, 'migration is idempotent (second pass is a no-op)');
-const reworded = { docs: { identity: 'You are ULTRA, hand-authored by the Commander.' } };
+const reworded = { docs: { identity: 'You are ULTRA, hand-authored by the Farmer.' } };
 X.stripLegacySoloClause(reworded);
-A.eq(reworded.docs.identity, 'You are ULTRA, hand-authored by the Commander.', 'a Commander-reworded identity is never touched');
+A.eq(reworded.docs.identity, 'You are ULTRA, hand-authored by the Farmer.', 'a Commander-reworded identity is never touched');
 X.stripLegacySoloClause({});   // no docs at all
 A.ok(true, 'migration tolerates a doc-less agent');
 

@@ -122,7 +122,7 @@
 
     const lines = [];
     lines.push('INTERNAL — THE FIRST PITCH. Do not run any tools. Reason only, then reply in the exact format below.');
-    if (unlocked) lines.push('Your bay just gained a new capability: ' + unlocked + '. Propose the SINGLE most valuable thing to build for your Commander that USES this new capability — the natural next step now that it is live.');
+    if (unlocked) lines.push('Your bay just gained a new capability: ' + unlocked + '. Propose the SINGLE most valuable thing to build for your Farmer that USES this new capability — the natural next step now that it is live.');
     else lines.push('You now know your Farmer (see what you know about them, above). Propose the SINGLE most valuable thing to build for THEM next — a real use case they would actually want, not a generic suggestion.');
     if (probe) lines.push('AIM THIS ONE CAREFULLY: some time ago the farm learned this about their ' + probe.dim + ': "' + probe.text + '". It may still be true, or their world may have moved on. Propose the build that most serves THAT — if they take it, it still matters to them; if they pass, the farm learns their heading has drifted. Do not mention this aiming or ask whether it is still true; just build the best pitch for it.');
     lines.push('Hard rules:');

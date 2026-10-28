@@ -100,7 +100,7 @@ const ctxOf = (agentId, runId) => ({ agentId, runId });
     // real evidence → PROPOSED, never completed
     const proposed = await tool.run({ op: 'attest_complete', id: attestQ.id, evidence: 'wrote a 3-paragraph email tailored to the launch, saved to workspace' }, ctxOf('hero', 'run1'));
     A.ok(/proposed/i.test(proposed.content) && /NOT complete/.test(proposed.content), 'attest copy is honest: proposed, not complete');
-    A.eq(store.get(attestQ.id).status, 'open', 'the quest is STILL open after attest (Commander must confirm)');
+    A.eq(store.get(attestQ.id).status, 'open', 'the quest is STILL open after attest (Farmer must confirm)');
     const at = store.get(attestQ.id).attest;
     A.eq(at.confirmed, null, 'the attest is pending (confirmed=null)');
     A.eq(at.agentId, 'hero', 'the attest carries the calling agentId from ctx');

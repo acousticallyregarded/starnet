@@ -49,7 +49,7 @@ function stubs() {
   A.ok(d.allow === false, 'an unattended run is refused even with a cached grant');
   const fullAccess = makeConsentBroker({ surface: 'interactive', bypass: () => true, sessionKey: 'r2', prompt: () => { throw new Error('asked'); } });
   d = await fullAccess(call, power);
-  A.ok(d.allow === true, 'Full Access (the Commander\'s zero-prompt posture, or their own chat with approvals off) still covers it');
+  A.ok(d.allow === true, 'Full Access (the Farmer\'s zero-prompt posture, or their own chat with approvals off) still covers it');
   const persisted = [];
   const watched = makeConsentBroker({ surface: 'interactive', bypass: false, sessionKey: 'r4', grantsPermanent: new Set(), persist: g => persisted.push(g), prompt: () => 'always' });
   d = await watched(call, power);

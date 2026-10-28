@@ -64,7 +64,7 @@ const {hostText,userWords,text:wireText} = require('./helpers/host-notes.js');
       if (!expected.length) A.ok(request.messages.some(m=>m.role==='user' && userWords(m)===text),'original '+label+' remains in user context');
       else {
         const newest=wireText([...request.messages].reverse().find(m=>m.role==='user').content);
-        A.ok(newest.indexOf(text)>=0 && newest.indexOf('[CREW CALL]')>newest.lastIndexOf(text) && /\n<\/crew_call>$/.test(newest),label+' the crew call trails the Commander\'s words: the last text of the newest user turn');
+        A.ok(newest.indexOf(text)>=0 && newest.indexOf('[CREW CALL]')>newest.lastIndexOf(text) && /\n<\/crew_call>$/.test(newest),label+' the crew call trails the Farmer\'s words: the last text of the newest user turn');
         A.ok(request.messages[0].role==='system' && String(request.messages[0].content).indexOf('[CREW CALL]')<0,label+' the crew call stays out of the system prompt');
       }
     }

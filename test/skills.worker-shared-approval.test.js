@@ -37,7 +37,7 @@ try {
   // an imported (community) skill with a URL: the guard asks, so it needs the Commander's approval
   const w = store.write({ agentId: 'agent', name: 'Image Gen', summary: 'make images', body: BODY, setup: 'Needs the studio prop.', createdBy: 'community' });
   A.ok(w.ok && w.skill.guardAction === 'ask', 'the imported skill needs approval: ' + (w.skill && w.skill.guardAction));
-  A.ok(store.share({ actor: 'user', agentId: 'agent', target: w.skill.id, scope: 'station' }).ok, 'the Commander shares it with the station');
+  A.ok(store.share({ actor: 'user', agentId: 'agent', target: w.skill.id, scope: 'station' }).ok, 'the Farmer shares it with the farm');
   A.eq(tools().viewTool.run({ name: 'Image Gen' }, { agentId: 'nova' }).summary, 'withheld', 'before approval a worker is refused');
   // approve exactly as handleAgentSkillAllow does: the digest of the hydrated bytes just read
   const read = store.view('agent', w.skill.id, { includeArchived: true, bump: false });
@@ -55,14 +55,14 @@ try {
   A.ok(p.ok && p.pending, 'the worker now holds a pending proposal of the same name');
   for (let boot = 0; boot < 2; boot++) {
     const v = tools().viewTool.run({ name: 'Image Gen' }, { agentId: 'nova' });
-    A.eq(v.summary, 'loaded Image Gen', 'boot ' + boot + ': the approved station skill still reaches the worker: ' + v.content.slice(0, 140));
+    A.eq(v.summary, 'loaded Image Gen', 'boot ' + boot + ': the approved farm skill still reaches the worker: ' + v.content.slice(0, 140));
     A.ok(v.content.indexOf('Make the image the brief asks for.') >= 0 && v.content.indexOf('something else') < 0, 'it is the approved body, never the proposal');
     A.ok(/Image Gen \[WITHHELD: proposed skill/.test(index('nova')), 'the proposal is still named in the worker\'s index (truthfully withheld)');
     store = makeStore();   // a restart: proposals and approvals persist, the answer must not change
   }
   // the preload path (/skill Image Gen in the worker's brief) resolves through the same lookup
   const pre = store.viewAccessible('nova', 'Image Gen', {});
-  A.ok(pre && !pre.pendingCandidate && pre.agentId === 'agent', 'a preload resolves to the approved station skill');
+  A.ok(pre && !pre.pendingCandidate && pre.agentId === 'agent', 'a preload resolves to the approved farm skill');
 
   // unchanged: a proposal with nothing else behind its name still says it awaits approval
   store.write({ agentId: 'nova', name: 'Only Mine', summary: 's', body: '1. x', createdBy: 'background-review' });

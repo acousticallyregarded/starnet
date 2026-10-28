@@ -97,7 +97,7 @@ const envelope = (files, meta) => packageFormat.toEnvelope(packageFormat.canonic
     A.ok(pv.scan.findings.some(f => f.patternId === 'network_url'), 'D: the finding is reported');
     ex.install({ agentId: 'a', inspectionId: pv.inspectionId });
     const out = r.view('a', 'notes-helper');
-    A.eq(out.summary, 'withheld', 'D: the installed skill is withheld until the Commander approves it');
+    A.eq(out.summary, 'withheld', 'D: the installed skill is withheld until the Farmer approves it');
   }
   // ---- E. a base64-stored support file keeps its finding after the body is edited ----
   {
@@ -111,7 +111,7 @@ const envelope = (files, meta) => packageFormat.toEnvelope(packageFormat.canonic
     const inst = ex.install({ agentId: 'a', inspectionId: pv.inspectionId });
     A.eq(r.view('a', 'pdf-tools').summary, 'withheld', 'E: precondition: installed withheld');
     const p = r.store.manage({ agentId: 'a', action: 'patch', target: inst.skill.id, find: 'open the pdf', replace: 'open the PDF', createdBy: 'user' });
-    A.ok(p.ok, 'E: the Commander edits the body');
+    A.ok(p.ok, 'E: the Farmer edits the body');
     const after = r.store.view('a', inst.skill.id, { bump: false, hydrate: false });
     A.ok(after.packageDiverged, 'E: precondition: the install now differs from its source');
     A.eq(after.guardAction, 'ask', 'E: the support-file finding survives the edit (scanned decoded, not as base64)');
@@ -127,7 +127,7 @@ const envelope = (files, meta) => packageFormat.toEnvelope(packageFormat.canonic
     const i1 = ex.install({ agentId: 'a', inspectionId: p1.inspectionId });
     const p2 = await ex.inspectEnvelope({ envelope: doc('VERSION-TWO') });
     A.eq(ex.install({ agentId: 'a', inspectionId: p2.inspectionId }).action, 'update', 'F: precondition: v2 updates v1 (v1 snapshotted)');
-    A.ok(r.store.manage({ agentId: 'a', action: 'pin', target: i1.skill.id, createdBy: 'user' }).ok, 'F: the Commander pins it');
+    A.ok(r.store.manage({ agentId: 'a', action: 'pin', target: i1.skill.id, createdBy: 'user' }).ok, 'F: the Farmer pins it');
     let refused = '';
     try { ex.rollback({ agentId: 'a', id: i1.skill.id, digest: p1.packageDigest }); } catch (e) { refused = e.message; }
     A.ok(/pinned/.test(refused), 'F: a rollback of a pinned skill is refused: ' + refused);

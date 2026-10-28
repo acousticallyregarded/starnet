@@ -244,7 +244,7 @@ const App = (() => {
     // sidecar/capability/office.js + capgate F1). So the identity must NOT promise web/files unconditionally; it
     // tells the agent to use whatever it's actually been granted and to SAY when a tool is missing (that's the
     // signal that teaches the Commander what to place next), never to pretend a reach it doesn't have.
-    let s = 'You are ' + name + ', an AI agent operating from a workstation aboard the HOMESTEAD farm — a room '
+    let s = 'You are ' + name + ', an AI agent operating from a workstation on the HOMESTEAD farm — a room '
       + 'your Farmer (the user) is building for you. Address the user as "Farmer" and keep a spark of personality. '
       + 'Your workstation grants you REAL tools — exactly the ones the Farmer has placed in your room (web search/read, '
       + 'file read/write, a terminal, memory, and more as the farm grows; compute to think is always yours). When the '
@@ -355,7 +355,7 @@ const App = (() => {
     // lead-conditional on purpose: this same base prompt also runs the orchestrator as a dispatched WORKER, where
     // no delegation briefing (or tools) exists — it must not instruct delegation unconditionally (see pushRoster).
     return '\n\nYOUR CREW: ' + crew.length + ' specialist' + (crew.length === 1 ? '' : 's') + ' work' + (crew.length === 1 ? 's' : '')
-      + ' under your lead: ' + names + '. When you run as the station\'s lead, your run briefing lists the live crew '
+      + ' under your lead: ' + names + '. When you run as the farm\'s lead, your run briefing lists the live crew '
       + 'and your delegation tools — hand real subtasks to the right specialist through them and synthesize the '
       + 'results for the Farmer.';
   }
@@ -576,7 +576,7 @@ const App = (() => {
       a.approvalMode = before; persist();
       if (typeof StationUI === 'undefined') return;
       if (StationUI.setRoster) StationUI.setRoster(liveAgents());
-      if (StationUI.notify) StationUI.notify('The farm did not record that change — ' + (a.name || a.id) + (before === 'full' ? ' still has FULL POWER' : ' still asks first') + '. Try again once the station is reachable.', 'bad');
+      if (StationUI.notify) StationUI.notify('The farm did not record that change — ' + (a.name || a.id) + (before === 'full' ? ' still has FULL POWER' : ' still asks first') + '. Try again once the farm is reachable.', 'bad');
     });
     return true;
   }
@@ -3261,7 +3261,7 @@ const App = (() => {
       if (/managed credit|Managed credits/i.test(wire.why)) {
         // the account REFUSED this station's link: retrying can't fix it and the wallet isn't empty — relink is the
         // door (friendlyerror's managed_credit_link; `.?` because a quote in a regex mis-slices the fnBody test helper)
-        if (/refused this station.?s link|relink/i.test(wire.why)) {
+        if (/refused this (?:station|farm).?s link|relink/i.test(wire.why)) {
           msg.textContent = 'your StarNet account no longer accepts this farm’s link (it was unlinked, or belongs to another account) — your credits are safe. '
             + (pickedProvider === 'starnet' ? 'Press CONNECT STARNET ACCOUNT above, then WAKE again.' : 'Relink this farm to your StarNet account, or use your own provider key.');
           refreshStarnetGenesisStatus();
@@ -5452,7 +5452,7 @@ const App = (() => {
       if (!msg) return;
       const runs = (snap && snap.confirmRuns) | 0;
       if (thrown || (snap && snap.error)) {
-        msg.textContent = 'the update could not install' + (snap && snap.error ? ' — ' + snap.error : '') + '. Download the full installer instead: reinstalling over the top keeps your station.';
+        msg.textContent = 'the update could not install' + (snap && snap.error ? ' — ' + snap.error : '') + '. Download the full installer instead: reinstalling over the top keeps your farm.';
         offerInstaller();
       } else if (runs > 0) msg.textContent = (runs === 1 ? '1 agent is' : runs + ' agents are') + ' still working — installing now would kill ' + (runs === 1 ? 'its run' : 'their runs') + '. Try again when ' + (runs === 1 ? 'it finishes.' : 'they finish.');
       else if (snap && /^(downloading|installing|restarting)$/.test(String(snap.phase || ''))) msg.textContent = 'installing the update — Homestead restarts on its own when it is done.';
@@ -5565,7 +5565,7 @@ const App = (() => {
       let reason = '';
       try { reason = String(((await Harness.engineState()) || {}).reason || ''); } catch (_) { reason = ''; }
       // Reapply a persistent degraded verdict after the retry refreshed its save-request diagnosis.
-      if (sub) { if (reason) sub.textContent = reason; else if (/^(degraded|station service halted)/i.test(sub.textContent)) sub.textContent = notAnswering; }
+      if (sub) { if (reason) sub.textContent = reason; else if (/^(degraded|(?:station|farm) service halted)/i.test(sub.textContent)) sub.textContent = notAnswering; }
       if (reason) {
         diagnosis = { code: /owner unavailable/i.test(reason) ? 'SAVE-OWNER · WORKSPACE OWNED BY ANOTHER PROCESS' : /crash-loop/i.test(reason) ? 'SAVE-LOOP · FARM SERVICE CRASH LOOP' : 'SAVE-DEGRADED · FARM SERVICE DEGRADED', text: reason };
         if (code) code.innerHTML = '<b>RECOVERY CODE: ' + diagnosis.code + '</b><br>' + diagnosis.text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '<br>Send a screenshot of this code to support.';
@@ -6024,7 +6024,7 @@ const App = (() => {
       const line = merge.late
         ? 'Your unsent changes from last time were merged into the farm file before this window opened. The farm file from before is kept beside it.'
         : merge.base === 'window'
-        ? 'Your newest changes from last time had not reached the farm file; they are in it now' + (n ? ', with ' + n + ' session' + s(n) + ' only the farm file held' : '') + '. The station file from before is kept as ' + (merge.backup || 'a backup beside it') + '.'
+        ? 'Your newest changes from last time had not reached the farm file; they are in it now' + (n ? ', with ' + n + ' session' + s(n) + ' only the farm file held' : '') + '. The farm file from before is kept as ' + (merge.backup || 'a backup beside it') + '.'
         : 'The farm file was kept over this window’s unsent changes from last time' + (n ? ', with ' + n + ' session' + s(n) + ' from this window added' : '') + '. This window’s whole save is kept beside it' + (merge.kept ? ' as ' + merge.kept : '') + '.';
       setTimeout(() => { try { if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify(line, 'warn'); } catch (_) {} }, 1500);
     }

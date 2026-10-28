@@ -282,7 +282,7 @@ const result = (extra) => Object.assign({ type: 'result', subtype: 'success', is
     const listed = await ok.listModels();
     const ids = listed.map(m => m.id);
     A.eq(ids.slice(0, 7), ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-4-5-20251001', 'claude-opus-5-5[1m]', 'claude-sonnet-5-5[1m]', 'claude-opus-4-8', 'claude-sonnet-4-6'], 'signed-in CLI lists the named models first');
-    A.ok(['opus', 'sonnet', 'haiku'].every(a => ids.indexOf(a) >= 0), 'the aliases stay listed, so a station already pinned to one keeps its model');
+    A.ok(['opus', 'sonnet', 'haiku'].every(a => ids.indexOf(a) >= 0), 'the aliases stay listed, so a farm already pinned to one keeps its model');
     A.ok(!ids.some(id => /fable/i.test(id)), 'Fable is not listed (an account without it is silently served Opus 4.8)');
     A.eq([listed.find(m => m.id === 'claude-opus-5-5[1m]').context_length, listed.find(m => m.id === 'claude-opus-5-5').context_length], [1000000, 200000], 'the 1M variants carry their real context window');
     A.eq([ok.contextLimit('claude-sonnet-5-5[1m]'), ok.contextLimit('sonnet'), ok.contextLimit('custom-m')], [1000000, 200000, 200000], 'contextLimit follows the model (and only a real [1m] suffix means 1M)');
@@ -319,7 +319,7 @@ const result = (extra) => Object.assign({ type: 'result', subtype: 'success', is
     const { p, calls } = make({ lines: [init('none'), result({ result: 'ok' })] }, { env });
     await collect(p, { model: 'sonnet', messages: [{ role: 'user', content: 'x' }] });
     const childEnv = calls[0].opts.env;
-    A.ok(childEnv && !Object.keys(childEnv).some(k => /^(STARNET|SKYNET)_/i.test(k)), 'no STARNET_/SKYNET_ variable reaches the CLI');
+    A.ok(childEnv && !Object.keys(childEnv).some(k => /^(HOMESTEAD|SKYNET)_/i.test(k)), 'no STARNET_/SKYNET_ variable reaches the CLI');
     A.eq([childEnv.CLAUDECODE, childEnv.HOME, childEnv.CLAUDE_CODE_DISABLE_AUTO_MEMORY], [undefined, '/h', '1'], 'not a nested session; user env kept; auto-memory off');
   }
 
@@ -494,7 +494,7 @@ const result = (extra) => Object.assign({ type: 'result', subtype: 'success', is
     // entry on a first message (one block, the request before it), and is its own entry after it on a later message
     const crew = provider.crewCallFence('[CREW CALL] The Commander named Ada (agentId researcher) in this request.');
     const c1 = _internals.buildPrompt(m1.concat([{ role: 'system', content: crew }]), [], prefix);
-    A.eq(c1.blocks, [{ type: 'text', text: '<user>\n' + note1 + '\n\n' + recall + '\n\nhi\n\n' + crew + '\n</user>' }], 'single user turn + crew call: one block, the crew call after the Commander\'s words');
+    A.eq(c1.blocks, [{ type: 'text', text: '<user>\n' + note1 + '\n\n' + recall + '\n\nhi\n\n' + crew + '\n</user>' }], 'single user turn + crew call: one block, the crew call after the Farmer\'s words');
     A.ok(c1.system.indexOf('[CREW CALL]') < 0, 'the crew call never enters the CLI system prompt');
     const c0 = _internals.buildPrompt([sys, { role: 'user', content: 'hi' }, { role: 'system', content: crew }], [], prefix);
     A.eq(c0.blocks, [{ type: 'text', text: '<user>\nhi\n\n' + crew + '\n</user>' }], 'single user turn, no leading note: the crew call still closes the user entry');

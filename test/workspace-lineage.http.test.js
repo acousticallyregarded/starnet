@@ -80,10 +80,10 @@ function station(name, updatedAt, marker) {
     A.eq(body.save, null, 'active workspace is definitively empty');
     A.eq(body.lineage && body.lineage.priorInstallEvidence, true, 'host still proves a prior installation');
     A.eq(body.lineage && body.lineage.onboardingAllowed, false, 'host explicitly refuses the genesis inference');
-    A.eq(body.lineage.recovery.recoverableCount, 2, 'both valid station generations are disclosed');
-    A.eq(body.lineage.recovery.automaticCandidateId, null, 'real host refuses to guess between conflicting stations');
+    A.eq(body.lineage.recovery.recoverableCount, 2, 'both valid farm generations are disclosed');
+    A.eq(body.lineage.recovery.automaticCandidateId, null, 'real host refuses to guess between conflicting farms');
     const selected = body.lineage.recovery.candidates.find(row => row.stationName === 'ORION');
-    A.ok(selected && selected.id, 'Commander can identify the desired station without exposing save contents');
+    A.ok(selected && selected.id, 'Farmer can identify the desired farm without exposing save contents');
 
     const reportRes = await fetch('http://127.0.0.1:' + first.port + '/api/lineage/report', { headers: { 'X-StarNet-Token': TOKEN } });
     const reportRaw = await reportRes.text();
@@ -104,8 +104,8 @@ function station(name, updatedAt, marker) {
     const recoveredRes = await fetch('http://127.0.0.1:' + second.port + '/api/save?agent=agent', { headers: { 'X-StarNet-Token': TOKEN } });
     const recovered = await recoveredRes.json();
     A.eq(recoveredRes.status, 200, 'restarted sidecar answers from the activated generation');
-    A.eq(recovered.save && recovered.save.agent && recovered.save.agent.name, 'ORION', 'next pre-store boot activates exactly the selected station');
-    A.eq(recovered.save.station.rooms[0].id, 'private-orion-marker', 'selected station data survives the complete HTTP restart path');
+    A.eq(recovered.save && recovered.save.agent && recovered.save.agent.name, 'ORION', 'next pre-store boot activates exactly the selected farm');
+    A.eq(recovered.save.station.rooms[0].id, 'private-orion-marker', 'selected farm data survives the complete HTTP restart path');
     A.eq(fs.readFileSync(path.join(legacyA, 'agent.save.json')).equals(legacyABytes), true, 'unselected source remains byte-exact');
     A.eq(fs.readFileSync(path.join(legacyB, 'agent.save.json')).equals(legacyBBytes), true, 'selected source remains byte-exact');
     A.ok(fs.readdirSync(path.dirname(current)).some(name => name.startsWith('workspaces.recovery-rollback-')), 'empty current generation is retained as rollback');

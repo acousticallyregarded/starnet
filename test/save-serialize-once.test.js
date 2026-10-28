@@ -53,7 +53,7 @@ function station({ keepPosted = true } = {}) {
   vm.runInContext(read('frontend/app/cloudsave.js') + '\nthis.CloudSave = CloudSave;', ctx, { filename: 'cloudsave.js' });
   vm.runInContext('this.Save = Save;', ctx);
   vm.runInContext([
-    "const agent = { id: 'agent', name: 'NOVA', provider: 'openrouter' }, agents = new Map([['agent', agent]]), station = null;",
+    "const agent = { id: 'agent', name: 'NOVA', provider: 'openrouter' }, agents = new Map([['agent', agent]]), farm = null;",
     'let saveFailureNotified = false, rosterPushFailed = false;',
     'function liveAgents() { return [agent]; }',
     'function serializeAgentLite(a) { return a; }',
@@ -91,7 +91,7 @@ function oldAck(cachedRaw, sentDoc, revision, body) {
     A.ok(raw && raw.length > BIG, 'fixture: App.persist wrote a big save (' + Math.round(((raw && raw.length) || 0) / 1024) + ' KB)');
     const sent = JSON.parse(raw); sent._saveRevision = 0; sent._saveClient = 'client-1';
     const expected = oldAck(raw, sent, 7, { updatedAt: 1760000000123 });
-    A.eq(await s.CloudSave.flush({ force: true }), true, 'the station acknowledges the write');
+    A.eq(await s.CloudSave.flush({ force: true }), true, 'the farm acknowledges the write');
     const c = s.counts();
     A.ok(c.stringify <= 3, 'one App.persist burst stringifies the whole save at most 3 times (was 6, and 6 again if persist stops handing over the string Save.write made): ' + c.stringify);
     A.ok(c.parse <= 1, 'and parses it at most once (was 2): ' + c.parse);
@@ -205,7 +205,7 @@ function oldAck(cachedRaw, sentDoc, revision, body) {
     const extra = withRaw.heap - controlHeap;
     A.ok(withRaw.chars > 2 * 1024 * 1024, 'fixture: a two-byte save of ' + (withRaw.chars / 1048576).toFixed(1) + 'M chars');
     A.ok(extra < rawBytes / 2, 'after its ACK the whole-save string is not retained: heap +' + (extra / 1048576).toFixed(2) + ' MB against one copy of ' + (rawBytes / 1048576).toFixed(2) + ' MB');
-    A.ok(withRaw.s.CloudSave, 'fixture: the station measured was still alive');
+    A.ok(withRaw.s.CloudSave, 'fixture: the farm measured was still alive');
   }
 
   A.report('save-serialize-once.test');

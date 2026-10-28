@@ -53,7 +53,7 @@ function setup() {
     A.eq(b.status('r1'), { ended: true, notes: { sn1: 'applied', sn2: 'unapplied' } }, 'a note still pending when the loop closed was never read');
     const late = b.post('r1', 'too late', true, 'sn3');
     A.eq(late.status, 409, 'after close the run refuses (unchanged)');
-    A.eq('sn3' in b.status('r1').notes, false, 'and a refused note is not in the ledger (the station never took it)');
+    A.eq('sn3' in b.status('r1').notes, false, 'and a refused note is not in the ledger (the farm never took it)');
     b.drop('r1');
     A.eq(b.status('r1'), { ended: true, notes: { sn1: 'applied', sn2: 'unapplied' } }, 'the ledger outlives the host teardown (drop)');
     A.eq(b.ledgerOf('r1'), [{ id: 'sn1', applied: true }, { id: 'sn2', applied: false }], 'ledgerOf is what the run record keeps');
@@ -122,7 +122,7 @@ function setup() {
     A.eq(SB.steerNoteStatus('r1', { live: false, memory: null, record: { runId: 'r1', reason: 'interrupted', steerNotes: [{ id: 'sn1', applied: true }] } }).source, 'record',
       'an interrupted row that carries a ledger still answers from it');
     A.eq(SB.steerNoteStatus('r1', { live: false, memory: null, record: null }),
-      { runId: 'r1', live: false, ended: false, source: 'none', notes: {} }, 'no memory and no record: the station says it has none (never a guess)');
+      { runId: 'r1', live: false, ended: false, source: 'none', notes: {} }, 'no memory and no record: the farm says it has none (never a guess)');
   }
 
   // ── 4. the run record keeps the ledger, bounded at the persistence boundary ──

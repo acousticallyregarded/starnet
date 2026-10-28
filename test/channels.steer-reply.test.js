@@ -58,7 +58,7 @@ async function run() {
     A.eq(sends[0].trim(), 'Done.\n\n↪ ' + note, 'the unapplied warning survives as its own line');
   }
   // ---- 4. ordinary deltas are untouched (byte-identical joins, a "[steering]" mid-line is just text) ----
-  A.eq(joinReplyDelta('Hello ', 'Commander'), 'Hello Commander', 'plain join');
+  A.eq(joinReplyDelta('Hello ', 'Farmer'), 'Hello Farmer', 'plain join');
   A.eq(joinReplyDelta('a\n\n', '\n\nb'), 'a\n\n\n\nb', 'model whitespace is never collapsed outside a steer line');
   A.eq(joinReplyDelta('x', ' [steering] is a word here'), 'x [steering] is a word here', 'a delta that is not the echo shape stays prose');
 

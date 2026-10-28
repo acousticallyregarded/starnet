@@ -50,7 +50,7 @@ function startProvider() {
           return res.end(anthropicSse([
             { type: 'message_start', message: { usage: { input_tokens: 20, output_tokens: 0 } } },
             { type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } },
-            { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: '## Active Task\nInspect the station.' } },
+            { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: '## Active Task\nInspect the farm.' } },
             { type: 'message_delta', delta: { stop_reason: 'end_turn' }, usage: { output_tokens: 6 } },
             { type: 'message_stop' }
           ]));
@@ -103,7 +103,7 @@ async function eventsOf(response) {
   const runOn = async (model) => {
     const history = [];
     for (let i = 0; i < 8; i++) history.push({ role: i % 2 ? 'assistant' : 'user', content: 'history turn ' + i + ' with enough content to fold' });
-    history.push({ role: 'user', content: 'finish this after inspecting the station' });
+    history.push({ role: 'user', content: 'finish this after inspecting the farm' });
     const from = provider.calls.length;
     const res = await api('POST', '/api/run', { provider: 'anthropic', model, key: KEY, baseUrl: provider.baseUrl, internal: true, isTask: false, messages: history });
     A.eq(res.status, 200, model + ': /api/run streams');

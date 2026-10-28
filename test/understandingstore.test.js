@@ -64,7 +64,7 @@ A.eq(r.overall, afterRise, 'overall is stable when nothing changed');
 /* ---------- a non-hero / non-done run is ignored (no recompute) ---------- */
 dims.pain = [belief('writing standup notes by hand')];   // change the world…
 emit('agent.run.end', { reason: 'done', agentId: 'worker-2' });   // …but a summoned worker must not move the model
-A.eq(UnderstandingStore.read().overall, afterRise, 'a summoned-worker run never recomputes the Commander model');
+A.eq(UnderstandingStore.read().overall, afterRise, 'a summoned-worker run never recomputes the Farmer model');
 emit('agent.run.end', { reason: 'error', agentId: 'agent' });     // a failed hero run is not a clean signal
 A.eq(UnderstandingStore.read().overall, afterRise, 'a non-done run never recomputes');
 // a clean hero run now DOES fold the pain belief in
