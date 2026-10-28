@@ -5,6 +5,9 @@ const fs=require('node:fs'),crypto=require('node:crypto');
 const file='frontend/app/projection-prop-effects.js',dir='docs/station-remaster/projection-effects';
 const root='frontend/assets/industrial/projection-correction',m=JSON.parse(fs.readFileSync(root+'/manifest.json'));
 const quiet={};
+// props redrawn as farm art (dev/farm-props.mjs writes the list): the station effect regions described the old picture
+const FARM_QUIET='Redrawn as farm art (dev/farm-props.mjs); the station effect regions described the old picture and do not fit this one. Quiet until its effects are drawn for the farm art.';
+const farmRedrawn=fs.existsSync(root+'/farm-redrawn.json')?JSON.parse(fs.readFileSync(root+'/farm-redrawn.json')):[];
 function group(ids,reason){for(const id of ids.split(' ')){if(quiet[id])throw Error('Duplicate quiet '+id);quiet[id]=reason;}}
 group('desk desk2','Accepted workstation screen/occupancy renderer remains authoritative, including compact native fallback and separately authored facings. No added effects.');
 group('industrial_locker industrial_drawerbank industrial_supplycart industrial_toolcaddy industrial_wallpanel safe vault shelf quarters_lockerbank arc_indexwall','Storage or passive hardware; no evidenced moving mechanism or live display region on this source.');
@@ -15,9 +18,9 @@ group('bar','Serving counter has no per-instance dispensing/order state in rende
 group('couch bunk stool chair sidetable lowtable glasstable dinertable booth dinerchair podchair loungetable longtable beanbag recliner recliner_r','Seating/table body remains untouched; occupancy, sleep and mounting stay with existing body/foreground/surface owners.');
 group('quarters_pooltable pokertable pinball_unused','No per-instance game/ball state is available. Static approved playfield avoids invented shots, cards or wins.');
 delete quiet.pinball_unused;
-group('comms_dish gigs_servercart war_intelcab workbench studio','Redrawn as farm art (dev/farm-props.mjs); the station effect regions described the old picture and do not fit this one. Quiet until its effects are drawn for the farm art.');
 group('gachapon','No purchase/turn/dispense state is provided. Painted capsules remain static; no invented vend.');
 group('telescope telescope_r weaponrack weaponrack_r punchbag punchbag_r benchpress benchpress_r','Passive instrument/equipment pose. No backend aim, firing, strike or repetition state is available.');
+for(const id of farmRedrawn)if(!quiet[id])quiet[id]=FARM_QUIET;
 const bindings=Object.fromEntries(Object.entries(m.props).map(([id,p])=>[id,Object.fromEntries(Object.entries(p.views).map(([view,s])=>[view,{image:s.image,width:s.sourceWidth,height:s.sourceHeight}]))]));
 let source=fs.readFileSync(file,'utf8');
 source=source.replace(/const BINDINGS = \/\* projection-bindings \*\/ [\s\S]*?;\n/,`const BINDINGS = /* projection-bindings */ ${JSON.stringify(bindings)};\n`);

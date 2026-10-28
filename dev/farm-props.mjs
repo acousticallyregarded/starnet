@@ -32,6 +32,152 @@ const FARM = {
   studio: 'a painter\'s corner: a wooden easel holding a canvas of a farm landscape, with a small table of paint pots, brushes in a jar and a folded drop cloth',
   plant: 'a young sunflower growing in a terracotta pot',
   chair: 'a wooden farmhouse chair with a spindle back and a linen seat cushion, standing on four turned wooden legs (no swivel base, no wheels)',
+  consoleL: 'an L-shaped farmhouse corner desk in oak with an old beige computer showing a dim amber screen',
+  rackV: 'a tall narrow oak shelf of stacked ledgers and seed tins',
+  bridge_relaystack: 'a tall stack of old wooden filing drawers and ledger boxes tied with twine',
+  comms_beacon: 'a farm bell hanging from a tall wooden post with a weathervane on top',
+  comms_uplink: 'a tall farm radio mast of wooden poles with a wire antenna and a small weathervane',
+  connector_portal: 'a sturdy wooden farm gate set in a rough stone archway',
+  core: 'an oak grandfather clock with a brass face and pendulum',
+  rack: 'a tall wooden pantry shelf filled with labelled preserve jars',
+  safe: 'an old cast-iron farm safe painted green with gold lettering and a brass dial',
+  shelf: 'a wooden shelf unit with stoneware crocks, jars and folded linen',
+  vault: 'a heavy oak strongbox chest bound with iron bands and a big padlock',
+  missionboard: 'a wooden chore board with pinned paper notes, a chalk list and a small brass bell',
+  trophycase: 'a glass-fronted oak cabinet of blue ribbons, rosettes and silver county-fair trophies',
+  arc_indexwall: 'a wall unit of small oak card-index drawers with brass label holders',
+  arc_microfiche: 'a wooden reading table with a brass magnifying lamp over a big open ledger',
+  comms_inbox: 'a rural mailbox on a wooden post with its red flag up',
+  commswall: 'a farmhouse kitchen wall board with an old wall telephone, a calendar and pinned notes',
+  gigs_amp: 'an old wooden-cased valve radio speaker',
+  gigs_thumbwall: 'a corkboard covered in pinned photographs of crops and animals',
+  pub_mailpod: 'a small wooden post box on a stand with a letter slot and a little shingle roof',
+  pub_outboundchute: 'a wooden grain chute on legs pouring into a burlap sack',
+  pub_publishpress: 'an old cast-iron hand printing press on a wooden bench',
+  arc_floorlight: 'a tall iron standing oil lamp with a glass chimney',
+  arc_ladder: 'a wooden hayloft ladder',
+  benchpress: 'a wooden sawhorse holding a log, with an axe leaning against it',
+  bookstack: 'a stack of old leather-bound almanacs and seed catalogues',
+  booth: 'a farmhouse kitchen booth: a high-backed wooden bench seat with cushions beside a small table',
+  bridge_deckperimeter: 'a low white wooden picket fence section',
+  cablerun: 'a coiled rope and a coiled green garden hose lying on the floor',
+  camerarig: 'an old wooden box camera on a wooden tripod',
+  coffee: 'an enamel coffee pot on a small cast-iron stove',
+  crt_pile: 'a pile of old wooden crates holding an old radio, tools and jars',
+  cryopod: 'a tall old wooden ice box with brass hinges and latches',
+  desklamp: 'a brass oil lamp with a glass chimney',
+  deskterminal: 'a small wooden writing table with an old black typewriter',
+  dinerchair: 'a red-painted wooden kitchen chair',
+  dinertable: 'a farmhouse kitchen table with a red gingham tablecloth',
+  figurine: 'a small carved and painted wooden rooster',
+  gachapon: 'a gumball machine with a red cast-iron base, full of colourful gumballs',
+  glasstable: 'a round wooden side table with a white lace doily',
+  guitar: 'an acoustic guitar leaning on a wooden stand',
+  hazardpad: 'a coir doormat saying WELCOME',
+  holopet: 'a friendly farm dog lying on a woven dog bed',
+  incubator: 'a wooden egg incubator box with a glass lid full of brown eggs',
+  industrial_cabletray: 'a shallow wooden seed tray of sprouting seedlings lying on the floor',
+  industrial_floorvent: 'a cast-iron floor grate',
+  industrial_partition: 'a wooden lattice garden screen with climbing pink roses',
+  industrial_planter: 'a long wooden planter box of green herbs',
+  industrial_roundtable: 'a round oak pedestal table',
+  industrial_servicecab: 'a tall painted wooden broom cupboard',
+  industrial_supplycart: 'a wooden wheelbarrow loaded with burlap sacks',
+  industrial_toolcaddy: 'a wooden garden tool tote with trowels and gloves',
+  industrial_wallpanel: 'a wooden wall rack of hanging garden tools',
+  lavalamp: 'a glass jar of glowing fireflies with a cloth lid',
+  longtable: 'a long harvest table of rough oak planks',
+  loungetable: 'a low wooden coffee table with a bowl of red apples',
+  lowtable: 'a low rustic wooden bench table',
+  modelship: 'a small model red tractor on a wooden stand',
+  monstera: 'a big leafy fern in a terracotta pot',
+  mug: 'an enamel tin mug of coffee',
+  plasmaglobe: 'a kerosene hurricane lantern',
+  podchair: 'a wicker rocking chair with a gingham cushion',
+  punchbag: 'a burlap sack of hay hanging on a rope from a wooden beam frame',
+  radio: 'an old wooden tabletop radio',
+  rug: 'an oval braided rag rug in faded cream, sage green and barn red',
+  rug_large: 'a large oval braided rag rug in faded cream, sage green and barn red',
+  rug_small: 'a small oval braided rag rug in faded cream, sage green and barn red',
+  sidetable: 'a small oak side table with a jug of wildflowers',
+  steamvent: 'a small cast-iron wood stove with a chimney pipe and a wisp of smoke',
+  stool: 'a three-legged wooden milking stool',
+  tallplant: 'tall sunflowers growing in a big terracotta pot',
+  telescope: 'a brass telescope on a wooden tripod',
+  terrarium: 'a glass bell jar cloche over a young seedling in a pot',
+  toolbox: 'a wooden carpenter\'s toolbox with a handle and tools inside',
+  treasury_pnl_holo: 'a market chalkboard on a wooden stand listing crop prices',
+  weaponrack: 'a wooden rack holding pitchforks, rakes and hoes',
+  airlock: 'a farmhouse Dutch door, split into a top and bottom half, in a wooden frame',
+  easel: 'a painter\'s easel holding a canvas of a sunflower field',
+  etsy_dyevat: 'a big copper dye pot on an iron stand with skeins of coloured wool',
+  etsy_kiln: 'a small brick pottery kiln with an iron door',
+  etsy_packbot: 'a wooden packing bench with a stack of produce crates and a roll of twine',
+  etsy_threadrack: 'a wooden spinning wheel beside a rack of wool skeins',
+  fabricator: 'a cast-iron and oak cider press with a basket of apples',
+  research_corelens: 'a brass microscope on a small wooden table',
+  research_papers: 'a pile of seed packets and notebooks on a small wooden table',
+  research_samplecart: 'a wooden cart of glass soil sample jars',
+  research_trendpillar: 'a farm weather station on a wooden post: rain gauge, wind cups and thermometer',
+  tube: 'a tall glass demijohn of golden cider in a wicker basket',
+  vat: 'a large wooden fermenting barrel bound with iron hoops',
+  arcade: 'an old wooden penny-arcade fortune-teller cabinet',
+  arcade2: 'a wooden fairground ring-toss stall with striped awning',
+  bar: 'a wooden farmhouse kitchen counter with jars, a bread board and a loaf',
+  beanbag: 'a hay bale with a folded plaid blanket on top',
+  bookshelf: 'a tall oak bookshelf of almanacs and cookbooks',
+  bunk: 'a wooden farmhouse bed with a patchwork quilt',
+  couch: 'a plaid upholstered farmhouse sofa with cushions',
+  djbooth: 'a fiddle and a banjo on a little wooden stage with a hay bale',
+  fishtank: 'a stone water trough with goldfish and lily pads',
+  industrial_bench: 'a long rustic wooden bench',
+  jukebox: 'an old wind-up gramophone with a brass horn on a wooden cabinet',
+  pinball: 'a wooden bagatelle game table with brass pins',
+  pokertable: 'a round wooden card table with a checkered cloth and playing cards',
+  quarters_lockerbank: 'a row of wooden mudroom cubbies with hooks, coats and boots',
+  quarters_minifridge: 'a small wooden ice chest with brass handles',
+  quarters_pooltable: 'a long wooden shuffleboard table',
+  quarters_vending: 'an honesty farm stand with jars of honey and eggs and a cash tin',
+  recliner: 'a padded wingback armchair in plaid',
+  speaker: 'an old wooden radio speaker cabinet',
+  tv: 'an old wooden-cabinet television set',
+  bigscreen: 'a large chalkboard on a wooden frame with a hand-drawn map of the fields',
+  bridge_consolebank: 'a long oak sideboard with old radios and an open ledger',
+  bridge_dispatch_pylon: 'a wooden signpost with arrow boards pointing different ways',
+  bridge_orderqueue: 'a wooden order board with clipped paper tickets',
+  bridge_tacscreen: 'a framed hand-drawn map of the farm on a wooden easel',
+  bridge_tacticaltable: 'a large wooden table with a hand-drawn farm map and little wooden markers',
+  calwall: 'a big wall calendar of the seasons with planting dates and a picture of a barn',
+  chartwall: 'a chalkboard with crop yield charts drawn in chalk',
+  holotable: 'a wooden sand table modelling the farm fields in miniature',
+  screens: 'a wall of framed farm pictures around a small chalkboard',
+  tank: 'a tall galvanised water tank on a wooden stand',
+  ticker: 'a long chalkboard of market prices',
+  war_pivotpanel: 'a wooden noticeboard on a swivel stand',
+  war_threatcore: 'a weather barometer and storm glass in a wooden case',
+  wartable: 'a planning table with a map of the fields and seed packets',
+  whiteboard: 'a chalkboard on a wooden easel stand',
+  boxes: 'a stack of wooden produce crates of red apples',
+  bridge_equipmentbay: 'a wooden shelving bay of feed sacks and tools',
+  crate: 'a wooden crate of potatoes',
+  gigs_partsbin: 'a wooden bin of onions and seed potatoes',
+  goldcrate: 'a wooden crate of golden corn cobs',
+  industrial_drawerbank: 'a long low chest of oak drawers',
+  industrial_locker: 'a tall painted wooden wardrobe',
+  treasury_coinsorter: 'an old brass cash register on a wooden counter',
+  treasury_token_furnace: 'a cast-iron pot-bellied stove',
+  bay: 'a farm work stall: a sturdy potting bench with a stool under a small shingle roof',
+  filter: 'a wooden sorting table with a sieve and two woven baskets',
+  intake: 'a wooden feed hopper on legs',
+  joiner: 'a wooden grain chute where two chutes join into one',
+  loop: 'a wooden water wheel on a small frame',
+  merger: 'a wide wooden funnel hopper gathering into one sack',
+  outbox: 'a farm-gate produce stand with a little roof and crates of vegetables',
+  splitter: 'a wooden grain chute splitting into two spouts',
+  bench: 'a farmhouse potting bench with an old beige computer showing a dim amber screen',
+  console: 'an oak radio desk with an old beige computer showing a dim amber screen',
+  desk2: 'a wide double farmhouse writing desk in oak with two old beige computers showing dim amber screens',
+  pixelrig: 'a tall oak secretary desk with an old beige computer showing a dim amber screen',
 };
 
 /* ART OUTSIDE THE MANIFEST: the agent's own workstation and its chair are drawn from fixed files whose sizes the
@@ -83,6 +229,9 @@ function sizeFor(w, h) {
   return r > 1.25 ? '1536x1024' : r < 0.8 ? '1024x1536' : '1024x1024';
 }
 
+// a prop drawn as a left/right pair: the right-hand one is the left one flipped, so the two always match
+const PAIRS = { benchpress_r: 'benchpress', camerarig_r: 'camerarig', punchbag_r: 'punchbag', recliner_r: 'recliner', telescope_r: 'telescope', weaponrack_r: 'weaponrack' };
+
 // every facing a prop is drawn in (s = its front, n = from behind, e/w = from the side), each redrawn from its own art
 const FACING = { s: 'seen from the front, as in the reference', n: 'seen from behind, as in the reference (its back faces the viewer)',
   e: 'turned sideways and seen END-ON from its short side, exactly like the reference: keep the reference\'s narrow, tall silhouette and aspect ratio, nothing wider',
@@ -92,6 +241,13 @@ const MIRROR = { e: 'w' };
 const outName = (id, key) => id + (key === 's' ? '' : '-' + key) + '.png';
 
 async function generate(id) {
+  if (PAIRS[id]) {
+    const from = path.join(REVIEW, outName(PAIRS[id], 's'));
+    if (!fs.existsSync(from)) await generate(PAIRS[id]);
+    await require('sharp')(from).flop().toFile(path.join(REVIEW, outName(id, 's')));
+    console.log(id + '.s = ' + PAIRS[id] + '.s mirrored');
+    return;
+  }
   if (!KEY) throw new Error('no ChatGPT_API_KEY / OPENAI_API_KEY in the environment');
   const manifest = JSON.parse(fs.readFileSync(path.join(SET, 'manifest.json'), 'utf8'));
   const views = manifest.props[id] && manifest.props[id].views;
@@ -145,6 +301,10 @@ async function install(id) {
     else console.log(id + '.' + key + ': no reviewed art, the station view stays');
   }
   fs.writeFileSync(path.join(SET, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  // the effects build reads this: a redrawn prop's station effect regions no longer fit its picture
+  const listFile = path.join(SET, 'farm-redrawn.json');
+  const list = fs.existsSync(listFile) ? JSON.parse(fs.readFileSync(listFile, 'utf8')) : [];
+  if (!list.includes(id)) { list.push(id); list.sort(); fs.writeFileSync(listFile, JSON.stringify(list, null, 2) + '\n'); }
 }
 
 // trim, then put on the station sheet's pixel grid (gridW art pixels across): hard alpha, a small palette, whole-pixel upscale
@@ -234,7 +394,14 @@ if (args.includes('--install')) {   // one at a time: every install rewrites the
   const run = texMode ? installTexture : fileMode ? installFile : install;
   for (const id of ids) results.push(await run(id).then(v => ({ status: 'fulfilled', value: v }), reason => ({ status: 'rejected', reason })));
 } else {
-  results = await Promise.allSettled(ids.map(texMode ? generateTexture : fileMode ? generateFile : generate));
+  const gen = texMode ? generateTexture : fileMode ? generateFile : generate, LIMIT = Number(process.env.FARM_CONCURRENCY) || 4;
+  const queue = ids.filter(id => !(PAIRS[id] && ids.includes(PAIRS[id])));   // a pair's base generates its mirror after
+  const pairsAfter = ids.filter(id => PAIRS[id] && ids.includes(PAIRS[id]));
+  results = [];
+  await Promise.all(Array.from({ length: Math.min(LIMIT, queue.length) }, async () => {
+    while (queue.length) { const id = queue.shift(); results.push(await gen(id).then(v => ({ status: 'fulfilled', value: v }), reason => ({ status: 'rejected', reason: Object.assign(reason, { message: reason.message }) }))); }
+  }));
+  for (const id of pairsAfter) results.push(await gen(id).then(v => ({ status: 'fulfilled', value: v }), reason => ({ status: 'rejected', reason })));
 }
 let failed = 0;
 for (const r of results) if (r.status === 'rejected') { failed++; console.error('FAILED ' + r.reason.message); }

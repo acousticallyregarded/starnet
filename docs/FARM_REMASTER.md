@@ -23,7 +23,7 @@ grant.** Only what the player sees changes.
 | Wording | everywhere a player reads it | StarNet → Homestead, station → farm, Commander → Farmer, hallway/corridor → path. Size tiers: HOMESTEAD → FARM → RANCH → ESTATE. |
 | Wordmark | `dev/homestead-logo.mjs` | `homestead-wordmark.svg` (chrome mask) and `homestead-logo.png` (title screen). |
 | Summer daylight | `stationbake.js` `LIGHT`, `worldrenderer.js` `PHOSPHOR`, `industrialtextures.js` `lighting`, `terrain.js` `FARM` | Rooms are lit by day (ambient plate 0.82 → 0.1), no dark CRT film, a whisper of vignette and grain, props keep their own colours, bright summer fields. The room-light slider now runs from that sunny room (0) to noon (100). The panels around the view stay dark amber for now. |
-| Farm art | `dev/farm-props.mjs` | OpenAI image edits from each station sprite (`ChatGPT_API_KEY`): the starter props, the agent's workstation and chair, and the farmhouse surfaces (honey plank, oak parquet, grass turf, rag rug, sandstone flags, whitewash-and-oak wainscot, oak wall top). |
+| Farm art | `dev/farm-props.mjs` | OpenAI image edits from each station sprite (`ChatGPT_API_KEY`): 56 props so far (listed in `projection-correction/farm-redrawn.json`), the agent's workstation and chair, and the farmhouse surfaces (honey plank, oak parquet, grass turf, rag rug, sandstone flags, whitewash-and-oak wainscot, oak wall top). |
 
 ## Still to do: the rest of the art
 
@@ -31,7 +31,14 @@ The props above are done with `node dev/farm-props.mjs` (generate into `dev/farm
 `--file` for the fixed workstation files, `--texture` for surfaces). After installing props, rebuild the derived records:
 `node dev/industrial-textures/build-projection-load-geometry.cjs` and `node dev/industrial-textures/build-projection-effects.cjs`
 (redrawn props are listed as quiet there until their effects are drawn for the farm art). The prop ids stay; only the
-sprites change, so every grant keeps working. Agent bodies are 8-direction animated sprites and may still want PixelLab.
+sprites change, so every grant keeps working.
+
+The first full run stopped when the OpenAI account ran out of credits, with 56 props redrawn and about 100 to go.
+`cryopod` was generated but not installed: a ghostly figure shows through its glass, so redraw it first.
+`dinerchair`, `dinertable` and `desk2` got some views but not all, so they stay on station art.
+Once there are credits again, run the generator with the prop ids not yet in `farm-redrawn.json`.
+
+Agent bodies are 8-direction animated sprites and may still want PixelLab.
 
 ### Capability props first (these are the ones a player places on purpose)
 

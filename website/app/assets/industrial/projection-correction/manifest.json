@@ -207,8 +207,8 @@
       "views": {
         "s": {
           "image": "industrial_bench.png",
-          "sourceWidth": 1328,
-          "sourceHeight": 441,
+          "sourceWidth": 1008,
+          "sourceHeight": 304,
           "footprint": {
             "w": 3,
             "h": 1
@@ -223,7 +223,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9920634920634921
+            "y": 1
           },
           "effects": false
         }
@@ -358,8 +358,8 @@
       "views": {
         "s": {
           "image": "industrial_cabletray.png",
-          "sourceWidth": 1133,
-          "sourceHeight": 178,
+          "sourceWidth": 1008,
+          "sourceHeight": 376,
           "footprint": {
             "w": 3,
             "h": 1
@@ -374,7 +374,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9831460674157303
+            "y": 1
           },
           "effects": false
         }
@@ -573,8 +573,8 @@
       "views": {
         "s": {
           "image": "console.png",
-          "sourceWidth": 1009,
-          "sourceHeight": 833,
+          "sourceWidth": 784,
+          "sourceHeight": 680,
           "footprint": {
             "w": 2,
             "h": 1
@@ -590,7 +590,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9963985594237695
+            "y": 1
           },
           "effects": false
         }
@@ -600,8 +600,8 @@
       "views": {
         "s": {
           "image": "consoleL.png",
-          "sourceWidth": 1308,
-          "sourceHeight": 719,
+          "sourceWidth": 1120,
+          "sourceHeight": 672,
           "footprint": {
             "w": 3,
             "h": 1
@@ -617,7 +617,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9958275382475661
+            "y": 1
           },
           "effects": false
         }
@@ -842,8 +842,8 @@
       "views": {
         "s": {
           "image": "joiner.png",
-          "sourceWidth": 354,
-          "sourceHeight": 225,
+          "sourceWidth": 448,
+          "sourceHeight": 368,
           "footprint": {
             "w": 1,
             "h": 1
@@ -859,7 +859,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9866666666666667
+            "y": 1
           },
           "effects": false
         }
@@ -923,8 +923,8 @@
       "views": {
         "s": {
           "image": "connector_portal.png",
-          "sourceWidth": 924,
-          "sourceHeight": 1626,
+          "sourceWidth": 480,
+          "sourceHeight": 576,
           "footprint": {
             "w": 1,
             "h": 2
@@ -941,7 +941,7 @@
           "activity": "fired",
           "contact": {
             "x": 0.5,
-            "y": 0.9981549815498155
+            "y": 1
           },
           "effects": false
         }
@@ -978,8 +978,8 @@
       "views": {
         "s": {
           "image": "comms_uplink.png",
-          "sourceWidth": 244,
-          "sourceHeight": 496,
+          "sourceWidth": 536,
+          "sourceHeight": 1208,
           "footprint": {
             "w": 2,
             "h": 2
@@ -995,7 +995,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9939516129032258
+            "y": 1
           },
           "effects": false
         }
@@ -1005,8 +1005,8 @@
       "views": {
         "s": {
           "image": "comms_beacon.png",
-          "sourceWidth": 272,
-          "sourceHeight": 344,
+          "sourceWidth": 480,
+          "sourceHeight": 1576,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1022,7 +1022,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9912790697674418
+            "y": 1
           },
           "effects": false
         }
@@ -1059,8 +1059,8 @@
       "views": {
         "s": {
           "image": "safe.png",
-          "sourceWidth": 203,
-          "sourceHeight": 361,
+          "sourceWidth": 504,
+          "sourceHeight": 736,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1075,7 +1075,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9916897506925207
+            "y": 1
           },
           "effects": false
         }
@@ -1085,8 +1085,8 @@
       "views": {
         "s": {
           "image": "vault.png",
-          "sourceWidth": 459,
-          "sourceHeight": 259,
+          "sourceWidth": 1232,
+          "sourceHeight": 872,
           "footprint": {
             "w": 3,
             "h": 2
@@ -1101,7 +1101,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9884169884169884
+            "y": 1
           },
           "effects": false
         }
@@ -1111,8 +1111,8 @@
       "views": {
         "s": {
           "image": "rack.png",
-          "sourceWidth": 342,
-          "sourceHeight": 306,
+          "sourceWidth": 816,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1128,7 +1128,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9901960784313726
+            "y": 1
           },
           "effects": false
         }
@@ -1138,8 +1138,8 @@
       "views": {
         "s": {
           "image": "shelf.png",
-          "sourceWidth": 529,
-          "sourceHeight": 252,
+          "sourceWidth": 1488,
+          "sourceHeight": 704,
           "footprint": {
             "w": 4,
             "h": 1
@@ -1154,7 +1154,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9880952380952381
+            "y": 1
           },
           "effects": false
         }
@@ -1164,8 +1164,8 @@
       "views": {
         "s": {
           "image": "core.png",
-          "sourceWidth": 209,
-          "sourceHeight": 448,
+          "sourceWidth": 480,
+          "sourceHeight": 1280,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1181,7 +1181,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9933035714285714
+            "y": 1
           },
           "effects": false
         }
@@ -1217,8 +1217,8 @@
       "views": {
         "s": {
           "image": "bridge_relaystack.png",
-          "sourceWidth": 293,
-          "sourceHeight": 599,
+          "sourceWidth": 480,
+          "sourceHeight": 1080,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1234,7 +1234,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.994991652754591
+            "y": 1
           },
           "effects": false
         }
@@ -1297,8 +1297,8 @@
       "views": {
         "s": {
           "image": "missionboard.png",
-          "sourceWidth": 393,
-          "sourceHeight": 229,
+          "sourceWidth": 1064,
+          "sourceHeight": 728,
           "footprint": {
             "w": 3,
             "h": 1
@@ -1313,7 +1313,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9868995633187773
+            "y": 1
           },
           "effects": false
         }
@@ -1323,8 +1323,8 @@
       "views": {
         "s": {
           "image": "trophycase.png",
-          "sourceWidth": 307,
-          "sourceHeight": 345,
+          "sourceWidth": 728,
+          "sourceHeight": 816,
           "footprint": {
             "w": 2,
             "h": 2
@@ -1339,7 +1339,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9927536231884058
+            "y": 1
           },
           "effects": false
         }
@@ -1588,8 +1588,8 @@
       "views": {
         "s": {
           "image": "ticker.png",
-          "sourceWidth": 477,
-          "sourceHeight": 214,
+          "sourceWidth": 1400,
+          "sourceHeight": 800,
           "footprint": {
             "w": 4,
             "h": 1
@@ -1605,7 +1605,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.985981308411215
+            "y": 1
           },
           "effects": false
         }
@@ -1668,8 +1668,8 @@
       "views": {
         "s": {
           "image": "calwall.png",
-          "sourceWidth": 737,
-          "sourceHeight": 205,
+          "sourceWidth": 2072,
+          "sourceHeight": 1384,
           "footprint": {
             "w": 6,
             "h": 1
@@ -1684,7 +1684,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9902439024390244
+            "y": 1
           },
           "effects": false
         }
@@ -2012,8 +2012,8 @@
       "views": {
         "s": {
           "image": "research_papers.png",
-          "sourceWidth": 433,
-          "sourceHeight": 241,
+          "sourceWidth": 560,
+          "sourceHeight": 480,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2028,7 +2028,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9875518672199171
+            "y": 1
           },
           "effects": false
         }
@@ -2064,8 +2064,8 @@
       "views": {
         "s": {
           "image": "etsy_dyevat.png",
-          "sourceWidth": 368,
-          "sourceHeight": 308,
+          "sourceWidth": 816,
+          "sourceHeight": 744,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2080,7 +2080,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9902597402597403
+            "y": 1
           },
           "effects": false
         }
@@ -2116,8 +2116,8 @@
       "views": {
         "s": {
           "image": "etsy_packbot.png",
-          "sourceWidth": 270,
-          "sourceHeight": 358,
+          "sourceWidth": 840,
+          "sourceHeight": 784,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2133,7 +2133,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9916201117318436
+            "y": 1
           },
           "effects": false
         }
@@ -2143,8 +2143,8 @@
       "views": {
         "s": {
           "image": "rackV.png",
-          "sourceWidth": 182,
-          "sourceHeight": 453,
+          "sourceWidth": 392,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2160,7 +2160,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9933774834437086
+            "y": 1
           },
           "effects": false
         }
@@ -2300,8 +2300,8 @@
       "views": {
         "s": {
           "image": "treasury_token_furnace.png",
-          "sourceWidth": 197,
-          "sourceHeight": 437,
+          "sourceWidth": 392,
+          "sourceHeight": 560,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2316,7 +2316,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9931350114416476
+            "y": 1
           },
           "effects": false
         }
@@ -2326,8 +2326,8 @@
       "views": {
         "s": {
           "image": "commswall.png",
-          "sourceWidth": 646,
-          "sourceHeight": 199,
+          "sourceWidth": 2072,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 6,
             "h": 1
@@ -2343,7 +2343,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9849246231155779
+            "y": 1
           },
           "effects": false
         }
@@ -2353,8 +2353,8 @@
       "views": {
         "s": {
           "image": "comms_inbox.png",
-          "sourceWidth": 457,
-          "sourceHeight": 297,
+          "sourceWidth": 840,
+          "sourceHeight": 1240,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2369,7 +2369,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9865319865319865
+            "y": 1
           },
           "effects": false
         }
@@ -2379,8 +2379,8 @@
       "views": {
         "s": {
           "image": "gigs_thumbwall.png",
-          "sourceWidth": 372,
-          "sourceHeight": 222,
+          "sourceWidth": 728,
+          "sourceHeight": 560,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2396,7 +2396,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9864864864864865
+            "y": 1
           },
           "effects": false
         }
@@ -2406,8 +2406,8 @@
       "views": {
         "s": {
           "image": "gigs_amp.png",
-          "sourceWidth": 225,
-          "sourceHeight": 281,
+          "sourceWidth": 448,
+          "sourceHeight": 528,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2422,7 +2422,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9893238434163701
+            "y": 1
           },
           "effects": false
         }
@@ -2432,8 +2432,8 @@
       "views": {
         "s": {
           "image": "pub_publishpress.png",
-          "sourceWidth": 435,
-          "sourceHeight": 401,
+          "sourceWidth": 840,
+          "sourceHeight": 808,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2449,7 +2449,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9950124688279302
+            "y": 1
           },
           "effects": false
         }
@@ -2459,8 +2459,8 @@
       "views": {
         "s": {
           "image": "pub_outboundchute.png",
-          "sourceWidth": 428,
-          "sourceHeight": 650,
+          "sourceWidth": 504,
+          "sourceHeight": 928,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2476,7 +2476,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9953846153846154
+            "y": 1
           },
           "effects": false
         }
@@ -2486,8 +2486,8 @@
       "views": {
         "s": {
           "image": "pub_mailpod.png",
-          "sourceWidth": 727,
-          "sourceHeight": 513,
+          "sourceWidth": 872,
+          "sourceHeight": 1328,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2503,7 +2503,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9941520467836257
+            "y": 1
           },
           "effects": false
         }
@@ -2513,8 +2513,8 @@
       "views": {
         "s": {
           "image": "arc_indexwall.png",
-          "sourceWidth": 532,
-          "sourceHeight": 234,
+          "sourceWidth": 1400,
+          "sourceHeight": 808,
           "footprint": {
             "w": 4,
             "h": 1
@@ -2529,7 +2529,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9871794871794872
+            "y": 1
           },
           "effects": false
         }
@@ -2539,8 +2539,8 @@
       "views": {
         "s": {
           "image": "arc_microfiche.png",
-          "sourceWidth": 338,
-          "sourceHeight": 277,
+          "sourceWidth": 840,
+          "sourceHeight": 936,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2555,7 +2555,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9927797833935018
+            "y": 1
           },
           "effects": false
         }
@@ -2617,8 +2617,8 @@
       "views": {
         "s": {
           "image": "bar.png",
-          "sourceWidth": 974,
-          "sourceHeight": 499,
+          "sourceWidth": 1400,
+          "sourceHeight": 920,
           "footprint": {
             "w": 4,
             "h": 1
@@ -2634,7 +2634,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9929859719438878
+            "y": 1
           },
           "effects": false
         }
@@ -2750,8 +2750,8 @@
       "views": {
         "s": {
           "image": "jukebox.png",
-          "sourceWidth": 287,
-          "sourceHeight": 383,
+          "sourceWidth": 504,
+          "sourceHeight": 752,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2768,7 +2768,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9921671018276762
+            "y": 1
           },
           "effects": false
         }
@@ -2804,8 +2804,8 @@
       "views": {
         "s": {
           "image": "quarters_pooltable.png",
-          "sourceWidth": 348,
-          "sourceHeight": 239,
+          "sourceWidth": 1400,
+          "sourceHeight": 568,
           "footprint": {
             "w": 4,
             "h": 2
@@ -2820,7 +2820,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9916317991631799
+            "y": 1
           },
           "effects": false
         }
@@ -2830,8 +2830,8 @@
       "views": {
         "s": {
           "image": "quarters_vending.png",
-          "sourceWidth": 289,
-          "sourceHeight": 465,
+          "sourceWidth": 480,
+          "sourceHeight": 656,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2847,7 +2847,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9956989247311828
+            "y": 1
           },
           "effects": false
         }
@@ -2910,8 +2910,8 @@
       "views": {
         "s": {
           "image": "coffee.png",
-          "sourceWidth": 214,
-          "sourceHeight": 313,
+          "sourceWidth": 200,
+          "sourceHeight": 304,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2926,7 +2926,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9904153354632588
+            "y": 1
           },
           "effects": false
         }
@@ -3066,8 +3066,8 @@
       "views": {
         "s": {
           "image": "arc_floorlight.png",
-          "sourceWidth": 175,
-          "sourceHeight": 175,
+          "sourceWidth": 280,
+          "sourceHeight": 1168,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3082,7 +3082,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9942857142857143
+            "y": 1
           },
           "effects": false
         }
@@ -3092,8 +3092,8 @@
       "views": {
         "s": {
           "image": "arc_ladder.png",
-          "sourceWidth": 331,
-          "sourceHeight": 506,
+          "sourceWidth": 392,
+          "sourceHeight": 672,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3108,7 +3108,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9940711462450593
+            "y": 1
           },
           "effects": false
         }
@@ -3118,8 +3118,8 @@
       "views": {
         "s": {
           "image": "stool.png",
-          "sourceWidth": 400,
-          "sourceHeight": 454,
+          "sourceWidth": 280,
+          "sourceHeight": 288,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3134,7 +3134,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9922907488986784
+            "y": 1
           },
           "effects": false
         }
@@ -4255,8 +4255,8 @@
       "views": {
         "s": {
           "image": "bookstack.png",
-          "sourceWidth": 298,
-          "sourceHeight": 260,
+          "sourceWidth": 336,
+          "sourceHeight": 336,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4271,7 +4271,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9903846153846154
+            "y": 1
           },
           "effects": false
         }
@@ -4307,8 +4307,8 @@
       "views": {
         "s": {
           "image": "radio.png",
-          "sourceWidth": 668,
-          "sourceHeight": 547,
+          "sourceWidth": 280,
+          "sourceHeight": 200,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4324,7 +4324,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.993601462522852
+            "y": 1
           },
           "effects": false
         }
@@ -4466,8 +4466,8 @@
       "views": {
         "s": {
           "image": "fishtank.png",
-          "sourceWidth": 1065,
-          "sourceHeight": 809,
+          "sourceWidth": 728,
+          "sourceHeight": 424,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4482,7 +4482,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9962917181705809
+            "y": 1
           },
           "effects": false
         }
@@ -4518,8 +4518,8 @@
       "views": {
         "s": {
           "image": "bookshelf.png",
-          "sourceWidth": 1125,
-          "sourceHeight": 944,
+          "sourceWidth": 728,
+          "sourceHeight": 792,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4534,7 +4534,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.996822033898305
+            "y": 1
           },
           "effects": false
         }
@@ -4700,8 +4700,8 @@
       "views": {
         "s": {
           "image": "camerarig.png",
-          "sourceWidth": 199,
-          "sourceHeight": 339,
+          "sourceWidth": 424,
+          "sourceHeight": 960,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4716,7 +4716,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9941002949852508
+            "y": 1
           },
           "effects": false
         }
@@ -4726,8 +4726,8 @@
       "views": {
         "s": {
           "image": "camerarig_r.png",
-          "sourceWidth": 202,
-          "sourceHeight": 339,
+          "sourceWidth": 424,
+          "sourceHeight": 960,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4742,7 +4742,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9941002949852508
+            "y": 1
           },
           "effects": false
         }
@@ -4908,8 +4908,8 @@
       "views": {
         "s": {
           "image": "recliner.png",
-          "sourceWidth": 232,
-          "sourceHeight": 258,
+          "sourceWidth": 480,
+          "sourceHeight": 584,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4924,7 +4924,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9883720930232558
+            "y": 1
           },
           "effects": false
         }
@@ -4934,8 +4934,8 @@
       "views": {
         "s": {
           "image": "recliner_r.png",
-          "sourceWidth": 232,
-          "sourceHeight": 259,
+          "sourceWidth": 480,
+          "sourceHeight": 584,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4950,7 +4950,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9884169884169884
+            "y": 1
           },
           "effects": false
         }
