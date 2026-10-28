@@ -49,7 +49,11 @@ redrawing with that hint (for the ones from the first batch, generate from the s
 installed farm one): comms_beacon, comms_inbox, commswall, pub_mailpod, arc_floorlight, industrial_cabletray,
 research_papers, calwall, treasury_token_furnace, arcade2, djbooth, tank, wartable, pixelrig, desk2 (side views).
 
-Agent bodies are 8-direction animated sprites and may still want PixelLab.
+**Farm hands.** The default crew body (skin `blank`, "Cadet", sprite set `approved_android`) and the four Blank colour
+variants are dressed by `node dev/farmhand/recolor.mjs`. It recolours the station mannequins kept in `dev/farmhand/<set>/`,
+keeping their shading: a bare head, a work shirt in the variant's colour, a belt, jeans or brown work trousers,
+leather gloves and boots. Colours live in `SETS`, `SHIRT` and `TROUSERS` there. The other character skins
+are unchanged.
 
 ### Capability props first (these are the ones a player places on purpose)
 
