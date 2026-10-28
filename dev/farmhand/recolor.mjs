@@ -91,8 +91,16 @@ async function recolor(set, file) {
   await sharp(out, { raw: info }).png().toFile(path.join(OUT, set, file));
 }
 
+/* The skin study keeps an approved master for every runtime frame (assets/agent-demo/approved-motion/, mapped by
+   skin-study-0914/runtime-motion.json) and the runtime frames must stay byte-identical to them: copy each dressed
+   frame over its master. */
+const motion = JSON.parse(fs.readFileSync(path.join(ROOT, 'frontend', 'assets', 'skin-study-0914', 'runtime-motion.json'), 'utf8'));
+const manifest = JSON.parse(fs.readFileSync(path.join(OUT, 'manifest.json'), 'utf8'));
 for (const set of Object.keys(SETS)) {
   const files = fs.readdirSync(path.join(SRC, set)).filter(f => f.endsWith('.png'));
   for (const f of files) await recolor(set, f);
-  console.log('dressed ' + files.length + ' frames into ' + path.relative(ROOT, path.join(OUT, set)));
+  let masters = 0;
+  for (const [key, frames] of Object.entries(motion.sprites).filter(([key]) => key.startsWith(set + '.')))
+    frames.forEach((master, i) => { fs.copyFileSync(path.join(OUT, manifest.sprites[key][i]), path.join(OUT, master)); masters++; });
+  console.log('dressed ' + files.length + ' frames into ' + path.relative(ROOT, path.join(OUT, set)) + ' (and ' + masters + ' approved masters)');
 }
