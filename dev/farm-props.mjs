@@ -64,7 +64,7 @@ const FARM = {
   camerarig: 'an old wooden box camera on a wooden tripod',
   coffee: 'an enamel coffee pot on a small cast-iron stove',
   crt_pile: 'a pile of old wooden crates holding an old radio, tools and jars',
-  cryopod: 'a tall old wooden ice box with brass hinges and latches',
+  cryopod: 'a tall old wooden ice box with brass hinges and latches and SOLID wooden doors, no glass window, nothing and nobody inside or visible',
   desklamp: 'a brass oil lamp with a glass chimney',
   deskterminal: 'a small wooden writing table with an old black typewriter',
   dinerchair: 'a red-painted wooden kitchen chair',
