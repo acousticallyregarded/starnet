@@ -350,7 +350,7 @@ async function readNdjson(res) {
     // APIs above use — not a prompt summary or scripted fixture inside the tool.
     const cronCreate = await fetch(B + '/api/cron', {
       method: 'POST', headers,
-      body: JSON.stringify({ name: 'Inspect proof', prompt: 'report farm health', schedule: 'every 1h', agentId: 'mcp-agent', model: 'test/model', provider: 'openrouter' })
+      body: JSON.stringify({ name: 'Inspect proof', prompt: 'report station health', schedule: 'every 1h', agentId: 'mcp-agent', model: 'test/model', provider: 'openrouter' })
     });
     A.eq(cronCreate.status, 200, 'planted one real routine for station.inspect');
     const failedRun = await fetch(B + '/api/run', {
@@ -404,7 +404,7 @@ async function readNdjson(res) {
     });
     A.eq(googleBeforeSetup.status, 503, 'direct Google sign-in refuses before the one-time app client exists');
     const googleBeforeBody = await googleBeforeSetup.json();
-    A.ok(googleBeforeBody.signInAvailable === false && googleBeforeBody.code === 'google_signin_unavailable', 'unconfigured builds assign setup responsibility to Homestead, not the customer');
+    A.ok(googleBeforeBody.signInAvailable === false && googleBeforeBody.code === 'google_signin_unavailable', 'unconfigured builds assign setup responsibility to StarNet, not the customer');
 
     const googleMissingSecret = await fetch(B + '/api/connectors/oauth/client', {
       method: 'POST', headers, body: JSON.stringify({ id: 'gmail', clientId: 'fake-client.apps.googleusercontent.com' })

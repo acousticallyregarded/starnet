@@ -71,7 +71,7 @@ test('a credits read during the BOOT self-heal waits for it and answers linked, 
     assert.equal(r.body.configured, true, 'the read reports the link the heal just restored');
     assert.equal(r.body.balanceUsd, 22, 'with the real balance');
     const l = await linkable;
-    assert.equal(l.body.available, false, 'no LINK FARM card over a linked farm');
+    assert.equal(l.body.available, false, 'no LINK STATION card over a linked station');
     assert.equal(cloud.state.whoamiCalls, 1, 'joining readers never start a second whoami');
     assert.equal(cloud.state.balanceCalls, 1, "joining readers reuse the heal's own balance read");
   } finally {

@@ -66,9 +66,9 @@ A.ok(/function scheduleFrame\(failed\)[\s\S]{0,600}Math\.min\(1000,[\s\S]{0,600}
 const recoverStart = build.indexOf('function recoverFrame(err)');
 const recoverSeg = build.slice(recoverStart, build.indexOf('\n  function frame(now)', recoverStart));
 A.ok(/cache = null; cacheGeo = null/.test(recoverSeg) && /bakeDirty = true/.test(recoverSeg),
-  'recovery discards the suspect derived bake and rebuilds from canonical farm state');
+  'recovery discards the suspect derived bake and rebuilds from canonical station state');
 A.ok(/resize\(\); fitCamera\(\)/.test(recoverSeg),
-  'recovery re-measures and re-fits the farm after a first-layout race');
+  'recovery re-measures and re-fits the station after a first-layout race');
 
 /* ---------- P1: the kit-out is opt-IN, so it must be opt-OUT-able at any moment ---------- */
 A.ok(/function kitBail\(\)/.test(tut), 'the kit-out has a bail');
@@ -78,7 +78,7 @@ A.ok(/Build\.isOpen\(\)\s*&&\s*Build\.close\)\s*\{\s*Build\.close\(\);\s*return;
 A.ok(/kitClosedDuringPlace\(\)/.test(bailSeg), 'outside REFIT it lands on the same honest wired-vs-dark accounting');
 A.ok(/class = 'tut-coach-bail'|className = 'tut-coach-bail'/.test(tut), 'every kit-out step renders a visible way out');
 A.ok(/e\.key !== 'Escape'[\s\S]{0,200}\.refit-overlay'\)[\s\S]{0,80}#terms \.term'\)\) return;\s*kitBail\(\)/.test(tut),
-  'Esc bails only when nothing else claims the key — not over REFIT, not over an open farm panel');
+  'Esc bails only when nothing else claims the key — not over REFIT, not over an open station panel');
 
 /* ---------- P1: the tour's two closing surfaces must not cover each other ----------
    (the GEOMETRY itself is unit-tested for real in test/coach-dodge.test.js — these only lock the wiring) */

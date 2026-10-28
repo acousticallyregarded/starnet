@@ -593,7 +593,7 @@
     // and matching that as managed_credit told funded customers to top up whenever a balance check failed.
     if (/managed credits? (?:are |is )?unavailable/.test(raw.toLowerCase())) {
       kind = /refused this (?:station|farm)'?s link|relink/.test(raw.toLowerCase()) ? 'managed_credit_link' : 'managed_credit_unavailable';
-    } else if (/managed credits? (?:are |is )?held|balance is held by \d+ running (?:starnet|starnet) run/.test(raw.toLowerCase())) {
+    } else if (/managed credits? (?:are |is )?held|balance is held by \d+ running (?:starnet|homestead) run/.test(raw.toLowerCase())) {
       kind = 'managed_credit_held';   // the balance sits in this station's own running runs' holds — never "out of credit"
     } else if (/managed credit|add credits in the store|out of managed credit/.test(raw.toLowerCase())) {
       kind = 'managed_credit';

@@ -31,7 +31,7 @@ async function run() {
       lastRun = o;
       o.emit('agent.run.start', { agentId: o.agentId, runId: o.runId, trigger: 'event', model: o.model });
       o.emit('agent.token', { agentId: o.agentId, runId: o.runId, delta: 'Hello ' });
-      o.emit('agent.token', { agentId: o.agentId, runId: o.runId, delta: 'Farmer' });
+      o.emit('agent.token', { agentId: o.agentId, runId: o.runId, delta: 'Commander' });
       o.emit('agent.run.end', { agentId: o.agentId, runId: o.runId, reason: 'done', turns: 1, usd: 0 });
     };
     const hub = makeChannelHub({
@@ -40,8 +40,8 @@ async function run() {
       emit: (n, p) => events.push({ n, p }), newId: idGen()
     });
     await hub.onInbound(dm('hi'));
-    A.eq(sends, [{ chatId: '555', text: 'Hello Farmer' }], 'reply assembled from token deltas, sent once');
-    A.eq(store.hist.get('tg_555'), [{ role: 'user', content: 'hi' }, { role: 'assistant', content: 'Hello Farmer' }], 'user + assistant turns persisted');
+    A.eq(sends, [{ chatId: '555', text: 'Hello Commander' }], 'reply assembled from token deltas, sent once');
+    A.eq(store.hist.get('tg_555'), [{ role: 'user', content: 'hi' }, { role: 'assistant', content: 'Hello Commander' }], 'user + assistant turns persisted');
     A.eq(lastRun.agentId, 'tg_555', 'chatId -> tg_<chatId> agentId');
     A.eq(lastRun.surface, 'autonomous', 'headless chat runs autonomous (no live consent prompt)');
     A.eq(lastRun.messages, [{ role: 'user', content: 'hi' }], 'messages replayed (prior history + new user turn)');

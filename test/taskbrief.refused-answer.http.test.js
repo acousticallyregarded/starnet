@@ -22,7 +22,7 @@ const HOST = '127.0.0.1';
 const ORIGINAL = 'Write notes.txt about the launch';
 const MARKER = 'TASK_QUESTION: Include the budget figures? || yes | no';
 // post-run learning passes also reach the mock; they are answered NONE and never counted as the main run
-const AUX = /reflecting right after finishing a task|reviewing a task run of yours that FAILED|intake analyst|recipe author|farm's recruiter|recurring, specific work topics/;
+const AUX = /reflecting right after finishing a task|reviewing a task run of yours that FAILED|intake analyst|recipe author|station's recruiter|recurring, specific work topics/;
 
 function startMock() {
   const state = { mode: 'ask', main: [] };
@@ -108,7 +108,7 @@ const briefsOf = (ws, key) => { const raw = briefs(ws); const rows = raw && (raw
     let req = {}; try { req = JSON.parse(sent.body); } catch (_) {}
     A.ok(Array.isArray(req.tools) && req.tools.length > 0, 'the retry is TASK work: the model is offered its tools (got ' + (Array.isArray(req.tools) ? req.tools.length : 'none') + ')');
     A.ok(sent.body.indexOf('ORIGINAL REQUEST: ' + ORIGINAL) >= 0, 'the retry carries the task brief with the ORIGINAL request, not the one-word answer');
-    A.ok(sent.body.indexOf('DECISION: Include the budget figures? => yes') >= 0, 'and the decision the Farmer made');
+    A.ok(sent.body.indexOf('DECISION: Include the budget figures? => yes') >= 0, 'and the decision the Commander made');
     rows = briefsOf(fixture.workspace, 'stream:s1');
     A.eq(rows.length, 1, 'still exactly one brief on the conversation');
     A.eq(rows[0] && rows[0].id, briefId, 'the SAME brief carried the task through');

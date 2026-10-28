@@ -39,8 +39,8 @@ const fullPowerRouter = makeExecutionRouter({
   forceLocalForAgent: () => fullPower
 });
 
-A.eq(router.backendId, 'local', 'legacy backendId remains the farm default for old callers');
-A.eq(router.backendIdFor('legacy'), 'local', 'compatibility profile follows the farm default');
+A.eq(router.backendId, 'local', 'legacy backendId remains the station default for old callers');
+A.eq(router.backendIdFor('legacy'), 'local', 'compatibility profile follows the station default');
 A.eq(router.backendIdFor('safe'), 'docker', 'Safe Cell routes to Docker immediately');
 A.eq(router.backendIdFor('remote'), 'ssh', 'Remote SSH routes to SSH immediately');
 A.eq(router.backendIdFor('trusted'), 'local', 'Trusted Project routes local');
@@ -62,8 +62,8 @@ router.execute({ agentId: 'safe', cmd: 'x' }).then(async result => {
   const synced = await router.syncWorkspace('remote', { direction: 'push' });
   A.eq(synced.backend, 'ssh', 'workspace synchronization routes through the remote agent environment');
   A.eq(router.describeAgent('safe').effectiveBackend, 'docker', 'per-agent runtime truth names Docker');
-  A.eq(router.describe().routing.perAgent, true, 'farm execution status exposes dynamic routing');
-  A.eq(router.killAllBackground(), 3, 'farm halt reaches every distinct backend');
+  A.eq(router.describe().routing.perAgent, true, 'station execution status exposes dynamic routing');
+  A.eq(router.killAllBackground(), 3, 'station halt reaches every distinct backend');
 
   // ---- an ASYNC backend reap (SSH) is dispatched, never an unhandledRejection (customer diagnostics 10-07) ----
   const unhandled = [];
@@ -83,7 +83,7 @@ router.execute({ agentId: 'safe', cmd: 'x' }).then(async result => {
     const { makeEnvironmentManager } = require('../sidecar/environment.js');
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sk-router-'));
     try {
-      const noSpawn = () => { throw new Error('a no-SSH farm halt must not spawn anything'); };
+      const noSpawn = () => { throw new Error('a no-SSH station halt must not spawn anything'); };
       const realDeps = { spawn: noSpawn, fs, pathMod: path, root, env: {}, sshConfig: () => null };
       const real = makeExecutionRouter({
         environments: {
@@ -96,7 +96,7 @@ router.execute({ agentId: 'safe', cmd: 'x' }).then(async result => {
       let threw = null, n = null;
       try { n = real.killAllBackground(); } catch (e) { threw = e; }
       A.eq(threw, null, 'E-STOP fan-out over the real managers does not throw');
-      A.eq(n, 0, 'nothing to reap on a fresh no-SSH farm');
+      A.eq(n, 0, 'nothing to reap on a fresh no-SSH station');
       await new Promise(r => setTimeout(r, 0)); await new Promise(r => setTimeout(r, 0));
       A.eq(unhandled.length, 0, 'real local+docker+ssh managers with no SSH target: zero unhandled rejections on halt');
     } finally { try { fs.rmSync(root, { recursive: true, force: true }); } catch (_) {} }

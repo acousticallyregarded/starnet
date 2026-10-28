@@ -64,10 +64,10 @@ for (let y = 2; y <= 9; y++) {
 /* 2. A REAL DOORWAY KEEPS ITS SILL. The hallway mouths are 3-tile gaps punched through a room's
       wall — the wall continues past both jambs, so the threshold belongs there and must survive. */
 for (let x = 6; x <= 8; x++) {
-  A.ok(!has(x + ',9,s'), 'path TOP mouth col ' + x + ' stays a DOORWAY (A\'s south wall caps both jambs)');
-  A.ok(!has(x + ',10,n'), 'path TOP mouth col ' + x + ' stays a DOORWAY from the path side');
-  A.ok(!has(x + ',14,s'), 'path BOTTOM mouth col ' + x + ' stays a DOORWAY');
-  A.ok(!has(x + ',15,n'), 'path BOTTOM mouth col ' + x + ' stays a DOORWAY from the room side');
+  A.ok(!has(x + ',9,s'), 'hallway TOP mouth col ' + x + ' stays a DOORWAY (A\'s south wall caps both jambs)');
+  A.ok(!has(x + ',10,n'), 'hallway TOP mouth col ' + x + ' stays a DOORWAY from the corridor side');
+  A.ok(!has(x + ',14,s'), 'hallway BOTTOM mouth col ' + x + ' stays a DOORWAY');
+  A.ok(!has(x + ',15,n'), 'hallway BOTTOM mouth col ' + x + ' stays a DOORWAY from the room side');
 }
 
 /* 3. A SEALED seam is wall, not an open join — nothing passable, nothing to classify. */
@@ -75,7 +75,7 @@ for (let y = 2; y <= 9; y++) A.ok(!has('26,' + y + ',e'), 'sealed C|E row ' + y 
 
 /* 4. NOTHING ELSE. Exactly the 8 rows of A|C, both sides — an over-eager classifier that swallowed
       the doorways too would still pass 1 and 3, and would silently delete every sill in the game. */
-A.eq(open.size, 16, 'the A|C join is the ONLY open join on this farm (8 tiles x 2 sides)');
+A.eq(open.size, 16, 'the A|C join is the ONLY open join in this station (8 tiles x 2 sides)');
 
 /* 5. ANDREW'S OWN STATION — the geometry that broke the first version of this law, locked verbatim.
       "Capped by wall at both ends" was not enough: the corridor and the room below it sit side by
@@ -94,7 +94,7 @@ A.eq(open.size, 16, 'the A|C join is the ONLY open join on this farm (8 tiles x 
     canStep: (a, b, c, d) => (c >= 0 && d >= 0 && c < W && d < H && zg[ix(c, d)] != null) };
   const os = new Set(StationBake.seamOpenJoins(real));
   for (let x = 3; x <= 16; x++) {
-    A.ok(os.has((x + M) + ',' + (10 + M) + ',s'), 'live farm: seam col ' + x + ' under r1 BLENDS (14-tile gap vs 4 of wall is not a doorway)');
+    A.ok(os.has((x + M) + ',' + (10 + M) + ',s'), 'live station: seam col ' + x + ' under r1 BLENDS (14-tile gap vs 4 of wall is not a doorway)');
   }
 }
 

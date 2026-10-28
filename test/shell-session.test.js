@@ -66,7 +66,7 @@ function makeFake() {
     A.eq(resolveShellCwd({ pathMod: W, fs: fakeFs, requested: '/c/Users/andro/Desktop/GALAGA', current: jail, jailRoot: jail, root: root, isWin: true, allowExternal: true }), ext, 'external cwd can be resolved when local shell access allows it');
     let denied = false;
     try { resolveShellCwd({ pathMod: W, fs: fakeFs, requested: W.join(root, 'other'), current: jail, jailRoot: jail, root: root, isWin: true, allowExternal: true }); } catch (_) { denied = true; }
-    A.ok(denied, 'cwd cannot target another Homestead workspace sibling');
+    A.ok(denied, 'cwd cannot target another StarNet workspace sibling');
   }
 
   // ---- integration via the fake spawn ----

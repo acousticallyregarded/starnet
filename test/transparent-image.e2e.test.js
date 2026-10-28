@@ -113,9 +113,9 @@ function toolResultFor(requests, callId) {
     await run('dish-agent', ['dish'], 'SCENARIO_KEY: list the OpenRouter models with my key');
     const keyResult = toolResultFor(provider.requests, 'raw_key');
     A.ok(keyResult.length > 0, 'the web_request call reached the tool and its result reached the model');
-    A.ok(/OPENROUTER_API_KEY is a model-provider key/.test(keyResult) && /do not ask the Farmer for it/.test(keyResult), 'the host refuses a provider key as one: ' + JSON.stringify(keyResult.slice(0, 400)));
+    A.ok(/OPENROUTER_API_KEY is a model-provider key/.test(keyResult) && /do not ask the Commander for it/.test(keyResult), 'the host refuses a provider key as one: ' + JSON.stringify(keyResult.slice(0, 400)));
     A.ok(/image_generate/.test(keyResult) && /transparent:true/.test(keyResult), 'and points at the built-in tool');
-    A.ok(!/add it in (?:CONNECT › ABILITIES|TOOLSETS & CONNECTORS)/.test(keyResult), 'it never sends the Farmer to API KEYS');
+    A.ok(!/add it in (?:CONNECT › ABILITIES|TOOLSETS & CONNECTORS)/.test(keyResult), 'it never sends the Commander to API KEYS');
   } finally {
     await fixture.dispose();
     provider.server.closeAllConnections(); await new Promise(r => provider.server.close(r));

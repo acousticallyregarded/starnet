@@ -244,7 +244,7 @@ async function rejects(p, label) {
   const across = {};
   for (const awayMs of [20000, 60000, 240000]) {
     const r = across[awayMs] = await topbarAcrossAway({ awayMs });
-    A.eq(r.before, 'Lv 3', 'fixture: on screen, the FARMER label reads the live level');
+    A.eq(r.before, 'Lv 3', 'fixture: on screen, the COMMANDER label reads the live level');
     A.ok(r.readsAway <= Math.ceil(awayMs / 30000) + 1, 'fixture: away, journey is read on the 30 s floor (' + r.readsAway + ' reads in ' + awayMs / 1000 + ' s)');
     A.ok(r.away.every(p => !p.error && p.label === truthOf(p.ageMs)), 'AWAY ' + awayMs / 1000 + ' s: each repaint reads "· saved" exactly when the value is past its 12 s TTL: ' + JSON.stringify(r.away));
     A.ok(r.atReturn.length >= 1 && r.atReturn.every(t => t === truthOf(r.ageAtReturn)), 'BACK after ' + awayMs / 1000 + ' s: the catch-up read\'s pending snapshot paints the value\'s real age (' + r.ageAtReturn + ' ms): ' + JSON.stringify(r.atReturn));

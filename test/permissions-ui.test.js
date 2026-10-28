@@ -26,7 +26,7 @@ ok(!/ms-h">\d · /.test(src) && !/block 2/i.test(src), 'no numbered blocks and n
 // ── THE POSTURE FRONT DOOR ──
 // Measured: the previous pass still cost 547 words + 16 controls to set up ONE agent. Three postures
 // compose reach + approval + unattended so a newcomer answers ONE question; the rest is behind a fold.
-ok(/const STATION_POSTURES = \[/.test(src), 'the farm postures table exists');
+ok(/const STATION_POSTURES = \[/.test(src), 'the station postures table exists');
 ok(/id="perm-postures"/.test(src) && /const paintPostures = \(\) =>/.test(src), 'the posture front door is rendered');
 for (const p of ['CHECK WITH ME', 'LET IT WORK', 'FULL POWER']) ok(new RegExp("label: '" + p + "'").test(src), 'posture offered: ' + p);
 // TRUTH: a posture is a shortcut for SETTING values, never a badge claiming one. It lights only when
@@ -34,8 +34,8 @@ for (const p of ['CHECK WITH ME', 'LET IT WORK', 'FULL POWER']) ok(new RegExp("l
 ok(/const activePosture = \(\) => \{[\s\S]{0,700}present\.every\(a =>[\s\S]{0,300}snap\.level === P\.level\)/.test(src),
   'a posture matches only when EVERY component matches the live state');
 ok(/if \(!snap\.loaded \|\| snap\.masterBypass \|\| snap\.envFullAccess\) return null;/.test(src),
-  'the master override outranks every posture (no card may claim a bypassed farm)');
-ok(/CUSTOM — your crew have different answers/.test(src), 'a hand-tuned farm reads CUSTOM instead of being claimed by the nearest card');
+  'the master override outranks every posture (no card may claim a bypassed station)');
+ok(/CUSTOM — your crew have different answers/.test(src), 'a hand-tuned station reads CUSTOM instead of being claimed by the nearest card');
 ok(/const done = res\.filter\(r => r\.ok\)\.length;/.test(src) && /r\.done \+ ' of ' \+ r\.of \+ ' crew set to '/.test(src),
   'applying a posture reports the number that ACTUALLY changed');
 ok(/STATION_POSTURES[\s\S]{0,900}profile: 'station-gear'[\s\S]{0,900}profile: 'trusted-project'[\s\S]{0,900}profile: 'this-computer'/.test(src),
@@ -80,7 +80,7 @@ ok(/accWrap\.querySelectorAll\('\[data-access-posture\]'\)/.test(src) && /if \(P
   ok(ap && /chip\('ask', 'ASK FOR APPROVAL', 'stops to check with you before it writes, runs, or reaches out'/.test(ap[0]) && /chip\('full', 'FULL POWER', 'uses the whole local computer without approval prompts'/.test(ap[0]), 'the fold reads ASK FOR APPROVAL / FULL POWER, as the candidate had it');
   ok(ap && /ASK respects the selected reach profile and pauses before risky calls\. FULL POWER authorizes the whole local computer/.test(ap[0]) && /<code>\/yolo<\/code> is the Full Power shortcut/.test(ap[0]), 'the fold keeps the candidate\'s copy');
   ok(ap && !/ASKS FIRST|NEVER ASKS|never-ask|CHECK WITH ME|LET IT WORK/.test(ap[0]), 'the fold carries no struck P08 name');
-  ok(ap && /data-tip="' \+ esc\(desc\)/.test(ap[0]) && !/title="/.test(ap[0]), 'the whole-computer warning is a farm data-tip, never a native title');
+  ok(ap && /data-tip="' \+ esc\(desc\)/.test(ap[0]) && !/title="/.test(ap[0]), 'the whole-computer warning is a station data-tip, never a native title');
   ok(/chip\.textContent = 'FULL POWER — SURE\?'/.test(src) && !/NEVER ASKS — SURE/.test(src), 'FULL POWER keeps its two-press confirm');
   // a custom mix on approvalMode full: the saved reach limits nothing (unrestrictedHostNow), so the row never says
   // "it reaches <reach> and never asks" — reach wording is kept for the asks-first case only
@@ -187,7 +187,7 @@ ok(/Full Access is represented only by the canonical per-agent APPROVAL rows/.te
   'Full Access is not duplicated as an ephemeral standing-grant wildcard');
 
 // the store hooks
-ok(/PermissionsStore\.setLevel\(P\.level\)/.test(src), 'a farm posture still sets the unattended level (one click, one truth)');
+ok(/PermissionsStore\.setLevel\(P\.level\)/.test(src), 'a station posture still sets the unattended level (one click, one truth)');
 ok(/PermissionsStore\.grant\(/.test(src) && /PermissionsStore\.revoke\(/.test(src), 'grant + revoke wired to the store');
 ok(/PermissionsStore\.refresh\(/.test(src), 'panel refreshes grants from the sidecar on open');
 ok(/snap\.error/.test(src), 'panel surfaces permission load/mutation failures instead of painting fake empty authority');

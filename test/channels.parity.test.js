@@ -174,7 +174,7 @@ function build(over) {
     A.eq(seen.length, 1, 'fixture: the next message ran');
     A.ok(!seen[0].messages.some(c => /OLD SECRET PLAN|old plan/.test(c)), 'the next run after /new replays none of the forgotten conversation');
     A.ok(seen[0].streamId && seen[0].streamId !== 'channel_telegram_555', 'it runs on a fresh stream (' + seen[0].streamId + ')');
-    A.ok(transcripts.get('channel_telegram_555').length === 2, 'the old transcript is kept on the farm history, only no longer replayed');
+    A.ok(transcripts.get('channel_telegram_555').length === 2, 'the old transcript is kept in the station history, only no longer replayed');
   }
 
   {

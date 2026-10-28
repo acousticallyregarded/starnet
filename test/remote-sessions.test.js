@@ -36,10 +36,10 @@ const I = RemoteSessions._internals;
   await I.sync(false);
   const ws = sessions.get('remote_forge_a1');
   A.ok(!!ws, 'a phone-started conversation is adopted as a desk session');
-  A.eq(ws && ws.title, 'tighten the hero copy', 'titled with what the Farmer said');
+  A.eq(ws && ws.title, 'tighten the hero copy', 'titled with what the Commander said');
   A.eq(ws && ws.agentId, 'forge', 'bound to the agent that ran it');
   A.eq(ws && ws.history, [], 'no dialogue is invented: the transcript comes from the normal session load');
-  A.ok(busy.has('remote_forge_a1'), 'it shows busy while the farm says the run is live');
+  A.ok(busy.has('remote_forge_a1'), 'it shows busy while the station says the run is live');
   A.ok(/phone/.test(busy.get('remote_forge_a1').status), 'and says where the work came from');
   A.eq(loads.length, 0, 'adopting never steals focus');
   A.ok(railRefreshes >= 1 && persists >= 1, 'the rail repaints and the session is persisted');
@@ -48,7 +48,7 @@ const I = RemoteSessions._internals;
   activeId = 'remote_forge_a1';
   routes['/api/remote/recent'] = { ok: true, runs: [{ runId: 'r1', agentId: 'forge', streamId: 'remote_forge_a1', title: 'tighten the hero copy', startedAt: 1000, endedAt: 9000, live: false }] };
   await I.sync(false);
-  A.ok(!busy.has('remote_forge_a1'), 'busy clears when the farm says the run ended');
+  A.ok(!busy.has('remote_forge_a1'), 'busy clears when the station says the run ended');
   A.eq(loads, ['remote_forge_a1'], 'the open session is reloaded so the reply appears');
   A.eq(ws.lastActiveAt, 9000, 'its last-active time is the run end');
   await I.sync(false);
@@ -73,7 +73,7 @@ const I = RemoteSessions._internals;
   busy.delete('ws_desk1');
 
   // deleted stays deleted; junk ids and unknown desk streams are ignored
-  A.eq(I.applyRun({ runId: 'r4', agentId: 'forge', streamId: 'remote_forge_deleted', title: 'x', live: true }), false, 'a session the Farmer deleted is not resurrected');
+  A.eq(I.applyRun({ runId: 'r4', agentId: 'forge', streamId: 'remote_forge_deleted', title: 'x', live: true }), false, 'a session the Commander deleted is not resurrected');
   A.ok(!sessions.has('remote_forge_deleted'), 'and no row is made');
   A.eq(I.applyRun({ runId: 'r5', agentId: 'forge', streamId: '../etc', live: true }), false, 'a bad stream id is ignored');
   A.eq(I.applyRun({ runId: 'r6', agentId: 'forge', streamId: 'ws_unknown', live: true }), false, 'an unknown non-phone stream is not adopted');
@@ -97,7 +97,7 @@ const I = RemoteSessions._internals;
   routes = {};
   const n = sessions.size;
   await I.sync(true);
-  A.eq(sessions.size, n, 'an unreachable farm changes nothing');
+  A.eq(sessions.size, n, 'an unreachable station changes nothing');
 
   A.eq(I.titleOf(''), 'From your phone', 'an empty title still reads honestly');
 

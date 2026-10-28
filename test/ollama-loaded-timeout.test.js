@@ -130,7 +130,7 @@ const adapter = (s, extra) => makeOpenAICompatibleProvider(Object.assign(
     const bgRun = (async () => { try { for await (const e of bg.stream({ model: 'qwen3:8b', messages: [{ role: 'user', content: 'quest' }], signal: ac.signal })) void e; } catch (_) {} })();
     await sleep(20);
     const { res } = await runTurn(turn, 'task', stopAtSecond(s));
-    A.eq(s.chatsFor('task'), 2, 'a turn with another Homestead call open on that Ollama is re-sent as before');
+    A.eq(s.chatsFor('task'), 2, 'a turn with another StarNet call open on that Ollama is re-sent as before');
     A.eq(res.reason, 'cancelled', 'and was still on the ladder when stopped');
     ac.abort();
     await bgRun;

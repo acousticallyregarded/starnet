@@ -330,7 +330,7 @@ const reconcile = async (js, qs, goal) => {   // index.js reconcileCompletedJour
       'GoalAdvance.overlay': () => GoalAdvance.overlay(goal, js.milestoneDoneKeys()),
       'QuestSweeps.livePropKeys': () => A.eq(QuestSweeps.livePropKeys(open(), 'agent', null, { hasCompute: true }), ['compute'], 'livePropKeys still reads the frozen ledger'),
       'QuestSweeps.artifactQuestKeys': () => QuestSweeps.artifactQuestKeys(open(), 'agent'),
-      'QuestSweeps.learnedFactKeys': () => QuestSweeps.learnedFactKeys(open(), 'agent', { id: 'n1', content: 'The Farmer ships on Fridays' }),
+      'QuestSweeps.learnedFactKeys': () => QuestSweeps.learnedFactKeys(open(), 'agent', { id: 'n1', content: 'The Commander ships on Fridays' }),
       'questinject.questBlock': () => questBlock(open()),
       'GET /api/quests body': () => JSON.stringify({ ok: true, quests: qs.list() })
     };

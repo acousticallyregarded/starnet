@@ -25,7 +25,7 @@ ok(/setModel:\s*setAgentModelPin/.test(appjs), 'P1-6: setModel is exposed on the
 ok(/setAgentModelPin[\s\S]{0,1500}pushRoster\(\)/.test(appjs), 'P1-6: the pin pushes the roster so the sidecar records it');
 
 // ---- P1-7 station backup export/import/reset ----
-ok(/FARM BACKUP/.test(ui), 'P1-7: SETTINGS has a FARM BACKUP card');
+ok(/STATION BACKUP/.test(ui), 'P1-7: SETTINGS has a FARM BACKUP card');
 ok(/function wireBackup\(/.test(ui), 'P1-7: wireBackup is wired');
 // #134: the export request + its truthful "where did it go" line live in Backup.exportStation (backup.js)
 ok(/Backup\.exportStation\(/.test(ui) && /'\/api\/config\/export'/.test(app('backup.js')), 'P1-7: export hits /api/config/export (via Backup.exportStation)');

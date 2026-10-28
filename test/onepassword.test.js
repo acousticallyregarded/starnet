@@ -87,7 +87,7 @@ const onPath = p => p === path.win32.join('C:\\tools', 'op.exe');
     A.eq(c.opts.timeout, 5000, 'bounded by the timeout');
     A.ok(c.opts.env.OP_SERVICE_ACCOUNT_TOKEN === 'ops_tok' && c.opts.env.OP_ACCOUNT === 'my', 'the user\'s OP_* vars reach op');
     A.ok(c.opts.env.Path && c.opts.env.SYSTEMROOT && c.opts.env.USERPROFILE, 'the OS basics reach op');
-    A.ok(!('STARNET_API_TOKEN' in c.opts.env) && !('SKYNET_IPC_TOKEN' in c.opts.env), 'no farm secret reaches op');
+    A.ok(!('STARNET_API_TOKEN' in c.opts.env) && !('SKYNET_IPC_TOKEN' in c.opts.env), 'no station secret reaches op');
     A.ok(!('RESEND_API_KEY' in c.opts.env) && !('OPENAI_API_KEY' in c.opts.env), 'no other API key reaches op');
   }
   {

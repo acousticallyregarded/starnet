@@ -48,12 +48,12 @@ const SERVICE_KEY = 'svcKeyCanaryPw4417Exported0Value';
     A.ok(fs.existsSync(dump), 'the repo\'s own code (core.fsmonitor) ran under the sidecar\'s git — the check below is not vacuous');
     const seen = fs.existsSync(dump) ? fs.readFileSync(dump, 'utf8') : '';
     const names = seen.split(/\r?\n/).map(l => l.split('=')[0]);
-    A.ok(seen.indexOf(STATION_CANARY) < 0, 'the planted farm secret never reached the repo');
+    A.ok(seen.indexOf(STATION_CANARY) < 0, 'the planted station secret never reached the repo');
     A.ok(seen.indexOf(SERVICE_KEY) < 0, 'the exported service key never reached the repo');
-    A.eq(names.filter(n => /^(HOMESTEAD|SKYNET)_/i.test(n)), [], 'no STARNET_/SKYNET_ variable reached the repo (API/IPC tokens, keys, workspace)');
+    A.eq(names.filter(n => /^(STARNET|SKYNET)_/i.test(n)), [], 'no STARNET_/SKYNET_ variable reached the repo (API/IPC tokens, keys, workspace)');
     A.ok(names.some(n => /^PATH$/i.test(n)), 'PATH is kept');
     A.ok(/MY_USER_VAR=user-value-keep-me/.test(seen), 'the user\'s own var is kept');
-    A.ok(/NPM_TOKEN=npm-user-own-token-keep-me/.test(seen), 'the user\'s own NPM_TOKEN is kept (theirs, not the farm\'s)');
+    A.ok(/NPM_TOKEN=npm-user-own-token-keep-me/.test(seen), 'the user\'s own NPM_TOKEN is kept (theirs, not the station\'s)');
   } finally {
     await fixture.dispose();
     fs.rmSync(scratch, { recursive: true, force: true });

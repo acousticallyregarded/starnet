@@ -177,7 +177,7 @@ async function expectReject(p, pattern, label) {
     const t = Code.makeCodeTools({}).codeTool;
     A.eq(t.name, 'code.run', 'stable public name');
     A.eq(t.scope, 'execute', 'code.run carries execute scope (autonomous exec lockout applies)');
-    A.eq(t.requiresConsent, true, 'code.run asks the Farmer before running model code');
+    A.eq(t.requiresConsent, true, 'code.run asks the Commander before running model code');
     A.ok(/currently granted READ tools/.test(t.description), 'wire description states the authority boundary');
 
     const Taint = require('../sidecar/taint.js');
@@ -194,7 +194,7 @@ async function expectReject(p, pattern, label) {
     A.eq(!!(unattended && unattended.allow), false, 'an autonomous run cannot execute code.run (no read-only auto-allow)');
     let asked = 0;
     const interactive = await makeConsentBroker({ surface: 'interactive', prompt: () => { asked++; return 'deny'; } })(call, t);
-    A.eq(asked, 1, 'an interactive run asks the Farmer before code.run');
+    A.eq(asked, 1, 'an interactive run asks the Commander before code.run');
     A.eq(!!(interactive && interactive.allow), false, 'a denied prompt blocks code.run');
   }
 

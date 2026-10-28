@@ -244,7 +244,7 @@ for (const b of CATALOG) {
 for (const id of ['envoy', 'marketer', 'publisher', 'herald']) {
   const b = byId.get(id);
   const text = (b.manual + ' ' + b.purpose + ' ' + b.blurb).toLowerCase();
-  A.ok(/draft|go-ahead|do not auto|don't auto|not auto-broadcast|theirs to (publish|send)|without the farmer/.test(text),
+  A.ok(/draft|go-ahead|do not auto|don't auto|not auto-broadcast|theirs to (publish|send)|without the commander/.test(text),
     id + ' frames outward comms as draft-for-the-Commander (it holds no channel-send tool)');
   A.ok(!/\b(auto-send|send it automatically|post it to (discord|telegram|the channel) yourself)\b/.test(text),
     id + ' never claims to auto-send outward');
@@ -269,7 +269,7 @@ for (const id of STRANGER_TEXT_CLASSES) {
   A.ok(/never acted on|never act on it|report/.test(orders),
     id + ' routes an embedded instruction into the REPORT rather than acting on it: ' + id);
   const text = (b.purpose + ' ' + b.blurb + ' ' + b.manual).toLowerCase();
-  A.ok(/draft/.test(text), id + ' frames its output as a draft for the Farmer');
+  A.ok(/draft/.test(text), id + ' frames its output as a draft for the Commander');
 }
 // the support agent specifically must NOT advertise answering — that framing is what invites an auto-reply wiring
 {
@@ -405,8 +405,8 @@ A.ok(!/onAgentRoomAssigned/.test(build), 'build.js no longer fires a room-assign
 // the summon loadout beat is honest about shared gear: it names the STATION GEAR the class draws on that is
 // MISSING (add it in REFIT), and never claims a kit "arrives" at a per-agent workstation.
 const summarySeg = app.slice(app.indexOf('function loadoutSummary('), app.indexOf('function loadoutSummary(') + 900);
-A.ok(/stationGearTypes\(\)/.test(summarySeg), 'loadoutSummary checks the class gear against the FARM (station-wide), not the agent room');
-A.ok(/add .* in BUILD MODE/.test(summarySeg), 'loadoutSummary tells the Farmer to add missing farm gear in BUILD MODE');
+A.ok(/stationGearTypes\(\)/.test(summarySeg), 'loadoutSummary checks the class gear against the STATION (station-wide), not the agent room');
+A.ok(/add .* in BUILD MODE/.test(summarySeg), 'loadoutSummary tells the Commander to add missing station gear in BUILD MODE');
 A.ok(!/arrives when it gets a workstation/.test(app), 'the summon copy no longer promises a kit arrives at a workstation');
 // stationGearTypes reads the station-wide caps (the shared source the run\'s skill availability uses)
 A.ok(/function stationGearTypes\(\)[\s\S]{0,200}World\.stationCaps/.test(app), 'stationGearTypes reads World.stationCaps (station-wide shared gear)');
@@ -427,7 +427,7 @@ A.ok(/classes:\s*SPECIALIST_CLASSES/.test(idx), 'the shared class list is inject
 // agent's own (desk-only) room — while TOOL reach stays room-scoped (resolveTools untouched).
 // 4a. the browser sends a station-wide gear list (World.stationCaps) alongside the room-scoped `placed`.
 A.ok(/stationCaps:/.test(fs.readFileSync(path.join(__dirname, '../frontend/app/world.js'), 'utf8')),
-  'World exposes stationCaps() — every capability placed anywhere on the farm (station-wide shared gear)');
+  'World exposes stationCaps() — every capability placed anywhere on the station (station-wide shared gear)');
 const chat = fs.readFileSync(path.join(__dirname, '../frontend/app/chat.js'), 'utf8');
 A.ok(/stationPlaced:\s*\(typeof World[\s\S]{0,80}World\.stationCaps\(\)/.test(chat),
   'the run sends stationPlaced = World.stationCaps() for SKILL availability (tools stay `placed`/room-scoped)');
@@ -441,7 +441,7 @@ A.ok(/o\.stationObjects[\s\S]{0,120}roomTypes\.concat\(o\.stationObjects\)/.test
   'skill availability unions the room objects with the STATION-WIDE gear (a desk-only specialist still gets its class skills)');
 A.ok(/placedTypes: skillPlacedTypes/.test(composeSeg), 'skillsCatalog.compose gates on the shared-gear placedTypes');
 // and TOOL reach is still resolved from the room only (NOT widened by stationObjects) — the guard the task requires.
-A.ok(/let resolved = enforceSyntheticOnly\(resolveTools\(agentId, farm,/.test(idx)
+A.ok(/let resolved = enforceSyntheticOnly\(resolveTools\(agentId, station,/.test(idx)
   && /resolved = enforceRunAuthority\(resolved, registry, userControlAuthority\)/.test(idx),
   'room-scoped tool projection is preserved, then the host removes unauthorized user-control effects');
 A.ok(!/resolveTools\([^)]*stationObjects/.test(idx), 'stationObjects is NOT fed into the tool projection (only skills widen to shared gear)');
@@ -454,7 +454,7 @@ A.ok(!/resolveTools\([^)]*stationObjects/.test(idx), 'stationObjects is NOT fed 
     'a class skill stays gated: no cabinet anywhere -> the recipe is not offered');
   // union the STATION\'s cabinet in (what the sidecar does) -> the desk-only specialist now gets its class skill
   A.ok(catalog.compose(SKlib, { placedTypes: ['cabinet'], agentSkills: ['deskskill'] }).indexOf('DeskSkill') >= 0,
-    'once the FARM has the gear, the desk-only specialist\'s class skill composes (the whole point)');
+    'once the STATION has the gear, the desk-only specialist\'s class skill composes (the whole point)');
 }
 
 /* ---------- 5. EFFORT PRECEDENCE: a dispatched worker runs at its OWN class effort, not the lead's ---------- */
@@ -500,9 +500,9 @@ A.ok(/archiveSectionHTML\(filtering\)/.test(mkt), 'search/lane filters include t
    class DOES, not on an inventory) — the loadout still applies at summon, which S1/S2 above already lock. The
    live-source resolvers those blocks introduced are still owned here and still shipped, now by the RECIPE
    dossier's gear block, so the no-hardcoded-labels law is asserted against ITS renderer. */
-A.ok(!/function kitBlockHTML\(/.test(mkt), 'the class dossier no longer renders a DRAWS ON FARM GEAR manifest');
+A.ok(!/function kitBlockHTML\(/.test(mkt), 'the class dossier no longer renders a DRAWS ON STATION GEAR manifest');
 A.ok(!/function skillPackageHTML\(/.test(mkt), 'the class dossier no longer renders a SKILL PACKAGE manifest');
-A.ok(!/STANDARD ISSUE KIT/.test(mkt), 'nothing calls farm gear a per-agent "STANDARD ISSUE KIT"');
+A.ok(!/STANDARD ISSUE KIT/.test(mkt), 'nothing calls station gear a per-agent "STANDARD ISSUE KIT"');
 A.ok(!/requisitioned at its workstation/.test(mkt), 'nothing claims the gear is requisitioned at a per-agent workstation');
 A.ok(/function kitPropLabel\(objType\)/.test(mkt), 'gear labels resolve through kitPropLabel (from the live catalog)');
 const kpl = mkt.slice(mkt.indexOf('function kitPropLabel('), mkt.indexOf('function kitPropLabel(') + 900);
@@ -511,8 +511,8 @@ A.ok(/CAP_PROP_MAP/.test(kpl), 'kitPropLabel maps the objectType through WorldMo
 A.ok(/WorldModel/.test(mkt) && /CAP_LABEL/.test(mkt), 'capability grants resolve from WorldModel.CAP_LABEL (the owned power-word source)');
 // PRESENT/MISSING: the recipe gear block checks each objectType against the ACTUAL station props (World.stationCaps).
 const rgh = mkt.slice(mkt.indexOf('function recipeGearHTML('), mkt.indexOf('function recipeGearHTML(') + 1200);
-A.ok(/stationGearSet\(\)/.test(rgh), 'the gear block checks present/missing against the live farm');
-A.ok(/function stationGearSet\(\)[\s\S]{0,200}World\.stationCaps/.test(mkt), 'stationGearSet reads World.stationCaps (the ACTUAL farm props)');
+A.ok(/stationGearSet\(\)/.test(rgh), 'the gear block checks present/missing against the live station');
+A.ok(/function stationGearSet\(\)[\s\S]{0,200}World\.stationCaps/.test(mkt), 'stationGearSet reads World.stationCaps (the ACTUAL station props)');
 A.ok(/mkt-kit-missing/.test(rgh), 'missing gear is dimmed via the mkt-kit-missing state');
 A.ok(/readCollection\('\/api\/skills', 'skills'\)/.test(A.fnBody(mkt, 'function loadSkillCatalog(')) &&
   /Harness\.api\.get\(url\)/.test(A.fnBody(mkt, 'function readCollection(')),

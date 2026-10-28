@@ -354,7 +354,7 @@ try {
   A.eq(fakeMac.probe(43136), { ok: true, startedAt: Date.UTC(2026, 9, 15, 9, 1, 52), executable: '/bin/zsh' }, 'darwin probe returns the creation time');
   A.ok(macCalls[0] && macCalls[0].file === '/bin/ps' && macCalls[0].args.join(' ') === '-o lstart= -o comm= -p 43136', 'darwin probe runs ps for exactly that PID');
   A.ok(macCalls[0] && macCalls[0].opts.env.TZ === 'UTC' && macCalls[0].opts.env.LC_ALL === 'C', 'darwin probe pins TZ=UTC and the C locale');
-  A.ok(macCalls[0] && !('STARNET_API_TOKEN' in macCalls[0].opts.env), 'darwin probe does not hand farm secrets to ps');
+  A.ok(macCalls[0] && !('STARNET_API_TOKEN' in macCalls[0].opts.env), 'darwin probe does not hand station secrets to ps');
   const procFiles = { '/proc/43136/stat': '43136 (bash) S ' + Array.from({ length: 18 }, () => '0').join(' ') + ' 912345 1',
     '/proc/self/stat': '777 (node) R ' + Array.from({ length: 18 }, () => '0').join(' ') + ' 777001 1' };
   const fakeLinux = makeProcessIdentity({ platform: 'linux',

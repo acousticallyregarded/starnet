@@ -54,7 +54,7 @@ const {SidecarFixture}=require('./helpers/sidecar-fixture');
     // ---- the Commander's way out: SETTINGS › SPENDING LIMITS lists the interrupted run and books what the provider charged ----
     const settle=b=>f.json('POST','/api/budget/settle',b);
     let st=(await status()).body;
-    assert.equal(st.unsettled.length,1,'the interrupted run is listed for the Farmer');
+    assert.equal(st.unsettled.length,1,'the interrupted run is listed for the Commander');
     const crashed=st.unsettled[0];
     assert.equal(crashed.agentId,'agent');assert.equal(crashed.provider,'openrouter');assert.equal(crashed.model,'test/spend');assert.equal(typeof crashed.ts,'number');
     assert.equal(crashed.runCapUsd,null,'no per-run limit was set, so none is claimed');
@@ -72,7 +72,7 @@ const {SidecarFixture}=require('./helpers/sidecar-fixture');
     assert.equal(settled.body.unsettled.length,0);assert.equal(settled.body.atLeast,null);assert.equal(fs.readdirSync(dir).length,0,'the receipt is removed');
     const row=fs.readFileSync(ledger,'utf8').trim().split('\n').map(l=>JSON.parse(l)).find(r=>r.runId===crashed.runId);
     assert.ok(row&&row.usd===0.3&&row.attested===true&&row.ts===crashed.ts,'one attested row at the dispatch time');
-    assert.equal(row.attestedAs,'entered','the row says the Farmer entered that charge');
+    assert.equal(row.attestedAs,'entered','the row says the Commander entered that charge');
     assert.equal((await settle({runId:crashed.runId,usd:0.3})).status,404,'a second settle cannot double-book');
     // spend-truth B12: the settled run's HISTORY row is known spend now — INSIGHTS and the run row agree with the ledger
     // the boot scan records an interrupted run's row in the background: wait for it (bounded) before judging it
@@ -103,7 +103,7 @@ const {SidecarFixture}=require('./helpers/sidecar-fixture');
     assert.ok(limitRow&&limitRow.usd===0.75&&limitRow.attested===true&&limitRow.attestedAs==='limit','the row says it was counted at its limit, not entered');
     await f.restart({SKYNET_BUDGET_PER_DAY:'10'});assert.ok(Math.abs((await status()).body.spentToday-2.65)<1e-9,'and that survives restart');
     console.log('spend HTTP: unreadable history, zero paid dispatch, failed append, restart settlement, exact-once replay uncertain receipt and real hard-crash recovery PASS');
-    console.log('spend HTTP: interrupted run listed, refused bad settles, Farmer settle + limit settle, idempotent across restart PASS');
+    console.log('spend HTTP: interrupted run listed, refused bad settles, Commander settle + limit settle, idempotent across restart PASS');
     // ---- a graceful Quit waits for the aborted run to book its spend (SPEND-9): no receipt is stranded ----
     hold=true;const quitRun=run().catch(()=>null);
     for(let i=0;i<100&&calls<5;i++)await new Promise(r=>setTimeout(r,50));

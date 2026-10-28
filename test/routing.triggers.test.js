@@ -130,7 +130,7 @@ const { makeFolderWatcher, makeFolderPolicy } = require('../sidecar/routing/trig
   await refused(path.join(drop, 'new.txt'), 'notdir', 'a file');
   await refused(sys, 'system', 'a system folder');
   await refused(path.parse(root).root, 'system', 'a whole drive');
-  await refused(station, 'station', 'the farm data folder');
+  await refused(station, 'station', 'the station data folder');
   await refused(home, 'broad', 'home itself');
   await refused(root, 'outside', 'a folder outside home and every project');
   fs.mkdirSync(path.join(home, 'inbox', '.git'));

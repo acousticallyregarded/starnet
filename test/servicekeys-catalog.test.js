@@ -147,7 +147,7 @@ for (const p of C.PLATFORMS) {
     }
   }
   const typed = { id: 'supliful', envVar: 'SUPLIFUL_API_KEY', docsUrl: 'https://example.com/my-own-notes' };
-  A.eq(C.healDocsUrl(typed), typed, 'a docs link the Farmer typed is never rewritten');
+  A.eq(C.healDocsUrl(typed), typed, 'a docs link the Commander typed is never rewritten');
   A.eq(C.healDocsUrl({ id: 'custom', envVar: 'CUSTOM_API_KEY', docsUrl: 'https://docs.supliful.com/' }).docsUrl, 'https://docs.supliful.com/', 'only the matching platform heals its own retired link');
   A.eq(C.healDocsUrl(null), null, 'a missing record passes through');
   // no public API of its own → the card must not claim one; the note says what the row really uses

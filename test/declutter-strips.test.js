@@ -36,7 +36,7 @@ const dlv = read('frontend/app/deliverables.js');
 A.ok(/r\.status !== 'pending' \? '<button class="bb sm" data-act="clear"/.test(dlv), 'the drawer offers ✓ DONE · CLEAR on every row but an undecided build');
 A.ok(/dataset.act === 'clear'\) return clearRows\(\{ ids: \[r\.id\] \}/.test(dlv), 'one card clears by its id');
 A.ok(/class="dlv-bclear" data-bucket=/.test(dlv) && /bucketBounds\(bucket\)/.test(dlv), 'each time heading clears its own window');
-A.ok(/ArmConfirm\.wire\(shown,/.test(dlv), 'CLEAR ALL / CLEAR THESE arms before it fires (farm 2-step, no native confirm)');
+A.ok(/ArmConfirm\.wire\(shown,/.test(dlv), 'CLEAR ALL / CLEAR THESE arms before it fires (station 2-step, no native confirm)');
 A.ok(/data-undo-clear/.test(dlv) && /\/api\/deliverables\/clear-undo/.test(dlv), 'every clear offers UNDO in the message line');
 A.ok(/The files stay on disk/.test(dlv), 'the copy says plainly that files are not deleted');
 A.ok(/<details class="dlv-clean-list">/.test(dlv) && /dl-clean-cancel/.test(dlv), 'the CLEAN OLD RECORDS preview folds its list and can be cancelled');

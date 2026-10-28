@@ -15,7 +15,7 @@ function harness(search){
  await active.box.study.install(manifest);assert.equal(active.box.study.sets.length,53);assert.equal(Object.keys(manifest.sprites).length,Object.keys(data.sprites).length+1);
  const selected=new Set();for(let i=0;i<53;i++){const body={id:'agent-'+i,skin:'blank',state:'walk'},before=JSON.stringify(body);selected.add(active.box.study.setFor(body));assert.equal(JSON.stringify(body),before);assert.equal(active.box.study.setFor(body),active.box.study.setFor(body));}assert.equal(selected.size,53);
  assert(!data.skins.some(s=>s.id==='minionchar'),'unfinished duplicate removed');
- assert(data.skins.some(s=>s.id==='station_minion'&&s.complete),'completed Farm Minion retained');
+ assert(data.skins.some(s=>s.id==='station_minion'&&s.complete),'completed Station Minion retained');
  assert(data.skins.some(s=>s.id==='pikachu'&&s.approvedRelease==='v0.11.2'),'approved Pikachu retained');
  for(const skin of data.skins){
   const set=skin.renderSet,scale=active.box.DATA.SKINS[set].scale;

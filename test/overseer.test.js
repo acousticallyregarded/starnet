@@ -29,12 +29,12 @@ const { makeSubagentManager } = require('../sidecar/subagents.js');
       { role: 'assistant', content: 'Drafted the hero.' }
     ];
     const read = readSessionTurns(rows, []);
-    assert.deepEqual(read.map(t => t.speaker), ['user', 'station', 'station', 'assistant'], 'goal steps (current + pre-org-pass head) read as the farm, never as the Farmer');
+    assert.deepEqual(read.map(t => t.speaker), ['user', 'station', 'station', 'assistant'], 'goal steps (current + pre-org-pass head) read as the station, never as the Commander');
     assert.equal(read[1].text, 'Goal step: ship the landing page', 'the step names its goal, never the internal continuation prompt');
-    assert.equal(read[1].sys, true, 'flagged as a farm line');
+    assert.equal(read[1].sys, true, 'flagged as a station line');
     assert.equal(read[2].text, 'Goal step: old goal', 'an old saved step too');
     assert.ok(!read.some(t => /Continue working toward this goal|\[Continuing toward/.test(t.text)), 'no continuation prompt text reaches the reading lead');
-    assert.equal(read[0].text, 'set up the launch', 'the Farmer\'s own words are untouched');
+    assert.equal(read[0].text, 'set up the launch', 'the Commander\'s own words are untouched');
     // the saved workstream history fallback (no transcript rows yet) reads the same way, and a delegated brief keeps its speaker
     const fb = readSessionTurns([], [
       { role: 'user', content: 'hidden', hidden: true },
@@ -181,7 +181,7 @@ const { makeSubagentManager } = require('../sidecar/subagents.js');
       assert.equal(sixth.title, 'Summarize my inbox (6)', 'a repeated ask counts up to a free title');
       assert.equal(loads, 1, 'a repeated title still costs one save load, not one per taken title');
       assert.equal(ov.create({ parentStreamId: 'home', agentId: 'researcher', requestId: 'plain-worker', title: 'Summarize my inbox', worker: true }).title, 'Summarize my inbox (7)', 'a worker thread picks a free title even without uniqueTitle (the production caller passes none)');
-      assert.throws(() => ov.create({ parentStreamId: 'home', agentId: 'researcher', title: 'Home' }), /already exists/, 'a session the Farmer sees still refuses a taken title');
+      assert.throws(() => ov.create({ parentStreamId: 'home', agentId: 'researcher', title: 'Home' }), /already exists/, 'a session the Commander sees still refuses a taken title');
       const long = 'x'.repeat(80);
       file(long, 7);
       assert.equal(file(long, 8).title, 'x'.repeat(76) + ' (2)', 'a suffix fits inside the 80-char title instead of being cut off');

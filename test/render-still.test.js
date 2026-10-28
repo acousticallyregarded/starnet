@@ -151,7 +151,7 @@ function walkerScene(w, b) {
   const raf0 = w.env.rafCalls;
   w.runUntil(2000);
   const n = count(w.env.draws, 1000, 2000);
-  A.ok(n >= 29 && n <= 31, 'a still farm is redrawn 30x a second (' + n + ' draws in 1 s on a 60 Hz panel)');
+  A.ok(n >= 29 && n <= 31, 'a still station is redrawn 30x a second (' + n + ' draws in 1 s on a 60 Hz panel)');
   A.ok(w.env.rafCalls - raf0 <= 31, '...each one booked from a timer: no per-vsync rAF spin while still (' + (w.env.rafCalls - raf0) + ' callbacks)');
   const rp = w.W.renderPace();
   A.eq(rp.mode, 'still', "renderPace().mode reads 'still' — the bench and telemetry can prove the tier");
@@ -179,7 +179,7 @@ function walkerScene(w, b) {
   };
   for (const lag of [4, 15.6]) {
     const r = stillRate(60, { timerLate: lag });
-    A.ok(r.per >= 28 && r.per <= 31 && r.mode === 'still', 'timers ' + lag + ' ms late, 60 Hz: a still farm is still drawn ~30x a second (' + r.per + '/s)');
+    A.ok(r.per >= 28 && r.per <= 31 && r.mode === 'still', 'timers ' + lag + ' ms late, 60 Hz: a still station is still drawn ~30x a second (' + r.per + '/s)');
     A.ok(r.cb <= r.per + 0.5, '...with one rAF callback per still draw (' + r.cb + ' callbacks/s)');
   }
   // (144 Hz: the vsync nearest 33.3 ms is the 5th, 34.7 ms — frame()'s half-vsync rule — so ~28.8/s there, as before)
@@ -458,7 +458,7 @@ A.ok(/const WAKE_API/.test(WAKE_SRC) && /function wakeOnCall\(api\)/.test(WAKE_S
   const extra = WAKE_SRC + '\n' + A.fnBody(code, 'function frameReviewRoom(id)') + '\n' + A.fnBody(code, 'function fitCamera()') + `
 var MINZ = 0.5, MAXZ = 8, fitW = 0, fitH = 0, StationBake = { WALL: { up: 24, skirt: 6 } };
 function clampz(v, a, b) { return Math.max(a, Math.min(b, v)); }
-var farm = { serialize: () => ({ rooms: { r1: { rects: [{ x1: 2, y1: 2, x2: 9, y2: 7 }] } } }) };
+var station = { serialize: () => ({ rooms: { r1: { rects: [{ x1: 2, y1: 2, x2: 9, y2: 7 }] } } }) };
 this.API = wakeOnCall({ frameReviewRoom }); this.rawFrameReviewRoom = frameReviewRoom;`;
   const run = (fn) => {
     const w = makeWorld(60, { extra }), b = body();
@@ -481,9 +481,9 @@ this.API = wakeOnCall({ frameReviewRoom }); this.rawFrameReviewRoom = frameRevie
 {
   // (b) station.onChange: a layout edit that lands after an await (a builder step, a restyle, an undo) wakes a still floor — the
   // real subscriber from loadStation
-  const sub = (A.fnBody(code, 'function loadStation(st)').match(/if \(farm && station\.onChange\) unsub = station\.onChange\(p => \{[^\n]*\}\);/) || [''])[0];
+  const sub = (A.fnBody(code, 'function loadStation(st)').match(/if \(station && station\.onChange\) unsub = station\.onChange\(p => \{[^\n]*\}\);/) || [''])[0];
   A.ok(/motionWake\(\); \}\);$/.test(sub), "loadStation's station.onChange subscriber ends in motionWake()");
-  const extra = 'var geoDirty = false, bakeEditPending = false, unsub = null, onEdit = null;\nvar farm = { onChange(fn) { onEdit = fn; return () => {}; } };\n' + sub + '\nthis.edit = p => onEdit(p); this.dirty = () => geoDirty;';
+  const extra = 'var geoDirty = false, bakeEditPending = false, unsub = null, onEdit = null;\nvar station = { onChange(fn) { onEdit = fn; return () => {}; } };\n' + sub + '\nthis.edit = p => onEdit(p); this.dirty = () => geoDirty;';
   const w = makeWorld(60, { extra }), b = body();
   w.sb.agent = b; walkerScene(w, b);
   w.W.frame(0); w.runUntil(1000);
@@ -684,7 +684,7 @@ this.dock = dockArrival; this.deliver = onWorkitemDeliver; this.spawn = spawnAge
   calm('a pallet pop that has run its course', () => { sb.palletPopAt = now - 5000; }, () => { sb.palletPopAt = -1e9; });
   calm('every drawn prop static, alpha-only glow or frozen (clockNext Infinity, no pulse)', () => { sb.PropSprites = { clockNext: () => Infinity, pulsing: () => false }; }, () => { delete sb.PropSprites; });
   calm('a sky with nothing crossing (drift and twinkle are ambient)', () => { sb.SpaceBG = { nextChange: () => Infinity }; }, () => { delete sb.SpaceBG; });
-  calm('a meteor on a LANDED farm (no sky is drawn there)', () => { sb.SpaceBG = { nextChange: n => n }; sb.Terrain = { active: () => true }; }, () => { delete sb.SpaceBG; delete sb.Terrain; });
+  calm('a meteor on a LANDED station (no sky is drawn there)', () => { sb.SpaceBG = { nextChange: n => n }; sb.Terrain = { active: () => true }; }, () => { delete sb.SpaceBG; delete sb.Terrain; });
   calm('a meteor during a still render (no sky in it)', () => { sb.SpaceBG = { nextChange: n => n }; sb.stillPass = { fill: '#000' }; }, () => { delete sb.SpaceBG; sb.stillPass = null; });
   calm("an asleep hero with its glance cooldown lapsed (maybeGlance skips sleep)", () => { hero.goal = 'sleep'; hero.glanceCd = 0; }, () => { hero.goal = null; hero.glanceCd = Infinity; });
   calm('a crew body with its glance cooldown lapsed (crew have no maybeGlance)', () => { mate.glanceCd = 0; }, () => { mate.glanceCd = Infinity; });
@@ -736,7 +736,7 @@ this.dock = dockArrival; this.deliver = onWorkitemDeliver; this.spawn = spawnAge
   }, now + K.GATHER_GAP_MS - 400, () => { sb.gathering = null; });
   due('an assembly breaking up (the overseer leaves last)', () => { sb.gathering = { phase: 'breaking', scatterAt: now - 100, until: now + 1e6 }; }, now + K.OVERSEER_BREAK_MS - 100, () => { sb.gathering = null; });
   due('the next gathering roll (maybeGather, every tick)', () => { sb.gatherRollAt = now + 1234; }, now + 1234, () => { sb.gatherRollAt = -1e9; });
-  due('the farm going quiet long enough to gather', () => { sb.stationBusyAt = now - K.GATHER_QUIET_MS + 500; }, now + 500, () => { sb.stationBusyAt = -1e9; });
+  due('the station going quiet long enough to gather', () => { sb.stationBusyAt = now - K.GATHER_QUIET_MS + 500; }, now + 500, () => { sb.stationBusyAt = -1e9; });
   due('the COMMS stare going cold', () => { sb.chatFocusId = 'hero'; sb.chatWarmUntil = now + 1500; }, now + 1500, () => { sb.chatFocusId = null; sb.chatWarmUntil = -1e9; });
   due('the link going stale (LINK DOWN)', () => { sb.lastSseEventAt = now - K.LINK_STALE_MS + 777; }, now + 777, () => { sb.lastSseEventAt = 0; });
   // an off-screen body's DECISION clock is due too (review 10-21): it can decide for an on-screen partner (a huddle within

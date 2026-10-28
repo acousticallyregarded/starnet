@@ -104,7 +104,7 @@ const look = graph([
     'the cooldown constants are read from the shipped source');
   A.eq(RELIEF < 1, true, 'relief can never zero out the per-pair cooldown');
   A.eq(FLOOR >= LANE_MAX * 0.75, true,
-    'the floor stays comparable to the farm conversation lane, so even the strongest bond cannot re-fire as the immediate next beat');
+    'the floor stays comparable to the station conversation lane, so even the strongest bond cannot re-fire as the immediate next beat');
   A.eq(FLOOR < PAIR_MIN, true, 'but it IS a real reduction — best buds genuinely come back around sooner');
   // strongest possible bond (1.0) still serves the floor
   A.eq(Math.max(FLOOR, Math.round(PAIR_MIN * (1 - RELIEF * 1))) >= FLOOR, true,

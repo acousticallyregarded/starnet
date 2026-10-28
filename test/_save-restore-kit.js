@@ -16,7 +16,7 @@ const read = rel => fs.readFileSync(path.join(repo, rel), 'utf8');
 const indexSrc = read('sidecar/index.js');
 const handlers = ['function crewLooksOf(save)', 'function seedSaveMemos(agentId, doc)', 'function serveSaveLoad(req, res)', 'async function handleSaveWrite(req, res)',
   'function serveSaveConflicts(req, res)', 'async function handleSaveConflictRestore(req, res)',
-  'function keepStationGrowth(doc, farm)', 'function keepTerminalApprovals(doc, farm)', 'async function handleSaveAdopt(req, res)']
+  'function keepStationGrowth(doc, station)', 'function keepTerminalApprovals(doc, station)', 'async function handleSaveAdopt(req, res)']
   .map(h => { const b = fnBody(indexSrc, h); A.ok(b.startsWith(h) && b.length < 6000, 'kit: sliced exactly ' + h); return b; });
 const cloudsaveSrc = read('frontend/app/cloudsave.js');
 const ui = read('frontend/app/stationui.js');

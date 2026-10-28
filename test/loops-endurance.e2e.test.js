@@ -107,7 +107,7 @@ async function until(fixture, predicate, label, timeoutMs) {
 
   try {
     await fixture.start();
-    const restartObjective = 'inspect local farm state in multiple steps and report once';
+    const restartObjective = 'inspect local station state in multiple steps and report once';
     const cancelObjective = 'inspect then wait for cancellation';
     const loopCalls = objective => provider.state.calls.filter(call => {
       const users = call.messages.filter(message => message && message.role === 'user');

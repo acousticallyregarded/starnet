@@ -214,6 +214,6 @@ async function acpLeadOnly() {
   const SNAP = { ok: true, today: 0, lifetime: 0, runs: 0, tokens: 0, agentUsd: 0, caps: {} };
   const r = await makeSlashActions({ budget: { snapshot: async () => SNAP } }).run('usage', '', {});
   const line = (r.lines || []).find(l => /No spend caps are set/.test(l)) || '';
-  A.ok(/SETTINGS › SPENDING LIMITS/.test(line) && !/→ BUDGET/.test(line), '/usage points an uncapped farm at SPENDING LIMITS: ' + line);
+  A.ok(/SETTINGS › SPENDING LIMITS/.test(line) && !/→ BUDGET/.test(line), '/usage points an uncapped station at SPENDING LIMITS: ' + line);
   A.report('budget-stop-door');
 })().catch(e => { console.error(e); process.exit(1); });

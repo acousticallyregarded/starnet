@@ -219,7 +219,7 @@ const body = {
 };
 const ctx = vm.createContext({ body, QuestStore: { view: () => ({ quests: questRows }) },
   esc: s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'),
-  QUEST_KIND_TAG: { station: 'FARM', dossier: 'ABOUT YOU' }, GO_LABEL: {},
+  QUEST_KIND_TAG: { station: 'STATION', dossier: 'ABOUT YOU' }, GO_LABEL: {},
   questGoDest: () => null, questCompletesWhen: () => 'the recorded condition is met', workshopGrantOn: () => false,
   passHtml: () => '<section class="bp"></section>', bpClaimed: () => 0, bpSetClaimed: () => {}, questBriefingHtml: () => '', questTrackHtml: () => '', lifeGoalsHtml: () => '', journeyChaptersHtml: () => '', questRefreshHtml: () => '', journeyHtml: () => '',
   systemsHtml: () => '', wireSystems: () => {}, stationPrestigeHtml: () => '', consoleSection: {},   // STATION SYSTEMS + prestige blocks + deep-link view (front doors)

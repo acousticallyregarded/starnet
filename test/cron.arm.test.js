@@ -143,7 +143,7 @@ function boot(port, workspaces, attemptsLeft, extraEnv) {
     A.eq(armedCreate.status, 200, 'a create with arm:true -> 200');
     A.eq(armedCreate.body.scheduler && armedCreate.body.scheduler.armed, false, 'after an explicit OFF, a save with arm:true does NOT override it');
     A.eq(armedCreate.body.scheduler.armedNow, false, '…the reply says this save did not turn scheduling on');
-    A.eq(armedCreate.body.scheduler.offByChoice, true, '…and that it is off by the Farmer’s choice');
+    A.eq(armedCreate.body.scheduler.offByChoice, true, '…and that it is off by the Commander’s choice');
     A.eq((await j('GET', '/api/cron')).body.enabled, false, 'GET /api/cron agrees: still enabled:false');
     A.eq(JSON.parse(fs.readFileSync(ARMED_FILE, 'utf8')).armed, false, 'the explicit OFF stays on disk');
     // ---- ROUTINE HISTORY: one routine's past runs (none yet), unknown id is an honest 404 ----

@@ -37,7 +37,7 @@ for (const rel of jsFiles) {
   const code = stripComments(read(rel));
   // window.alert(...) / window.confirm(...) / window.prompt(...) — the qualified form
   A.ok(!/window\s*\.\s*(alert|confirm|prompt)\s*\(/.test(code),
-    rel + ' calls no native window dialog (use ArmConfirm / a farm panel instead)');
+    rel + ' calls no native window dialog (use ArmConfirm / a station panel instead)');
   // the bare form, but NOT `Foo.confirm(` / `function confirm(` — the app has its own confirm() APIs
   A.ok(!/(?:^|[;{}()\s])(?:alert|prompt)\s*\(/m.test(code.replace(/\.\s*(alert|prompt)\s*\(/g, '.X(')),
     rel + ' calls no bare alert()/prompt()');
@@ -58,7 +58,7 @@ for (const rel of ['frontend/app/deliverables.js', 'frontend/app/stationui.js'])
     const m = new RegExp('<button[^>]*id="' + id + '"').exec(code);
     if (!m) continue;
     const tag = code.slice(m.index, code.indexOf('>', m.index) + 1);
-    A.ok(/class="[^"]*\bbb\b/.test(tag), id + ' renders as a farm button (class="bb …"), not a bare <button>');
+    A.ok(/class="[^"]*\bbb\b/.test(tag), id + ' renders as a station button (class="bb …"), not a bare <button>');
   }
 }
 
@@ -74,7 +74,7 @@ A.ok(/aria-describedby/.test(tooltip), 'the live card is announced as the descri
 // the uiZoom law: a body-child fixed card MUST divide rects by the zoom factor
 A.ok(/style\.zoom/.test(tooltip) && /\/\s*z\b/.test(tooltip),
   'tooltip.js honours the uiZoom law (rects are visual px, body-child style px are zoomed)');
-A.ok(/\.station-tip\s*\{/.test(read('frontend/css/app.css')), 'the farm tooltip card is styled');
+A.ok(/\.station-tip\s*\{/.test(read('frontend/css/app.css')), 'the station tooltip card is styled');
 
 // the ONE element allowed to keep a native title would still let the OS paint — so none may.
 const titlesInHtml = (indexHtml.match(/\stitle="/g) || []).length;
@@ -89,8 +89,8 @@ const ctxEnd = stationUi.indexOf('\n  let compactWired', ctxStart);
 A.ok(ctxStart >= 0 && ctxEnd > ctxStart, 'the context gauge ticker remains locatable');
 const ctxTick = stationUi.slice(ctxStart, ctxEnd);
 A.ok(!/\bg\.title\s*=/.test(ctxTick), 'the repeating context ticker never recreates a native title');
-A.ok(/setAttribute\(['"]data-tip['"]/.test(ctxTick), 'the repeating context ticker updates the farm tooltip source');
-A.ok(/id="ctx-gauge"[^>]*\sdata-tip="/.test(indexHtml), 'the context gauge starts with a farm tooltip, not an OS title');
+A.ok(/setAttribute\(['"]data-tip['"]/.test(ctxTick), 'the repeating context ticker updates the station tooltip source');
+A.ok(/id="ctx-gauge"[^>]*\sdata-tip="/.test(indexHtml), 'the context gauge starts with a station tooltip, not an OS title');
 
 // ---- 4. the pure geometry, exercised ------------------------------------------------------
 const T = require('../frontend/app/tooltip.js');
@@ -200,7 +200,7 @@ A.ok(T.adopt(null) === '', 'adopt() tolerates a null element');
     fire('focusin', { target: oddEngine });
     A.eq(oddEngine.getAttribute('aria-describedby'), 'station-tip', 'a matches() that throws falls back to showing on focus');
     fire('pointerdown', {});
-    const openDock = mkEl({ title: 'Shape the farm', 'aria-expanded': 'true' }, 'BUILD');
+    const openDock = mkEl({ title: 'Shape the station', 'aria-expanded': 'true' }, 'BUILD');
     fire('pointerover', { target: openDock });
     await sleep(420);
     A.ok(!openDock.getAttribute('aria-describedby'), 'no card opens over an open dock menu (aria-expanded="true"), even on hover');

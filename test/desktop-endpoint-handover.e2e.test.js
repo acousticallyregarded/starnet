@@ -116,7 +116,7 @@ async function waitFor(fn, label) {
     // the reproduction: the desktop station holds no endpoint after a launch
     const before = await runNow();
     A.eq(before.status, 400, 'a fresh desktop launch: Run Now is refused before the hand-over');
-    A.ok(/no CUSTOM base URL is saved on this farm/.test(String(before.body && before.body.error)), 'the refusal is the #137 sentence: ' + before.text);
+    A.ok(/no CUSTOM base URL is saved on this station/.test(String(before.body && before.body.error)), 'the refusal is the #137 sentence: ' + before.text);
 
     const storage = {
       'starnet.byok.prov': 'custom',
@@ -190,7 +190,7 @@ async function waitFor(fn, label) {
     A.eq(desk.invokes.length, pushes, 'an ordinary answer re-pushes nothing');
     desk.api.noteStationReply(false);
     desk.api.noteStationReply(false);
-    A.eq(desk.invokes.length, pushes, 'nothing is pushed while the farm is silent');
+    A.eq(desk.invokes.length, pushes, 'nothing is pushed while the station is silent');
     desk.api.noteStationReply(true);
     await waitFor(() => desk.settled() === pushes + 4, 'the come-back hand-over');
     A.eq(desk.invokes.length, pushes + 4, 'the first answer after a silence re-syncs each endpoint slot once');
@@ -207,7 +207,7 @@ async function waitFor(fn, label) {
     await fixture.restart();
     const gone = await runNow();
     A.eq(gone.status, 400, 'a cleared CUSTOM endpoint stays cleared after a restart');
-    A.ok(/no CUSTOM base URL is saved on this farm/.test(String(gone.body && gone.body.error)), 'and the refusal says so: ' + gone.text);
+    A.ok(/no CUSTOM base URL is saved on this station/.test(String(gone.body && gone.body.error)), 'and the refusal says so: ' + gone.text);
     for (const f of [endpointsFile, endpointsFile + '.bak']) {
       A.ok(!onDisk(f).includes(endpoint) && !onDisk(f).includes('192.168.1.50'), path.basename(f) + ' keeps no cleared endpoint');
     }
@@ -217,7 +217,7 @@ async function waitFor(fn, label) {
     const broken = page({ desktop: true, storage: { 'starnet.byok.baseUrl.custom': endpoint }, shell: async () => { throw new Error('sidecar not up'); } });
     const failed = await broken.api.pushDesktopEndpoints();
     A.eq(failed, [{ provider: 'custom', ok: false }], 'a failed push resolves its failure');
-    A.ok(broken.warns.some(w => /custom: could not hand the farm its endpoint: sidecar not up/.test(w)), 'and is logged');
+    A.ok(broken.warns.some(w => /custom: could not hand the station its endpoint: sidecar not up/.test(w)), 'and is logged');
 
     // a browser page never takes this path
     const browser = page({ desktop: false, storage, shell });

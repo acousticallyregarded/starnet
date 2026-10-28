@@ -81,10 +81,10 @@ ok(/if \(provider === 'custom'\) return saveCustomEndpoint\(/.test(station), 'th
 ok(/if \(provider === 'custom'\) return '<div class="key-empty"><p>' \+ ADD_ON_CARD/.test(station), 'API KEYS never renders a second CUSTOM add form');
 ok(/!hasAddProvider && !cardOffersAdd\(addProvider\)\) rows\.push\(addKeyHtml/.test(station), 'the API KEYS add row is dropped when the provider card offers ＋ ADD KEY / ⏼ SIGN IN');
 ok(/const ADD_ON_CARD = 'Add a key on a provider card above\.'/.test(station) && /if \(!keys\.length\) return \(cardOffersAdd\(addProvider\)/.test(station), 'the empty API KEYS state is one line pointing at the cards');
-ok(/>✎ ENDPOINT URL<\/button>/.test(station) && !/✎ FARM LINK/.test(station), 'the saved CUSTOM row edits its address under ✎ ENDPOINT URL');
-ok(/↻ SPARE KEYS/.test(station) && !/↻ BACKUPS/.test(station), 'the key pool reads ↻ SPARE KEYS, not BACKUPS (FARM BACKUP is a different thing)');
+ok(/>✎ ENDPOINT URL<\/button>/.test(station) && !/✎ STATION LINK/.test(station), 'the saved CUSTOM row edits its address under ✎ ENDPOINT URL');
+ok(/↻ SPARE KEYS/.test(station) && !/↻ BACKUPS/.test(station), 'the key pool reads ↻ SPARE KEYS, not BACKUPS (STATION BACKUP is a different thing)');
 ok(/retry ✎ ENDPOINT URL before running/.test(harness), 'the desktop endpoint error names the ✎ ENDPOINT URL key');
-ok(/data-act="baseurl-edit" data-i="' \+ i \+ '" data-tip="[^"]+">✎ ENDPOINT URL</.test(station), 'the ✎ ENDPOINT URL key carries a farm data-tip, never a native title= bubble');
+ok(/data-act="baseurl-edit" data-i="' \+ i \+ '" data-tip="[^"]+">✎ ENDPOINT URL</.test(station), 'the ✎ ENDPOINT URL key carries a station data-tip, never a native title= bubble');
 ok(/a spare key was rejected/.test(harness) && /your previous spare keys are unchanged/.test(harness) && !/backup key|backup pool is/.test(harness), 'a rejected ↻ SPARE KEYS save names spare keys, never a backup pool');
 ok(/set your fallback models to/.test(fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'tools', 'builtin', 'station-control.js'), 'utf8')), 'the fallback.set approval card names FALLBACK MODELS, the heading AI & MODELS shows');
 ok(!/while keeping your ChatGPT sign-in connected/.test(station), 'the add-key copy never claims a ChatGPT sign-in');
@@ -127,7 +127,7 @@ ok(/body\.querySelectorAll\('\[data-act="to-prov-card"\]\[data-provider\]'\)\.fo
   ok(pane.scrollTop === 0, 'a repaint that changed the section never carries the old scroll across');
 }
 ok(/const until = Date\.now\(\) \+ 20000;/.test(station) && !/const until = Date\.now\(\) \+ 4000;/.test(station), 'the landing outlasts a first-open probe (15s credential check), not 4s');
-ok(/const TAKE_OVER = \['pointerdown', 'wheel', 'keydown'\];/.test(station) && /if \(touched\) return;/.test(station), 'the landing stops re-landing the moment the Farmer takes over the window');
+ok(/const TAKE_OVER = \['pointerdown', 'wheel', 'keydown'\];/.test(station) && /if \(touched\) return;/.test(station), 'the landing stops re-landing the moment the Commander takes over the window');
 // (wiring) one key box per provider card: the STARNET credits notice sends "your own key" to the cards (add, then select),
 // never to API KEYS, which has no add box for another provider and no switch
 ok(!/switch to your own key under API KEYS above/.test(station) && (station.match(/You can always switch to your own key: add it on a provider card above, then select that card\./g) || []).length === 2, 'both credits notices point your own key at a provider card');
@@ -217,7 +217,7 @@ ok(/if \(card\.dataset\.configured === '0' && p !== activeProv\(\)\) \{[\s\S]{0,
     ok(W.landedOn('anthropic'), kind + ': the door lands on the card');
     W.fire(kind); W.pane.scrollTop = 42;
     W.repaint(); W.advance(2000);
-    ok(W.pane.scrollTop === 42, kind + ' in Settings ends the landing: a later repaint leaves the Farmer\'s scroll alone (scrollTop ' + W.pane.scrollTop + ')');
+    ok(W.pane.scrollTop === 42, kind + ' in Settings ends the landing: a later repaint leaves the Commander\'s scroll alone (scrollTop ' + W.pane.scrollTop + ')');
   });
   // ...even before the card has painted (a first open whose section paints a beat late)
   {

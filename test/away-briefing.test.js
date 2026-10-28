@@ -14,7 +14,7 @@ A.eq(B.kindOf(run({ streamId: 'workshop-abc' })), 'build', 'a workshop shift is 
 A.eq(B.kindOf(run({ streamId: 'nightshift-act-abc' })), 'build', 'a night-shift act is a build');
 A.eq(B.kindOf(run({ streamId: 'loop-L1' })), 'loop', 'a LOOP iteration is loop work');
 A.eq(B.kindOf(run({ streamId: 'nightshift-abc', internal: true })), null, 'reason-only night-shift planning is never briefed');
-A.eq(B.kindOf(run({ streamId: 'cron-abc', surface: 'interactive' })), null, 'the Farmer continuing a routine session is attended work');
+A.eq(B.kindOf(run({ streamId: 'cron-abc', surface: 'interactive' })), null, 'the Commander continuing a routine session is attended work');
 A.eq(B.kindOf(run({ streamId: 'cron-abc', parentRunId: 'p' })), null, 'delegated children are folded into their parent');
 A.eq(B.kindOf(run({ streamId: 'ws-123' })), null, 'an ordinary chat stream is not away work');
 
@@ -100,7 +100,7 @@ A.eq(B.excerptOf('| name | size |\n|---|---|\n| a | 1 |\n\nTwo files are ready.'
 {
   const H = 60000, AWAY = 30 * H, NOW = 1.8e12;   // a real epoch: the window maths must not clamp at zero
   let a = B.absence({ through: NOW - 5 * H, now: NOW, minAwayMs: AWAY, firstWindowMs: 24 * 60 * H });
-  A.ok(!a.brief && a.through === NOW, 'the Farmer was here 5 minutes ago (a reload, a restart): no briefing, the stamp moves to now');
+  A.ok(!a.brief && a.through === NOW, 'the Commander was here 5 minutes ago (a reload, a restart): no briefing, the stamp moves to now');
   a = B.absence({ through: NOW - 2 * 60 * H, now: NOW, minAwayMs: AWAY, firstWindowMs: 24 * 60 * H });
   A.ok(a.brief && a.since === NOW - 2 * 60 * H && a.through === NOW, 'two hours gone → brief exactly the absence');
   a = B.absence({ through: NOW - 5 * H, now: NOW, seen: true });

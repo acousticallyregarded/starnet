@@ -159,7 +159,7 @@ const REF = T.buildRef({ artifacts: ARTS, toolTrace: TRACE, rows: ROWS, files: [
   const rated = FM.apply(fresh.list, { runId: 'run-k', verdict: 'great', words: 'love it' }, deps(60));
   A.ok(rated && rated.rec.feedbackKeptOnly === false && rated.rec.feedbackKept === true, 'a real verdict on a keep-only record makes it a verdict record');
   const keepRated = FM.unkeep(rated.list, 'run-k');
-  A.ok(keepRated && !keepRated.removed && /love it/.test(keepRated.rec.content), '…so PUT IT BACK no longer deletes the Farmer\'s verdict');
+  A.ok(keepRated && !keepRated.removed && /love it/.test(keepRated.rec.content), '…so PUT IT BACK no longer deletes the Commander\'s verdict');
   // A first real verdict can disagree with an earlier style-only approval. Unkeep must reveal that verdict.
   const missed = FM.apply(fresh.list, { runId: 'run-k', verdict: 'miss', words: 'wrong colors' }, deps(70));
   const unkeptMiss = FM.unkeep(missed.list, 'run-k');
@@ -176,7 +176,7 @@ const REF = T.buildRef({ artifacts: ARTS, toolTrace: TRACE, rows: ROWS, files: [
   A.ok(/STYLE KEPT · RESULT REJECTED .*make the poster — disliked: "too dark"/.test(keptPrompt), 'KEEP THIS STYLE after a 👎 keeps the dislike visible: ' + keptPrompt);
   const editedMiss = FM.apply(edited, { runId: 'run-k', verdict: 'miss', words: 'wrong colors' }, deps(80));
   A.eq(editedMiss.rec.feedbackVerdict, 'miss', 'an edited note also records the real verdict without rewriting the edit');
-  A.ok(editedMiss.rec.content.startsWith('Release notes: one page, dark theme'), 'real verdict preserves the Farmer edit');
+  A.ok(editedMiss.rec.content.startsWith('Release notes: one page, dark theme'), 'real verdict preserves the Commander edit');
   A.eq(FM.unkeep(list0(), 'run-a'), null, 'nothing kept = nothing to put back');
   A.eq(FM.unkeep(null, ''), null, 'null-safe');
 }

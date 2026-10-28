@@ -82,7 +82,7 @@ const B = require('../frontend/app/briefing.js');
   // mid-something → no focus jump; the unread pinned row is the whole signal
   active = 'general'; opened = []; engaged = true;
   await B.deliver('engaged');
-  A.eq(opened.length, 0, 'engaged Farmer → no focus jump');
+  A.eq(opened.length, 0, 'engaged Commander → no focus jump');
 
   /* LIVE WALK 10-14: a reload made the briefing the active session and took the screen off the conversation whose
      worker approval was still waiting. A waiting ask outranks the report: the station's own count (a reloaded page may
@@ -90,7 +90,7 @@ const B = require('../frontend/app/briefing.js');
   engaged = false; active = 'ws-launch'; opened = [];
   reply.asksWaiting = 1;
   await B.deliver('boot');
-  A.eq(opened.length, 0, 'an approval waiting on the farm → the briefing stays an unread row, no focus jump');
+  A.eq(opened.length, 0, 'an approval waiting on the station → the briefing stays an unread row, no focus jump');
   reply.asksWaiting = 0;
   global.Channels = { allPending: () => [{ wsId: 'ws-launch', p: { promptId: 'p1' } }] };
   await B.deliver('boot');

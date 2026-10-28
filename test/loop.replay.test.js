@@ -35,7 +35,7 @@ function chatFixture() {
     turns: [[
       { type: 'text', delta: 'Hel' },
       { type: 'text', delta: 'lo,' },
-      { type: 'text', delta: ' Farmer' },
+      { type: 'text', delta: ' Commander' },
       { type: 'usage', usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 } },
       { type: 'done', finishReason: 'stop' }
     ]]
@@ -64,7 +64,7 @@ function chatFixture() {
 
     const last = messages[messages.length - 1];
     A.eq(last.role, 'assistant', 'assistant turn appended');
-    A.eq(last.content, 'Hello, Farmer', 'full streamed text assembled');
+    A.eq(last.content, 'Hello, Commander', 'full streamed text assembled');
     A.eq(provider.callCount(), 1, 'exactly one model call');
   }
 

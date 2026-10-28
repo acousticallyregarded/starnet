@@ -294,7 +294,7 @@ try {
   }
   // security-storage-04: an interrupted reset says so, names the folder, and START FRESH finishes it.
   assert.match(lockMessage('reset-interrupted', '', { movedTo: path.join(root, 'unreadable-x') }), /START FRESH was interrupted.*not deleted.*unreadable-x.*START FRESH to finish/);
-  assert.doesNotMatch(lockMessage('reset-interrupted'), /damaged|newer Homestead/, 'an interrupted reset is not called a damaged file');
+  assert.doesNotMatch(lockMessage('reset-interrupted'), /damaged|newer StarNet/, 'an interrupted reset is not called a damaged file');
   // ...but only promises START FRESH finishes it when START FRESH can: a marker that cannot be checked gets the
   // by-hand steps instead of a button that will always refuse
   {

@@ -18,7 +18,7 @@ const slice = (from, to) => {
   return source.slice(s, e);
 };
 
-const delSrc = slice('  function agDeleteRow(a) {', '\n  // FARMER CONTROLS');
+const delSrc = slice('  function agDeleteRow(a) {', '\n  // COMMANDER CONTROLS');
 const render = (crew, agent) => vm.runInNewContext(delSrc + '\n agDeleteRow;', {
   access: { config: { crewCount: () => crew } }, present: [], esc: String
 })(agent);

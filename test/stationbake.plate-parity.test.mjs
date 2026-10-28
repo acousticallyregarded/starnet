@@ -133,7 +133,7 @@ try {
       { missing: 0, sizeOff: 0, base: 0, light: 0, plate: 0 }, r.label + ': the kept bake is the fresh one, pixel for pixel');
     if (!r.reset) assert.deepEqual(r.bakedBeyondReach, [], r.label + ': it baked only the chunks its rects reach (an edge chunk the floor reshapes is resized, not baked)');
   }
-  assert.ok(result.whole.stitched, 'a farm wider than one chunk bakes as its chunks, stitched');
+  assert.ok(result.whole.stitched, 'a station wider than one chunk bakes as its chunks, stitched');
   console.log('stationbake.plate-parity: ' + result.rows.length + ' edits, kept bake == fresh bake (base, light, dense plate at ' + result.density + 'x)');
 } catch (error) { failed = true; console.error(error.stack || error); }
 finally {

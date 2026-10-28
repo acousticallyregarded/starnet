@@ -190,7 +190,7 @@ function packageOnDisk(name) {
       assert.deepEqual(localVoice._kokoroDtypes(cache), ['q4'], 'STARNET_KOKORO_DTYPE pins one precision');
       process.env.STARNET_KOKORO_DTYPE = 'q8';
       assert.equal(localVoice._kokoroCached(cache), false, 'a pinned precision with no file of its own is a download');
-      assert.equal(typeof localVoice.ttsCached(), 'boolean', 'the farm voice can ask without a root');
+      assert.equal(typeof localVoice.ttsCached(), 'boolean', 'the station voice can ask without a root');
     } finally {
       if (before === undefined) delete process.env.STARNET_KOKORO_DTYPE; else process.env.STARNET_KOKORO_DTYPE = before;
       fs.rmSync(cache, { recursive: true, force: true });

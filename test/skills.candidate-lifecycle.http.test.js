@@ -292,7 +292,7 @@ const server = http.createServer((req, res) => {
     await api('POST', '/api/agent-skills/share', { agentId: 'agent', target: seeded.id, scope: 'project', projectRoot: path.join(fixture.workspace, 'not-trusted') }, 400);
     await api('POST', '/api/agent-skills/share', { agentId: 'agent', target: seeded.id, scope: 'station' });
     await fixture.restart();
-    assert.ok((await worker('worker_station', 'LIFECYCLE_READ farm')).includes(CANDIDATE), 'fresh worker loads exact approved station-shared body after restart');
+    assert.ok((await worker('worker_station', 'LIFECYCLE_READ station')).includes(CANDIDATE), 'fresh worker loads exact approved station-shared body after restart');
     const project = path.join(fixture.workspace, 'project-a');
     const otherProject = path.join(fixture.workspace, 'project-b');
     fs.mkdirSync(project); fs.mkdirSync(otherProject);
@@ -311,7 +311,7 @@ const server = http.createServer((req, res) => {
     await check('skills-eval-03', async () => {
       await manage({ action: 'edit', body: BASELINE + '\n' });
       await api('POST', '/api/agent-skills/allow', { agentId: 'agent', id: seeded.id });
-      assert.equal((await active()).withheld, false, 'the Farmer approved the edited skill');
+      assert.equal((await active()).withheld, false, 'the Commander approved the edited skill');
       assert.match(await worker('agent', 'LIFECYCLE_PROPOSE: Read the edited procedure, then propose the exact copy procedure again.'), /Proposed revision/);
       const again = (await candidates()).find(c => c.name === NAME && c.status === 'pending');
       assert.ok(again, 'the agent proposed a revision of the edited skill');
@@ -324,7 +324,7 @@ const server = http.createServer((req, res) => {
     // refused before the route writes any approval, or the refused click releases the withheld sibling into prompts.
     await check('skills-eval-07', async () => {
       const sibling = async () => (await api('GET', '/api/agent-skills?agent=agent&body=1')).skills.find(s => s.id === SIBLING_ID);
-      assert.equal((await sibling()).withheld, true, 'precondition: the sibling waits for the Farmer\'s approval');
+      assert.equal((await sibling()).withheld, true, 'precondition: the sibling waits for the Commander\'s approval');
       const archive = (await candidates()).find(c => c.name === SIBLING && c.status === 'pending');
       assert.ok(archive && archive.skill.state === 'archived', 'the curator archive is pending');
       assert.ok((await candidates()).some(c => c.name === REPORTS && c.status === 'pending'), 'its heir merge is still a proposal');

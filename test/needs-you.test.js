@@ -198,7 +198,7 @@ const WHOLE = { clientHeight: 19, scrollHeight: 19, clientWidth: 150, scrollWidt
   A.ok(rowsOf(hm).length === 6 && rowsOf(hm).every(m => /^<span class="ny-face" aria-hidden="true" data-ny-aid="agent"><img alt="" draggable="false" hidden><\/span>/.test(m[2])),
     'every row that names an agent leads with its portrait well (painted by AgentPortraits after the build)');
   A.ok(rowsOf(hm).every(m => /class="ny-keys"/.test(m[2]) !== /<span class="ny-go" aria-hidden="true"><\/span>/.test(m[2])), 'every row has ONE right-hand column: its key, or else the caret (never both, never neither)');
-  const station = NY._internals.html([mk('extensions', 'extension', { who: 'FARM', aid: undefined, what: 'has 2 extensions awaiting your approval', where: 'EXTENSIONS', since: 0 })], NOW);
+  const station = NY._internals.html([mk('extensions', 'extension', { who: 'STATION', aid: undefined, what: 'has 2 extensions awaiting your approval', where: 'EXTENSIONS', since: 0 })], NOW);
   A.ok(!/ny-face/.test(station) && /<span class="ny-grp-t">Extensions<\/span><\/div>/.test(station), 'a wait that names no agent (the FARM\'s extensions) has no empty portrait well');
   const src = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'needsyou.js'), 'utf8');
   A.ok(/host\.innerHTML = html\(list, now\);\s*\n\s*paintFaces\(host\);/.test(src) && /AgentPortraits\.paint\(face\.querySelector\('img'\), a\)/.test(src),

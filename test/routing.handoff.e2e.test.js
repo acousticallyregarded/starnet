@@ -199,7 +199,7 @@ test('a job that ships on LINE A rides on to LINE B by SEND TO', async () => {
    (E-STOP)", before and after this fix; that Quit says E-STOP because it really sends one.) After the restart LINE B has ONE failed
    "not sent on" record counting both, and each sending job on LINE A reads NOT sent on, with why — they used to vanish with no record
    anywhere (A's jobs read DELIVERED with no "sent on" and no "NOT sent on"). The one that was running is said as interrupted. */
-test('hand-offs waiting when the farm quits are said, never lost', async () => {
+test('hand-offs waiting when the station quits are said, never lost', async () => {
   const held = [];
   const server = http.createServer((req, res) => {
     if (req.url.includes('/chat/completions')) {
@@ -268,12 +268,12 @@ test('hand-offs waiting when the farm quits are said, never lost', async () => {
     const refused = after.find(j => j.status === 'failed');
     assert.ok(refused, 'LINE B has a record of the hand-offs that never ran: ' + JSON.stringify(after.map(j => ({ status: j.status, error: j.error }))));
     const rec = (await fixture.json('GET', '/api/line-jobs/' + refused.id)).body.job;
-    assert.equal(rec.error, 'not sent on: the farm stopped before this hand-off ran — send the job again', 'it says why');
+    assert.equal(rec.error, 'not sent on: the station stopped before this hand-off ran — send the job again', 'it says why');
     assert.equal(rec.repeats, 2, 'one record counts both waiting hand-offs');
     assert.deepEqual(rec.from && rec.from.line, LA, 'from LINE A');
     for (const id of sent.slice(1)) {
       const x = (await fixture.json('GET', '/api/line-jobs/' + id)).body.job;
-      assert.ok(x.sentTo && x.sentTo.line === LB && /farm stopped before this hand-off ran/.test(x.sentTo.refused || ''), 'each sending job reads NOT sent on, with why: ' + JSON.stringify(x.sentTo));
+      assert.ok(x.sentTo && x.sentTo.line === LB && /station stopped before this hand-off ran/.test(x.sentTo.refused || ''), 'each sending job reads NOT sent on, with why: ' + JSON.stringify(x.sentTo));
     }
     const first = (await fixture.json('GET', '/api/line-jobs/' + sent[0])).body.job;
     assert.ok(first.sentTo && first.sentTo.line === LB && !first.sentTo.refused, 'the first job was sent on (its B job ran)');

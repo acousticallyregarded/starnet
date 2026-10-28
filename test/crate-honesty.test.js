@@ -83,7 +83,7 @@ A.ok(shipCode.indexOf('shippedRunIds.add(rid)') < shipCode.indexOf('deferredShip
 /* ---- a wait never survives the floor it belongs to ---- */
 A.ok(/function clearDeferredShips\(/.test(world), 'pending waits can be cleared wholesale');
 const load = world.slice(world.indexOf('function loadStation(st)'), world.indexOf('function loadStation(st)') + 900);
-A.ok(/clearDeferredShips\(\);/.test(load), 'loading a different farm clears them — a crate must not land on the wrong floor');
+A.ok(/clearDeferredShips\(\);/.test(load), 'loading a different station clears them — a crate must not land on the wrong floor');
 A.ok(/dockLineWork\.clear\(\);/.test(load), '…and the per-dock line-work memory is cleared with it');
 
 /* ---- the crate card's LINE row names the LINE, never a BAY (review worldmodel-04) ----
@@ -146,7 +146,7 @@ A.ok(/dockLineWork\.clear\(\);/.test(load), '…and the per-dock line-work memor
   A.ok(S.crates.length === 1 && S.sunk.size === 1, '(a held crate and an OUTBOX sink on the old floor)');
   S.clear();
   A.ok(S.crates.length === 0 && S.sunk.size === 0, 'clearing drops every hand-off and the sink memory');
-  A.ok(/clearSendCrates\(\);/.test(load), 'loading a different farm clears the SEND TO crates — a hand-off never lands on the wrong floor');
+  A.ok(/clearSendCrates\(\);/.test(load), 'loading a different station clears the SEND TO crates — a hand-off never lands on the wrong floor');
   A.ok(/reframeSendCrates\(\);/.test(A.fnBody(world, 'function rederive()')), 'every re-derive re-reads the held crates against the new floor');
 }
 

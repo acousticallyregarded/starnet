@@ -120,23 +120,23 @@ const isMemory = n => /^notebook[._-]?(write|read)$/.test(n);
     const base = await turn('baseline');
     A.ok(base.length > 0, 'baseline: the run carries its default office (' + base.length + ' tools)');
     A.ok(base.some(isMemory), 'baseline: the default office carries the NOTEBOOK (' + base.filter(isMemory).join(',') + ')');
-    await post(ghostPlan, 'a plan naming a bay no farm holds');
+    await post(ghostPlan, 'a plan naming a bay no station holds');
     const ghost = await turn('ghost bay');
-    A.ok(within(ghost, base), 'with no saved farm, a plan\'s bay adds no tool the default office lacks (extra: ' + ghost.filter(n => base.indexOf(n) < 0).join(',') + ')');
+    A.ok(within(ghost, base), 'with no saved station, a plan\'s bay adds no tool the default office lacks (extra: ' + ghost.filter(n => base.indexOf(n) < 0).join(',') + ')');
     A.ok(ghost.indexOf('fs_write') >= 0 && ghost.indexOf('web_search') >= 0, 'the plan\'s CABINET and DISH, both in the default office, reach the run');
     A.ok(!ghost.some(isMemory), 'the default office\'s NOTEBOOK, which the bay room does not hold, is not granted: the bay is not handed the full office');
     await fixture.restart();
     const ghostReboot = await turn('ghost bay after restart');
     A.ok(sameSet(ghostReboot, ghost), 'after a restart re-reads routing.plan.json the run gets the same bounded room (' + ghostReboot.length + ' vs ' + ghost.length + ')');
     await post(barePlan, 'a plan naming an unequipped bay');
-    const bare = await toollessTurn('unequipped bay, no saved farm');
-    A.eq(bare.length, 0, 'with no saved farm, an UNEQUIPPED bay grants no compute: the run makes no tooled provider call (not the full office)');
+    const bare = await toollessTurn('unequipped bay, no saved station');
+    A.eq(bare.length, 0, 'with no saved station, an UNEQUIPPED bay grants no compute: the run makes no tooled provider call (not the full office)');
     await post(ghostPlan, 'the ghost-bay plan again');
 
     // ---- 2. a saved compute-only bay: no plan widens it ----
     await save(stationDoc(false), 'a compute-only bay crewed by the chat\'s agent');
     const narrow = await turn('saved compute-only bay, ghost plan');
-    A.eq(narrow.indexOf('fs_write'), -1, 'saved compute-only bay: the plan\'s CABINET on a bay the farm does not hold grants no fs_write');
+    A.eq(narrow.indexOf('fs_write'), -1, 'saved compute-only bay: the plan\'s CABINET on a bay the station does not hold grants no fs_write');
     A.eq(narrow.indexOf('web_search'), -1, 'saved compute-only bay: the plan\'s DISH grants no web_search');
     A.ok(narrow.length < base.length, 'the saved bay room is narrower than the default office (' + narrow.length + ' < ' + base.length + ')');
     await post(listedPlan, 'a plan listing a cabinet and a dish for the saved bay');

@@ -70,12 +70,12 @@ const ENV = { STARNET_REMOTE_RELAY: 'off', SKYNET_REMOTE_RELAY: 'off',
       const off = await timed('POST', '/api/agent/approval', { agentId: 'rook', mode: 'ask' });
       A.eq([off.status, off.body && off.body.via], [200, 'roster'], 'MCP attached, no page: /yolo off takes the no-page path — ' + JSON.stringify(off.body));
       A.ok(off.ms < 3000, 'at once, not after the bridge\'s 6 s wait: ' + off.ms + ' ms');
-      A.eq((await runtime('rook')).approvalMode, 'ask', 'and the farm holds rook to ask first (power CAN be taken away from the terminal)');
+      A.eq((await runtime('rook')).approvalMode, 'ask', 'and the station holds rook to ask first (power CAN be taken away from the terminal)');
       const mr = await timed('POST', '/api/agent/model', { agentId: 'rook', model: 'test/other', provider: 'openrouter' });
       A.eq([mr.status, mr.body && mr.body.via, (await runtime('rook')).model], [200, 'roster', 'test/other'], '/model too');
       const pr = await timed('POST', '/api/agent/personality', { agentId: 'rook', personality: 'blunt', system: 'ROOK-BLUNT' });
       A.eq([pr.status, pr.body && pr.body.via], [200, 'roster'], '/personality too');
-      A.ok(!asked.some(c => c.verb === 'station.control'), 'and no farm command was sent to a page that is not there');
+      A.ok(!asked.some(c => c.verb === 'station.control'), 'and no station command was sent to a page that is not there');
       mcp.close();
       await sleep(200);
     }
@@ -97,7 +97,7 @@ const ENV = { STARNET_REMOTE_RELAY: 'off', SKYNET_REMOTE_RELAY: 'off',
       A.eq(y.status, 409, 'a connected page that never answers: 409, no second write — ' + JSON.stringify(y.body));
       A.ok(y.body && y.body.pageOpen === true && y.body.unanswered === true && y.body.via !== 'roster', 'it says a page is open and did not answer (never "no app is open")');
       A.ok(!/nothing was changed/i.test(String(y.body && y.body.error)) && /may still/i.test(String(y.body && y.body.error)), 'and never "nothing was changed": the app may still be applying it — ' + (y.body && y.body.error));
-      A.eq(y.body && y.body.station && y.body.station.approvalMode, 'full', 'the reply says what the farm holds NOW, read after the wait: the page\'s push already put rook on full');
+      A.eq(y.body && y.body.station && y.body.station.approvalMode, 'full', 'the reply says what the station holds NOW, read after the wait: the page\'s push already put rook on full');
       const r = onDisk('rook');
       A.eq([r && r.system, r && r.executionProfile], ['ROOK-V2-NEWER', 'safe-cell'], 'the page\'s newer roster stands (the stale snapshot no longer overwrites it)');
     }
@@ -129,7 +129,7 @@ const ENV = { STARNET_REMOTE_RELAY: 'off', SKYNET_REMOTE_RELAY: 'off',
       const mr = await fixture.json('POST', '/api/agent/model', { agentId: 'rook', model: 'test/other', provider: 'openrouter' });
       p2.close();
       A.ok(mr.status === 409 && mr.body && mr.body.pageOpen === true, '/model with a page that never answers: 409, a page is open: ' + mr.status + ' ' + JSON.stringify(mr.body));
-      A.eq([mr.body && mr.body.station && mr.body.station.model, mr.body && mr.body.station && mr.body.station.provider], ['test/model', 'openrouter'], 'and the reply says the model the farm holds now');
+      A.eq([mr.body && mr.body.station && mr.body.station.model, mr.body && mr.body.station && mr.body.station.provider], ['test/model', 'openrouter'], 'and the reply says the model the station holds now');
       A.eq(onDisk('rook') && onDisk('rook').model, 'test/model', 'and the roster keeps its model');
     }
     await sleep(300);   // the pages' SSE sockets close
@@ -151,7 +151,7 @@ const ENV = { STARNET_REMOTE_RELAY: 'off', SKYNET_REMOTE_RELAY: 'off',
       A.eq(savedRook.approvalMode, 'ask', 'the app\'s save now says ask first for rook');
       A.ok(Number(after.updatedAt) > t0 && Number(after._saveRevision) > rev, 'on a newer copy the app adopts when it opens (updatedAt and revision moved)');
       A.eq([after.agent && after.agent.name, savedRook.name, savedRook.executionProfile], ['HERO', 'ROOK', 'station-gear'], 'nothing else in the save changed');
-      A.eq((await runtime('rook')).approvalMode, 'ask', 'the farm holds rook to ask first');
+      A.eq((await runtime('rook')).approvalMode, 'ask', 'the station holds rook to ask first');
       await fixture.restart();
       A.eq((await runtime('rook')).approvalMode, 'ask', 'and still after a restart');
       const again = await fixture.json('POST', '/api/agent/approval', { agentId: 'rook', mode: 'ask' });
@@ -173,7 +173,7 @@ const ENV = { STARNET_REMOTE_RELAY: 'off', SKYNET_REMOTE_RELAY: 'off',
       const torn = await fixture.json('POST', '/api/agent/approval', { agentId: 'rook', mode: 'ask' });
       A.eq([torn.status, torn.body && torn.body.via, torn.body && torn.body.save], [200, 'roster', 'not-saved'], 'a damaged save: the roster takes it, the save did not — ' + JSON.stringify(torn.body));
       A.ok(/damaged/.test(String(torn.body && torn.body.saveError)), 'and the reply says why: ' + (torn.body && torn.body.saveError));
-      A.eq((await runtime('rook')).approvalMode, 'ask', 'the farm asks first for rook now');
+      A.eq((await runtime('rook')).approvalMode, 'ask', 'the station asks first for rook now');
     }
   } catch (e) {
     A.ok(false, 'cli-agent-routes e2e threw: ' + ((e && e.stack) || e));
@@ -192,7 +192,7 @@ const ENV = { STARNET_REMOTE_RELAY: 'off', SKYNET_REMOTE_RELAY: 'off',
     A.eq([on.status, (await runtime('rook')).approvalMode], [200, 'full'], 'degraded: /yolo on lands on the roster');
     const off = await degraded.json('POST', '/api/agent/approval', { agentId: 'rook', mode: 'ask' });
     A.eq([off.status, off.body && off.body.save, (await runtime('rook')).approvalMode], [200, 'not-saved', 'ask'], 'degraded: /yolo off lands too (it was refused while /yolo on went through), and says the save did not take it — ' + JSON.stringify(off.body));
-    A.ok(/newer Homestead/.test(String(off.body && off.body.saveError)), 'with the reason');
+    A.ok(/newer StarNet/.test(String(off.body && off.body.saveError)), 'with the reason');
   } catch (e) {
     A.ok(false, 'cli-agent-routes degraded e2e threw: ' + ((e && e.stack) || e));
   } finally {

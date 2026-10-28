@@ -91,9 +91,9 @@ A.ok(/p\.callId === delegateCall && \(!p\.agentId \|\| p\.agentId === delegateLe
 // 6. look + placement (Andrew 10-26: "fantastic, perfect")
 const plates = A.fnBody(world, 'function drawActivityPlates(');
 A.ok(/let x = clampX\(hx - w \/ 2\), y = Math\.max\(vy0, top - H\)/.test(plates) && !/atDesk/.test(plates), 'every tag sits right above its own agent (centred over the head), never off to a desk side');
-A.ok(/ACT_PLATE_FONT = "5px /.test(world), 'tags are WORLD px: they scale with the farm and never grow when the camera zooms out');
+A.ok(/ACT_PLATE_FONT = "5px /.test(world), 'tags are WORLD px: they scale with the station and never grow when the camera zooms out');
 A.ok(/b === hoverAgent \|\| \(chatFocusId != null && aid === chatFocusId\)/.test(plates), 'only the agent in COMMS or under the pointer gets the full card');
-A.ok(plates.indexOf('crewIsAwaiting(b)') >= 0, 'a tag stands down while its agent waits on the Farmer');
+A.ok(plates.indexOf('crewIsAwaiting(b)') >= 0, 'a tag stands down while its agent waits on the Commander');
 A.ok(/PLATES_ON && plateByAgent\.has\(aid\)\) continue;   \/\/ its ACTIVITY PLATE carries this clock/.test(world), 'one clock per run: the RUN tag stands down for a plated agent');
 
 A.report('summon-lines');

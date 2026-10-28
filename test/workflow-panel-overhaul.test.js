@@ -27,7 +27,7 @@ const sizeIn = block => { const m = /font-size:\s*([0-9.]+)px/.exec(block); retu
 /* ---------- readable ---------- */
 const sizes = (css.match(/font-size:\s*[0-9.]+px/g) || []).map(s => +/([0-9.]+)px/.exec(s)[1]);
 A.ok(sizes.length > 40 && Math.min.apply(null, sizes) >= 14, 'nothing in the panel is set under 14px (smallest: ' + Math.min.apply(null, sizes) + 'px)');
-A.eq(sizeIn(rule('.wf-panel')), 17, 'the panel reads at the farm\'s size: 17px');
+A.eq(sizeIn(rule('.wf-panel')), 17, 'the panel reads at the station\'s size: 17px');
 A.ok(sizeIn(rule('.wf-sentence')) >= 17 && sizeIn(rule('.wf-help')) >= 17, 'the how-it-runs sentence and every help line read at 17px or more');
 for (const [sel, min] of [['.wf-panel .trg-row', 16], ['.wf-panel .trg-row-meta', 15], ['.wf-panel .trg-form-k', 15], ['.wf-panel :is(.refit-input,.refit-brief)', 17],
   ['.wf-panel .trg-preview', 15], ['.wf-panel :is(.sp-mode,.sp-unit)', 16], ['.wf-panel .sp-day', 16], ['.wf-panel :is(.sp-lbl,.sp-tz,.sp-hint,.sp-note)', 15], ['.wf-panel .sp .sp-num', 16]]) {

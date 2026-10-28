@@ -66,7 +66,7 @@ const HOST = '127.0.0.1';
     const hit = await registry.get('tool.search').run({ query: 'generate an image' }, ctx);
     A.ok(hit.content.indexOf('image_generate') >= 0 && hit.content.indexOf('NOT USABLE RIGHT NOW') >= 0, 'search finds the unavailable tool and says it cannot work');
     A.ok(hit.content.indexOf('OpenAI or OpenRouter') >= 0, 'search names how to enable it');
-    A.eq(hit.control && hit.control.revealTools, ['image_generate'], 'it is still revealed (the Farmer may fix it mid-run)');
+    A.eq(hit.control && hit.control.revealTools, ['image_generate'], 'it is still revealed (the Commander may fix it mid-run)');
     const pdf = await registry.get('tool.search').run({ query: 'save the page as a pdf' }, ctx);
     A.ok(pdf.content.indexOf('NOT USABLE') < 0, 'an available deferred tool gets no caveat');
   }

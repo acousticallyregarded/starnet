@@ -72,7 +72,7 @@ A.ok(/if \(railAgentFilter && railAgentFilter !== id\) \{ railAgentFilter = null
 A.ok(!/localStorage\.setItem\([^)]*railAgentFilter/.test(app), 'the narrowed view is view state only — never persisted');
 
 A.ok(/if \(present\.length > 1 && typeof App !== 'undefined' && App\.filterRailByAgent\) App\.filterRailByAgent\(li\.dataset\.agentId\);\s*else openAgent\(\+li\.dataset\.i\);/.test(ui),
-  'a crew row narrows the rail; a one-agent farm keeps crew-click = dossier');
+  'a crew row narrows the rail; a one-agent station keeps crew-click = dossier');
 A.ok(/li\.addEventListener\('contextmenu', ev => \{ ev\.preventDefault\(\); sfx\('click'\); openAgent\(\+li\.dataset\.i\); \}\);/.test(ui),
   'right-click (and Shift+F10) on a crew row opens the dossier');
 A.ok(/present\.length > 1 \? '<button type="button" class="crew-dossier"/.test(ui), 'the DOSSIER key shows only when the click is a filter');

@@ -88,8 +88,8 @@ const { spawnSync } = require('node:child_process');
     // the station schema 1 -> 2 step
     const v1 = { local: { station: { version: 1, props: [{ id: 'd' }] } } };
     const v2 = { local: { station: { version: 2, props: [{ id: 'd' }], links: [] } } };
-    A.eq(same(C.adoptStationSchemaV2(v1, v2), v2), true, 'farm schema 1 -> 2 with an empty links list is the expected migration');
-    A.eq(same(C.adoptStationSchemaV2(v1, { local: { station: { version: 2, props: [], links: [] } } }), { local: { station: { version: 2, props: [], links: [] } } }), false, 'a farm that lost a prop still fails');
+    A.eq(same(C.adoptStationSchemaV2(v1, v2), v2), true, 'station schema 1 -> 2 with an empty links list is the expected migration');
+    A.eq(same(C.adoptStationSchemaV2(v1, { local: { station: { version: 2, props: [], links: [] } } }), { local: { station: { version: 2, props: [], links: [] } } }), false, 'a station that lost a prop still fails');
     A.eq(same(C.adoptStationSchemaV2(v1, { local: { station: { version: 2, props: [{ id: 'd' }], links: [{ from: 'a', to: 'b' }] } } }), { local: { station: { version: 2, props: [{ id: 'd' }], links: [{ from: 'a', to: 'b' }] } } }), false, 'invented links still fail');
     const suits = /const SUITS = (\[[^\]]+\])/.exec(fs.readFileSync(path.join(__dirname, '../frontend/app/app.js'), 'utf8'));
     A.ok(suits, 'app.js still declares the crew SUITS palette');

@@ -176,8 +176,8 @@ const redact = (t) => String(t).replace(/sk-[A-Za-z0-9]{8,}/g, '[redacted]');
     const st = makeSkillStore({ io: memIo(), clock, redact });
     for (const name of ['Alpha brief', 'Beta report', 'Zoom setup']) st.write({ agentId: 'a', name, summary: 'when ' + name.toLowerCase() + ' comes up', body: 'steps' });
     A.ok(st.manage({ agentId: 'a', action: 'pin', target: 'Zoom setup' }).ok, 'pin the alphabetically last skill');
-    st.write({ agentId: 'b', name: 'Shared runbook', summary: 'farm ops', body: 'steps' });
-    A.ok(st.share({ agentId: 'b', target: 'Shared runbook', scope: 'station', actor: 'user' }).ok, 'b shares a farm skill');
+    st.write({ agentId: 'b', name: 'Shared runbook', summary: 'station ops', body: 'steps' });
+    A.ok(st.share({ agentId: 'b', target: 'Shared runbook', scope: 'station', actor: 'user' }).ok, 'b shares a station skill');
     const own = runtimeSkills.composeIndex(st.listAccessible('a', {}), {});
     A.ok(own.text.indexOf('Zoom setup') >= 0 && own.text.indexOf('Zoom setup') < own.text.indexOf('Alpha brief'), 'a pinned skill leads the index on a turn with no query');
     const line = name => own.text.split('\n').find(l => l.indexOf('- ' + name) === 0) || '';
@@ -187,7 +187,7 @@ const redact = (t) => String(t).replace(/sk-[A-Za-z0-9]{8,}/g, '[redacted]');
     A.ok(/Additional saved skills/.test(tight.text) && tight.text.indexOf('- Beta report [owner:') < 0 && tight.text.indexOf('- Shared runbook [owner: b]') >= 0, 'the names-only overflow applies the same rule');
     // Another agent's pinned station skill never jumps ahead of the agent's own skills, even when the caller passes
     // no agentId (the run prompt): listAccessible's agent-scope rows are the caller's own, so they name the owner.
-    A.ok(st.manage({ agentId: 'b', action: 'pin', target: 'Shared runbook' }).ok, 'b pins its farm skill');
+    A.ok(st.manage({ agentId: 'b', action: 'pin', target: 'Shared runbook' }).ok, 'b pins its station skill');
     const noQuery = runtimeSkills.composeIndex(st.listAccessible('a', {}), {}).text;
     A.ok(noQuery.indexOf('Zoom setup') < noQuery.indexOf('Alpha brief') && noQuery.indexOf('Beta report') < noQuery.indexOf('Shared runbook'), 'with no query, the agent\'s own pin leads and another agent\'s pin keeps its place after the agent\'s own skills');
     const asked = runtimeSkills.composeIndex(st.listAccessible('a', {}), { query: 'alpha brief' }).text;
@@ -202,9 +202,9 @@ const redact = (t) => String(t).replace(/sk-[A-Za-z0-9]{8,}/g, '[redacted]');
     clk = 6000; st.write({ agentId: 'a', name: 'Beta mid', summary: 'x', body: 'steps' });
     clk = 7000; st.write({ agentId: 'a', name: 'Gamma new', summary: 'x', body: 'steps' });
     clk = 7500; A.ok(st.manage({ agentId: 'a', action: 'pin', target: 'Alpha old' }).ok, 'pin the oldest own skill');
-    clk = 8000; st.write({ agentId: 'b', name: 'Aardvark farm', summary: 'x', body: 'steps' });
-    A.ok(st.share({ agentId: 'b', target: 'Aardvark farm', scope: 'station', actor: 'user' }).ok, 'b shares a newer farm skill');
-    A.eq(st.listAccessible('a', {}).map(s => s.name), ['Alpha old', 'Gamma new', 'Beta mid', 'Aardvark farm'],
+    clk = 8000; st.write({ agentId: 'b', name: 'Aardvark station', summary: 'x', body: 'steps' });
+    A.ok(st.share({ agentId: 'b', target: 'Aardvark station', scope: 'station', actor: 'user' }).ok, 'b shares a newer station skill');
+    A.eq(st.listAccessible('a', {}).map(s => s.name), ['Alpha old', 'Gamma new', 'Beta mid', 'Aardvark station'],
       'own pin first, then own skills newest first, then other agents\' skills');
     clk = saved;
   }
@@ -450,7 +450,7 @@ const redact = (t) => String(t).replace(/sk-[A-Za-z0-9]{8,}/g, '[redacted]');
   const g = runtimeSkills.composeIndex([], { emptyGuide: true, canManage: true }).text;
   A.ok(/## SAVED AGENT SKILLS/.test(g) && /no saved skills yet/.test(g), 'emptyGuide -> a zero-skill agent is told it has none and what a skill is');
   A.ok(g.indexOf('skill.manage (action create)') >= 0, 'the line names the create call the agent actually has');
-  A.ok(g.indexOf('It applies once approved in ABILITIES > SKILLS.') >= 0, 'the line never implies a saved skill applies before the Farmer approves it');
+  A.ok(g.indexOf('It applies once approved in ABILITIES > SKILLS.') >= 0, 'the line never implies a saved skill applies before the Commander approves it');
   A.ok(/skill.write/.test(runtimeSkills.composeIndex([], { emptyGuide: true, canManage: false }).text), 'without skill.manage the line names skill.write');
   A.eq(runtimeSkills.composeIndex([], { emptyGuide: true, canManage: true }).text, g, 'the line is a constant (rides the cached prefix)');
   const allArchived = runtimeSkills.composeIndex([{ name: 'Old', body: 'x', state: 'archived' }, { name: 'Older', body: 'y', state: 'archived' }], { emptyGuide: true, canManage: true }).text;

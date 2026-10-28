@@ -135,7 +135,7 @@ const section1 = (async () => {
   // ahead of it, inside the bridge's catch-all, a throw here skipped the reconciliation; test/channels.sse drives the order)
   A.ok(/function forgetShipBase\(\) \{\s*shipBase = \{ known: false, byLine: \{\} \}; shipApplied = shipSeq; shipBaseReading = false; refreshShipBase\(\);\s*\}/.test(world)
     && /m\.stream === 'ready'[\s\S]{0,400}fetchSnapshot\(\);[\s\S]{0,300}forgetShipBase\(\);/.test(world), 'a (re)connected stream drops the old counts and reads them again');
-  A.ok(/shipBase = \{ known: false, byLine: \{\} \}; shipBaseHash = null; shipApplied = shipSeq; firstShipPending\.clear\(\);/.test(world), 'another farm starts with no counts');
+  A.ok(/shipBase = \{ known: false, byLine: \{\} \}; shipBaseHash = null; shipApplied = shipSeq; firstShipPending\.clear\(\);/.test(world), 'another station starts with no counts');
 }
 
 /* ---------- 3. Build: first per line, spent flags, the upgrade from an older build's `done` ---------- */
@@ -172,7 +172,7 @@ const section1 = (async () => {
   ctx = mk(store);
   A.eq(ctx.spent(ca.key), true, 'an older build\'s `done` reads as a spent FIRST SHIP');
   A.eq(ctx.shipped(of(a, 'outbox'), ca.key), null, '…so its first shipment under this build is no FIRST SHIP');
-  A.eq(store['starnet.refit.finline.v2.test'], '1', 'the upgrade is marked done for this farm');
+  A.eq(store['starnet.refit.finline.v2.test'], '1', 'the upgrade is marked done for this station');
   A.eq(JSON.parse(store['starnet.refit.finline.test'])[cb.key], { dis: 1 }, 'a dismissed line is untouched by the upgrade');
   // …and runs ONCE: a `done` that appears after it is never honoured (nothing writes one now; a stray one proves no shipment)
   store['starnet.refit.finline.test'] = JSON.stringify({ [cb.key]: { done: 1 } });

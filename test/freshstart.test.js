@@ -34,7 +34,7 @@ function storage(seed) {
   A.eq(sawCacheBeforeNative, true, 'durable quarantine succeeds before browser cache is cleared');
   A.eq(result.listening, true, 'native listening truth is returned to the gate');
   A.eq(result.browserDataCleared, true, 'the renderer proves its fallback browser clear');
-  A.eq(result.browserKeysCleared, 5, 'dot and legacy underscore Homestead namespaces are cleared');
+  A.eq(result.browserKeysCleared, 5, 'dot and legacy underscore StarNet namespaces are cleared');
   A.eq(store.snapshot(), { 'unrelated.host.preference': 'keep' }, 'unrelated origin state is untouched');
 
   const refused = storage({ 'starnet.save': 'last-readable-copy' });
@@ -53,7 +53,7 @@ function storage(seed) {
   const incomplete = await FreshStart.resetDesktop({
     async invoke() { return { ok: true, listening: true, quarantine: 'safe-copy', browserDataCleared: false }; }
   }, blocked);
-  A.eq(incomplete.browserDataCleared, false, 'native and renderer clear failure is reported instead of claiming a fresh farm');
+  A.eq(incomplete.browserDataCleared, false, 'native and renderer clear failure is reported instead of claiming a fresh station');
   A.ok(incomplete.browserClearError.includes('storage locked'), 'the truthful browser-clear failure reaches the gate');
 
   let unlocked = false, present = true;

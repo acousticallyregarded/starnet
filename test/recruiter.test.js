@@ -44,7 +44,7 @@ A.ok(top.confidence > 0 && top.confidence <= 1, 'confidence is an honest 0..1');
 
 /* every recommended class carries a why derivable from a counter (no empty/fabricated reasons) */
 A.ok(res.items.every(x => typeof x.why === 'string' && x.why.length > 0), 'every pick has a non-empty honest why');
-A.ok(res.items.every(x => x.evidence && x.evidence.kitAffinity > 0), 'every pick has real kit-affinity evidence (touches the Farmer’s work)');
+A.ok(res.items.every(x => x.evidence && x.evidence.kitAffinity > 0), 'every pick has real kit-affinity evidence (touches the Commander’s work)');
 
 /* ---------- a class already on the roster is NEVER recommended ---------- */
 const res2 = R.recommend({ worksignal: dishSig, roster: ['researcher', 'scout'], catalog: CATALOG, now: 0 });
@@ -83,6 +83,6 @@ A.ok(/terminal|files/.test(codeRes.items[0].why), 'the code pick’s why names t
 // appear just because the dossier text keyword-matches its blurb.
 const onlyDish = sigOf('dish', 'general', 10);
 const kwRes = R.recommend({ worksignal: onlyDish, roster: ['chief'], catalog: CATALOG, dossier: { goals: ['I need visuals and design assets and layout'], pain: [], ambition: [] }, now: 0 });
-A.ok(!kwRes.items.some(x => x.classId === 'designer'), 'a class whose kit the Farmer never used is not curated on a dossier keyword hit alone');
+A.ok(!kwRes.items.some(x => x.classId === 'designer'), 'a class whose kit the Commander never used is not curated on a dossier keyword hit alone');
 
 A.report('recruiter');

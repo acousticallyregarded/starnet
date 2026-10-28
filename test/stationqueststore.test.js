@@ -48,8 +48,8 @@ global.ReturnStore = { pendingCount: () => pendingCrates };
 global.App = { agentName: id => (id === 'nova' ? 'NOVA' : null), heroId: () => 'hero' };
 
 // THE LAW tripwires: minting/closing a station quest must never touch XP and never emit on the bus.
-global.Xp = { applyEvent: () => { throw new Error('LAW VIOLATION: farm quests must never mint XP'); }, compute: () => { throw new Error('LAW VIOLATION: farm quests must never touch XP'); } };
-global.XpStore = { onEvent: () => { throw new Error('LAW VIOLATION: farm quests must never feed the XP engine'); } };
+global.Xp = { applyEvent: () => { throw new Error('LAW VIOLATION: station quests must never mint XP'); }, compute: () => { throw new Error('LAW VIOLATION: station quests must never touch XP'); } };
+global.XpStore = { onEvent: () => { throw new Error('LAW VIOLATION: station quests must never feed the XP engine'); } };
 const listeners = {};
 global.U = {
   bus: {
@@ -125,7 +125,7 @@ A.eq(StationQuestStore.quests().some(q => q.id.indexOf(':outbox') > 0), false, '
 {
   // an OPEN one an older build saved is waved off on load — never flipped done (nothing was closed), never re-minted
   const saved = JSON.parse(global.localStorage.getItem('starnet.stationquests.v1'));
-  saved.gaps['sq:hero:outbox'] = { agentId: 'hero', cap: 'outbox', capLabel: 'DELIVERY', propLabel: 'OUTBOX', agentLabel: 'The farm', firstSeenAt: 1, lastSeenAt: 1, hits: 1, completedAt: null, dismissedAt: null };
+  saved.gaps['sq:hero:outbox'] = { agentId: 'hero', cap: 'outbox', capLabel: 'DELIVERY', propLabel: 'OUTBOX', agentLabel: 'The station', firstSeenAt: 1, lastSeenAt: 1, hits: 1, completedAt: null, dismissedAt: null };
   global.localStorage.setItem('starnet.stationquests.v1', JSON.stringify(saved));
   StationQuestStore.init();
   A.eq(StationQuestStore.quests().some(q => q.id === 'sq:hero:outbox'), false, 'a saved OPEN OUTBOX quest is retired on load');
@@ -143,14 +143,14 @@ StationQuestStore.reset();
 A.eq(global.localStorage.getItem('starnet.stationquests.v1'), null, 'reset removes the self-persisted key');
 A.eq(StationQuestStore.quests().length, 0, 'a reset store degrades to no quests until the next init');
 StationQuestStore.init();
-A.eq(StationQuestStore.isDismissed('sq:nova:studio'), false, 'after reset+init, no prior Farmer history remains');
+A.eq(StationQuestStore.isDismissed('sq:nova:studio'), false, 'after reset+init, no prior Commander history remains');
 
 /* ---------- source-level locks: the browser wiring (not node-loadable) ---------- */
 const qsSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/queststore.js'), 'utf8');
 A.ok(/StationQuestStore/.test(qsSrc) && /stationGaps/.test(qsSrc), 'queststore.view joins the station-gap quests into the one projection (they ride the shared QuestState fold → G1a celebration)');
 const stSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/stationui.js'), 'utf8');
 A.ok(/StationQuestStore\s*!==\s*'undefined'/.test(stSrc) && /StationQuestStore/.test(stSrc), 'stationui guards on the store being present');
-A.ok(stSrc.indexOf('StationQuestStore') < stSrc.indexOf('QuestStateStore.sync()'), 'the farm tick resolves gaps BEFORE the durable fold — a fresh completion celebrates the same beat');
+A.ok(stSrc.indexOf('StationQuestStore') < stSrc.indexOf('QuestStateStore.sync()'), 'the station tick resolves gaps BEFORE the durable fold — a fresh completion celebrates the same beat');
 A.ok(/station-gap/.test(stSrc), 'the quest log dismiss ✕ routes station-gap quests to their own permanent denylist');
 const appSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/app.js'), 'utf8');
 A.ok(/StationQuestStore\.init\(\)/.test(appSrc), 'app.js initializes the generator on enterGame');
@@ -161,7 +161,7 @@ A.ok(/app\/stationquests\.js/.test(html) && /app\/stationqueststore\.js/.test(ht
 /* ---------- FIX 3 source-locks: a prop placement drives the resolve→fold IMMEDIATELY (not just the 1s tick) ---------- */
 A.ok(/function pokeQuests\s*\(/.test(stSrc), 'stationui exposes a pokeQuests() that runs the resolve→fold sequence');
 const pokeBody = stSrc.slice(stSrc.indexOf('function pokeQuests'), stSrc.indexOf('function tick'));
-A.ok(pokeBody.indexOf('StationQuestStore.sync') >= 0 && pokeBody.indexOf('StationQuestStore.sync') < pokeBody.indexOf('QuestStateStore.sync'), 'pokeQuests resolves farm gaps BEFORE folding — a just-closed gap celebrates on its own edge');
+A.ok(pokeBody.indexOf('StationQuestStore.sync') >= 0 && pokeBody.indexOf('StationQuestStore.sync') < pokeBody.indexOf('QuestStateStore.sync'), 'pokeQuests resolves station gaps BEFORE folding — a just-closed gap celebrates on its own edge');
 A.ok(/pokeQuests\b/.test(stSrc.slice(stSrc.lastIndexOf('return {'))), 'pokeQuests is on the StationUI public surface');
 const buildSrc = fs.readFileSync(path.join(__dirname, '../frontend/app/build.js'), 'utf8');
 A.ok(/StationUI\.pokeQuests/.test(buildSrc), 'the placement path (build.js) pokes the quest generators the instant a prop lands');

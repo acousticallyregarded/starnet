@@ -126,7 +126,7 @@ assert.equal(bake.LIGHT.ambient, original.ambient);
     'a restored backup converts a legacy room light value too');
 }
 
-assert.match(src, /roomLighting: 0, textScale/, 'default is the approved farm');
+assert.match(src, /roomLighting: 0, textScale/, 'default is the approved station');
 assert.match(src, /applyRoomLighting\(s\.roomLighting\);\n/, 'applySettings applies the saved level');
 assert.match(src, /roomLighting: resolveRoomLighting\(store\.settings\.roomLighting\)/, 'backup includes lighting');
 assert.match(src, /id="set-room-light"[^>]*min="0" max="100"/, 'Settings shows the 0–100 slider');

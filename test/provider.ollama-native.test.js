@@ -56,7 +56,7 @@ module.exports = (async () => {
     A.eq(t2({ error: 'boom' }), { error: { message: 'boom' } }, 'a mid-stream error line becomes an error chunk');
   }
   // ---- window sizing ----
-  A.eq(N.pickNumCtx(25000, {}), 32768, 'a Homestead task (~21k prompt + 4k output) lands on 32k');
+  A.eq(N.pickNumCtx(25000, {}), 32768, 'a StarNet task (~21k prompt + 4k output) lands on 32k');
   A.eq(N.pickNumCtx(25000, { modelMax: 16384 }), 16384, 'never past the model\'s trained window');
   A.eq(N.pickNumCtx(900000, {}), N.DEFAULT_MAX_CTX, 'never past the ceiling');
   A.eq(N.pickNumCtx(1000, { floor: 32768 }), 32768, 'never steps down from a window the model already runs at (a reload)');
@@ -348,7 +348,7 @@ module.exports = (async () => {
     await collect(thinker(), { model: 'q', messages: msg });
     A.eq(seen.pop().think, false, 'a background call (no tools, isTask unset) tells a thinking model not to think');
     await collect(thinker(), { model: 'q', messages: msg, isTask: false });
-    A.eq(seen.pop().think, undefined, 'a Farmer greeting keeps the model default');
+    A.eq(seen.pop().think, undefined, 'a Commander greeting keeps the model default');
     await collect(thinker(), { model: 'q', messages: msg, tools: TOOLS, isTask: true });
     A.eq(seen.pop().think, undefined, 'a task keeps the model default');
     await collect(thinker(), { model: 'q', messages: msg, tools: TOOLS });
@@ -384,7 +384,7 @@ module.exports = (async () => {
     const ollama = (effort, caps) => factory.selectProvider(Object.assign({ provider: 'ollama', fetch: mkFetch(caps || ['completion', 'tools', 'thinking']) }, effort == null ? {} : { reasoningEffort: effort }));
     A.eq(factory.defaultReasoningEffortForProvider('ollama'), 'none', 'fixture: Ollama\'s default effort is OFF');
     await collect(ollama('none'),{ model: 'q', messages: msg, isTask: false });
-    A.eq(seen.pop().think, false, 'Reasoning OFF: a Farmer greeting is sent think:false');
+    A.eq(seen.pop().think, false, 'Reasoning OFF: a Commander greeting is sent think:false');
     await collect(ollama('none'), { model: 'q', messages: msg, tools: TOOLS, isTask: true });
     A.eq(seen.pop().think, false, 'Reasoning OFF: a task is sent think:false');
     await collect(ollama('none'), { model: 'q', messages: msg });
@@ -494,7 +494,7 @@ module.exports = (async () => {
       let err;
       try { await collect(lan, { model: 'qwen3:8b', messages: [{ role: 'user', content: 'hello' }] }); } catch (e) { err = e; }
       A.ok(err && /^The model server at ollama\.lan ran out of memory\./.test(err.message), 'a remote allocation failure names that server: ' + (err && err.message));
-      A.ok(err && !/Close other local models|this computer/.test(err.message), 'and never tells the Farmer to close apps here');
+      A.ok(err && !/Close other local models|this computer/.test(err.message), 'and never tells the Commander to close apps here');
       A.eq(errorClass.classifyApiError(err, { model: 'qwen3:8b' }).reason, 'local_memory', 'it is still the memory category');
     }
     // A generic hosted 500 with the same upstream detail stays retryable: this is an Ollama-specific decision.

@@ -61,7 +61,7 @@ A.ok(/reasoningEffort: internalEffortRan\(\) \|\| reasoningEffort, unmetered:/.t
 A.ok(!/internalEffort \|\| reasoningEffort/.test(idx), 'no record keeps the pre-heal pick');
 // …except an internal run whose reply IS work the Commander reads (the autopilot's desk draft + its self-critique):
 // it keeps the Commander's effort. Opt-out is explicit, end to end: page -> /api/run body -> runOnce.
-A.ok(/const internalEffort = o\.internal && !o\.keepEffort \? auxPassEffort\(provider, model\) : null;/.test(idx), 'an INTERNAL self-talk run picks the aux effort for its own model (o.internal, never an /v1 outputOnly repair); a work-product one keeps the Farmer effort');
+A.ok(/const internalEffort = o\.internal && !o\.keepEffort \? auxPassEffort\(provider, model\) : null;/.test(idx), 'an INTERNAL self-talk run picks the aux effort for its own model (o.internal, never an /v1 outputOnly repair); a work-product one keeps the Commander effort');
 A.ok(/const keepEffort = !!\(internal && body && body\.keepEffort === true\);/.test(idx) && /internal, evidence, keepEffort,/.test(idx), 'handleRun reads keepEffort (only beside internal) and hands it to runOnce');
 const harness = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'harness.js'), 'utf8');
 A.ok(/if \(internal && keepEffort\) reqBody\.keepEffort = true;/.test(harness), 'Harness.chat forwards keepEffort only on an internal run');
@@ -71,16 +71,16 @@ A.ok(/buildCritiqueDirective\(deliverable, sel\.selected, \{ style, standingOrde
 A.ok(/buildCandidateDirective\(\{ beliefs, eligible \}\) \}\], agentId: 'agent', isTask: false, placed: \[\], internal: true \}/.test(ap), 'its candidate list stays strict-format self-talk (aux effort)');
 const app = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'app.js'), 'utf8');
 A.ok(/content: 'Reply with exactly: OK' \}\], agentId: 'agent', isTask: false, placed: \[\], internal: true, keepEffort: true \}/.test(A.fnBody(app, 'async function preflightWire(')),
-  'the WAKE preflight keeps the Farmer effort: it proves the path the awakening runs on, not the aux one');
+  'the WAKE preflight keeps the Commander effort: it proves the path the awakening runs on, not the aux one');
 const chatSrc = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'chat.js'), 'utf8');
 A.ok(/const usr = GoalLoop\.judgeUser\([^\n]*\n[^\n]*\n\s*const res = await Harness\.chat\(\{ system: sys, [^\n]*internal: true, keepEffort: true \}\);/.test(chatSrc),
-  'the goal loop JUDGE keeps the Farmer effort (a wrong DONE ends their loop)');
+  'the goal loop JUDGE keeps the Commander effort (a wrong DONE ends their loop)');
 const goals = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'goalstore.js'), 'utf8');
 A.ok(/isTask: false, placed: \[\], internal: true, evidence: true, keepEffort: true,\n\s*messages: \[\{ role: 'user', content: 'Help me shape this ambition/.test(goals),
-  'a plan the Farmer asked for (suggestPlan) keeps their effort');
+  'a plan the Commander asked for (suggestPlan) keeps their effort');
 A.ok(/const directive = Goals\.buildDirective\(belief\.text\);[\s\S]{0,800}?agentId: 'agent', isTask: false, placed: \[\], internal: true, evidence: true \}\);/.test(goals),
   'the proactive goal-arc decomposition stays on the aux effort');
-A.ok(/auxEffortFor: auxReasoningEffort,/.test(idx), 'compaction keeps auxReasoningEffort (the Farmer\'s task context)');
+A.ok(/auxEffortFor: auxReasoningEffort,/.test(idx), 'compaction keeps auxReasoningEffort (the Commander\'s task context)');
 // the measured session's skill-review spend row carried no model ("(unknown)" in the breakdown): every aux spend row names it
 A.ok(/ledger\.record\(\{ runId: reviewRunId, [^}]*model: model \|\| '',/.test(idx), 'the skill review spend row names the model it spent on');
 A.ok(/ledger\.record\(\{ runId: curatorRunId, [^}]*model: model \|\| '',/.test(idx), 'the skill curator spend row names the model it spent on');

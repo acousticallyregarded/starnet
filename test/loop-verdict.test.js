@@ -196,7 +196,7 @@ const handedText = (entry) => (entry.text.split('produced:\n')[1] || '').split('
   }
   {
     // a SHORT work (one line) beside an approval about as long as it: the reply still does not carry the work
-    const TWEET = 'Launch day: Homestead ships review gates.';
+    const TWEET = 'Launch day: StarNet ships review gates.';
     const R = rig(loopFloor({ maxIter: 3, when: 'approved' }, outboxDone), {
       writer: { text: TWEET, usd: 0.01 }, reviewer: { text: 'Great hook, ship it.\nVERDICT: approved', usd: 0.01 }
     });

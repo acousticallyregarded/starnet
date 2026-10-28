@@ -78,7 +78,7 @@ async function until(fn, ms) { const end = Date.now() + (ms || 8000); while (Dat
     await click(await rect('#pass'));
     await typeKeys('hunter2');
     const typed = await driver.testEval('({ user: document.querySelector("#user").value, passLen: document.querySelector("#pass").value.length })');
-    A.eq(typed, { user: 'andrew', passLen: 7 }, 'the Farmer\'s paste and keystrokes landed in the real fields');
+    A.eq(typed, { user: 'andrew', passLen: 7 }, 'the Commander\'s paste and keystrokes landed in the real fields');
     const seqBefore = f1.frame.seq;
     await host.input(h.id, { type: 'key', action: 'down', key: 'Enter', code: 'Enter', keyCode: 13, text: '\r' });
     await host.input(h.id, { type: 'key', action: 'up', key: 'Enter', code: 'Enter', keyCode: 13 });
@@ -90,7 +90,7 @@ async function until(fn, ms) { const end = Date.now() + (ms || 8000); while (Dat
     const out = await pending;
     A.eq(out.summary, 'handed back', 'HAND BACK resumes the agent');
     A.ok(out.content.indexOf(base + '/account') >= 0, 'the agent is told it is now on /account');
-    A.ok(!/hunter2|andrew/.test(out.content.replace(/Signed in as/g, '')), 'nothing the Farmer typed is in the agent\'s result');
+    A.ok(!/hunter2|andrew/.test(out.content.replace(/Signed in as/g, '')), 'nothing the Commander typed is in the agent\'s result');
     const who = await tool('browser.test_state').run({ selector: '#who' }, {});
     A.ok(/Signed in as andrew/.test(who.content), 'the agent reads the signed-in page after the handoff: ' + who.content.slice(0, 160));
   } finally {

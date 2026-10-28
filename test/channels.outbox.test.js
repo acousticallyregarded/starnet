@@ -219,7 +219,7 @@ function mkHub(store, sendImpl, events) {
     A.eq(store.loadInbox('telegram'), [], 'capacity recovery replays and completes the pending intake');
     A.ok(sends.some(x => x.chatId === 'new' && /the result/.test(x.text)), 'the backpressured message ultimately receives its answer');
     // a same-process replay is no restart (e5ecd6b8 review): the chat gets that answer once, and no "restarted" notice
-    A.eq(sends.filter(x => x.chatId === 'new' && x.ok).map(x => x.text), ['the result'], 'the chat is sent the answer once and is never told Homestead restarted');
+    A.eq(sends.filter(x => x.chatId === 'new' && x.ok).map(x => x.text), ['the result'], 'the chat is sent the answer once and is never told StarNet restarted');
     hub.close();
   }
 

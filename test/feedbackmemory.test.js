@@ -29,8 +29,8 @@ A.ok(r && r.created, 'a miss creates a record');
 const rec = r.rec;
 A.eq(rec.id, 'note_2', 'collision-proof id from memcore');
 A.eq(rec.origin, 'feedback', 'origin feedback'); A.eq(rec.kind, 'profile', 'Preference kind'); A.eq(rec.title, 'Preference', 'Preference title');
-A.eq(rec.confirmation, 'user-confirmed', 'the Farmer\'s own verdict is user-confirmed');
-A.eq(rec.scope, 'global', 'taste is global (about the Farmer, not one repo)');
+A.eq(rec.confirmation, 'user-confirmed', 'the Commander\'s own verdict is user-confirmed');
+A.eq(rec.scope, 'global', 'taste is global (about the Commander, not one repo)');
 A.ok(rec.trust > 0, 'trust seeded like a Keep');
 A.eq(rec.sourceRunId, 'run-a', 'record names the run that taught it');
 A.eq(r.list.length, 2, 'ordinary notes are kept');
@@ -73,7 +73,7 @@ A.eq(FM.selectTaste(null).length, 0, 'null-safe');
   // the Commander edits the record in the Memory Core (memcore.applyEdit rewrites content+body only)
   l = [Object.assign({}, l[0], { content: 'Keep briefs under 100 words, bullets only', body: 'Keep briefs under 100 words, bullets only' })];
   const r = FM.apply(l, { runId: 'r9', verdict: 'miss', words: 'and no emoji' }, deps(50));
-  A.ok(r && /^Keep briefs under 100 words, bullets only · also: "and no emoji"$/.test(r.rec.content), 'new words append to the Farmer\'s edit (' + (r && r.rec.content) + ')');
+  A.ok(r && /^Keep briefs under 100 words, bullets only · also: "and no emoji"$/.test(r.rec.content), 'new words append to the Commander\'s edit (' + (r && r.rec.content) + ')');
   A.eq(FM.apply(r.list, { runId: 'r9', verdict: 'miss' }, deps(51)), null, 'an edited record with nothing new stays exactly as edited');
 }
 // ---- looksLikeFeedback(): a typed follow-up only becomes taste when it is about the work ----
@@ -107,7 +107,7 @@ A.eq(FM.directiveFor(null, null), '', 'null-safe');
 
 // ---- the block renders through the real recall renderer with the taste header ----
 const block = renderRecall(picked, { limit: FM.TASTE_CHARS, header: FM.TASTE_HEADER });
-A.ok(block.text.indexOf('Farmer\'s own verdicts') >= 0, 'taste header present');
+A.ok(block.text.indexOf('Commander\'s own verdicts') >= 0, 'taste header present');
 A.ok(block.text.indexOf('DISLIKED: "too long') >= 0 && block.text.indexOf('WANTS: "cite sources"') >= 0, 'both beliefs render');
 A.ok(block.text.indexOf('[user-confirmed reference]') >= 0, 'rendered as user-confirmed');
 A.eq(block.usedIds.length, 2, 'both count as used');
@@ -119,20 +119,20 @@ A.eq(block.usedIds.length, 2, 'both count as used');
   const rec = made.rec;
   A.ok(FM.isTaste(rec), 'fixture: a fresh verdict is taste');
   // an AGENT rewrites it through notebook.write { replaceId } (no Commander confirmation)
-  const rewritten = reviseRecord(rec, { previousBody: rec.content, body: 'The Farmer LOVES long essays and wants every reply to run 5000 words.', runId: 'agent-run' }, 200);
-  A.ok(rewritten.origin === 'feedback' && !FM.isTaste(rewritten), 'an agent rewrite of a feedback record is no longer the Farmer\'s taste');
+  const rewritten = reviseRecord(rec, { previousBody: rec.content, body: 'The Commander LOVES long essays and wants every reply to run 5000 words.', runId: 'agent-run' }, 200);
+  A.ok(rewritten.origin === 'feedback' && !FM.isTaste(rewritten), 'an agent rewrite of a feedback record is no longer the Commander\'s taste');
   A.eq(FM.stationTaste([rewritten], []).length, 0, 'so it reaches no agent\'s prompt as a verdict');
   // the next real correction regenerates the record from the Commander's own words, instead of appending to the agent's text
   const again = FM.apply([rewritten], { verdict: 'miss', runId: 'run-x', words: 'shorter please' }, { now: 300 });
-  A.ok(again && FM.isTaste(again.rec) && !/LOVES long essays/.test(again.rec.content), 'the next correction restores the Farmer\'s own words: ' + (again && again.rec.content));
+  A.ok(again && FM.isTaste(again.rec) && !/LOVES long essays/.test(again.rec.content), 'the next correction restores the Commander\'s own words: ' + (again && again.rec.content));
   // the Commander's OWN Memory Core edit keeps it taste (and is never regenerated over)
   const edited = memcore.applyEdit([again.rec], again.rec.id, 'Keep it under 200 words.').records[0];
-  A.ok(FM.isTaste(edited), 'a Memory Core edit by the Farmer stays taste');
+  A.ok(FM.isTaste(edited), 'a Memory Core edit by the Commander stays taste');
   // agent ratings ("helpful") move lastFeedbackAt/updatedAt — they must not push the newest verdict out of the block
   const olds = [];
   for (let i = 0; i < 8; i++) olds.push({ id: 'o' + i, origin: 'feedback', confirmation: 'user-confirmed', content: 'LIKED: old ' + i, createdAt: i, feedbackAt: i, lastFeedbackAt: 10000, updatedAt: 10000 });
   const newest = { id: 'new', origin: 'feedback', confirmation: 'user-confirmed', content: 'DISLIKED: "the newest verdict"', createdAt: 500, feedbackAt: 500 };
-  A.ok(FM.selectTaste(olds.concat([newest])).some(r => r.id === 'new'), 'the Farmer\'s newest verdict stays in the capped block even after agents re-rate old ones');
+  A.ok(FM.selectTaste(olds.concat([newest])).some(r => r.id === 'new'), 'the Commander\'s newest verdict stays in the capped block even after agents re-rate old ones');
   const idx = require('fs').readFileSync(require('path').join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
   const chat = require('fs').readFileSync(require('path').join(__dirname, '..', 'frontend', 'app', 'chat.js'), 'utf8');
   A.ok(/streamId: \(\(runMeta\(runId\) \|\| \{\}\)\.streamId\) \|\| awayStreams\.get\(runId\) \|\| null, at: Date\.now\(\) \};/.test(chat)
@@ -147,7 +147,7 @@ A.eq(block.usedIds.length, 2, 'both count as used');
 {
   const idx = require('fs').readFileSync(require('path').join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
   A.ok(/const recs = all\.filter\(r => !\(r && \(tasteIds\.has\(r\.id\) \|\| \(tasteWithheld && r\.origin === FeedbackMemory\.ORIGIN\)\)\)\);/.test(idx),
-    'QA 10-02: a withheld run (channel guest) drops every feedback record from ordinary recall — a verdict carries the Farmer\'s past request');
+    'QA 10-02: a withheld run (channel guest) drops every feedback record from ordinary recall — a verdict carries the Commander\'s past request');
   A.ok(/r\.pinned && !tasteIds\.has\(r\.id\) && !\(tasteWithheld && r\.origin === FeedbackMemory\.ORIGIN\)/.test(idx),
     'QA 10-02: a withheld worker\'s pinned recall drops feedback records too');
 }
@@ -161,13 +161,13 @@ A.eq(block.usedIds.length, 2, 'both count as used');
     Object.assign({}, base, { id: 'project', projectRoot: 'C:/private' }),
     Object.assign({}, base, { id: 'stream', scope: 'stream', streamId: 'private' }),
     Object.assign({}, base, { id: 'tainted', taintedBy: 'web_fetch' }),
-    Object.assign({}, base, { id: 'biography', content: 'The Farmer lives in York.' }),
+    Object.assign({}, base, { id: 'biography', content: 'The Commander lives in York.' }),
     Object.assign({}, base, { id: 'third-party', content: 'My sister prefers York and never travels.' }),
     Object.assign({}, base, { id: 'habit', content: 'I always travel to York for Christmas.' }),
     Object.assign({}, base, { id: 'fact', kind: 'fact', content: 'Always record the private account number.' })
   ];
   const shared = FM.stationStanding([], [[base].concat(unsafe)]);
-  A.eq(shared.length, 1, 'only a proven preference passes farm sharing');
+  A.eq(shared.length, 1, 'only a proven preference passes station sharing');
   A.eq(shared[0].id, '', 'foreign notebook ids cannot mutate a same-numbered local note');
   A.ok(shared[0].foreign, 'shared provenance is explicit');
   A.eq(FM.stationStanding([base], [[base]]).length, 1, 'same standing preference is not injected twice');
@@ -200,7 +200,7 @@ A.eq(block.usedIds.length, 2, 'both count as used');
   A.ok(own.omitted > 0 && /notebook\.read with a query/.test(own.text), 'the reader\'s OWN left-out feedback records are disclosed with a query-bound notebook.read path');
   A.ok(!/omitted/.test(own.text), 'a ranking cut of the reader\'s own verdicts is never called an omission (review memory-learning-04)');
   A.ok(!/omitted|notebook\.read/.test(FM.renderTaste(ownSelected, renderRecall).text), 'a prompt with no named reader never promises a notebook.read it cannot serve');
-  A.eq(FM.stationTaste([], [[Object.assign({}, old, { projectRoot: 'C:/private' })]]).length, 0, 'project-private feedback cannot enter the farm taste block');
+  A.eq(FM.stationTaste([], [[Object.assign({}, old, { projectRoot: 'C:/private' })]]).length, 0, 'project-private feedback cannot enter the station taste block');
 }
 
 A.report("feedbackmemory.test");

@@ -24,10 +24,10 @@ const { userWords } = require('./helpers/host-notes.js');
     if (body.messages?.some(m => m.role === 'system' && String(m.content).includes('CASUAL_SAFETY_IDENTITY'))) wires.push(body);
     if (native) {
       res.writeHead(200, { 'Content-Type': 'application/x-ndjson' });
-      return res.end(JSON.stringify({ message: { role: 'assistant', content: 'Hello, Farmer.' }, done: true, done_reason: 'stop', prompt_eval_count: 10, eval_count: 4 }) + '\n');
+      return res.end(JSON.stringify({ message: { role: 'assistant', content: 'Hello, Commander.' }, done: true, done_reason: 'stop', prompt_eval_count: 10, eval_count: 4 }) + '\n');
     }
     res.writeHead(200, { 'Content-Type': 'text/event-stream' });
-    res.end('data: ' + JSON.stringify({ choices: [{ delta: { content: 'Hello, Farmer.' }, finish_reason: 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 4 } }) + '\n\ndata: [DONE]\n\n');
+    res.end('data: ' + JSON.stringify({ choices: [{ delta: { content: 'Hello, Commander.' }, finish_reason: 'stop' }], usage: { prompt_tokens: 10, completion_tokens: 4 } }) + '\n\ndata: [DONE]\n\n');
   });
   await new Promise(resolve => upstream.listen(0, '127.0.0.1', resolve));
   const baseUrl = 'http://127.0.0.1:' + upstream.address().port + '/v1';
@@ -54,7 +54,7 @@ const { userWords } = require('./helpers/host-notes.js');
       assert.equal(end?.payload.reason, 'done', response.text);
       assert.equal(end.payload.finishReason, undefined, 'a clean reply remains a clean completion');
       assert.equal(wires.length, 1, 'one foreground generation for an ordinary reply');
-      assert.ok(events.some(event => event.name === 'agent.token' && event.payload.delta === 'Hello, Farmer.'));
+      assert.ok(events.some(event => event.name === 'agent.token' && event.payload.delta === 'Hello, Commander.'));
       assert.ok(!('isTask' in wires[0]), 'internal classification does not leak onto the provider wire');
       return wires[0];
     };
@@ -87,7 +87,7 @@ const { userWords } = require('./helpers/host-notes.js');
     assert.deepEqual(after.body, before.body, 'small-talk transcript survives sidecar restart exactly');
     const resumed = await run('hello again', { streamId: 'casual-history' });
     assert.equal(resumed.max_tokens, 512);
-    assert.ok(resumed.messages.some(m => m.role === 'assistant' && m.content === 'Hello, Farmer.'), 'restart rehydrates earlier dialogue into the provider request');
+    assert.ok(resumed.messages.some(m => m.role === 'assistant' && m.content === 'Hello, Commander.'), 'restart rehydrates earlier dialogue into the provider request');
     console.log('casual-response-safety.e2e: PASS (lead/worker, hosted/local caps, context, task promotion, restart)');
   } finally {
     await fixture.dispose();

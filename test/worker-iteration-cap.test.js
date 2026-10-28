@@ -42,7 +42,7 @@ A.ok(/workerMaxIters:\s*ORCH_WORKER_MAX_ITERS/.test(sidecar),
 A.ok(/const\s+runMaxIters\s*=/.test(sidecar), 'runOnce computes a per-run iteration ceiling');
 A.ok(/o\.maxIters/.test(sidecar), 'runOnce reads the caller-supplied o.maxIters (it previously never did)');
 A.ok(/Math\.min\(Math\.floor\(o\.maxIters\),\s*stationMaxIters\)/.test(sidecar),
-  'the caller cap is clamped against the farm policy — a caller may LOWER but never RAISE an explicit ceiling');
+  'the caller cap is clamped against the station policy — a caller may LOWER but never RAISE an explicit ceiling');
 
 // --- HOST half 3: ordinary runs use the computed cap; repair may only lower it to one.
 // Actual one-generation/no-mutation behavior is covered by output-only-repair.e2e.test.js. ---
@@ -53,6 +53,6 @@ A.ok(!/limits:\s*\{\s*maxIters:\s*CAPS\.maxIters\s*,/.test(sidecar),
 
 // --- the default path is unlimited: an ordinary run supplies no o.maxIters and inherits stationMaxIters ---
 A.ok(/:\s*stationMaxIters\s*;/.test(sidecar),
-  'runMaxIters inherits the farm policy, which defaults to unlimited');
+  'runMaxIters inherits the station policy, which defaults to unlimited');
 
 A.report('worker-iteration-cap.test');

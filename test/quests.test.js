@@ -64,7 +64,7 @@ A.eq(grown.find(q => q.id === 'st:belt').status, 'open', 'bare belts with NO liv
 const routed = Q.build({ station: { crew: 2, belts: 4, connectors: 0, liveRoute: 4 } });
 A.eq(routed.find(q => q.id === 'st:belt').status, 'done', 'a LIVE intake→bay route completes the belt quest');
 A.eq(grown.find(q => q.id === 'st:connector').status, 'open', 'the portal quest stays open until one is placed');
-A.eq(Q.build({ milestones: ms, dossierDims: dims, pendingIdea: false }).some(q => q.kind === 'station'), false, 'no farm input → no arc (older callers unchanged)');
+A.eq(Q.build({ milestones: ms, dossierDims: dims, pendingIdea: false }).some(q => q.kind === 'station'), false, 'no station input → no arc (older callers unchanged)');
 const withIdea = Q.build({ station: { crew: 1, belts: 0, connectors: 0 }, pendingIdea: true });
 A.eq(withIdea[0].kind, 'idea', 'a waiting idea still leads — the arc follows it');
 A.eq(withIdea[1].kind, 'station', 'the arc sits right after the idea');

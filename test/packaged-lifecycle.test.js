@@ -44,7 +44,7 @@ const A = require('./_assert.js');
       { hwnd: 2, pid: 100, visible: false, title: 'StarNet' },
       { hwnd: 3, pid: 100, visible: true, title: 'ai.skynet.harness-siw' },
       { hwnd: 4, pid: 999, visible: true, title: 'StarNet' },
-      { hwnd: 5, pid: 100, visible: true, title: ' Homestead ' },
+      { hwnd: 5, pid: 100, visible: true, title: ' StarNet ' },
     ];
     A.eq(M.starnetWindows(wins, [100]).map((w) => w.hwnd), [1, 5], 'visible + exact title + shell-owned only');
     A.eq(M.starnetWindows(wins, []).length, 0, 'no shell pids → no windows');
@@ -93,7 +93,7 @@ const A = require('./_assert.js');
     const wrongBranch = M.judgeIdleClose({ after: snap(), relaunch: snap({ shell: [shell(200)], windows: [win(200)], health: true }), log: trayLog });
     A.ok(!wrongBranch.pass && wrongBranch.reasons.some((r) => /branch was "tray-preference"/.test(r)), 'idle case that took the tray branch FAILS (the 08-19 wrong-branch lesson)');
     const noWin = M.judgeIdleClose({ after: snap(), relaunch: snap({ shell: [shell(200)], windows: [], health: true }), log: idleLog });
-    A.ok(!noWin.pass && noWin.reasons.some((r) => /no visible "Homestead" window after relaunch/.test(r)), 'relaunch without a window FAILS');
+    A.ok(!noWin.pass && noWin.reasons.some((r) => /no visible "StarNet" window after relaunch/.test(r)), 'relaunch without a window FAILS');
     const noHealth = M.judgeIdleClose({ after: snap(), relaunch: snap({ shell: [shell(200)], windows: [win(200)], health: false }), log: idleLog });
     A.ok(!noHealth.pass && noHealth.reasons.some((r) => /health/.test(r)), 'relaunch without health FAILS');
     A.eq(M.judgeIdleClose({ after: null, relaunch: null, log: null }).pass, false, 'missing snapshots FAIL loudly');

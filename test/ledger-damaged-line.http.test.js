@@ -39,10 +39,10 @@ const sha = s => crypto.createHash('sha256').update(s).digest('hex');
     assert.equal(st.spentToday, null, 'what the damaged line recorded is unknown: no exact total');
     assert.equal(st.accounting.complete, false);
     assert.equal(st.accounting.readError, 'UNSETTLED_SPEND', 'one unknown line, not an unreadable logbook');
-    assert.equal(st.unsettled.length, 1, 'the damaged line is listed for the Farmer: ' + JSON.stringify(st.unsettled));
+    assert.equal(st.unsettled.length, 1, 'the damaged line is listed for the Commander: ' + JSON.stringify(st.unsettled));
     const d = st.unsettled[0];
     assert.equal(d.kind, 'damaged', 'it is named as a damaged record, never as an interrupted run');
-    assert.equal(d.agentId, 'nova', 'what can be read off the fragment helps the Farmer find the charge');
+    assert.equal(d.agentId, 'nova', 'what can be read off the fragment helps the Commander find the charge');
     assert.equal(d.model, 'deepseek/deepseek-chat');
     assert.ok(/\bold-a\b/.test(d.title) && !/old-b/.test(d.title), 'named by the fragment\'s own run, never the glued row\'s: ' + d.title);
     assert.equal(d.ts, null, 'the fragment records no time: it never borrows the glued row\'s timestamp');
@@ -165,5 +165,5 @@ const sha = s => crypto.createHash('sha256').update(s).digest('hex');
     await n.stop();
   } finally { await n.dispose(); }
 
-  console.log('ledger damaged line HTTP: listed not bricked, settled once by the Farmer, record preserved, journaled torn tail recovered, glued row counted once, restart PASS');
+  console.log('ledger damaged line HTTP: listed not bricked, settled once by the Commander, record preserved, journaled torn tail recovered, glued row counted once, restart PASS');
 })().catch(e => { console.error(e); process.exitCode = 1; });

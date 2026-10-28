@@ -39,9 +39,9 @@ async function rejects(p, re, msg) {
       devicePub: phone.publicRaw, stationEph: sEph.publicRaw, phoneEph: pEph.publicRaw, phoneNonce: nP, stationNonce: nS });
 
     const up = await Phone._seal(pk.p2s, 'p2s', 1, { hello: 'station', n: 42 });
-    A.eq(C.open(sk.p2s, 'p2s', up), { hello: 'station', n: 42 }, 'farm opens a frame sealed by WebCrypto');
+    A.eq(C.open(sk.p2s, 'p2s', up), { hello: 'station', n: 42 }, 'station opens a frame sealed by WebCrypto');
     const down = C.seal(sk.s2p, 's2p', 1, { hi: 'phone' });
-    A.eq(await Phone._open(pk.s2p, 's2p', down), { hi: 'phone' }, 'WebCrypto opens a frame sealed by the farm');
+    A.eq(await Phone._open(pk.s2p, 's2p', down), { hi: 'phone' }, 'WebCrypto opens a frame sealed by the station');
 
     const bad = Object.assign({}, up, { ct: up.ct.slice(0, -2) + (up.ct.slice(-2) === 'AA' ? 'AB' : 'AA') });
     A.throws(() => C.open(sk.p2s, 'p2s', bad), 'a tampered frame fails GCM');
@@ -53,7 +53,7 @@ async function rejects(p, re, msg) {
     const pk2 = await Phone._deriveKeys({ ephPrivate: pEph.privateKey, devicePrivate: phone.privateKey, stationPub: station.publicRaw,
       devicePub: phone.publicRaw, stationEph: evil.publicRaw, phoneEph: pEph.publicRaw, phoneNonce: nP, stationNonce: nS });
     const up2 = await Phone._seal(pk2.p2s, 'p2s', 1, { x: 1 });
-    A.throws(() => C.open(sk.p2s, 'p2s', up2), 'a swapped ephemeral yields keys the farm rejects');
+    A.throws(() => C.open(sk.p2s, 'p2s', up2), 'a swapped ephemeral yields keys the station rejects');
 
     A.eq(C.pairingProof('ABCD2345', phone.publicRaw, 'Pixel'), await Phone.pairingProof('ABCD2345', phone.publicRaw, 'Pixel'), 'pairing proof matches across Node and WebCrypto');
     A.ok(/^[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/.test(C.fingerprint(station.publicRaw)), 'fingerprint is short and readable');
@@ -67,17 +67,17 @@ async function rejects(p, re, msg) {
   const now = () => clock;
   let devices = makeDevices({ fs, path, file, crypto: C, now, newId });
   const st1 = devices.stationKeys();
-  A.ok(/^stn_/.test(st1.id), 'farm id minted');
+  A.ok(/^stn_/.test(st1.id), 'station id minted');
   {
     const again = makeDevices({ fs, path, file, crypto: C, now, newId }).stationKeys();
-    A.eq(again.publicRaw, st1.publicRaw, 'farm key survives a restart (same public key read back)');
-    A.eq(again.id, st1.id, 'farm id survives a restart');
+    A.eq(again.publicRaw, st1.publicRaw, 'station key survives a restart (same public key read back)');
+    A.eq(again.id, st1.id, 'station id survives a restart');
   }
   const phoneKey = await Phone.makeDeviceKey();
   {
     const p = devices.startPairing({ name: 'Andrew phone' });
     A.ok(/^[A-Z2-9]{8}$/.test(p.code), 'pairing code is 8 unambiguous characters');
-    A.eq(p.stationPub, st1.publicRaw, 'pairing hands out the farm public key');
+    A.eq(p.stationPub, st1.publicRaw, 'pairing hands out the station public key');
     const wrong = await Phone.pairingProof('WRONGCOD', phoneKey.publicRaw, 'Andrew phone');
     const r1 = devices.completePairing({ pairingId: p.pairingId, publicKey: phoneKey.publicRaw, name: 'Andrew phone', proof: wrong });
     A.eq(r1.ok, false, 'a wrong proof is refused');
@@ -91,7 +91,7 @@ async function rejects(p, re, msg) {
     A.eq(reread[0].name, 'Andrew phone', 'device name persisted');
     A.ok(!('publicKey' in reread[0]) && !('privateKey' in reread[0]), 'list() never carries key material');
     const raw = fs.readFileSync(file, 'utf8');
-    A.ok(raw.indexOf(phoneKey.publicRaw) >= 0 && raw.indexOf('privateKey') >= 0, 'farm private key + device public key are on disk in the protected file');
+    A.ok(raw.indexOf(phoneKey.publicRaw) >= 0 && raw.indexOf('privateKey') >= 0, 'station private key + device public key are on disk in the protected file');
   }
   {
     const p = devices.startPairing({});
@@ -181,7 +181,7 @@ async function rejects(p, re, msg) {
     A.eq(s1.ok, true, 'status over the sealed channel');
     A.eq(s1.data.agents[0].agentId, 'forge', 'status carries the crew');
     const snd = await client.call('send', { agentId: 'forge', text: 'tighten the hero copy' });
-    A.eq(snd.data.runId, 'run_1', 'send returns the farm run id');
+    A.eq(snd.data.runId, 'run_1', 'send returns the station run id');
     A.eq(sent[0].deviceId, paired.deviceId, 'the host learns which device sent the task');
     A.eq((await client.call('stop', { runId: 'nope' })).ok, false, 'stop on a dead run explains itself');
 
@@ -230,7 +230,7 @@ async function rejects(p, re, msg) {
     const r404 = await fetch(base + '/api/key');
     A.eq(r404.status, 404, 'the LAN door serves no /api route');
     const info = await (await fetch(base + '/remote/v1/info')).json();
-    A.eq(info.stationId, st1.id, 'info names the farm and nothing else');
+    A.eq(info.stationId, st1.id, 'info names the station and nothing else');
     A.ok(JSON.stringify(info).indexOf('privateKey') < 0, 'info carries no key material');
 
     client.close();

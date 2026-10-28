@@ -6,8 +6,8 @@
 const A = require('./_assert.js');
 const { withDossier } = require('../sidecar/dossierinject.js');
 
-const PERSONA = 'You are an autonomous HOMESTEAD farm agent running a SCHEDULED routine.';
-const BLOCK = 'WHAT YOU KNOW ABOUT YOUR FARMER:\n- Stack & tools: TypeScript';
+const PERSONA = 'You are an autonomous STARNET station agent running a SCHEDULED routine.';
+const BLOCK = 'WHAT YOU KNOW ABOUT YOUR COMMANDER:\n- Stack & tools: TypeScript';
 
 /* ---------- append ---------- */
 A.eq(withDossier(PERSONA, BLOCK), PERSONA + '\n\n' + BLOCK, 'appends the dossier block after the persona');

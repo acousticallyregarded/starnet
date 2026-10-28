@@ -79,7 +79,7 @@ const textReply = (status, text) => async () => ({ ok: status === 200, status, t
     release(true);
     A.eq([await a, calls], [true, 1], 'exactly one starnet_restart_sidecar per click burst');
     A.eq(H.endpointPushes(), 1, 'a restart that came back re-hands the desktop endpoints once (#137)');
-    const failing = liftHarness(textReply(200, 'ok'), { __TAURI__: { core: { invoke: async () => { throw new Error('Homestead is shutting down'); } } } });
+    const failing = liftHarness(textReply(200, 'ok'), { __TAURI__: { core: { invoke: async () => { throw new Error('StarNet is shutting down'); } } } });
     A.eq(await failing.restartEngine(), false, 'a refused restart is false, never a thrown page error');
     A.eq(failing.endpointPushes(), 0, 'a refused restart pushes nothing');
   }

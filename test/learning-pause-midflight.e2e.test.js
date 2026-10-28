@@ -64,7 +64,7 @@ function startMock() {
       };
       if (raw.indexOf('reflecting right after finishing a task') >= 0) {
         await holdIf('reflect');
-        return send({ content: 'PREFERENCE: The Farmer wants ' + SENTINEL + '.' }, REFLECT_USAGE);
+        return send({ content: 'PREFERENCE: The Commander wants ' + SENTINEL + '.' }, REFLECT_USAGE);
       }
       if (raw.indexOf('reviewing a task run of yours that FAILED') >= 0) {
         await holdIf('fail');
@@ -131,7 +131,7 @@ const setLearning = async (fixture, enabled) => (await fixture.json('POST', '/ap
     mock.state.release();
     A.ok(await until(() => ledgerRows(ws).some(r => r.runId === p.runId && r.tokens === 1777 && r.usd > 0), 5000), 'reflection paused: the call\'s spend is still booked to the ledger (truthful cost)');
     await sleep(300);
-    A.ok((await notebook(fixture, 'paused')).indexOf(SENTINEL) < 0, 'reflection paused: NO memory is written after the Farmer paused learning');
+    A.ok((await notebook(fixture, 'paused')).indexOf(SENTINEL) < 0, 'reflection paused: NO memory is written after the Commander paused learning');
 
     // forgot mid-call (learning stays ON) -> nothing is written
     A.eq((await setLearning(fixture, true)).enabled, true, 'reflection forgot: learning is back on before the run');
@@ -146,19 +146,19 @@ const setLearning = async (fixture, enabled) => (await fixture.json('POST', '/ap
 
     // ================= FAILURE REVIEW =================
     mock.state.hold = 'fail';
-    const fc = await startRun(fixture, 'fctl', FAIL_MARK + ' inspect the farm then push the registry update');
+    const fc = await startRun(fixture, 'fctl', FAIL_MARK + ' inspect the station then push the registry update');
     A.ok(/"reason":"error"/.test(fc.raw), 'failure-review control: the driven run ended in error');
     await waitHeld(mock.state, 'fail', 'failure-review control');
     mock.state.release();
     A.ok(await until(async () => (await lessons(fixture, 'fctl')).length === 1), 'failure-review control: an undisturbed review writes its lesson');
 
-    const fp = await startRun(fixture, 'fpaused', FAIL_MARK + ' inspect the farm then push the registry update');
+    const fp = await startRun(fixture, 'fpaused', FAIL_MARK + ' inspect the station then push the registry update');
     A.ok(/"reason":"error"/.test(fp.raw), 'failure-review paused: the driven run ended in error');
     await waitHeld(mock.state, 'fail', 'failure-review paused');
     A.eq((await setLearning(fixture, false)).enabled, false, 'failure-review paused: learning paused while the call is in flight');
     mock.state.release();
     await sleep(800);
-    A.eq((await lessons(fixture, 'fpaused')).length, 0, 'failure-review paused: NO lesson is written after the Farmer paused learning');
+    A.eq((await lessons(fixture, 'fpaused')).length, 0, 'failure-review paused: NO lesson is written after the Commander paused learning');
     A.eq((await setLearning(fixture, true)).enabled, true, 'learning back on for the recall arm');
 
     // ================= HYBRID RECALL (embeddings) =================
@@ -166,7 +166,7 @@ const setLearning = async (fixture, enabled) => (await fixture.json('POST', '/ap
     A.eq(cfg.body && cfg.body.embedEnabled, true, 'recall: the embedding lane is live');
     mock.state.hold = null;
     // control: 'fctl' holds a lesson -> its vectors persist when nothing changes mid-embed
-    await startRun(fixture, 'fctl', FAIL_MARK + ' inspect the farm; publishing artifacts to the package index returns HTTP 429');
+    await startRun(fixture, 'fctl', FAIL_MARK + ' inspect the station; publishing artifacts to the package index returns HTTP 429');
     A.ok(mock.state.count.embed >= 1, 'recall control: the embedding lane made its call');
     A.ok(fs.existsSync(path.join(ws, 'fctl.embed.json')), 'recall control: the memory vectors persisted (embed:<agent> store)');
 
@@ -179,7 +179,7 @@ const setLearning = async (fixture, enabled) => (await fixture.json('POST', '/ap
     const pr = await pending;
     A.eq(pr.status, 200, 'recall paused: the run still completes (recall falls back to lexical)');
     await sleep(300);
-    A.ok(!fs.existsSync(path.join(ws, 'ctl.embed.json')), 'recall paused: NO memory vectors are persisted after the Farmer paused learning');
+    A.ok(!fs.existsSync(path.join(ws, 'ctl.embed.json')), 'recall paused: NO memory vectors are persisted after the Commander paused learning');
   } finally {
     try { mock.state.hold = null; if (mock.state.release) mock.state.release(); } catch (_) {}
     await fixture.dispose();

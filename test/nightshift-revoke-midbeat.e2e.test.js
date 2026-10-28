@@ -73,7 +73,7 @@ function boot(port, env, attemptsLeft) {
     const headers = { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: B };
     const now = Date.now();
     const b = t => [{ text: t, createdAt: now, updatedAt: now }];
-    const hot = { known: ['goals', 'pain', 'stack', 'ambition'], beliefs: { goals: b('ship the Homestead beta to 100 users'), pain: b('manual release notes eat my fridays'), stack: b('node and a pixel-art canvas'), ambition: b('a living agent farm people watch') } };
+    const hot = { known: ['goals', 'pain', 'stack', 'ambition'], beliefs: { goals: b('ship the StarNet beta to 100 users'), pain: b('manual release notes eat my fridays'), stack: b('node and a pixel-art canvas'), ambition: b('a living agent station people watch') } };
     const arm = await (await fetch(B + '/api/autonomy/posture', { method: 'POST', headers, body: JSON.stringify({ posture: { initiative: 'leash', reach: 'observe', leashPerDay: 5 }, beliefs: hot }) })).json();
     A.ok(arm.ok === true && arm.nightshiftArmed === true, 'the dial at leash arms the night shift');
     for (let i = 0; i < 60 && mock.state.calls < 1; i++) await sleep(100);

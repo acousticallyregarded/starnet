@@ -113,7 +113,7 @@ function station(file, opts) {
     A.eq(s.order, ['turnA1', 'review:convB', 'review:convC', 'review:convA', 'turnA2'], 'A\'s line: its turn, its report, then its later turn');
     A.eq(s.overseer.reviews().map(r => r.status), ['done', 'done', 'done'], 'every report done');
     A.eq([s.reviewTasks.size, s.runs.size], [0, 0], 'no task or run left behind');
-    A.ok(await s.tickReturns(), 'a settled farm ticks');
+    A.ok(await s.tickReturns(), 'a settled station ticks');
     A.eq(s.calls.length, 3, 'and runs nothing again');
   }
 

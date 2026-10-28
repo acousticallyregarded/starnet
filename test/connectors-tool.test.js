@@ -85,7 +85,7 @@ function toolWith(over) {
   A.ok(availableBlock.indexOf('Stripe') < 0, 'an installed-but-erroring connector is still installed — not re-offered');
   A.ok(availableBlock.indexOf('Printify') < 0, 'a CONNECTED key platform is never offered again');
   // ONE FLAT LIST (UX night 2026-10-26): the catalog is APPS, the first item of CONNECT › ABILITIES' one list
-  A.ok(/CONNECT . ABILITIES . APPS/.test(text) && !/DISCOVER|CATALOG:/.test(text), 'the readout names where the Farmer actually adds one (the section the window draws)');
+  A.ok(/CONNECT . ABILITIES . APPS/.test(text) && !/DISCOVER|CATALOG:/.test(text), 'the readout names where the Commander actually adds one (the section the window draws)');
   A.ok(/cannot add these yourself/.test(text), 'the agent is told to offer, not to assume it can install');
 
   /* ---- the floor summary counts ENTRIES, not rendered lines ---- */
@@ -94,7 +94,7 @@ function toolWith(over) {
     connectors: fakeManager([]), serviceKeys: fakeKeys([]),
     connectorCatalog: fakeMcpCatalog(MCP_ENTRIES), keysCatalog: fakeKeysCatalog(KEY_PLATFORMS)
   }).listTool.run({});
-  A.eq(emptySummary.summary, 'connected:0 keys:0 available:5', 'an empty farm summarises as ZERO, never as the one "(none yet)" line it printed');
+  A.eq(emptySummary.summary, 'connected:0 keys:0 available:5', 'an empty station summarises as ZERO, never as the one "(none yet)" line it printed');
 
   /* ---- scope + query narrowing ---- */
   const onlyAvail = await tool.run({ scope: 'available' });

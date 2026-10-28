@@ -16,7 +16,7 @@ A.ok(goals.indexOf('JourneyStore.noteMilestone') >= 0, 'verified goal milestones
 A.ok(host.indexOf("exact: '/api/journey'") >= 0 && /journeyStore\.adaptationBlock\(agentId[,)]/.test(host), 'HTTP proof and per-agent adaptation are wired into the real host');
 // the cache-stable system prompt carries the tier-only block; the STARNET_STABLE_PREFIX=0 kill switch keeps the counted one
 A.ok(host.indexOf('journeyStore.adaptationBlock(agentId, { counts: !stablePrefix })') >= 0, 'the stable system prompt gets the count-free adaptation block');
-A.ok(ui.indexOf('FARM XP') >= 0 && ui.indexOf('FARMER JOURNEY') >= 0 && ui.indexOf('FARM EVOLUTION') >= 0, 'the UI keeps all three progression tracks distinct');
+A.ok(ui.indexOf('STATION XP') >= 0 && ui.indexOf('FARMER JOURNEY') >= 0 && ui.indexOf('FARM EVOLUTION') >= 0, 'the UI keeps all three progression tracks distinct');
 // org pass 10-14 (P28): one number, one name — the station-XP meter mislabelled AGENT GROWTH is gone, approvals read as thumbs-up
 A.ok(!/gx-title">AGENT GROWTH</.test(ui) && !/data-open-growth/.test(ui), 'QUESTS › Progress no longer repeats FARM XP as a second AGENT GROWTH meter');
 A.ok(/<span class="ttl">FARM XP<\/span>/.test(ui) && /' THUMBS-UP &middot;/.test(ui) && !/' APPROVALS &middot;/.test(ui), 'FARM XP counts thumbs-up by that name');

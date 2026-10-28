@@ -73,7 +73,7 @@ async function rejects(promise, msg, re) {
   A.eq(AgentId.alloc('coder', new Set()), 'coder', 'ordinary class ids are unchanged');
   A.eq(AgentId.alloc('Skill Market', new Set()), 'skill-market-2', 'an agent named "Skill Market" never owns the market install folder (sweep 10-02)');
   A.ok(Reserved.RESERVED.has('skill-market') && /path\.join\(WORKSPACES, 'skill-market'\)/.test(fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8')),
-    'the market install folder (WORKSPACES/skill-market) is a reserved farm folder');
+    'the market install folder (WORKSPACES/skill-market) is a reserved station folder');
   A.eq(Array.from(AgentId.RESERVED).sort(), Array.from(Reserved.RESERVED).sort(), 'frontend RESERVED mirrors sidecar/workspace-reserved.js');
   for (const id of AgentId.RESERVED) A.ok(AgentId.RE.test(id) || /^_/.test(id), 'reserved id is expressible in the id grammar: ' + id);
 
@@ -84,11 +84,11 @@ async function rejects(promise, msg, re) {
     const start = src.indexOf('async function handleAgentDelete');
     const body = src.slice(start, src.indexOf('ORPHANED-AUTOMATION CLEANUP', start));
     A.ok(/const reservedId = WorkspaceReserved\.isReservedWorkspaceId\(agentId\);/.test(body), 'agent delete classifies a reserved id');
-    A.ok(/if \(!reservedId\) move\(path\.join\(WORKSPACES, agentId\), agentId\);/.test(body), 'a reserved id never archives WORKSPACES/<id> (the farm directory stays put)');
+    A.ok(/if \(!reservedId\) move\(path\.join\(WORKSPACES, agentId\), agentId\);/.test(body), 'a reserved id never archives WORKSPACES/<id> (the station directory stays put)');
     A.eq((body.match(/move\(path\.join\(WORKSPACES, agentId\), agentId\)/g) || []).length, 1, 'there is exactly one workspace-dir archive move, and it is guarded');
     let msg = '';
     try { Reserved.assertWorkspaceId('Grok'); } catch (e) { msg = String(e.message); }
-    A.ok(/bad agentId/.test(msg) && /delete it and recruit it again/.test(msg) && /grok-2/.test(msg), 'the refusal tells the Farmer how to recover the agent');
+    A.ok(/bad agentId/.test(msg) && /delete it and recruit it again/.test(msg) && /grok-2/.test(msg), 'the refusal tells the Commander how to recover the agent');
   }
 
   fs.rmSync(ROOT, { recursive: true, force: true });

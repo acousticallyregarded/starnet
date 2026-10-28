@@ -122,7 +122,7 @@ A.ok(D.fingerprint(ROOT, 'todo one') !== D.fingerprint('D:\\other', 'todo one'),
   A.eq(D.decide(all, { now: T + 2 * D.CYCLE_MIN_GAP_MS + 10, roots }).binding, 'all-fresh',
     'every root freshly scanned → all-fresh, and the engine stays quiet');
   const forced = D.decide(all, { now: T + 2 * D.CYCLE_MIN_GAP_MS + 10, roots, force: true });
-  A.eq(forced.fire, true, 'force (the Farmer\'s own SCAN NOW) overrides cooldown + freshness');
+  A.eq(forced.fire, true, 'force (the Commander\'s own SCAN NOW) overrides cooldown + freshness');
 }
 
 /* ── 6. the night-focus join is bounded citations, never bare vibes ── */

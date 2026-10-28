@@ -68,7 +68,7 @@ const feedbackRecs = async () => ((await api('/api/memory/records?agent=agent'))
     A.ok(corr.body.feedbackMemory && corr.body.feedbackMemory.stored === true && corr.body.feedbackMemory.created === false, 'correction updated the feedback memory');
     recs = await feedbackRecs();
     A.eq(recs.length, 1, 'still one record for that run');
-    A.ok(/^DISLIKED: "way too long, give me 3 bullet points max"/.test(recs[0].body), 'record now carries the Farmer\'s words');
+    A.ok(/^DISLIKED: "way too long, give me 3 bullet points max"/.test(recs[0].body), 'record now carries the Commander\'s words');
 
     // 2b. the chat posts the NEXT typed message as the correction; a new task is not feedback and is never stored as taste
     const unrelated = await api('/api/growth/ratings/correction', {runId: r1.runId, text: 'now summarize my inbox', final: true, source: 'message'});
@@ -78,12 +78,12 @@ const feedbackRecs = async () => ((await api('/api/memory/records?agent=agent'))
     // 3. the NEXT run on an unrelated task carries the taste in its prompt
     const r2 = await run('Summarize these customer call notes.');
     A.ok(r2.prompt.indexOf('way too long, give me 3 bullet points max') >= 0, 'unrelated next run carries the correction in its prompt');
-    A.ok(r2.prompt.indexOf('Farmer\'s own verdicts on past work') >= 0, 'under the taste header');
-    A.ok(/\[note_\d+\] REJECTED \d{4}-\d{2}-\d{2}: Write the weekly status report/.test(r2.prompt), 'marked as the Farmer\'s own verdict, dated, on the work it was about (renderTaste)');
+    A.ok(r2.prompt.indexOf('Commander\'s own verdicts on past work') >= 0, 'under the taste header');
+    A.ok(/\[note_\d+\] REJECTED \d{4}-\d{2}-\d{2}: Write the weekly status report/.test(r2.prompt), 'marked as the Commander\'s own verdict, dated, on the work it was about (renderTaste)');
 
     // 3b. station-wide: a DIFFERENT agent's next run carries the Commander's correction too (no foreign note id)
     const rs = await run('Compose a short poem about autumn leaves.', 'scribe');
-    A.ok(rs.prompt.indexOf('way too long, give me 3 bullet points max') >= 0, 'another agent\'s run carries the correction (taste is about the Farmer)');
+    A.ok(rs.prompt.indexOf('way too long, give me 3 bullet points max') >= 0, 'another agent\'s run carries the correction (taste is about the Commander)');
     A.ok(/• REJECTED \d{4}-/.test(rs.prompt) && !/\[note_\d+\] REJECTED/.test(rs.prompt), 'the foreign record shows no note id in the other agent\'s prompt');
 
     // 4. a like with words adds a second belief

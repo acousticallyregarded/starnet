@@ -144,10 +144,10 @@ A.ok(/const coldHead = \(tail\) => '◈ ' \+ esc\(tail\);/.test(mkt),
   const evil = mkHead('<img src=x onerror="alert(1)">')('picked from your real work');
   A.eq(/[<>]/.test(evil), false, 'a tag in the agent name cannot reach the shelf header as markup');
   A.ok(evil.indexOf('&lt;IMG SRC=X ONERROR=&quot;ALERT(1)&quot;&gt;') > 0,
-    '…it renders as the literal text the Farmer typed');
+    '…it renders as the literal text the Commander typed');
   A.ok(evil.indexOf('NOTICED — picked from your real work') > 0, '…and the rest of the eyebrow is unchanged');
   A.eq(mkHead('"quoted" & \'apos\'')('x').indexOf('"'), -1, 'quotes escape too — the header is safe in an attribute context');
-  A.eq(mkHead('')('nothing noticed'), '◈ NOTICED — nothing noticed', 'an unnamed farm still gets the bare eyebrow');
+  A.eq(mkHead('')('nothing noticed'), '◈ NOTICED — nothing noticed', 'an unnamed station still gets the bare eyebrow');
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -175,7 +175,7 @@ A.eq(Recipes.rankRecipes(catalog, { limit: 3 }).map(r => r.id).join(','), cold.i
    spread. Those filler cards render no why at all, so the plural whole-row claim was sitting over catalog
    cards the station had never seen the Commander touch. Three states, and the ranker reports the count. */
 A.eq(cold.scored, 0, 'a pure spread reports zero earned cards');
-A.eq(silent.scored, 0, '…so does a ready-but-silent Farmer');
+A.eq(silent.scored, 0, '…so does a ready-but-silent Commander');
 A.eq(earned.scored, 1, 'one launch counter earns exactly ONE card — the other two are top-up filler');
 A.eq(earned.items.length, 3, '…and the row is still full (the top-up is what makes the header a lie if unqualified)');
 const allEarned = Recipes.rankRecipesExplained(catalog, { limit: 3,
@@ -207,7 +207,7 @@ A.eq(TopicMatch.reason(m), 'you keep working on gpu price tracking (seen 4×) �
    DELIVERABLE titles (the station's own words). Authorship is unknown, so the frame claims none — the same
    answer chat.js recCite already gives an unlabelled quote. */
 A.eq(/you said|you told|your words/i.test(TopicMatch.reason(m)), false,
-  'the citation never puts the quote in the Farmer’s mouth — the activity pool is not all speech');
+  'the citation never puts the quote in the Commander’s mouth — the activity pool is not all speech');
 const tmSrc = read('frontend/app/topicmatch.js');
 A.eq(/'because you said/.test(tmSrc) || /you said “/.test(tmSrc), false, 'and no such phrasing exists in the module');
 // a topic with no evidence renders exactly as it always did (nothing is invented to fill the slot)
@@ -262,7 +262,7 @@ A.ok(/LAUNCH_FLOOR/.test(nudgeSrc), 'the offer is still earned by REAL hand-laun
 const proposeBody = A.fnBody(nudgeSrc, 'function propose(');
 A.ok(/times by hand/.test(proposeBody), 'the nudge cites the launch count');
 A.eq(/every morning|every 6 hours|weekly|0 9 \* \* \*/.test(proposeBody), false,
-  'and NEVER names a cadence — the Farmer picks it in the SCHEDULE IT form the accept opens');
+  'and NEVER names a cadence — the Commander picks it in the SCHEDULE IT form the accept opens');
 A.ok(/App\.openRecipeLaunch\(c\.id, 'routine'\)/.test(proposeBody), 'accept deep-links to that form (propose-and-confirm)');
 
 /* ══════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -453,7 +453,7 @@ const fireBody = sugSrc.slice(sugSrc.indexOf('async function fire()'));
 A.ok(/const why = parsed\.why \? \(' ' \+ parsed\.why\) : '';/.test(fireBody),
   'the nudge appends the model text plainly');
 A.eq(/you said|because you/.test(fireBody.slice(0, fireBody.indexOf('Chat.nudge'))), false,
-  '…with no framing that would attribute it to the Farmer');
+  '…with no framing that would attribute it to the Commander');
 // the SAME mis-typing was live one file over: autojobs posts the model's GROUNDS prose to the ledger.
 const ajsSrc = read('frontend/app/autojobstore.js');
 A.eq(/type: 'dossier', quote: pr\.grounds/.test(ajsSrc), false,
@@ -463,7 +463,7 @@ A.eq((ajsSrc.match(/id: 'routine-grounds', type: 'rationale', text: pr\.grounds/
 // …and it really is model prose: autojobs parses GROUNDS out of the aux reply, and the veto only checks OVERLAP
 A.ok(/const grounds = grab\(block, 'GROUNDS'\);/.test(jobsSrc), 'GROUNDS is parsed from the model reply');
 A.ok(/if \(!V \|\| !V\.grounded\(grounds, pool\)\) continue;/.test(jobsSrc),
-  '…and the veto checks that it overlaps what the farm knows — which makes it grounded, not quoted');
+  '…and the veto checks that it overlaps what the station knows — which makes it grounded, not quoted');
 
 Promise.all(PENDING).then(() => A.report('rec truth & consistency (W3)'),
   e => { console.error(e); process.exit(1); });

@@ -18,7 +18,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const registry = fs.readFileSync(path.join(ROOT, 'sidecar', 'capability', 'registry.js'), 'utf8');
 const TOOLS = new Set([...registry.matchAll(/tool: '([A-Za-z0-9_.]+)'/g)].map(m => m[1]));
-A.ok(TOOLS.size > 100 && TOOLS.has('fs.write') && TOOLS.has('routine.create'), 'the registry lists the farm\'s tools (' + TOOLS.size + ')');
+A.ok(TOOLS.size > 100 && TOOLS.has('fs.write') && TOOLS.has('routine.create'), 'the registry lists the station\'s tools (' + TOOLS.size + ')');
 const FAMILIES = new Set([...TOOLS].filter(t => t.indexOf('.') > 0).map(t => t.split('.')[0]));
 const UNDERSCORE = /^(web|image|voice)_[a-z_]+$/;
 
@@ -64,6 +64,6 @@ for (const src of sources) {
     if (UNDERSCORE.test(m[1]) && !TOOLS.has(m[1]) && !seen.has(m[1])) { seen.add(m[1]); unknown.push(src.slug + ': ' + m[1]); }
   }
 }
-A.eq(unknown, [], 'every tool a market skill names is a real farm tool');
+A.eq(unknown, [], 'every tool a market skill names is a real station tool');
 
 A.report('skill-market-tools.test');

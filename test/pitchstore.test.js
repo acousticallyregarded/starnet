@@ -63,7 +63,7 @@ const hn = { calls: [], next: { text: '' }, chat(args) { this.calls.push(args); 
 global.Harness = hn;
 
 let launchedRecipe = null, launchedDirective = null, recentTaskArg = '__unset__';
-const SYSTEM = 'SYSTEM PROMPT\nWHAT YOU KNOW ABOUT YOUR FARMER: goals — ship the dossier.';
+const SYSTEM = 'SYSTEM PROMPT\nWHAT YOU KNOW ABOUT YOUR COMMANDER: goals — ship the dossier.';
 const deps = {
   getSystem: () => SYSTEM,
   getName: () => 'NOVA',
@@ -99,7 +99,7 @@ readyState = { ready: false, reasons: ['no-direction'] };
 A.eq(PitchStore._decide({ reason: 'done', agentId: 'agent' }), { go: false, reason: 'not-ready:no-direction' }, 'a shut readiness gate structurally blocks the pitch (with the honest reason)');
 const savedUS = global.UnderstandingStore;
 global.UnderstandingStore = undefined;
-A.eq(PitchStore._decide({ reason: 'done', agentId: 'agent' }).reason, 'not-ready:no-readiness-read', 'no readiness read = FAIL-CLOSED (a farm that cannot prove readiness never advises)');
+A.eq(PitchStore._decide({ reason: 'done', agentId: 'agent' }).reason, 'not-ready:no-readiness-read', 'no readiness read = FAIL-CLOSED (a station that cannot prove readiness never advises)');
 global.UnderstandingStore = savedUS;
 readyState = { ready: true, reasons: [] };
 
@@ -356,7 +356,7 @@ A.eq(PitchStore._decide({ reason: 'done', agentId: 'agent' }), { go: true, reaso
       global.Chat = { isBusy: () => false, isComposerEngaged: () => true };
       PitchStore.onRunEnd({ reason: 'done', agentId: 'agent', runId: 'r-typing' });
       await tick(60);
-      A.eq(dlg.opened, 0, 'a Farmer who is typing is never interrupted — the pitch steps aside');
+      A.eq(dlg.opened, 0, 'a Commander who is typing is never interrupted — the pitch steps aside');
       A.eq(PitchStore._state().pitched, false, 'stepping aside leaves it un-pitched, so a later run end can offer it');
       delete global.Chat; PitchStore.reset(); PitchStore.init(deps); clearFakes();
     }

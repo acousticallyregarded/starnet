@@ -26,7 +26,7 @@ const { makeBrowserTools } = require('../sidecar/tools/builtin/browser.js');
   // review app-shell-ui-03: a sign-in is approved once; a standing answer is echoed as once, never as a grant
   A.eq(fresh, [true, true], 'both sign-in asks are fresh consent (approve once only)');
   A.eq(drv.url, 'https://github.com/login', 'the page opened IN the shared browser (no relaunch)');
-  A.eq(opened, ['github.com'], 'and was shown to the Farmer');
+  A.eq(opened, ['github.com'], 'and was shown to the Commander');
   let err = ''; try { await tool('browser.get_text').run({}, {}); } catch (e) { err = e.message; }
   A.ok(/FROZEN/.test(err) && /sign-in at github\.com/.test(err), 'a parallel get_text during the sign-in is refused (FROZEN), nothing read');
   let err2 = ''; try { await tool('browser.snapshot').run({}, {}); } catch (e) { err2 = e.message; }

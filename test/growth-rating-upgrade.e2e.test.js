@@ -81,10 +81,10 @@ async function run(agentId,extra={}){
     A.eq(resumed.hero.stats.counters.positiveFeedback,expected.counters.positiveFeedback,'all five acknowledged ratings remain represented exactly once across both agents');
     const history=await api('/api/growth/ratings?epoch=1');A.eq(history.body.ratings.length,5,'legacy ratings survive a sidecar restart');
     const fresh={...legacy,_saveRevision:(await api('/api/save?agent=agent')).body.save._saveRevision,updatedAt:Date.now()+3600000,agent:{...legacy.agent,createdAt:1234567}};
-    A.ok((await api('/api/save',fresh)).body.ok,'new farm saves its explicit generation');
+    A.ok((await api('/api/save',fresh)).body.ok,'new station saves its explicit generation');
     A.eq(resume(fresh).hero.createdAt,1234567,'resume preserves a real creation timestamp');
-    A.eq((await api('/api/growth/ratings',{runId:runIds[0],verdict:'great',epoch:1})).status,409,'stale farm cannot rate into a new generation');
-    const freshRun=await run('agent');A.ok((await api('/api/growth/ratings',{runId:freshRun,verdict:'great',epoch:1234567})).body.ok,'fresh farm ratings still save');
+    A.eq((await api('/api/growth/ratings',{runId:runIds[0],verdict:'great',epoch:1})).status,409,'stale station cannot rate into a new generation');
+    const freshRun=await run('agent');A.ok((await api('/api/growth/ratings',{runId:freshRun,verdict:'great',epoch:1234567})).body.ok,'fresh station ratings still save');
     A.eq((await api('/api/growth/ratings?epoch=1234567')).body.ratings.length,1,'new generation does not inherit legacy ratings');
     // A conversation's scheduled origin must not poison later interactive run eligibility (#18).
     const routine=await api('/api/cron',{name:'Rating origin proof',prompt:'Write a brief welcome note.',schedule:'every 1h',agentId:'agent',model:'test/model',provider:'openrouter'});

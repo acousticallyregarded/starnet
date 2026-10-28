@@ -15,7 +15,7 @@ const ctx = vm.createContext({
 });
 vm.runInContext(fs.readFileSync(path.join(__dirname, '../frontend/app/testapi.js'), 'utf8'), ctx);
 const probe = ctx.window.__SKYNET_TEST__;
-assert.equal(probe.hud().allOk, true, 'unknown Farmer level is honestly shown as a dash');
+assert.equal(probe.hud().allOk, true, 'unknown Commander level is honestly shown as a dash');
 label.textContent = 'Lv 1';
 assert.equal(probe.hud().allOk, false, 'no fabricated initial level before backend data');
 label = null;
@@ -23,7 +23,7 @@ assert.equal(probe.hud().allOk, false, 'missing HUD node is still a hard failure
 label = { textContent: '' };
 assert.equal(probe.hud().allOk, false, 'empty node cannot masquerade as unknown');
 journey = { progression: { level: 3 } }; stale = false; label.textContent = 'Lv 3';
-assert.equal(probe.hud().allOk, true, 'Farmer proof wins over unrelated crew XP');
+assert.equal(probe.hud().allOk, true, 'Commander proof wins over unrelated crew XP');
 probe.captureBaseline();
 label.textContent = 'Lv 999';
 assert.equal(probe.hud().allOk, false, 'inflated displayed level fails exact parity');

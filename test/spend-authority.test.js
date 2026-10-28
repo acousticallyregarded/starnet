@@ -58,7 +58,7 @@ console.log('spend admission: receipt failure, repeated checks, independent sett
   assert.equal(appended.length,0,'refusals book nothing');
   const row=L.settleUnsettled('x',0.3);
   assert.deepEqual([row.runId,row.agentId,row.usd,row.turns,row.ts,row.attested,row.model],['x','a',0.3,0,50,true,'(unknown)'],'one attested row at the dispatch time');
-  assert.equal(row.attestedAs,'entered','the row says the Farmer entered the charge');assert.deepEqual(appended[0],row,'the durable row carries the same attestation');
+  assert.equal(row.attestedAs,'entered','the row says the Commander entered the charge');assert.deepEqual(appended[0],row,'the durable row carries the same attestation');
   assert.equal(appended.length,1);assert.deepEqual(finished,['x'],'the receipt is removed through finishRun');
   assert.deepEqual([L.health().complete,L.health().readError,L.health().unsettledRuns],[true,null,0],'history is complete again');
   assert.equal(L.unsettledRuns().length,0);assert.throws(()=>L.settleUnsettled('x',0.3),e=>e.code==='not_unsettled','never twice');
@@ -109,7 +109,7 @@ console.log('spend admission: receipt failure, repeated checks, independent sett
   makeBudget({clock,ledger:S,caps:{day:5},strictScope:()=>false}).check('s1','a',0,0,null,{provider:'p'});
   assert.equal(soft[0].provider,'p','the soft-unknown path forwards the receipt meta too');
 }
-console.log('spend recovery: kept rows, strict refusal, Farmer settle, live-run guard, write failure, receipt meta PASS');
+console.log('spend recovery: kept rows, strict refusal, Commander settle, live-run guard, write failure, receipt meta PASS');
 
 // Dispatch receipts preserve explicit BYOK as well as managed; absence is not false.
 for (const managed of [true, false, undefined]) {

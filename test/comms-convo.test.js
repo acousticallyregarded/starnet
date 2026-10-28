@@ -50,7 +50,7 @@ A.ok(/settleSummaryUnderReply\(card\);\s*autoscroll\(\);\s*\}/.test(src), 'resol
 const ss = src.match(/function settleSummaryUnderReply\(card\) \{[\s\S]*?\n  \}\n/);
 A.ok(!!ss, 'settleSummaryUnderReply found');
 if (ss) {
-  A.ok(/classList\.contains\('user'\)\) break/.test(ss[0]), 'the settle walk stops at the next Farmer turn');
+  A.ok(/classList\.contains\('user'\)\) break/.test(ss[0]), 'the settle walk stops at the next Commander turn');
   A.ok(/if \(fold\) card\.after\(fold\)/.test(ss[0]), 'the fold travels with its summary (hydrateRunTelemetry reads card.nextElementSibling)');
 }
 
@@ -67,14 +67,14 @@ A.ok(/\.cmsg\.work-rate\.rate-inline \{[^}]*border: 0;[^}]*background: none;/.te
 A.ok(/\.rate-inline \.work-rate-reference \{ display: none; \}/.test(css), 'the task · run reference rides the hover tip, not a printed line');
 
 /* ---------- 6. no text boxes (Andrew 10-03: "idk if im a fan of the text boxes … terminal ASCII aesthetic") ---------- */
-A.ok(/\.cmsg\.user > \.body \{[^}]*border: 0; border-right: 2px solid/.test(css), 'the Farmer turn is a rail + prompt, not an outlined plate');
-A.ok(/\.cmsg\.user > \.body::before \{ content: '> '/.test(css), 'the Farmer turn opens with a > prompt');
-A.ok(/\.cmsg\.broadcast \.bc-line \{[^}]*border: 0;[^}]*background: none;/.test(css), 'farm lines are ruled ASCII lines, not boxed tags');
+A.ok(/\.cmsg\.user > \.body \{[^}]*border: 0; border-right: 2px solid/.test(css), 'the Commander turn is a rail + prompt, not an outlined plate');
+A.ok(/\.cmsg\.user > \.body::before \{ content: '> '/.test(css), 'the Commander turn opens with a > prompt');
+A.ok(/\.cmsg\.broadcast \.bc-line \{[^}]*border: 0;[^}]*background: none;/.test(css), 'station lines are ruled ASCII lines, not boxed tags');
 A.ok(/\.choice-row \.choice::before \{ content: '\[ '/.test(css), 'choices are [ bracketed ] terminal keys');
 
 /* ---------- 7. the agent's line mirrors the Commander's: name as is, no portrait (Andrew 10-03: "without the pfp") ---------- */
 A.ok(!/agentFace|cmsg-face/.test(src) && !/cmsg-face/.test(css), 'no portrait beside the agent callsign');
-A.ok(/:not\(\.deliverable\) > \.body \{[^}]*border-left: 2px solid/.test(css), 'the agent text rides a phosphor rail (the Farmer line, mirrored)');
+A.ok(/:not\(\.deliverable\) > \.body \{[^}]*border-left: 2px solid/.test(css), 'the agent text rides a phosphor rail (the Commander line, mirrored)');
 
 /* ---------- 8. a light dither field, not a fade (10-04: "a different approach then the fade" → "make variant 4 a bit
    lighter on the text boxes") ---------- */
@@ -85,6 +85,6 @@ A.ok(dots.length === 2 && dots.every(a => a <= .06), 'the dither stays LIGHT (ce
 
 /* ---------- 9. no hover glow on the agent's message (Andrew 10-04) ---------- */
 A.ok(!/:not\(\.deliverable\):is\(:hover, :focus-within\) > \.body \{[^}]*--rail/.test(css), 'hovering an agent message never lights its rail');
-A.ok(!/\.cmsg\.user:is\(:hover, :focus-within\) > \.body \{[^}]*(--rail|border-right-color)/.test(css), "hovering the Farmer's message never lights its gold rail");
+A.ok(!/\.cmsg\.user:is\(:hover, :focus-within\) > \.body \{[^}]*(--rail|border-right-color)/.test(css), "hovering the Commander's message never lights its gold rail");
 
 A.report('comms-convo.test');

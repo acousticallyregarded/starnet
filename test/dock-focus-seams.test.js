@@ -222,7 +222,7 @@ const rd = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8').replace(/
   A.ok(/\.mp-model \{ flex: 1 1 200px; min-width: 0; \}/.test(app) && /flex-wrap: wrap/.test(rule('.mp-wrap') || ''), '…(the model select can shrink, the wrap can break)');
   // labels inside a line are set in that line's size (no-shrunken-inline-chips)
   A.ok(/font-size:\s*inherit/.test(rule('.q-outcome') || '') && !/font-size:\s*9px/.test(rule('.q-outcome') || ''), 'QUESTS: the run outcome ("NOTHING PASSED") is set in its line\'s size');
-  A.ok(/font-size: var\(--sn-type-meta/.test(rule('.pc-rh') || ''), 'PERMISSIONS: a reach rung\'s house name is at the farm\'s smallest type, not 9 px');
+  A.ok(/font-size: var\(--sn-type-meta/.test(rule('.pc-rh') || ''), 'PERMISSIONS: a reach rung\'s house name is at the station\'s smallest type, not 9 px');
   // PERMISSIONS: a collapsed crew row's state clause is one ellipsed line (~40 characters at a window's width). Under the
   // whole-station override it read "whole-station override is ON · returns to FU…" — the one fact it exists for (what the
   // agent returns to) was the part cut off. The posture it returns to leads the clause now; the badge already says FULL POWER.

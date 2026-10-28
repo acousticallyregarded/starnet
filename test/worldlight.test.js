@@ -190,7 +190,7 @@ chunkEngine.setGeometry(station(true), { surfaceChunks: [
   { baseCv: chunkB, interiorCv: floorB, x: 48, y: 0, w: 48, h: 60 }
 ] });
 const beforeChunk = draws.length;
-A.ok(chunkEngine.render(output, frame), 'REFIT can illuminate chunked farm geometry without a whole-station mask');
+A.ok(chunkEngine.render(output, frame), 'REFIT can illuminate chunked station geometry without a whole-station mask');
 const chunkDraws = draws.slice(beforeChunk);
 A.ok(chunkDraws.some(d => d[0] === chunkA && d[1] === 0) && chunkDraws.some(d => d[0] === chunkB && d[1] === 48),
   'architecture silhouette retains each chunk world offset');
@@ -343,7 +343,7 @@ const ops = [], keyOut = Object.assign(canvasFactory(96, 60).getContext('2d'), {
   drawImage(img) { ops.push({ op: this.globalCompositeOperation, img }); } });
 keyed.render(keyOut, keyFrame);
 A.eq(keyed.stats().key, false, 'the key buffer is not allocated unless configured');
-A.eq(ops.filter(o => o.op === 'overlay').length, 0, 'an unkeyed farm composites exactly as before');
+A.eq(ops.filter(o => o.op === 'overlay').length, 0, 'an unkeyed station composites exactly as before');
 const plainSurfaces = surfaces.length, plainStamps = keyed.stats().cachedStamps;
 keyed.configure({ key: 1.5, keyReach: 0.5, shadeCool: 0.1 }); ops.length = 0;
 keyed.render(keyOut, keyFrame);

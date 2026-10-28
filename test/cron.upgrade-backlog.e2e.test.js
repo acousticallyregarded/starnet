@@ -80,7 +80,7 @@ async function startModel() {
       const blob = JSON.stringify(body.messages || []);
       if (blob.includes('ROUTINE_ALPHA')) return sse(res, [{ content: longReply('ALPHA') }]);
       if (blob.includes('ROUTINE_BRAVO')) return sse(res, [{ content: longReply('BRAVO') }]);
-      return sse(res, [{ content: 'Farm is quiet today.' }]);
+      return sse(res, [{ content: 'Station is quiet today.' }]);
     });
   });
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, HOST, resolve); });
@@ -169,7 +169,7 @@ function seedStore(file) {
     A.ok(/3 earlier results of this routine were not delivered and will not be resent/.test(whole('ALPHA')), 'Alpha says its 3 earlier results are not coming');
     A.ok(/2 earlier results of this routine were not delivered and will not be resent/.test(whole('BRAVO')), 'Bravo says its 2 earlier results are not coming');
     // HISTORY lists only the latest runs and a script routine records none: the note promises no place it cannot back
-    A.ok(texts.every(t => !/HISTORY|kept on the farm/.test(t)), 'and promises no place to find them');
+    A.ok(texts.every(t => !/HISTORY|kept on the station/.test(t)), 'and promises no place to find them');
     A.eq(sends.length, texts.filter(t => owner(t)).length, 'nothing else was sent (' + sends.length + ' messages)');
 
     const after = (await sidecar.json('GET', '/api/cron')).body.jobs;

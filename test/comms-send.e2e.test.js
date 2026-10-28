@@ -144,7 +144,7 @@ async function startSseCollector(url) {
   const ac = new AbortController();
   const events = [];
   const res = await fetch(url, { signal: ac.signal });
-  A.eq(res.status, 200, 'the farm SSE feed opens');
+  A.eq(res.status, 200, 'the station SSE feed opens');
   const reader = res.body.getReader();
   (async () => {
     const dec = new TextDecoder();
@@ -219,13 +219,13 @@ const toolCalls = (events) => events.filter(e => e.name === 'agent.tool_call').m
       const r = lastResult(events);
       A.ok(r && !r.payload.isError, 'channel.targets runs with no consent prompt (read-only)');
       A.ok(/no chats known yet|0 /.test(r.payload.summary || ''),
-        'a farm nobody has messaged reports NO reachable chats: ' + (r && r.payload.summary));
+        'a station nobody has messaged reports NO reachable chats: ' + (r && r.payload.summary));
     }
 
     /* ---- 2. a human opens a chat -> it becomes addressable -------------------------------------------- */
     {
       const inbound = await fetch(B + '/api/dev/inbound', {
-        method: 'POST', headers, body: JSON.stringify({ chatId: DEV_CHAT, text: 'hello farm' })
+        method: 'POST', headers, body: JSON.stringify({ chatId: DEV_CHAT, text: 'hello station' })
       });
       A.eq(inbound.status, 200, 'the dev channel accepted an inbound message');
       A.ok((await inbound.json()).ok, 'the inbound turn ran');
@@ -242,7 +242,7 @@ const toolCalls = (events) => events.filter(e => e.name === 'agent.tool_call').m
       let asked = null;
       const events = await runWithConsent(B, headers, 'ping the dev chat', (p) => { asked = p; return 'once'; });
       A.ok(toolCalls(events).indexOf('channel.send') >= 0, 'channel.send was reachable');
-      A.ok(asked, 'messaging out asked the Farmer first');
+      A.ok(asked, 'messaging out asked the Commander first');
       A.eq(asked.tool, 'channel.send', 'the consent card names channel.send');
       const r = lastResult(events);
       A.ok(r && !r.payload.isError, 'the approved send succeeded: ' + JSON.stringify(r && r.payload).slice(0, 300));
@@ -257,7 +257,7 @@ const toolCalls = (events) => events.filter(e => e.name === 'agent.tool_call').m
 
       await sse.settle(1200);
       const ok = sse.deliveries().filter(e => e.payload && e.payload.ok === true && e.payload.channel === 'dev');
-      A.ok(ok.length >= 1, 'the send emitted channel.delivery ok:true on the farm bus so the floor pulses the dish');
+      A.ok(ok.length >= 1, 'the send emitted channel.delivery ok:true on the station bus so the floor pulses the dish');
       A.eq(ok[0].payload.chunks, 1, 'one part, honestly counted');
       A.eq(ok[0].payload.agentId, 'dev_' + DEV_CHAT, 'the delivery names the agent bound to that chat, so the RIGHT dish pulses');
     }
@@ -295,7 +295,7 @@ const toolCalls = (events) => events.filter(e => e.name === 'agent.tool_call').m
       A.ok(r && r.payload.isError, 'an arbitrary chat id is refused (exact wording pinned in comms-tools.test.js)');
       const seen = await sentTo(B, headers, DEV_CHAT);
       A.ok(!seen.some(t => t.indexOf('exfiltrate this') >= 0),
-        'the exfiltration text went nowhere — not even to the one chat this farm CAN reach');
+        'the exfiltration text went nowhere — not even to the one chat this station CAN reach');
     }
   } finally {
     if (sse) sse.close();

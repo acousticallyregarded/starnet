@@ -58,7 +58,7 @@ function fakeStore() {
   A.ok(runs[0].system.indexOf(F.BRIEF.A) >= 0, 'the entry run’s system carries bay A’s brief');
   A.ok(runs[2].last.indexOf(F.BRIEF.C) >= 0, 'the third run’s turn carries bay C’s brief');
   A.ok(runs[2].last.indexOf(F.BRIEF.A) < 0, '…not bay A’s');
-  A.eq(stationAsks, ['quill@p2', 'mira@p3', 'quill@p4'], 'each run’s farm is read for ITS bay (never the union)');
+  A.eq(stationAsks, ['quill@p2', 'mira@p3', 'quill@p4'], 'each run’s station is read for ITS bay (never the union)');
   A.eq(runs.slice(1).map(r => r.taskKey), ['chain:telegram:777:mira@p3', 'chain:telegram:777:quill@p4'], 'hop taskKeys name the bay');
   A.eq(resolved.length, 1, 'one resolution announced');
   A.eq(resolved[0].dockId, 'p2', 'the resolution names the entry dock (the host lands the crate at bay A)');

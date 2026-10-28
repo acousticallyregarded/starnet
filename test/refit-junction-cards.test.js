@@ -110,7 +110,7 @@ const workflow = new Function(build.slice(build.indexOf('*/', wbi) + 2, build.la
   const ok = pure.sampleResultView({
     ok: true, delivered: { runId: 'r2' }, totalUsd: 0.0123,
     runs: [{ agentId: 'reviewer', reason: 'done', usd: 0.01 }, { agentId: 'writer', reason: 'done', usd: 0.0023 }],   // newest-first, as the route answers
-    replies: ['first draft', 'Approved. The line summarizes work in three sentences and ships it to the outbox for the Farmer to read later on.']
+    replies: ['first draft', 'Approved. The line summarizes work in three sentences and ships it to the outbox for the Commander to read later on.']
   }, 200, nameOf);
   A.ok(ok.ok, 'delivered → ok');
   A.eq(ok.stages.join('>'), 'Writer>Reviewer', 'stages read in LINE order (the route lists runs newest-first)');

@@ -174,7 +174,7 @@ try {
     const made = await prep.prepare({ targetVersion: '9.9.9', browserStore: {} });
     A.eq(made.ok, true, 'the in-app update gets its verified recovery point despite the #91 entry (was: UPDATE paused, ENOENT lstat)');
     A.ok(made.receipt && Array.isArray(made.receipt.unreadable) && made.receipt.unreadable.some(s => s.path === GHOST && s.reason === 'unreadable: ENOENT'),
-      'the durable receipt names the entry it could not read (never claims a byte-complete farm)');
+      'the durable receipt names the entry it could not read (never claims a byte-complete station)');
     const back = made.receipt && JSON.parse(fs.readFileSync(made.receipt.receiptFile, 'utf8'));
     A.ok(back && back.unreadable && back.unreadable.length === made.receipt.unreadable.length, 'the unreadable list survives in the on-disk receipt');
     prep.cancel();

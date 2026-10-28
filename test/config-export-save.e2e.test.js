@@ -20,11 +20,11 @@ const { SidecarFixture } = require('./helpers/sidecar-fixture.js');
     const first = await fixture.json('POST', '/api/config/export/save', { sections: { settings: { theme: 'blue' } } });
     A.eq(first.status, 200, 'POST /api/config/export/save -> 200');
     A.eq(first.body.ok, true, 'the save reports ok');
-    A.eq(path.dirname(first.body.path), downloads, 'the file lands in the Farmer\'s Downloads folder');
+    A.eq(path.dirname(first.body.path), downloads, 'the file lands in the Commander\'s Downloads folder');
     A.ok(/^starnet-station-\d{4}-\d{2}-\d{2}\.json$/.test(first.body.file), 'the file carries the dated backup name: ' + first.body.file);
     A.eq(path.join(downloads, first.body.file), first.body.path, 'the returned path is the file\'s real absolute path');
     const env = JSON.parse(fs.readFileSync(first.body.path, 'utf8'));
-    A.eq(env.starnetExport, 1, 'the saved file is the farm export envelope');
+    A.eq(env.starnetExport, 1, 'the saved file is the station export envelope');
     A.eq(env.sections.settings, { theme: 'blue' }, 'the browser-owned slices ride into the saved file');
 
     const second = await fixture.json('POST', '/api/config/export/save', { sections: {} });

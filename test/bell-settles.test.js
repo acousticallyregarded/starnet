@@ -96,7 +96,7 @@ const rd = p => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
   const su = rd('frontend/app/stationui.js');
   A.ok(/r\.kind === 'needs' && !r\.done && r\.prompt && r\.life !== NOTIF_LIFE\) \{ r\.done = true; r\.read = true;/.test(su) && /if \(opts && opts\.prompt\) \{ rec\.prompt = String\(opts\.prompt\); rec\.life = NOTIF_LIFE; \}/.test(su), 'a prompt entry raised before this page life is marked handled');
   A.ok(/function buildNotifs\(body\) \{\s*pruneLegacyNotifs\(\);\s*reapDeadPrompts\(\);/.test(su) && /function badges\(\) \{\s*reapDeadPrompts\(\);/.test(su), '…before the bell or its badge is drawn');
-  A.ok(/for \(const k of StationUI\.waitingNotifKeys\('stepin-'\)\) if \(!live\.some\(h => 'stepin-' \+ h\.id === k\)\) StationUI\.settleNotifs\(k\);/.test(si), 'a STEP-IN line for a handoff the farm no longer has is settled');
+  A.ok(/for \(const k of StationUI\.waitingNotifKeys\('stepin-'\)\) if \(!live\.some\(h => 'stepin-' \+ h\.id === k\)\) StationUI\.settleNotifs\(k\);/.test(si), 'a STEP-IN line for a handoff the station no longer has is settled');
   A.ok(/if \(!waiting\) \{ if \(StationUI\.settleNotifs\) StationUI\.settleNotifs\('extensions-pending'\); return; \}/.test(app), 'boot settles extensions-pending when nothing waits any more');
   // R9: a notification for a deleted session keeps the bell and says so
   A.ok(/if \(go\.ws && typeof Workstreams !== 'undefined' && Workstreams\.get && !Workstreams\.get\(go\.ws\)\) \{ toast\('that session was deleted', 'warn'\); return false; \}/.test(su), 'a deleted session: the bell stays and says so');

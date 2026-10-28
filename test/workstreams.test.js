@@ -15,7 +15,7 @@ const V1 = {
   agent: { id: 'agent', name: 'ULTRON', model: 'anthropic/claude-sonnet-4.5' },
   history: [
     { role: 'user', content: 'what is my purpose?' },
-    { role: 'assistant', content: 'to serve, Farmer.' }
+    { role: 'assistant', content: 'to serve, Commander.' }
   ],
   usage: { tokens: 1200, cost: 0.0345, calls: 3 },
   updatedAt: 1700000000000
@@ -312,7 +312,7 @@ A.ok(W.isDeleted(shopId) === false, 'revive clears the tombstone (the session be
 // reset (NEW AGENT) clears tombstones with everything else.
 W.del(shopId); A.ok(W.isDeleted(shopId), 're-deleted before reset');
 W.reset();
-A.ok(W.isDeleted(shopId) === false, 'reset clears tombstones (a fresh Farmer inherits none)');
+A.ok(W.isDeleted(shopId) === false, 'reset clears tombstones (a fresh Commander inherits none)');
 
 /* ---------- TASK-BOARD TRUTH: kind field ('task' = board card, 'chat' = rail-only session) ---------- */
 W.reset();

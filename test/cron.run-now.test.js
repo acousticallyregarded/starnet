@@ -82,7 +82,7 @@ A.ok(/cronDriver\.settleRun\(job\.id, runId, state, null\)/.test(runNowBlock), "
    routine's bay room only — "test it now" showed web tools the 9:00 fire did not have (or the reverse). Lock stage
    one to the exact resolveStation expression the driver uses, and the driver to its side of it. */
 const runNowStageOne = sliceBetween(runNowBlock, /await runOnce\(\{/, /chainRunner\.advance\(/);
-A.ok(/farm:\s*\(\s*job\.dockId\s*\?\s*router\.stationFor\(job\.agentId,\s*job\.dockId\)\s*:\s*router\.stationFor\(job\.agentId\)\s*\)\s*\|\|\s*undefined/.test(runNowStageOne), "Run Now stage one runs in the routine's bay room, exactly like the scheduled fire (B5)");
+A.ok(/station:\s*\(\s*job\.dockId\s*\?\s*router\.stationFor\(job\.agentId,\s*job\.dockId\)\s*:\s*router\.stationFor\(job\.agentId\)\s*\)\s*\|\|\s*undefined/.test(runNowStageOne), "Run Now stage one runs in the routine's bay room, exactly like the scheduled fire (B5)");
 const driverSrc = fs.readFileSync(path.resolve(__dirname, '..', 'sidecar', 'cron-driver.js'), 'utf8');
 A.ok(/job\.dockId \? resolveStation\(job\.agentId, job\.dockId\) : resolveStation\(job\.agentId\)/.test(driverSrc), 'the scheduled fire resolves the same bay station (cron-driver.js)');
 A.ok(/resolveStation:\s*\(agentId, dockId\)\s*=>\s*router\.stationFor\(agentId, dockId\)/.test(driverBlock), "the driver's resolveStation is router.stationFor — the seam Run Now calls directly");

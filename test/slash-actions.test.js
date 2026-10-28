@@ -110,7 +110,7 @@ const mk = (over) => { const d = deps(over); return { S: makeSlashActions(d), ca
     A.ok(/Scheduling is now on\./.test(r.text) && !/NOT armed/.test(r.text), '/routine add says the save turned scheduling on: ' + r.text);
     const off = await mk({ cron: { armed: () => false, offByChoice: () => true, create: async (spec) => ({ ok: true, job: job({ name: spec.name }), scheduler: { armed: false, armedNow: false, offByChoice: true } }) } })
       .S.run('routine', 'add every 30m | check the build');
-    A.ok(/Scheduling is off \(you turned it off\), so nothing will fire — \/cron on to turn it on\./.test(off.text) && !/now on/.test(off.text), 'an explicit OFF is kept and said as the Farmer\'s choice: ' + off.text);
+    A.ok(/Scheduling is off \(you turned it off\), so nothing will fire — \/cron on to turn it on\./.test(off.text) && !/now on/.test(off.text), 'an explicit OFF is kept and said as the Commander\'s choice: ' + off.text);
     const fs = require('fs'), path = require('path');
     const idx = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
     const host = idx.slice(idx.indexOf('const slashActions = slashActionsMod.makeSlashActions({'), idx.indexOf('const slashActions = slashActionsMod.makeSlashActions({') + 2400);
@@ -384,7 +384,7 @@ const mk = (over) => { const d = deps(over); return { S: makeSlashActions(d), ca
 
   {
     const noCaps = await makeSlashActions({ budget: { snapshot: async () => Object.assign({}, SNAP, { caps: {} }) } }).run('usage', '', {});
-    A.ok(noCaps.lines.some(l => /No spend caps are set/.test(l)), 'an uncapped farm says so plainly');
+    A.ok(noCaps.lines.some(l => /No spend caps are set/.test(l)), 'an uncapped station says so plainly');
     // sub-cent spend must not render as "$0.00" — that reads as "free"
     const tiny = await makeSlashActions({ budget: { snapshot: async () => Object.assign({}, SNAP, { today: 0.004 }) } }).run('usage', '', {});
     A.ok(/<\$0\.01/.test(tiny.lines[0]), 'sub-cent spend is not rounded away to $0.00');

@@ -50,7 +50,7 @@ A.ok(!L.parseFixes('I cannot help with that.', inp).ok && /did not answer with s
 A.ok(!L.parseFixes('{"diagnosis": "It is fine as is.", "fixes": []}', inp).ok && /It is fine as is/.test(L.parseFixes('{"diagnosis": "It is fine as is.", "fixes": []}', inp).error), 'no change to suggest says why');
 A.ok(L.firstObject('x {"a": "}{"} y') === '{"a": "}{"}', 'braces inside strings do not end the JSON early');
 const leaky = L.parseFixes(JSON.stringify({ diagnosis: 'Step p11 produced an essay.', fixes: [{ step: 'p11', does: 'Three bullets.', why: 'p11 decides the length.' }] }), inp);
-A.ok(leaky.ok && leaky.diagnosis === 'the WRITER step produced an essay.' && leaky.fixes[0].why === 'the WRITER step decides the length.', 'a step id that slips into the diagnosis or a why becomes the step\'s role (the Farmer never reads "p11")');
+A.ok(leaky.ok && leaky.diagnosis === 'the WRITER step produced an essay.' && leaky.fixes[0].why === 'the WRITER step decides the length.', 'a step id that slips into the diagnosis or a why becomes the step\'s role (the Commander never reads "p11")');
 A.ok(/name a step by its role/.test(L.SYSTEM), '…and the prompt asks for roles, not ids');
 A.ok(/must work for EVERY job this line gets, not only this one, so never copy this job's topic or numbers/.test(L.SYSTEM), 'a fix is a standing instruction: it never bakes in this job\'s topic or counts (a real model wrote "exactly three bullet points")');
 // a NAMED step goes by its NAME, in the prompt and in what the Commander reads — the fix card's header names it so (conveyor-ui-15)

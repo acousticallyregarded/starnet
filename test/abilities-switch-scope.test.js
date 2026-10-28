@@ -28,6 +28,6 @@ A.ok(post && !/agent/i.test(post), 'the switch POST carries no agent');
 const toggle = SC.slice(SC.indexOf('async function handleToolsetToggle'), SC.indexOf('/* ---- /api/connectors'));
 A.ok(toggle.length > 0 && !/agent/i.test(toggle), 'the toggle handler never reads an agent');
 A.ok(/if \(body\.enabled\) delete toolsetDisabled\[id\]; else toolsetDisabled\[id\] = false;/.test(toggle), 'it writes the one station-wide toolsetDisabled map, keyed by ability only');
-A.ok(/resolveTools\(agentId, farm, undefined, \{ disabledCaps: unrestrictedHostNow\(\) \? new Set\(\) : disabledCapsSet\(\) \}\)/.test(SC), 'and the run path applies that same map to whichever agent runs');
+A.ok(/resolveTools\(agentId, station, undefined, \{ disabledCaps: unrestrictedHostNow\(\) \? new Set\(\) : disabledCapsSet\(\) \}\)/.test(SC), 'and the run path applies that same map to whichever agent runs');
 
 A.report('abilities-switch-scope.test');

@@ -67,7 +67,7 @@ const copySource = new Function(extract('messageCopyText') + '\nreturn messageCo
 const rawReport = '| Task | Status |\n|---|---|\n| Save | PASS |\n\n1. Inspect\n   - Keep\n\n[Evidence](https://example.com)';
 A.eq(copySource({__proseSource:rawReport,textContent:'TaskStatusSavePASS✓'}),rawReport,'message copy retains report delimiters and excludes UI controls');
 A.eq(copySource({__proseSource:'',textContent:'✓'}),'','empty prose does not copy controls');
-A.eq(copySource({textContent:'Farmer plain text'}),'Farmer plain text','ordinary messages retain text fallback');
+A.eq(copySource({textContent:'Commander plain text'}),'Commander plain text','ordinary messages retain text fallback');
 A.ok(/bodyEl\.__proseSource = raw/.test(extract('renderProse')),'streamed and restored rendering retain source');
 A.ok(/messageCopyText\(bodyEl\)/.test(clickBody),'message button uses the source-preserving copy path');
 // Exercise the public renderer too: its fast-path marker gate must agree with the

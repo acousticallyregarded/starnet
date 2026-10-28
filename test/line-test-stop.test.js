@@ -32,7 +32,7 @@ A.ok(/\{ m: 'POST', exact: '\/api\/routing\/sample\/stop', h: handleRoutingSampl
 // the stop core is shared with station.test_line (a stopped lead run stops its test job): read both
 const stopFn = fnBody(sidecar, '\nfunction stopSampleJob(') + fnBody(sidecar, '\nfunction handleRoutingSampleStop(');
 A.ok(/if \(!sampleInFlight\) return null;[\s\S]*if \(!r\) return json\(409, \{ ok: false, error: 'no sample job is riding the line/.test(stopFn), 'nothing riding the line → 409 {ok:false,error} (never a route-miss)');
-A.ok(/sampleInFlight\.stopRequested = true;/.test(stopFn), 'it marks the in-flight sample as stopped by the Farmer…');
+A.ok(/sampleInFlight\.stopRequested = true;/.test(stopFn), 'it marks the in-flight sample as stopped by the Commander…');
 A.ok(/killAll\(null, \(sampleHub && sampleHub\._internals\) \? sampleHub\._internals\.inflight : null\)/.test(stopFn), '…and kills ONLY the sample hub\'s runs, the way E-STOP does (entry run and every chained stage)');
 A.ok(!/killAll\(runs/.test(stopFn), 'it never touches the browser\'s runs or any other hub');
 // the route's core moved into runSampleJob (2026-10-01) so the lead's station.test_line runs the very same job; the route

@@ -259,7 +259,7 @@ StationBake.drawBase({ drawImage(cv, x, y) { fullDrawn.push({ cv, x, y, w: cv.wi
 A.eq(fullDrawn.map(d => [d.x, d.y, d.w, d.h]), [
   [0, 0, 384, 384], [384, 0, 384, 384], [768, 0, 384, 384],
   [0, 384, 384, 384], [384, 384, 384, 384], [768, 384, 384, 384]
-], 'full chunk composite covers the farm without gaps, overlaps, or seam offsets');
+], 'full chunk composite covers the station without gaps, overlaps, or seam offsets');
 
 canvases.length = 0;
 const visibleCold = StationBake.bakeIncremental(geo, null, null, {
@@ -276,7 +276,7 @@ const panned = StationBake.bakeIncremental(geo, visibleCold, null, {
   maxRetainedChunks: 2,
   onlyMissingVisible: true
 });
-A.eq(panned.stats.dirtyChunks, [], 'pan-only visible fill does not dirty the whole farm');
+A.eq(panned.stats.dirtyChunks, [], 'pan-only visible fill does not dirty the whole station');
 A.eq(panned.stats.rebakedChunks, 1, 'pan-only visible fill bakes only the newly exposed chunk');
 A.ok(panned.chunkMap.has('2,0'), 'pan-only visible fill caches the newly exposed chunk');
 
@@ -488,8 +488,8 @@ for (const mat of WorldSurface.WALLS) {
     const result = StationBake.bake(tg);
     A.ok(wallArtCalls.length > 0 && wallArtCalls.every(c => c.material === mat && c.base === color), mat + ' north face retains the selected paint');
     A.ok(stripArtCalls.length > 4 && stripArtCalls.every(c => c.material === mat && c.base === color && c.opts.detail === StationBake.DEPTH.wallDetail), mat + ' side walls and all four corners request that same selected finish');
-    A.eq(tg.zoneGrid, previousGrid, mat + ' atlas selection never changes farm geometry');
-    A.eq([result.W, result.H], [tg.W, tg.H], mat + ' atlas selection keeps farm proportions');
+    A.eq(tg.zoneGrid, previousGrid, mat + ' atlas selection never changes station geometry');
+    A.eq([result.W, result.H], [tg.W, tg.H], mat + ' atlas selection keeps station proportions');
   }
 }
 for (const mat of ['viewport', 'wainscot', 'hedge']) {
@@ -524,7 +524,7 @@ const oldWallAddresses = wallAddresses(movedTextureGeo(0, 0));
 A.ok(oldWallAddresses.straight.some(x => x < 0), 'remaster north faces receive signed physical tile coordinates');
 A.ok(oldWallAddresses.projected.length > 100, 'side and all curved wall faces use the shared high-detail strip');
 A.ok(oldWallAddresses.projected.some(p => p.w < 1 || p.h < 1), 'remaster corner surface is sampled below the old whole-pixel grid');
-A.eq(wallAddresses(movedTextureGeo(3, 2)), oldWallAddresses, 'growing farm bounds preserves every straight, side and corner texture address');
+A.eq(wallAddresses(movedTextureGeo(3, 2)), oldWallAddresses, 'growing station bounds preserves every straight, side and corner texture address');
 
 // Door occluders keep their exact old depth/clip geometry, while capturing the
 // same high-detail plate used by the adjacent wall instead of a blurred copy.
@@ -545,7 +545,7 @@ for(let i=0;i<revealCalls.length;i+=2) {
   A.ok(right[0]-left[0]-2*(left[3]+1)>=6,'authored jambs preserve an open centre');
 }
 
-A.ok(remasterDoors.length > 0, 'real path throat produces a depth-sorted door occluder');
+A.ok(remasterDoors.length > 0, 'real corridor throat produces a depth-sorted door occluder');
 A.ok(remasterDoors.every(d => detailCanvases.includes(d.image)), 'each remaster door occluder captures the dense art plate');
 global.IndustrialTextures.isRemaster = () => false;
 const classicDoors = StationBake.bake(doorGeo).doorOccluders;
@@ -598,8 +598,8 @@ const gridRooms = [{ z: 'a', x1: 2, y1: 2, x2: 30, y2: 14 }, { z: 'b', x1: 40, y
   const south = StationBake.bakeIncremental(tall, before, [{ x1: 2, y1: 42, x2: 9, y2: 47 }]);
   A.ok(!south.stats.fullReset && south.stats.reusedChunks > 0, '…while one that grew without moving the density keeps its unreached chunks');
   const stitched = StationBake.bake(narrow);
-  A.ok(stitched.stitched, 'a farm wider than one chunk bakes AS its chunks, stitched — the world, the cut chunks and the re-baked ones are one set of pixels');
-  A.ok(!StationBake.bake(textureGeo('bulkhead', '#476a91')).stitched, '…a one-chunk farm bakes whole');
+  A.ok(stitched.stitched, 'a station wider than one chunk bakes AS its chunks, stitched — the world, the cut chunks and the re-baked ones are one set of pixels');
+  A.ok(!StationBake.bake(textureGeo('bulkhead', '#476a91')).stitched, '…a one-chunk station bakes whole');
   const cut = StationBake.bakeIncremental(narrow, stitched, [{ x1: 10, y1: 5, x2: 12, y2: 6 }]);
   A.ok(!cut.stats.fullReset && cut.stats.reusedChunks > 0, 'BUILD MODE\'s first edit cuts its unreached chunks from that stitched bake');
   const monolithic = Object.assign({}, stitched, { stitched: false });

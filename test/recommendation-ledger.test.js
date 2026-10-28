@@ -33,7 +33,7 @@ const cycles = { entries: [] };
 for (let i = 0; i < 7; i++) cycles.entries.push({ id: 'r' + i, surface: 'suggest', kind: 'research', title: 'Research topic ' + i, state: i < 5 ? 'completed' : 'accepted' });
 for (let i = 0; i < 3; i++) cycles.entries.push({ id: 'w' + i, surface: 'suggest', kind: 'writing', title: 'Writing topic ' + i, state: 'declined', reason: 'wrong_thing' });
 const shifted = R.replay(cycles);
-A.ok(shifted.kinds.research.weight > shifted.kinds.writing.weight, 'ten-cycle replay shifts toward work the Farmer kept');
+A.ok(shifted.kinds.research.weight > shifted.kinds.writing.weight, 'ten-cycle replay shifts toward work the Commander kept');
 A.ok(shifted.kinds.research.weight <= 0.75 && shifted.kinds.writing.weight >= -0.75, 'preference shifts stay bounded');
 
 const effective = R.effectivePreferenceWeights({ kinds: { research: { weight: 0.4 }, writing: { weight: 0 } } },

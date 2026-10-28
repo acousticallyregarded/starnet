@@ -32,7 +32,7 @@ const GOOD = [
 
 /* ---------- decide: named bindings + kind alternation ---------- */
 let s = S.fresh(T0);
-A.eq(S.decide(s, { now: T0, warm: false }).binding, 'cold', 'a cold farm never mints');
+A.eq(S.decide(s, { now: T0, warm: false }).binding, 'cold', 'a cold station never mints');
 A.eq(S.decide(s, { now: T0, warm: true }).binding, 'cooldown', 'no earned runs -> cooldown binds');
 for (let i = 0; i < S.MINT_EVERY_RUNS; i++) s = S.noteRun(s, T0);
 A.ok(S.decide(s, { now: T0, warm: true }).fire, 'earned runs + warm + never-minted fires');
@@ -104,7 +104,7 @@ A.ok(dir.indexOf('Morning Brief') >= 0, 'the launch-history hint is embedded');
 /* ---------- FLAGSHIP CROSS-WIRE: the direction block (open quests + north star) rides the directive ---------- */
 const dirWithDirection = S.buildRecipeDirective({
   interestsBlock: '• stock research (seen 4×) — e.g. "NVDA earnings"',
-  directionBlock: 'NORTH STAR: automate my weekly stock brief\nOPEN QUESTS (the Farmer\'s committed next steps — advance one, never duplicate one):\n• ship the earnings-day digest',
+  directionBlock: 'NORTH STAR: automate my weekly stock brief\nOPEN QUESTS (the Commander\'s committed next steps — advance one, never duplicate one):\n• ship the earnings-day digest',
   existingRecipes: EXISTING, gearKeys: GEAR
 });
 A.ok(dirWithDirection.indexOf('automate my weekly stock brief') >= 0, 'the directive embeds the north star');
@@ -324,7 +324,7 @@ const idxSrc = fs2.readFileSync(path2.join(__dirname, '../sidecar/index.js'), 'u
 A.ok(/Scout\.matchArchetype\(SharedSpecialties\.ARCHETYPES/.test(idxSrc), 'runScoutCycle consults the archetype matcher on a prospect turn');
 A.ok(idxSrc.indexOf('Scout.matchArchetype') < idxSrc.indexOf('ProspectGen.buildDirective'), 'the archetype match runs BEFORE the LLM authorship pass');
 A.ok(/for \(const c of \(SharedSpecialties\.ARCHETYPES \|\| \[\]\)\)/.test(idxSrc), 'the LLM near-duplicate guard counts archetypes as existing classes (the model never re-authors one)');
-A.ok(/function scoutTakenNames\(\)/.test(idxSrc), 'the matcher dedups against the names the Farmer actually HAS (not the catalog itself)');
+A.ok(/function scoutTakenNames\(\)/.test(idxSrc), 'the matcher dedups against the names the Commander actually HAS (not the catalog itself)');
 
 /* ---------- normalize: corrupt saves degrade, never throw ---------- */
 const n = S.normalize({ staged: [{ id: 'ok', kind: 'recipe', draft: { name: 'x' } }, { id: '', kind: 'recipe', draft: {} }, { id: 'bad-kind', kind: 'zork', draft: {} }], denylist: [1, 'fp', ''], ledger: 'nope', runsSinceMint: 'NaN', lastMintAt: -5 }, T0);

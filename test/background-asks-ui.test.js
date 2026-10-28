@@ -106,7 +106,7 @@ ctx.__reconcile({ ts: 20000, prompts: [
 ] });
 A.eq(heard, ['p9'], 'only the ask this page never heard is re-announced (on the page bus, so every surface learns it)');
 const after = Channels.pendingAllOf('ws_lead').map(p => p.promptId).sort();
-A.eq(after, ['p1', 'p9'], 'the re-announced ask is filed; the one the farm no longer lists (p2, asked long before the snapshot) is withdrawn');
+A.eq(after, ['p1', 'p9'], 'the re-announced ask is filed; the one the station no longer lists (p2, asked long before the snapshot) is withdrawn');
 A.ok(settled.indexOf('ws_lead:p2') >= 0, 'the withdrawn ask\'s bell entry settles');
 A.ok(repaints.indexOf('ny') >= 0, 'NEEDS YOU repaints after a withdrawal');
 A.ok(!Channels.allPending().some(x => x.p.promptId === 'own9'), 'a run\'s own ask in the snapshot is never filed by this path');
@@ -173,7 +173,7 @@ Channels.reset();
   const card = (id, extra) => octx.__cards.set(id, Object.assign({ wsId: 'ws_lead', runId: 'lead1', worker: false, retire: t => lines.push(id + ':' + t) }, extra));
   card('own'); card('clone', { worker: true, background: true });
   octx.__retireRun('ws_lead', 'lead1');
-  A.eq(lines, ['own:■ the run ended before an answer — nothing was approved'], 'the lead\'s run end retires its own card, never a background worker\'s (still live on the farm)');
+  A.eq(lines, ['own:■ the run ended before an answer — nothing was approved'], 'the lead\'s run end retires its own card, never a background worker\'s (still live on the station)');
   A.ok(octx.__cards.has('clone'), 'the background card stays open and answerable');
   A.eq(octx.__retireOne('clone', '■ no longer waiting on you'), true, 'a background card retires on its own settle');
   A.eq(lines[1], 'clone:■ no longer waiting on you', '…in the words its caller chose');
@@ -231,7 +231,7 @@ Channels.reset();
 }
 
 // ---------------- wiring that the lift cannot see ----------------
-A.ok(/U\.bus\.on\('permission\.prompt', fileBackgroundAsk\)/.test(ch), 'the page listens for background asks on its bus (the farm bridge re-emits SSE there)');
+A.ok(/U\.bus\.on\('permission\.prompt', fileBackgroundAsk\)/.test(ch), 'the page listens for background asks on its bus (the station bridge re-emits SSE there)');
 A.ok(/const p = runPendingOf\(activeWs\);/.test(ch) && /const pend = runPendingOf\(activeWs\);/.test(ch), 'the live presence card reads only the run\'s own ask (a worker waiting never reads AWAITING APPROVAL on a working lead)');
 A.ok(/Chat\.reconcileBackgroundAsks\(snap\)/.test(rd('frontend/app/world.js')), 'the bridge\'s reconnect snapshot feeds the background-ask reconcile');
 A.ok(/consentPhrase: actionPhrase, reconcileBackgroundAsks,/.test(ch), 'Chat exports the reconcile');

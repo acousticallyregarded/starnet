@@ -6,7 +6,7 @@ const WM = require('../frontend/app/worldmodel.js');
 
 /* ---- default station: one spawn HAB room ---- */
 const s = WM.create();
-A.eq(s.rooms().length, 1, 'default farm seeds exactly one room');
+A.eq(s.rooms().length, 1, 'default station seeds exactly one room');
 A.ok(s.spawnRoomId(), 'spawn room id is set');
 const hab = s.rooms()[0];
 A.eq(hab.kind, 'hab', 'seed room is a hab');
@@ -32,8 +32,8 @@ s.removeRoom(rev.id); // keep the rest of the test tidy
 
 /* ---- hallway bridges the 2-tile gap between hab (x≤17) and lab (x≥20) ---- */
 const hw = s.placeHallway({ rect: { x1: 18, y1: 3, x2: 19, y2: 4 } });
-A.ok(hw.ok, 'path placed in the gap');
-A.eq(s.rooms().length, 3, 'three zones: hab + lab + path');
+A.ok(hw.ok, 'hallway placed in the gap');
+A.eq(s.rooms().length, 3, 'three zones: hab + lab + corridor');
 
 /* ---- projectGeometry: the MAP-shaped contract the bake consumes ---- */
 const g = s.projectGeometry();
@@ -41,9 +41,9 @@ A.eq(g.TILE, 12, 'geometry TILE = 12');
 A.ok(g.COLS > 0 && g.ROWS > 0, 'geometry has a positive size');
 A.eq(g.W, g.COLS * 12, 'W = COLS*TILE');
 A.ok(g.H > g.ROWS * 12, 'H carries hull headroom below the grid');
-A.eq(g.ROOM_IDS.length, 2, 'ROOM_IDS excludes the path (hab + lab)');
+A.eq(g.ROOM_IDS.length, 2, 'ROOM_IDS excludes the corridor (hab + lab)');
 A.eq(g.allRects.length, 3, 'allRects covers every footprint rect');
-A.ok(g.isCorridor(hw.id) === true, 'isCorridor true for the path zone');
+A.ok(g.isCorridor(hw.id) === true, 'isCorridor true for the corridor zone');
 A.ok(g.isCorridor(hab.id) === false, 'isCorridor false for a room zone');
 
 const lx = hab.rects[0].x1 - g.origin.tx, ly = hab.rects[0].y1 - g.origin.ty;
@@ -86,7 +86,7 @@ A.eq(s.rooms().length, cntBefore - 1, 'removal drops the count by one');
 /* ---- undo / redo round-trip ---- */
 A.ok(s.canUndo(), 'history has undoable steps');
 s.undo();
-A.eq(s.rooms().length, cntBefore, 'undo restores the removed path');
+A.eq(s.rooms().length, cntBefore, 'undo restores the removed corridor');
 s.redo();
 A.eq(s.rooms().length, cntBefore - 1, 'redo re-applies the removal');
 
@@ -174,7 +174,7 @@ A.ok(p[p.length - 1].x === labT[0] && p[p.length - 1].y === labT[1], 'path ends 
 A.eq(g8.path(habT[0], habT[1], 0, 0), null, 'no path to a void tile');
 const extra = new Set();
 for (let wx = 18; wx <= 19; wx++) for (let wy = 3; wy <= 4; wy++) extra.add((wx - ox8) + ',' + (wy - oy8));
-A.eq(g8.path(habT[0], habT[1], labT[0], labT[1], extra), null, 'blocking the only path severs the path');
+A.eq(g8.path(habT[0], habT[1], labT[0], labT[1], extra), null, 'blocking the only corridor severs the path');
 
 /* ---- footprint span cap (the far-room canvas-explosion guard) ---- */
 const s9 = WM.create();
@@ -198,7 +198,7 @@ A.notThrows(() => {
 /* ---- props (furniture): place / validate / block-walk / move / reclaim / persist ---- */
 const sp = WM.create();                                   // HAB-01 {0..17,0..10}
 const spId = sp.spawnRoomId();
-A.eq(sp.props().length, 0, 'a fresh farm has no props');
+A.eq(sp.props().length, 0, 'a fresh station has no props');
 
 const addP = sp.addProp({ t: 'desk', x: 4, y: 2, w: 2, h: 1 });
 A.ok(addP.ok && addP.id, 'addProp onto the deck succeeds');
@@ -553,7 +553,7 @@ A.eq(legacyDoor.doc().meta.trunkRoomId, 'rD', 'migrate backfills trunkRoomId to 
 
 /* ---- Session 2: PipelineEdge persists, migrates, sanitizes, and participates in undo ---- */
 const pe = WM.create();
-A.eq(JSON.stringify(pe.pipelineEdges()), '[]', 'a fresh farm has no PipelineEdge entries');
+A.eq(JSON.stringify(pe.pipelineEdges()), '[]', 'a fresh station has no PipelineEdge entries');
 A.ok(pe.addPipelineEdge({ from: 'lead', to: 'worker', whenKind: 'handoff', lane: 'primary' }).ok, 'addPipelineEdge accepts a valid PipelineEdge');
 A.eq(JSON.stringify(pe.pipelineEdges()), JSON.stringify([{ from: 'lead', to: 'worker', whenKind: 'handoff', lane: 'primary' }]), 'pipelineEdges returns the persisted edge');
 const peDoc = pe.serialize();
@@ -578,7 +578,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
 {
   const st = WM.create();
   const r1 = st.ensureWorkstation('agent');
-  A.ok(r1.ok && !r1.existing, 'fresh farm: ensureWorkstation seeds a desk');
+  A.ok(r1.ok && !r1.existing, 'fresh station: ensureWorkstation seeds a desk');
   const desks = st.props().filter(p => p.t === 'desk' && p.agentId === 'agent');
   A.eq(desks.length, 1, 'exactly one hero-assigned desk seeded');
   A.eq(st.roomAt(desks[0].x, desks[0].y), st.spawnRoomId(), 'seeded desk sits in the spawn room');
@@ -691,7 +691,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   const r = st.ensureWorkstation('scout-2');
   A.ok(r.ok && !r.adopted, 'a free desk in a distant room is NOT adopted');
   A.eq(r.roomId, st.spawnRoomId(), 'the summoned agent is seated in the spawn room instead');
-  A.eq(st.propById(remote.id).agentId, undefined, 'the Farmer\'s unbound lab console is left untouched');
+  A.eq(st.propById(remote.id).agentId, undefined, 'the Commander\'s unbound lab console is left untouched');
 }
 {
   // no space anywhere → an honest failure, never a phantom desk
@@ -699,7 +699,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   const rect = st.roomById(st.spawnRoomId()).rects[0];
   for (let y = rect.y1; y <= rect.y2; y++) for (let x = rect.x1; x <= rect.x2; x++) st.addProp({ t: 'rack', x, y, w: 1, h: 1, block: true });
   const r = st.ensureWorkstation('scout-2');
-  A.ok(!r.ok, 'a farm with nowhere to put a desk reports failure');
+  A.ok(!r.ok, 'a station with nowhere to put a desk reports failure');
   A.eq(r.error, 'NO_ROOM_FOR_DESK', 'and names the reason so the caller can stay honest about it');
   A.eq(st.props().filter(p => p.t === 'desk').length, 0, 'no desk prop is invented on failure');
 }
@@ -838,7 +838,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
    dismissals, never saw its first ride, and had its first line retired before the card was ever shown. */
 {
   const a = WM.defaultDoc();
-  A.ok(a.meta.createdAt > 0, 'a new farm is stamped with a real id, never 0');
+  A.ok(a.meta.createdAt > 0, 'a new station is stamped with a real id, never 0');
   const b = WM.defaultDoc();
   A.ok(b.meta.createdAt >= a.meta.createdAt, 'the stamp is a monotonic clock reading');
   A.eq(WM.defaultDoc(12345).meta.createdAt, 12345, 'an explicit id is honoured (deterministic for importers/tests)');
@@ -846,18 +846,18 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   // the id SURVIVES the persistence seam — that is the whole point of it
   const st = WM.create();
   const id = st.serialize().meta.createdAt;
-  A.ok(id > 0, 'a live farm carries its id');
+  A.ok(id > 0, 'a live station carries its id');
   A.eq(WM.deserialize(st.serialize()).serialize().meta.createdAt, id, 'and a save/load round-trip keeps it EXACTLY (never re-rolls)');
 
   // legacy docs are backfilled ONCE, non-destructively — an existing stamp is never overwritten
   const legacy = st.serialize(); legacy.meta.createdAt = 0;
   const healed = WM.deserialize(legacy).serialize().meta.createdAt;
-  A.ok(healed > 0, 'a doc saved before farm identity existed is backfilled on migrate');
+  A.ok(healed > 0, 'a doc saved before station identity existed is backfilled on migrate');
   const stamped = st.serialize(); stamped.meta.createdAt = 777;
   A.eq(WM.deserialize(stamped).serialize().meta.createdAt, 777, '…and a doc that already has one keeps it untouched');
 
   // two stations must not answer the same id, or the latches collide exactly as before
-  A.ok(WM.defaultDoc(1).meta.createdAt !== WM.defaultDoc(2).meta.createdAt, 'two farms are distinguishable');
+  A.ok(WM.defaultDoc(1).meta.createdAt !== WM.defaultDoc(2).meta.createdAt, 'two stations are distinguishable');
 }
 
 /* ---- A HALLWAY CORNER IS ROUNDED IN ART AND STILL WALKABLE (2026-08-10) ----
@@ -871,18 +871,18 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   const st = WM.create(WM.defaultDoc());
   const room = st.addRoom({ kind: 'hab', rects: [{ x1: 60, y1: 60, x2: 71, y2: 68 }] });
   const hall = st.placeHallway({ rects: [{ x1: 64, y1: 69, x2: 65, y2: 76 }] });
-  A.ok(room && room.id && hall && hall.id, 'room + path placed clear of the default farm');
+  A.ok(room && room.id && hall && hall.id, 'room + hallway placed clear of the default station');
   const geo = st.projectGeometry();
 
   const key = c => c[0] + ',' + c[1];
   const hallRect = geo.allRects.find(r => r.z === hall.id);
   const inHall = c => c[0] >= hallRect.x1 && c[0] <= hallRect.x2 && c[1] >= hallRect.y1 && c[1] <= hallRect.y2;
   const hallCh = geo.chamfers.filter(inHall);
-  A.ok(hallCh.length > 0, 'a path s void-exposed corners ARE chamfered (the art fix)');
+  A.ok(hallCh.length > 0, 'a hallway s void-exposed corners ARE chamfered (the art fix)');
 
   // …and not one of them costs the hallway a walkable tile
   const blocked = hallCh.filter(c => !geo.walkable(c[0], c[1]));
-  A.eq(blocked.length, 0, 'no path chamfer tile is blocked — path walkability is unchanged');
+  A.eq(blocked.length, 0, 'no hallway chamfer tile is blocked — corridor walkability is unchanged');
 
   // the room's own chamfers still block, exactly as before
   const roomRect = geo.allRects.find(r => r.z === room.id);
@@ -898,7 +898,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
     const g2 = st2.projectGeometry(), tr = g2.allRects.find(r => r.z === tiny.id);
     let walk = 0;
     for (let y = tr.y1; y <= tr.y2; y++) for (let x = tr.x1; x <= tr.x2; x++) if (g2.walkable(x, y)) walk++;
-    A.eq(walk, 4, 'a 2x2 path keeps all four tiles walkable (it would be a sealed hole otherwise)');
+    A.eq(walk, 4, 'a 2x2 hallway keeps all four tiles walkable (it would be a sealed hole otherwise)');
   }
   void key;
 }
@@ -940,7 +940,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   A.eq(JSON.stringify(ip.limits), JSON.stringify({ maxHops: 24, maxUsdPerMessage: 3, maxUsdPerDay: 10 }), 'limits survive serialize -> migrate -> deserialize');
   const geoP = back.projectGeometry().props.find(q => q.id === ib.id);
   A.eq(geoP.limits.maxUsdPerDay, 10, 'and project onto the geometry the plan compiles from');
-  A.ok(lb.setPropLimits(ib.id, null).ok && !lb.propById(ib.id).limits, 'null clears the budget (farm defaults)');
+  A.ok(lb.setPropLimits(ib.id, null).ok && !lb.propById(ib.id).limits, 'null clears the budget (station defaults)');
   A.ok(lb.setPropLimits(ib.id, { maxHops: 'x' }).ok && !lb.propById(ib.id).limits, 'garbage clears rather than stores garbage');
 }
 
@@ -948,7 +948,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   const starter = WM.create(WM.starterDoc());
   const PS = require('../frontend/app/propsprites.js');
   for (const type of PS.STARTER) {
-    A.eq(starter.props().filter(p => p.t === type).length, 1, 'fresh farm includes exactly one ' + type);
+    A.eq(starter.props().filter(p => p.t === type).length, 1, 'fresh station includes exactly one ' + type);
   }
   const construction = WM.create({ ...WM.starterDoc(), props: [] });
   for (const prop of starter.props()) {
@@ -965,7 +965,7 @@ A.eq(JSON.stringify(WM.deserialize({ rooms: {}, order: [], props: [], edges: [{ 
   A.eq(restored.ensureWorkstation('agent').id, desk.id, 'reload retains the assigned desk');
   const old = WM.create();
   const before = JSON.stringify(old.serialize().rooms);
-  A.eq(JSON.stringify(WM.deserialize(old.serialize()).serialize().rooms), before, 'existing farm dimensions are never recomposed');
+  A.eq(JSON.stringify(WM.deserialize(old.serialize()).serialize().rooms), before, 'existing station dimensions are never recomposed');
 }
 
 /* ---- new deck catalogs use the existing placement, palette and persistence paths ---- */

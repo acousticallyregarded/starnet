@@ -20,11 +20,11 @@ const { makeClock } = require('../shared/clock-rng.js');
   const mid = P.handoffPrompt('3 AI stories, keep it short', { agentId: 'nova' }, 'The research notes…', 1, brief, null, false);
   const last = P.handoffPrompt('3 AI stories, keep it short', { agentId: 'nova' }, 'The research notes…', 2, brief, null, true);
   A.ok(P.isHandoff(mid) && P.isHandoff(last), 'a middle stage\'s and the LAST stage\'s hand-off are both hand-offs');
-  A.ok(mid.indexOf(brief) >= 0, '…and the step\'s brief really rides that USER turn (why STUDY mistook it for the Farmer)');
+  A.ok(mid.indexOf(brief) >= 0, '…and the step\'s brief really rides that USER turn (why STUDY mistook it for the Commander)');
   A.ok(P.isHandoff(mid.replace(/\s+/g, ' ').slice(0, 80)), 'a run row\'s title (whitespace folded, cut at 80) still reads as a hand-off');
   A.ok(P.isHandoff('\n  ' + mid), 'leading whitespace does not hide the frame');
-  A.ok(!P.isHandoff('3 AI stories, keep it short') && !P.isHandoff('') && !P.isHandoff(null), 'a job the Farmer typed is not a hand-off');
-  A.ok(!P.isHandoff('please explain: PIPELINE HANDOFF — you are stage 2 of a work line on this farm.'), 'the frame quoted INSIDE a message is not a hand-off (only a turn that opens with it)');
+  A.ok(!P.isHandoff('3 AI stories, keep it short') && !P.isHandoff('') && !P.isHandoff(null), 'a job the Commander typed is not a hand-off');
+  A.ok(!P.isHandoff('please explain: PIPELINE HANDOFF — you are stage 2 of a work line on this station.'), 'the frame quoted INSIDE a message is not a hand-off (only a turn that opens with it)');
 
   /* ---------- 2. the run-end gate and the stash (sidecar/index.js, source-locked: runOnceCore is not unit-loadable) ---------- */
   const src = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
@@ -46,7 +46,7 @@ const { makeClock } = require('../shared/clock-rng.js');
     { role: 'tool', content: 'file says: the team prefers weekly releases' }
   ] };
   const said = await S.study(run, { propose: async () => 'style ADD: wants bullet-point summaries | EVIDENCE: "I always want bullet points"', clock: makeClock(1), beliefs: {}, declined: [] });
-  A.ok(said.proposals.length === 1 && said.proposals[0].evidenceRef.kind === 'verbatim' && said.proposals[0].evidence === 'I always want bullet points', 'the Farmer\'s own words stay a verbatim quote');
+  A.ok(said.proposals.length === 1 && said.proposals[0].evidenceRef.kind === 'verbatim' && said.proposals[0].evidence === 'I always want bullet points', 'the Commander\'s own words stay a verbatim quote');
   const reply = await S.study(run, { propose: async () => 'style ADD: wants very short summaries | EVIDENCE: "I keep every summary under 100 words"', clock: makeClock(2), beliefs: {}, declined: [] });
   A.ok(reply.proposals.length === 1 && reply.proposals[0].evidenceRef.kind === 'directive', 'a quote from the agent\'s OWN reply is never «you said»');
   A.ok(reply.proposals[0].evidence === run.directive, '…it falls back to the directive receipt');

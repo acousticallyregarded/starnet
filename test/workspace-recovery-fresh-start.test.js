@@ -33,11 +33,11 @@ function blocked(f, code) {
   const marker = fs.readFileSync(path.join(f.current, '.fresh-start.json'));
   const source = fs.readFileSync(path.join(f.legacy, 'agent.save.json'));
   const r = Recovery.applyPendingRecovery(f.opts);
-  A.eq(r.applied, false, 'automatic recovery does not import an explicitly rejected old farm');
+  A.eq(r.applied, false, 'automatic recovery does not import an explicitly rejected old station');
   A.eq(r.code, code, 'automatic skip reports its actual authority');
   A.eq(fs.existsSync(path.join(f.current, 'agent.save.json')), false, 'erased generation remains empty');
   A.ok(fs.readFileSync(path.join(f.current, '.fresh-start.json')).equals(marker), 'active marker stays byte-exact');
-  A.ok(fs.readFileSync(path.join(f.legacy, 'agent.save.json')).equals(source), 'legacy farm stays byte-exact');
+  A.ok(fs.readFileSync(path.join(f.legacy, 'agent.save.json')).equals(source), 'legacy station stays byte-exact');
   A.eq(fs.existsSync(Recovery._internals.requestFile(f.current, path)), false, 'no recovery request is minted');
   return r;
 }
@@ -71,7 +71,7 @@ try {
   const rollback = fs.readdirSync(path.dirname(explicit.current)).find(n => n.startsWith('workspaces.recovery-rollback-'));
   A.ok(rollback && fs.readFileSync(path.join(path.dirname(explicit.current), rollback, '.fresh-start.json')).equals(currentMarker),
     'the superseded erase marker is preserved in rollback');
-  A.eq(Recovery.applyPendingRecovery(explicit.opts).applied, false, 'next boot never restores over a live farm');
+  A.eq(Recovery.applyPendingRecovery(explicit.opts).applied, false, 'next boot never restores over a live station');
 
   for (const malformed of ['{invalid', { version: 2, acknowledgedRoots: [] }, { version: 1, acknowledgedRoots: [null] }, { version: 1, erased: 'true', acknowledgedRoots: [] }]) {
     blocked(fixture(malformed), 'AUTO_RECOVERY_FRESH_MARKER_UNREADABLE');
@@ -86,7 +86,7 @@ try {
   };
   const deniedResult = Recovery.applyPendingRecovery({ ...denied.opts, fs: readFs });
   A.eq(deniedResult.code, 'AUTO_RECOVERY_FRESH_MARKER_UNREADABLE', 'an unreadable choice fails automatic recovery closed');
-  A.eq(fs.existsSync(path.join(denied.current, 'agent.save.json')), false, 'an unreadable marker never authorizes importing a farm');
+  A.eq(fs.existsSync(path.join(denied.current, 'agent.save.json')), false, 'an unreadable marker never authorizes importing a station');
   A.report('workspace-recovery-fresh-start.test');
 } finally {
   if (path.dirname(root) !== path.resolve(os.tmpdir()) || !path.basename(root).startsWith('starnet-recovery-fresh-')) {

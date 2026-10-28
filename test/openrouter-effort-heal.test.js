@@ -98,7 +98,7 @@ const fresh = (o) => makeOpenRouterProvider(Object.assign({ fetch: fakeFetch, ke
     A.eq(G.pickAuxEffort(fresh().reasoningEfforts('anthropic/claude-haiku-4.5')), 'none', 'and keeps none as its aux pick');
     calls.length = 0;
     await run(fresh({ reasoningEffort: 'medium' }), { model: 'openai/gpt-5-mini' });
-    A.eq(calls.map(c => c.effort), ['medium'], 'a Farmer run at medium is sent medium');
+    A.eq(calls.map(c => c.effort), ['medium'], 'a Commander run at medium is sent medium');
   }
 
   // ---- an unrelated 400 is not retried ----

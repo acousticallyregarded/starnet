@@ -62,8 +62,8 @@ A.ok(!MKT.includes("'⏼ DEPLOY TO ") && !MKT.includes("'\">⏼ DEPLOY TO ") && 
 A.ok(!MKT.includes("sectH('▮ YOUR SPECIALISTS')") && !MKT.includes('SPECIALIST ARCHIVE — deep cuts') && !MKT.includes("SPECIALIST ARCHIVE (' +") &&
   MKT.includes("sectH('▮ YOUR CLASSES')") && MKT.includes("sectH('▮ CLASS ARCHIVE — deep cuts')"), 'P22: the nouns are CLASS / YOUR CLASSES / CLASS ARCHIVE');
 A.ok(/'recruit a new agent onto your crew — it gets its own session'/.test(MKT) && /'choose a class for your agent'/.test(MKT), 'P22: the subtitles say recruit / choose a class');
-A.ok(!/Same as the orchestrator|Inherits your orchestrator/.test(MKT) && !/inheritLabel: 'Same as the farm default'/.test(MKT) && /Copies the model of the agent on the line now/.test(MKT),
-  'P22: the model copy says an unpinned recruit copies the on-the-line agent\'s model (it does not track the farm default)');
+A.ok(!/Same as the orchestrator|Inherits your orchestrator/.test(MKT) && !/inheritLabel: 'Same as the station default'/.test(MKT) && /Copies the model of the agent on the line now/.test(MKT),
+  'P22: the model copy says an unpinned recruit copies the on-the-line agent\'s model (it does not track the station default)');
 A.ok(/model:\s*\(pin && pin\.model\)\s*\|\|\s*agent\.model/.test(read('frontend/app/app.js')), 'P22: …which stays true: summonAgent copies the focused agent\'s model');
 // P22 fix (review): a SETTINGS › New agent defaults tier pin REPLACES the copy (applyLoadout → resolveTierModel), so the
 // bay must name that pin, never promise a copy. Run the shipped helpers in a vm with and without a tier pin.

@@ -25,7 +25,7 @@ A.eq(/account\.starnetos\.com\/account\/skills/.test(stagedMarket), COMMUNITY_LI
 if (!COMMUNITY_LIVE) {
   for (const page of ['index.html', 'market.html', '404.html', 'docs/help.html', 'docs/index.html', 'legal/privacy.html'])
     A.eq(/maps\.html/.test(fs.readFileSync(path.join(staged, page), 'utf8')), false, 'held maps page is never linked from staged ' + page);
-  A.ok(/Not yet\. Today the market carries skills Homestead wrote/.test(stagedMarket), 'held market keeps its pre-launch publish answer');
+  A.ok(/Not yet\. Today the market carries skills StarNet wrote/.test(stagedMarket), 'held market keeps its pre-launch publish answer');
 }
 
 A.eq(fs.existsSync(path.join(staged, 'app', 'assets', 'sprites', '_assembly')), false, 'sprite assembly sources are absent from deploy artifact');
@@ -39,7 +39,7 @@ const stagedApp = fs.readFileSync(path.join(staged, 'app', 'index.html'));
 const stagedEmbed = fs.readFileSync(path.join(staged, 'app', 'embed.htm'));
 A.ok(stagedEmbed.equals(stagedApp), 'staged artifact carries a unique dashboard-upload-safe embed entry');
 const stagedSpecialties = path.join(staged, 'shared', 'specialties.js');
-A.ok(fs.existsSync(stagedSpecialties), 'staged artifact carries the shared specialty catalog required by the embedded farm');
+A.ok(fs.existsSync(stagedSpecialties), 'staged artifact carries the shared specialty catalog required by the embedded station');
 A.ok(fs.readFileSync(stagedSpecialties).equals(fs.readFileSync(path.join(root, 'shared', 'specialties.js'))),
   'the staged shared specialty catalog is byte-identical to backend/frontend authority');
 

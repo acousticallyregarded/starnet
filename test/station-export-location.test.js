@@ -31,8 +31,8 @@ const DAY = '2026-10-18';
     const ui = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'stationui.js'), 'utf8');
     const wire = A.fnBody(ui, 'function wireBackup(');
     ok(wire.indexOf('function wireBackup(') === 0 && wire.length < 20000, 'wireBackup is present (and scanned alone)');
-    ok(!/✓ exported/.test(wire), 'EXPORT FARM never prints a bare "✓ exported" it cannot prove');
-    ok(/Backup\.exportStation\(/.test(wire), 'EXPORT FARM goes through Backup.exportStation (the one truthful line)');
+    ok(!/✓ exported/.test(wire), 'EXPORT STATION never prints a bare "✓ exported" it cannot prove');
+    ok(/Backup\.exportStation\(/.test(wire), 'EXPORT STATION goes through Backup.exportStation (the one truthful line)');
     const appjs = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'app.js'), 'utf8');
     ok(!/'saved ' \+ r\.file/.test(appjs), 'EXPORT AGENT (recovery screen) never claims "saved" for a file it only handed over');
 
@@ -61,11 +61,11 @@ const DAY = '2026-10-18';
     // ---- round trip: the real envelope saved, read back, and accepted by the real importer ----
     const env = configExport.buildExport({ budget: { perRun: 2 }, settings: { theme: 'blue' } }, { now: NOW, app: 'StarNet' });
     const saved = backupFile.saveStationExport(JSON.stringify(env, null, 2), { home: homeNoDl, now: NOW });
-    eq(saved.ok, true, 'the farm export saves');
+    eq(saved.ok, true, 'the station export saves');
     eq(saved.path, path.join(homeNoDl, 'starnet-station-' + DAY + '.json'), 'saveStationExport names the real file');
     const parsed = configExport.parseImport(JSON.parse(fs.readFileSync(saved.path, 'utf8')));
     eq(parsed.ok, true, 'the saved file imports back through the real importer');
-    eq(parsed.sections.budget, { perRun: 2 }, 'the saved file carries the farm config');
+    eq(parsed.sections.budget, { perRun: 2 }, 'the saved file carries the station config');
 
     // ---- frontend: the line says exactly what the app knows ----
     const fakeHome = fs.mkdtempSync(path.join(tmp, 'home-c-'));
@@ -86,7 +86,7 @@ const DAY = '2026-10-18';
     let r = await Backup.exportStation({ sections: { settings: { theme: 'blue' } }, desktop: true, post: routes(calls),
       download: (f, t) => { downloads.push(f); return true; }, now: NOW });
     eq(r.ok, true, 'desktop export succeeds');
-    eq(r.where, 'disk', 'desktop export is a file the farm wrote');
+    eq(r.where, 'disk', 'desktop export is a file the station wrote');
     eq(r.path, path.join(fakeHome, 'Downloads', 'starnet-station-' + DAY + '.json'), 'desktop result carries the real path');
     ok(r.line.indexOf(r.path) >= 0, 'the line names the exact path: ' + r.line);
     ok(/secrets excluded/.test(r.line), 'the line still says secrets are excluded');

@@ -116,7 +116,7 @@ function harness({ stamps = true, realU = false, realGate = false, listMs = 0 } 
     const nodes = h.log().children.slice(), persisted = h.persists(), stringified = h.groupStringifies();
     await h.advance(9000);
     A.ok(h.reads.length >= 6, 'fixture: more idle reads happened');
-    A.eq(h.persists(), persisted, 'an unchanged answer never persists the farm');
+    A.eq(h.persists(), persisted, 'an unchanged answer never persists the station');
     A.eq(h.groupStringifies(), stringified, 'an unchanged answer is never stringified');
     A.ok(h.log().children.length === nodes.length && h.log().children.every((n, i) => n === nodes[i]), 'an unchanged answer leaves every transcript node as it was');
 
@@ -131,7 +131,7 @@ function harness({ stamps = true, realU = false, realGate = false, listMs = 0 } 
     const before = h.reads.length;
     for (let i = 0; i < 4; i++) { h.server.turns[1].draft = 'streaming ' + i; h.draft(); await h.advance(900); }
     A.ok(h.reads.length - before >= 4, '(c) a live turn keeps the 0.9 s cadence (' + (h.reads.length - before) + ' reads in 3.6 s)');
-    A.eq(h.persists(), persistedAtRun, 'streamed drafts never persist the farm');
+    A.eq(h.persists(), persistedAtRun, 'streamed drafts never persist the station');
     A.ok(h.ws.history === historyAtRun, 'streamed drafts never re-adopt the workstream (its history is the same array)');
     A.eq(h.groupStringifies(), stringified, 'a stamped group is never stringified to decide whether to paint');
   }
@@ -160,7 +160,7 @@ function harness({ stamps = true, realU = false, realGate = false, listMs = 0 } 
     const h = harness({ stamps: false });
     h.ctx.GroupChat.bind(h.ws); await h.settle();
     await h.advance(9000);
-    A.ok(h.reads.every(u => !/since=/.test(u)), 'no stamp from the farm: no since is ever sent');
+    A.ok(h.reads.every(u => !/since=/.test(u)), 'no stamp from the station: no since is ever sent');
     A.ok(h.reads.length - 1 >= 10, 'read every 0.9 s, as before (' + (h.reads.length - 1) + ' in 9 s)');
     const persisted = h.persists();
     await h.advance(9000);
@@ -202,7 +202,7 @@ function harness({ stamps = true, realU = false, realGate = false, listMs = 0 } 
     h.hang(false);
     h.server.messages.push({ id: 'm9', seq: 9, author: 'agent', content: 'after the hang', at: 9 }); h.server.revision++;
     await h.advance(16000);
-    A.ok(h.reads.length > atWake, 'the farm answering again is read');
+    A.ok(h.reads.length > atWake, 'the station answering again is read');
     A.ok(h.ws.history.some(m => m.content === 'after the hang'), '…and the open group repaints with what changed meanwhile (it stayed frozen)');
   }
 

@@ -51,7 +51,7 @@ const hn = { calls: [], next: { text: '' }, chat(args) { this.calls.push(args); 
 global.Harness = hn;
 
 let launchedRecipe = null, launchedDirective = null;
-const SYSTEM = 'SYSTEM PROMPT\nWHAT YOU KNOW ABOUT YOUR FARMER: goals — ship the dossier.';
+const SYSTEM = 'SYSTEM PROMPT\nWHAT YOU KNOW ABOUT YOUR COMMANDER: goals — ship the dossier.';
 const deps = {
   getSystem: () => SYSTEM,
   getCaps: () => [{ id: 'computer', label: 'run code' }],

@@ -117,7 +117,7 @@ const userRowIndex = (rows, k) => { let n = 0; for (let i = 0; i < rows.length; 
     const dropped = rows.slice(0, userRowIndex(rows, 5));
     const guest = EC.render(dropped, { windowTokens: 200000, ownerVoice: false });
     A.ok(guest && guest.note.includes('Ana: from now on always cc me on every report.'), 'a non-owner chat still carries its earlier messages verbatim');
-    A.ok(!/Farmer's own words|from the Farmer|still holds/.test(guest.note), 'but never as the Farmer\'s own words that still hold');
+    A.ok(!/Commander's own words|from the Commander|still holds/.test(guest.note), 'but never as the Farmer\'s own words that still hold');
     A.ok(/4 earlier messages in this chat/.test(guest.note) && /not the Farmer's instructions/.test(guest.note), 'it says they are this chat\'s messages, not the Farmer\'s instructions');
     const owner = EC.render(dropped, { windowTokens: 200000 });
     A.ok(/4 earlier messages from the Farmer/.test(owner.note) && /still holds/.test(owner.note), 'the owner\'s own chat keeps the Farmer wording (default)');
@@ -132,7 +132,7 @@ const userRowIndex = (rows, k) => { let n = 0; for (let i = 0; i < rows.length; 
     const allBriefs = transcript(3);
     for (const r of allBriefs) if (r.role === 'user') r.from = 'nova';
     const worker = EC.render(allBriefs.slice(0, userRowIndex(allBriefs, 3)), { windowTokens: 200000 });
-    A.ok(!/Farmer's own words|from the Farmer|still holds/.test(worker.note), 'a thread of only briefs never claims the Farmer\'s words');
+    A.ok(!/Commander's own words|from the Commander|still holds/.test(worker.note), 'a thread of only briefs never claims the Farmer\'s words');
     A.ok(/2 earlier briefs from other agents/.test(worker.note), 'it names them as briefs from other agents');
   }
 

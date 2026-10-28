@@ -102,7 +102,7 @@ try {
   const diagnostics = collectDiagnostics(cdp);
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.requestAnimationFrame = cb => setTimeout(() => cb(performance.now()), 60); window.cancelAnimationFrame = id => clearTimeout(id);' });
   await cdp.send('Page.navigate', { url: base + '/' });
-  check('the real page reaches the live farm', await waitDevReady(cdp, evalJS, { url: base + '/', tries: 60 }));
+  check('the real page reaches the live station', await waitDevReady(cdp, evalJS, { url: base + '/', tries: 60 }));
 
   // two notifications the way the station raises them: a finished result, and one still WAITING on the Commander
   await evalJS(cdp, `(() => { StationUI.notify('E2E finished result', '', undefined, { kind: 'result' }); StationUI.notify('E2E agent waiting on you', '', undefined, { kind: 'needs', key: 'e2e-needs' }); return true; })()`);
@@ -115,10 +115,10 @@ try {
   check('NOTIFICATIONS counts what it shows: All · 2, New · 2 = the bell', counts && counts.all === 'All · 2' && counts.fresh === 'New · 2' && counts.bell === '2' && counts.needs === 1 && counts.rest === 1, JSON.stringify(counts));
   await evalJS(cdp, `(() => { StationUI.closeTerm('notifs'); return true; })()`);
   const halt0 = await api(base, token, 'GET', '/api/halt');
-  check('setup: the farm is not halted', halt0.json && halt0.json.halted === false, JSON.stringify(halt0.json));
+  check('setup: the station is not halted', halt0.json && halt0.json.halted === false, JSON.stringify(halt0.json));
 
   mock.script = [
-    { name: 'tool_search', args: { query: 'farm settings' } },                                                                   // 0
+    { name: 'tool_search', args: { query: 'station settings' } },                                                                   // 0
     { name: 'station_control', args: { action: 'away.queue', args: { agent: 'agent', title: 'E2E-AWAY tidy the docs' } } },           // 1
     { name: 'station_settings', args: { section: 'away', agent: 'agent' } },                                                         // 2
     { name: 'station_control', args: { action: 'browser.mode', args: { mode: 'window' } } },                                          // 3
@@ -135,7 +135,7 @@ try {
   const R = mock.results;
   check('the lead received every tool result', R.length === mock.script.length, R.length + ' of ' + mock.script.length);
   const done = i => typeof R[i] === 'string' && /^{"done":"/.test(R[i]);
-  check('tool_search reveals the farm tools', /farm[._]control/.test(R[0] || ''), (R[0] || '').slice(0, 200));
+  check('tool_search reveals the station tools', /station[._]control/.test(R[0] || ''), (R[0] || '').slice(0, 200));
   check('away.queue: done', done(1), (R[1] || '').slice(0, 200));
   check('station_settings away: the queued item is listed with its id', /E2E-AWAY tidy the docs/.test(R[2] || '') && /"id":"/.test(R[2] || ''), (R[2] || '').slice(0, 300));
   check('browser.mode: done', done(3), (R[3] || '').slice(0, 200));
@@ -160,7 +160,7 @@ try {
   check('server: the E-STOP engaged (after the result was handed back)', !!halted, JSON.stringify(halted));
   let resumeShown = false;
   for (let i = 0; i < 40 && !resumeShown; i++) { resumeShown = await evalJS(cdp, `(() => { const b = document.getElementById('automation-resume'); return !!b && !b.hidden && getComputedStyle(b).display !== 'none'; })()`); if (!resumeShown) await sleep(250); }
-  check('page: the top bar shows RESUME AUTOMATION (the Farmer\'s door back)', resumeShown);
+  check('page: the top bar shows RESUME AUTOMATION (the Commander\'s door back)', resumeShown);
   const errs = (diagnostics.exceptions || []).filter(e => !/favicon|ERR_ABORTED|net::ERR/i.test(String(e)));
   check('no uncaught page exceptions', errs.length === 0, errs.slice(0, 3).join(' | '));
 } catch (e) {

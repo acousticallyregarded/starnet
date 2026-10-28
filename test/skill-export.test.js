@@ -60,7 +60,7 @@ function skillMdOf(exported) { return packageFormat.fileBuffer(JSON.parse(export
     const away = store();
     const exAway = exchangeFor(away);
     const preview = await exAway.inspectEnvelope({ envelope: exported.envelope });
-    A.eq(preview.name, 'Deploy the Site (prod)', 'the importing farm shows the original display name');
+    A.eq(preview.name, 'Deploy the Site (prod)', 'the importing station shows the original display name');
     A.eq(preview.files.map(f => f.path).sort(), ['SKILL.md', 'references/checklist.md'], 'with its support file');
     const installed = exAway.install({ agentId: 'b', inspectionId: preview.inspectionId });
     const there = away.view('b', installed.skill.id, { bump: false, includeArchived: true });

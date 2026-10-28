@@ -260,7 +260,7 @@ const COMMON = { SKYNET_QUEST_REFRESH: '0', SKYNET_FULL_ACCESS: '1' };
       const calls = mock.state.calls;
       const main = calls.filter(c => c.main), aux = calls.filter(c => !c.main && !c.summary && !c.selfTalk && !c.draft), self = calls.filter(c => c.selfTalk), draft = calls.filter(c => c.draft);
       A.ok(draft.length === 1 && draft[0].reasoning && draft[0].reasoning.effort === 'high', 'a work-product internal run keeps the effort it asked for (' + JSON.stringify(draft.map(c => c.reasoning)) + ')');
-      A.ok(main.length >= 1 && main.every(c => c.reasoning && c.reasoning.effort === 'medium'), 'the main run keeps the Farmer effort (medium default)');
+      A.ok(main.length >= 1 && main.every(c => c.reasoning && c.reasoning.effort === 'medium'), 'the main run keeps the Commander effort (medium default)');
       A.ok(aux.length >= 3, 'the single-shot aux passes fired (' + aux.length + ' calls)');
       A.ok(aux.every(c => c.reasoning && c.reasoning.effort === 'none'), 'every aux pass rides effort none — no hidden thinking (' + JSON.stringify(aux.map(c => c.reasoning)) + ')');
       A.ok(self.length === 1 && self[0].reasoning && self[0].reasoning.effort === 'none', 'an INTERNAL self-talk run rides effort none even when the page asked for high');
@@ -280,7 +280,7 @@ const COMMON = { SKYNET_QUEST_REFRESH: '0', SKYNET_FULL_ACCESS: '1' };
       const ends = async (r) => (await r.text()).split('\n').map(l => { try { return JSON.parse(l); } catch (_) { return null; } }).filter(e => e && e.name === 'agent.run.end').pop();
       const evMain = await driveRun(fixture, 'auxmodel-mandatory', 'Rebuild the staging deploy rollback path and write up what changed and why');
       const endMain = evMain.filter(e => e.name === 'agent.run.end').pop();
-      A.eq(endMain && endMain.payload.reason, 'done', 'the main run completes (it rides the Farmer effort, never none)');
+      A.eq(endMain && endMain.payload.reason, 'done', 'the main run completes (it rides the Commander effort, never none)');
       await settle(mock.state);
       // the WAKE preflight: app.js preflightWire marks keepEffort, so it proves the effort the awakening runs on
       const w = await fixture.request('/api/run', { method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -299,7 +299,7 @@ const COMMON = { SKYNET_QUEST_REFRESH: '0', SKYNET_FULL_ACCESS: '1' };
       const reflection = calls.filter(c => c.sys.indexOf('reflecting right after finishing a task') >= 0);
       const aux = calls.filter(c => !c.main && !c.summary && !c.selfTalk && !c.wake);
       A.eq(endWake && endWake.payload.reason, 'done', 'the WAKE preflight completes on a model that refuses reasoning off');
-      A.ok(wake.length === 1 && wake[0].reasoning && wake[0].reasoning.effort === 'high' && !wake[0].refused, 'the preflight is sent once, on the Farmer effort it asked for (' + JSON.stringify(wake.map(c => c.reasoning)) + ')');
+      A.ok(wake.length === 1 && wake[0].reasoning && wake[0].reasoning.effort === 'high' && !wake[0].refused, 'the preflight is sent once, on the Commander effort it asked for (' + JSON.stringify(wake.map(c => c.reasoning)) + ')');
       A.eq(endTitle && endTitle.payload.reason, 'done', 'an internal self-talk run still completes (' + JSON.stringify(endTitle && endTitle.payload) + ')');
       A.ok(title.some(c => !c.refused && c.reasoning && c.reasoning.effort === 'minimal'), 'the self-talk run reached the model at the next rung, minimal (' + JSON.stringify(title.map(c => [c.reasoning, !!c.refused])) + ')');
       A.ok(reflection.length >= 1 && reflection.some(c => !c.refused), 'REFLECTION still reaches the model and gets its answer (' + JSON.stringify(reflection.map(c => [c.reasoning, !!c.refused])) + ')');

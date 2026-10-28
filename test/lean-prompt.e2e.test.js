@@ -124,7 +124,7 @@ async function run(fixture, up, stream, messages) {
     A.ok(orch.indexOf('YOUR TEAM') < 0, 'zero crew: no crew list');
     A.ok(orch.indexOf('\n• SPAWN temporary same-identity subagents with team.spawn') >= 0, 'zero crew: the SPAWN line rides (clones need no crew)');
     A.ok(orch.indexOf('\n• CREW CONFIGURATION: use team.config') >= 0, 'zero crew: the CREW CONFIGURATION rules ride (the lead\'s own Dossier)');
-    A.ok(orch.indexOf('tool_search "farm settings"') >= 0 && orch.indexOf('session_peek') >= 0, 'zero crew: the crew-independent farm + session rules stay');
+    A.ok(orch.indexOf('tool_search "station settings"') >= 0 && orch.indexOf('session_peek') >= 0, 'zero crew: the crew-independent station + session rules stay');
     // 2. cache-stable prefix
     A.eq(sys2, sys1, 'the leading system prompt is BYTE-IDENTICAL across two messages of one conversation');
     A.eq(JSON.stringify(b2.tools), JSON.stringify(b1.tools), 'the tool array is byte-identical across the two messages');

@@ -65,15 +65,15 @@ const fresh = () => makeQuestStore({ fs: memFs(), path, workspaces: '/ws', write
   // ---- 3. FACT: a committed memory record proves a fact key (id / exact / verbatim-substring, bounded) ----
   {
     const s = fresh();
-    const exact = await s.mint({ title: 'tz', contract: { type: 'fact', key: 'Farmer works in CET' }, agentId: 'hero' }, 1);
+    const exact = await s.mint({ title: 'tz', contract: { type: 'fact', key: 'Commander works in CET' }, agentId: 'hero' }, 1);
     const sub = await s.mint({ title: 'csv', contract: { type: 'fact', key: 'csv exports' } }, 2);                    // station-wide
     const byId = await s.mint({ title: 'by id', contract: { type: 'fact', key: 'm7' }, agentId: 'hero' }, 3);
     const miss = await s.mint({ title: 'never', contract: { type: 'fact', key: 'loves yaml' }, agentId: 'hero' }, 4);
     const tiny = await s.mint({ title: 'tiny', contract: { type: 'fact', key: 'a b' }, agentId: 'hero' }, 5);          // < MIN_FACT_KEY after norm — substring can never fire
 
-    const rec = { id: 'm7', content: 'Farmer works in CET and handles CSV   exports every Friday.' };
+    const rec = { id: 'm7', content: 'Commander works in CET and handles CSV   exports every Friday.' };
     const keys = learnedFactKeys(s.openForAgent('hero'), 'hero', rec);
-    A.eq(keys.slice().sort(), ['Farmer works in CET', 'csv exports', 'm7'].sort(), 'exact-content, normalized-substring and record-id fact keys match; unrelated + too-short keys do not');
+    A.eq(keys.slice().sort(), ['Commander works in CET', 'csv exports', 'm7'].sort(), 'exact-content, normalized-substring and record-id fact keys match; unrelated + too-short keys do not');
     for (const k of keys) await s.completeByContract('fact', k, 300);
     A.eq(s.get(exact.id).status, 'done', 'a fact quest completes when the committed memory states it');
     A.eq(s.get(sub.id).status, 'done', 'a station-wide fact key appearing verbatim (normalized) in the record completes');

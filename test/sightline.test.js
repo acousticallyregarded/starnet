@@ -74,7 +74,7 @@ A.ok(!losWalk(8, 4, 10, 4, floorFn, sealedStep), 'a room whose boundary doors ar
 // ---- void / off-floor endpoints are never in sight ----
 A.ok(!los(1, 1, 9, 1), 'a tile that is wall is not a sightline endpoint');
 A.ok(!los(-1, 1, 1, 1), 'off-grid coordinates cannot see anything');
-A.ok(!los(1, 1, 40, 1), 'a target outside the farm is never in sight');
+A.ok(!los(1, 1, 40, 1), 'a target outside the station is never in sight');
 
 // ---- a single pillar occludes exactly the tiles behind it ----
 const pillar = (x, y) => floorFn(x, y) && !(x === 4 && y === 4);
@@ -140,7 +140,7 @@ A.ok(/if \(!geo\.walkable\(t\.x, t\.y, blocked\)\) return false;/.test(nudge),
 A.ok(/const SEP_JAM_MS = 2500;/.test(src) && /seizeFromIdle\(b\);/.test(sep),
   'a walker shoved continuously (its destination taken) gives up on the leg and re-decides — no push/counter-push standoff');
 A.ok(/if \(b\.goal === 'social' \|\| b\.goal === 'gather'\) \{ b\.sepSince = 0; continue; \}/.test(sep),
-  'but NEVER a body mid-encounter: seizeFromIdle leaves b.social set, and encounterBroken tests exactly `social == null`, so releasing one here would half-kill the beat while it holds the single farm slot');
+  'but NEVER a body mid-encounter: seizeFromIdle leaves b.social set, and encounterBroken tests exactly `social == null`, so releasing one here would half-kill the beat while it holds the single station slot');
 // the claim is module-level state held by a body reference — the same shape as occupiedSeats, and the
 // same leak: a body dropped by spawn()/loadStation() would hold the slot until its 45s expiry.
 A.ok((src.match(/beltWatch = null;/g) || []).length >= 3,

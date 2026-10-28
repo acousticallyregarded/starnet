@@ -42,7 +42,7 @@ const plan = status => ({
     const journey = (await host.json('GET', '/api/journey')).body.journey;
     const settled = journey.milestones.find(m => m.milestoneId === 'g_news:m1');
     assert.ok(settled, 'the settled step is recorded in the journey');
-    assert.equal(settled.verifiedBy, 'commander-confirmed', 'a slate finished only by the Farmer own reports is recorded as THEIR confirmation, never a harness proof');
+    assert.equal(settled.verifiedBy, 'commander-confirmed', 'a slate finished only by the Commander own reports is recorded as THEIR confirmation, never a harness proof');
     assert.match(settled.evidence, /Shortlist three niches/, 'citing the quest completed by its contract');
     assert.doesNotMatch(settled.evidence, /Ask five readers/, 'never citing the dismissed quest');
     assert.equal(journey.activeGoal.next, 'Write issue one', 'the mirror moved to the next step');

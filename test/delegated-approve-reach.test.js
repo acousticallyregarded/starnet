@@ -30,7 +30,7 @@ const flush = () => new Promise(r => setTimeout(r, 0));
   const C = require('../frontend/app/channels.js'); C.reset();
   W.init({ generalId: 'ws_lead', activeId: 'ws_lead', workstreams: [
     { id: 'ws_lead', title: 'Poem hand-off', agentId: 'agent', history: [] },
-    { id: 'ws_copy', title: 'Write a two-line poem about the farm', agentId: 'copywriter', parentStreamId: 'ws_lead', worker: true, createdAt: 1000, history: [] }
+    { id: 'ws_copy', title: 'Write a two-line poem about the station', agentId: 'copywriter', parentStreamId: 'ws_lead', worker: true, createdAt: 1000, history: [] }
   ] });
   global.Workstreams = W; global.Channels = C;
   global.Overseer = { snapshot: () => ({ threads: [{ id: 'ws_copy', leadRunId: 'lead1', slot: 0, call: 'c1' }],
@@ -99,7 +99,7 @@ const flush = () => new Promise(r => setTimeout(r, 0));
 
   // the station did not answer (unreachable): the ask may still wait, so its keys stay and the toast says it was not sent
   notes.length = 0;
-  global.Chat.answerConsent = () => Promise.reject(new Error('The farm did not confirm that answer. Please try again.'));
+  global.Chat.answerConsent = () => Promise.reject(new Error('The station did not confirm that answer. Please try again.'));
   press('deny', 'p-next'); await flush(); await flush();
   A.ok(/data-dg-consent="deny" data-dg-ws="ws_copy" data-dg-prompt="p-next"(?![^>]*disabled)/.test(rowHtml()), 'a transport failure keeps the row\'s keys live (the ask may still wait)');
   A.ok(notes.length === 1 && /Could not send that answer/.test(notes[0]), 'and says the answer was not sent');
@@ -112,7 +112,7 @@ const flush = () => new Promise(r => setTimeout(r, 0));
 {
   const ch = rd('frontend/app/chat.js');
   const a = ch.indexOf('  const settledPromptNotices = new Set();'), b = ch.indexOf('  // the channel\'s record of an ask', a);
-  const g = ch.indexOf('  /* AN ASK THE FARM NO LONGER HOLDS (soak 10-15).'), h = ch.indexOf('  function permissionRow(p, ws) {', g);
+  const g = ch.indexOf('  /* AN ASK THE STATION NO LONGER HOLDS (soak 10-15).'), h = ch.indexOf('  function permissionRow(p, ws) {', g);
   A.ok(a > 0 && b > a && g > 0 && h > g, 'fixture: answerConsent and the gone-ask helper are where this test lifts them from');
   const Channels = require('../frontend/app/channels.js'); Channels.reset();
   const emitted = [], retired = [], settled = [], rerendered = [];
@@ -165,7 +165,7 @@ const flush = () => new Promise(r => setTimeout(r, 0));
   const ch = rd('frontend/app/chat.js');
   // the COMMS card itself: a gone answer has already retired it in neutral words, so its keys are not handed back
   A.ok(/catch \(e\) \{\s*submitting = false;[\s\S]{0,200}if \(e && e\.gone\) \{\s*if \(!decided\) \{ decided = true; btns\.remove\(\);[\s\S]{0,260}'■ no longer waiting on you'[\s\S]{0,80}\}\s*return;\s*\}\s*if \(received && applyElsewhere\)/.test(ch),
-    'the approval card never re-arms its keys for an ask the farm no longer holds (it retires in neutral words)');
+    'the approval card never re-arms its keys for an ask the station no longer holds (it retires in neutral words)');
 }
 
 A.report('delegated-approve-reach.test');

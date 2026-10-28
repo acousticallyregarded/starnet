@@ -156,7 +156,7 @@ for (const f of infilled.filter(n => !infillBase.some(o => o.id === n.id))) {
 A.eq(Surface.planFixtures(longFixtureRoom(fixtureGeometry(5,3)), {infillFixtures:true}).map(f=>f.id), infilled.map(f=>f.id), 'infill remains in the physical tile frame after bounds expansion');
 A.ok(fixtures.length >= 3 && fixtures.length <= 4, 'long room faces get a restrained practical-fixture rhythm');
 A.eq(Surface.planFixtures(fg), fixtures, 'fixture placement is deterministic');
-A.eq(fg.zoneGrid, oldGrid, 'fixture planning never mutates farm geometry');
+A.eq(fg.zoneGrid, oldGrid, 'fixture planning never mutates station geometry');
 for (const f of fixtures) {
   A.eq(Surface.zoneAt(fg, f.tileX, f.tileY - 1), null, 'fixture mount is a solid north face, never a door or open join');
   A.ok(!fg.chamfers.some(c => c[0] === f.tileX && c[1] === f.tileY), 'fixtures never overlap chamfer artwork');
@@ -209,7 +209,7 @@ A.eq(Surface.planFixtures(halls).length, 2, 'long hall faces get only one fixtur
 const narrow = fixtureGeometry();
 for (let y = 0; y < narrow.ROWS; y++) for (let x = 8; x < narrow.COLS; x++) narrow.zoneGrid[narrow.idx(x, y)] = null;
 narrow.isCorridor = () => true;
-A.eq(Surface.planFixtures(narrow).length, 0, 'short path mouths receive no extra light hardware');
+A.eq(Surface.planFixtures(narrow).length, 0, 'short corridor mouths receive no extra light hardware');
 
 // Dimensional detail uses the approved selected-colour ramp, never replacement
 // colours, and remains material finish rather than animated light or telemetry.

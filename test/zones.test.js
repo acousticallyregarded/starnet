@@ -168,11 +168,11 @@ A.eq(Z.computeZone(), null, 'no opts -> null');
 const SOLO_RECTS = [{ z: 0, x1: 0, y1: 0, x2: 63, y2: 47 }];   // whole-floor single room
 const zSolo = Z.computeZone({ rects: SOLO_RECTS, anchorTile: { x: 30, y: 24 } });
 A.eq(zSolo.kind, 'room', 'solo agent gets a room zone, not a leash');
-A.eq(zSolo.rect, { x1: 0, y1: 0, x2: 63, y2: 47 }, 'solo zone spans the whole farm rect');
+A.eq(zSolo.rect, { x1: 0, y1: 0, x2: 63, y2: 47 }, 'solo zone spans the whole station rect');
 A.ok(Z.rectArea(zSolo.rect) === 64 * 48, 'solo zone is large (whole floor) — rich behavior preserved');
 // every corner of the floor is in-zone for the solo agent (no idle beat stripped)
 A.ok(Z.inZone(zSolo, 0, 0) && Z.inZone(zSolo, 63, 47) && Z.inZone(zSolo, 63, 0) && Z.inZone(zSolo, 0, 47),
-  'solo zone admits all four farm corners (gaze-out / vigil unaffected)');
+  'solo zone admits all four station corners (gaze-out / vigil unaffected)');
 
 // ---- SOLE OWNERSHIP (solo) in a MULTI-ROOM station -> a 'multi' zone spanning every room (A3/I2) ----
 // The realistic solo case the I2-regression fix targets: a lone hero in a BUILT-OUT station whose
@@ -180,7 +180,7 @@ A.ok(Z.inZone(zSolo, 0, 0) && Z.inZone(zSolo, 63, 47) && Z.inZone(zSolo, 63, 0) 
 // SMALLEST enclosing room (the side room here) and cage the hero out of the big room — stripping
 // previously-valid cross-room idle targets. With solo:true the zone is the UNION of all rects.
 const zSoloMulti = Z.computeZone({ rects: RECTS, props: PROPS, agentId: 'a1', anchorTile: { x: 24, y: 3 }, solo: true });
-A.eq(zSoloMulti.kind, 'multi', 'sole owner in a multi-room farm gets a multi zone (whole floor), not its desk room');
+A.eq(zSoloMulti.kind, 'multi', 'sole owner in a multi-room station gets a multi zone (whole floor), not its desk room');
 A.eq(zSoloMulti.rects.length, 2, 'multi zone unions EVERY room rect');
 // every rect is a normalized COPY — mutating the result must not touch geo's source array
 zSoloMulti.rects[0].x1 = 999;
@@ -231,7 +231,7 @@ A.eq(Z.inZone(COUCH_ZONE, 28, 3), false, 'the EAST approach (sx+1) of the rightm
 // ---- TRUE ROAM RADIUS (2026-08-08): station floor ∩ Chebyshev radius around the DESK ----
 // Room identity is irrelevant once roamR is present. Walkability/pathfinding remains the caller's
 // reachability gate; this primitive owns only the stable distance boundary and floor membership.
-A.eq(Z.ROAM_RADIUS, 14, 'exports the bounded 14-tile farm roam radius');
+A.eq(Z.ROAM_RADIUS, 14, 'exports the bounded 14-tile station roam radius');
 A.eq(zMain.roam, undefined, 'a zone computed WITHOUT roamR carries no roam field (original caging preserved)');
 A.eq(Z.inZone(zMain, 25, 2), false, 'and without roamR a tile in the NEXT room stays out-of-zone');
 
@@ -239,7 +239,7 @@ const zRoamFar = Z.computeZone({ rects: RECTS, props: PROPS, agentId: 'a2', anch
 A.eq(zRoamFar.kind, 'room', 'a roam zone is still kind:room — zoneRect()/border-meeting consumers keep working');
 A.eq(zRoamFar.rect, { x1: 0, y1: 0, x2: 20, y2: 12 }, 'the home room rect is unchanged by roamR');
 A.eq(zRoamFar.roam, { cx: 8, cy: 6, r: 14, rects: [{ x1: 0, y1: 0, x2: 20, y2: 12 }, { x1: 22, y1: 0, x2: 27, y2: 5 }] },
-  'roam is centered on the desk and considers every farm floor plate');
+  'roam is centered on the desk and considers every station floor plate');
 A.eq(Z.inZone(zRoamFar, 20, 12), true, 'a home-room tile inside the radius is in-zone');
 A.eq(Z.inZone(zRoamFar, 22, 2), true, 'another room is admitted exactly by distance, without a room-identity clip');
 A.eq(Z.inZone(zRoamFar, 23, 2), false, 'one tile past the desk radius is out even when it belongs to a room plate');
@@ -286,7 +286,7 @@ A.eq(Z.computeZone({ rects: RECTS, props: PROPS, agentId: 'ghost', roamR: 9 }), 
 const zSoloRoam = Z.computeZone({ rects: RECTS, props: PROPS, agentId: 'a1', anchorTile: { x: 24, y: 3 }, solo: true, roamR: 9 });
 A.eq(zSoloRoam.kind, 'room', 'an explicit roam radius replaces the solo whole-floor widening');
 A.eq(zSoloRoam.roam.r, 9, 'the sole owner receives the same configured radius as every crew body');
-A.eq(Z.inZone(zSoloRoam, 8, 3), false, 'a far farm tile outside that radius remains out for the sole owner');
+A.eq(Z.inZone(zSoloRoam, 8, 3), false, 'a far station tile outside that radius remains out for the sole owner');
 
 // ---- inZone: leash membership (Chebyshev square) ----
 const lz = { kind: 'leash', cx: 10, cy: 10, r: 3 };

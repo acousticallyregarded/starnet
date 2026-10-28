@@ -16,7 +16,7 @@ const path = require('path');
 
 const world = fs.readFileSync(path.join(__dirname, '../frontend/app/world.js'), 'utf8');
 const from = world.indexOf('    if (camLock && !camAnim) {   // FOLLOW-LOCK');
-const to = world.indexOf('    /* THE BACKDROP — what the farm floats in');
+const to = world.indexOf('    /* THE BACKDROP — what the station floats in');
 A.ok(from > 0 && to > from && to - from < 4000, 'world.js carries the FOLLOW-LOCK + camLerp settle block right before THE BACKDROP');
 const block = world.slice(from, to);
 

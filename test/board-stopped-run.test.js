@@ -55,7 +55,7 @@ const u = Workstreams.create('Stopped from COMMS', { kind: 'task', activate: fal
 Workstreams.appendRun(u.id, 'run-u', 7000);
 u.history.push({ role: 'assistant', content: 'tick0 tick1', stopped: true });
 helper.noteStopReason(u, 'stopped by you', 'run-u');
-A.ok(/STOPPED/.test(board.stateChip(Workstreams.get(u.id))) && u.history[u.history.length - 1].stopNote === 'stopped by you', 'a Farmer Stop reads STOPPED and keeps its note');
+A.ok(/STOPPED/.test(board.stateChip(Workstreams.get(u.id))) && u.history[u.history.length - 1].stopNote === 'stopped by you', 'a Commander Stop reads STOPPED and keeps its note');
 const v = Workstreams.create('Budget stop', { kind: 'task', activate: false });
 Workstreams.appendRun(v.id, 'run-v', 7000);
 Workstreams.noteRunEnd(v.id, 'run-v', true);                // the in-band envelope settled "completed" first

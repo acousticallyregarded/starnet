@@ -43,7 +43,7 @@ function station(pushOk) {
     A.ok(s.fn('agent', 'ask'), 'the change is attempted (sync contract: truthy for a known agent)');
     A.eq(s.a.approvalMode, 'ask', 'optimistic while the push is in flight');
     await s.settle();
-    A.eq(s.a.approvalMode, 'full', 'a REFUSED push puts back the posture the farm still enforces');
+    A.eq(s.a.approvalMode, 'full', 'a REFUSED push puts back the posture the station still enforces');
     A.ok(s.spies.setRoster >= 1, 'and repaints every roster readout (dossier, PERMISSIONS crew rows)');
     A.ok(s.spies.notes.some(([t, k]) => k === 'bad' && /did not record/i.test(t) && /FULL POWER/.test(t)), 'and says so: ' + JSON.stringify(s.spies.notes));
   }
@@ -68,7 +68,7 @@ function station(pushOk) {
     s.a.approvalMode = 'ask';
     s.fn('agent', 'full', { recorded: true });   // the permission card's FULL ACCESS: the station persisted it first
     await s.settle();
-    A.eq(s.a.approvalMode, 'full', 'a posture the farm already recorded is never reverted by a failed mirror push');
+    A.eq(s.a.approvalMode, 'full', 'a posture the station already recorded is never reverted by a failed mirror push');
     A.eq(s.spies.notes.length, 0, 'and no false alarm is raised for it');
   }
   {

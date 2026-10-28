@@ -63,7 +63,7 @@ for (const mid of HULLS) {
   A.ok(!!WorldModel.HULL_MATERIALS[mid], mid + ' is in HULL_MATERIALS');
   A.ok(!!WorldModel.HULL_MATERIALS[mid].label, mid + ' carries a label for the palette');
 }
-A.eq(HULLS[0], 'station', 'FARM leads the catalog — it is the shell every farm launches with');
+A.eq(HULLS[0], 'station', 'STATION leads the catalog — it is the shell every station launches with');
 
 /* ---------- every material paints, deterministically, and distinctly ---------- */
 
@@ -82,7 +82,7 @@ for (let i = 0; i < HULLS.length; i++) {
 }
 // a silent fallback to `station` is the failure mode a new material ships with (unknown id →
 // dispatcher default), and on this axis it would look like the feature simply doing nothing.
-A.eq(sig(sample('no-such-shell', '#3b2b20')), sigs.station, 'an unknown shell falls back to farm');
+A.eq(sig(sample('no-such-shell', '#3b2b20')), sigs.station, 'an unknown shell falls back to station');
 
 /* ---------- THE SHELL IS A SKIN NOW, NOT A PARALLEL PALETTE (2026-08-06) ----------
 
@@ -130,11 +130,11 @@ A.ok(Math.abs(RX[5] - X) < 0.05, 'the top of the skirt sits at the deck-line exp
 });
 // ...and it is genuinely a skin: the same ladder in another colour, which the constants could not be
 A.ok(sig(sample('station', null, 6, 40)) !== sig(sample('station', '#2b3340', 6, 40)),
-  'a farm shell painted COBALT differs from the untouched shell');
+  'a station shell painted COBALT differs from the untouched shell');
 const white = sample('station', WorldModel.FLOOR_STYLES.white.base, 6, 40).map(o => o[5])
   .filter(c => typeof c === 'string' && /^#[0-9a-f]{6}$/i.test(c));
 A.ok(Math.max(...white.map(c => { const [r, g, b] = chan(c); return 0.299 * r + 0.587 * g + 0.114 * b; })) > 100 * X,
-  'FARM in WHITE really is a white hull — the pre-axis shell could only ever be one grey');
+  'STATION in WHITE really is a white hull — the pre-axis shell could only ever be one grey');
 
 /* ---------- NOTHING OUTSIDE A ROOM IS PAINTED FROM A MODULE CONSTANT ----------
    The bug underneath the complaint: the wall pass filled the band between a wall's lit crown and
@@ -234,7 +234,7 @@ A.eq(st.projectGeometry().hullBaseOf(R), WorldModel.FLOOR_STYLES.walnut.base, '.
 // normalization: never serialize a redundant value, so an untouched doc round-trips unchanged
 A.ok(st.setHull(R, { mat: 'timber', style: 'walnut' }).ok, 'picking the material’s own hue is accepted');
 A.eq(st.doc().rooms[R].hullStyle, null, '...and normalizes to null rather than pinning the suggestion');
-A.ok(st.setHull(R, { mat: 'station' }).ok, 'clading back to farm is accepted');
+A.ok(st.setHull(R, { mat: 'station' }).ok, 'clading back to station is accepted');
 A.eq(st.doc().rooms[R].hullMat, null, '...and normalizes to null, so the doc looks pre-axis again');
 
 A.eq(st.setHull(R, { mat: 'no-such' }).error, 'BAD_MAT', 'an unknown shell material is rejected');
@@ -270,7 +270,7 @@ const legacyDoc = JSON.parse(JSON.stringify(st.doc()));
 for (const id of legacyDoc.order) { delete legacyDoc.rooms[id].hullMat; delete legacyDoc.rooms[id].hullStyle; }
 const revived = WorldModel.deserialize(legacyDoc);
 for (const id of legacyDoc.order) {
-  A.eq(revived.hullMatOfRoom(id), 'station', 'a pre-axis room revives wearing the farm shell (' + id + ')');
+  A.eq(revived.hullMatOfRoom(id), 'station', 'a pre-axis room revives wearing the station shell (' + id + ')');
   A.eq(revived.projectGeometry().hullBaseOf(id), null, '...at the shell’s own tone (' + id + ')');
 }
 
@@ -329,8 +329,8 @@ global.IndustrialTextures = {
   shell(ctx, w, h, vx, vy, topOf, material, base) { hullArtCalls.push(['skirt', base, material]); return false; }
 };
 A.eq(sample('station', '#624a30'), beforeArt, 'declined shell art retains every native ring and skirt mark');
-A.eq(hullArtCalls.map(c => c[0]), ['plate', 'skirt'], 'farm plate and skirt both request authored cladding');
-A.ok(hullArtCalls.every(c => c[2] === 'station'), 'farm art is requested by material ID separately from its paint');
+A.eq(hullArtCalls.map(c => c[0]), ['plate', 'skirt'], 'station plate and skirt both request authored cladding');
+A.ok(hullArtCalls.every(c => c[2] === 'station'), 'station art is requested by material ID separately from its paint');
 A.ok(/^#[0-9a-f]{6}$/i.test(hullArtCalls[0][1]), 'shell art receives a real resolved palette colour');
 A.eq(hullArtCalls[0][1], hullArtCalls[1][1], 'ring and skirt use the identical selected shell palette');
 const warmHullPaint = hullArtCalls[0][1];

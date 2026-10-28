@@ -203,7 +203,7 @@ R.removeCustom(garbage.id);
 const authored = R.saveCustom({ name: 'Standup', task: 'Summarize {project} progress and flag blockers.' });
 A.eq(authored.params.map(p => p.key), ['project'], 'a saved custom auto-derives its params from the template');
 A.eq(R.requiredMissing(authored.id, {}), ['project'], 'the derived param gates launch');
-A.ok(R.fillTask(authored.id, { project: 'StarNet' }).indexOf('Summarize Homestead progress') >= 0, 'the authored custom fills + launches via the same primitive');
+A.ok(R.fillTask(authored.id, { project: 'StarNet' }).indexOf('Summarize StarNet progress') >= 0, 'the authored custom fills + launches via the same primitive');
 R.removeCustom(authored.id);
 
 // explicit params still win over derivation (back-compat for an imported custom that supplies its own)
@@ -567,7 +567,7 @@ A.eq(R.goalKeywordScore({ name: 'X', tagline: '', blurb: '', tags: { general: 1 
 A.eq(R.goalKeywordHits(gr, 'memory and time').join(','), 'memory,time', 'the matched keywords are reported in goal order');
 A.eq(R.goalKeywordHits(gr, 'MEMORY').join(','), 'memory', 'matching is case-insensitive');
 // the whole-catalog effect: a vague, real-world goals belief must not light up most of the library.
-const vague = 'Be the always-ready dev test agent for Homestead — a fully-onboarded general assistant a developer can talk to the instant the farm boots.';
+const vague = 'Be the always-ready dev test agent for StarNet — a fully-onboarded general assistant a developer can talk to the instant the station boots.';
 const lit = R.builtins().filter(r => R.goalKeywordScore(r, vague) > 0).length;
 A.ok(lit <= 10, 'a vague goal lights up at most a handful of the catalog, not most of it: got ' + lit + '/' + R.builtins().length);
 
@@ -576,7 +576,7 @@ A.ok(lit <= 10, 'a vague goal lights up at most a handful of the catalog, not mo
 const thin = R.rankRecipes(items, { goalText: 'summarize', launches: { 'fix-bug': { n: 1, rated: { miss: 3 } } }, score: () => 0, limit: 4 });
 A.eq(thin.length, 4, 'a one-hit goal still fills the FOR-YOU row (topped up from the category spread)');
 A.eq(thin[0].id, 'summarize', 'the genuinely matched recipe still leads the row');
-A.ok(!thin.some(r => r.id === 'fix-bug'), 'the top-up never readmits a recipe the Farmer rated down');
+A.ok(!thin.some(r => r.id === 'fix-bug'), 'the top-up never readmits a recipe the Commander rated down');
 const thinIds = {}; thin.forEach(r => { A.ok(!thinIds[r.id], 'the topped-up row has no duplicates'); thinIds[r.id] = true; });
 
 /* painText (momentum loop, 2026-08-21): the PAIN + AMBITION dossier dims rank the FOR YOU row with the same weight as

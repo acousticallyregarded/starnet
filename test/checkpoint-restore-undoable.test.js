@@ -65,7 +65,7 @@ function failingGit(verb) {
     const s2 = await store.snapshot(aid, { runId: 'r1', turn: 1, label: 'fs.edit' });
     A.ok(s2 && s2.created && s2.id !== s1.id, 'agent snapshot v2 created');
     // the Commander's OWN work after the last snapshot: a hand edit, a new untracked file (nested), an ignored file
-    write('notes.md', 'v3 hand edit by the farmer\r\nwith CRLF bytes\n');
+    write('notes.md', 'v3 hand edit by the commander\r\nwith CRLF bytes\n');
     write('drafts/draft-by-commander.txt', 'my own draft — never snapshotted by any agent\n');
     write('scratch.log', 'ignored scratch\n');
     const before = rows().length;
@@ -90,7 +90,7 @@ function failingGit(verb) {
     // ---- (2) restoring the pre-restore id undoes the rewind, byte-exact ----
     const undo = await store.restoreDetailed(aid, out.preRestoreId);
     A.ok(undo && undo.ok === true, '(2) restoring the pre-restore snapshot succeeded');
-    A.eq(read('notes.md'), 'v3 hand edit by the farmer\r\nwith CRLF bytes\n', '(2) the Farmer\'s hand edit is back, byte-exact (CRLF intact)');
+    A.eq(read('notes.md'), 'v3 hand edit by the commander\r\nwith CRLF bytes\n', '(2) the Commander\'s hand edit is back, byte-exact (CRLF intact)');
     A.eq(read('drafts/draft-by-commander.txt'), 'my own draft — never snapshotted by any agent\n', '(2) the untracked draft is back, byte-exact');
     A.ok(undo.preRestoreId && undo.preRestoreId !== out.preRestoreId, '(2) the undo itself recorded its own pre-restore point');
     const redo = await store.restoreDetailed(aid, undo.preRestoreId);

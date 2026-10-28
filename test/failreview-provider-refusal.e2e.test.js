@@ -122,7 +122,7 @@ async function settle(state, stableMs, maxMs) {
 
     // ---- ARM 1 — the upstream refused the request: one refused call, no resend, no failure review ----
     {
-      const ev = await driveRun(fixture, 'fr-refused', REFUSE_MARK + ' inspect the farm then push the registry update');
+      const ev = await driveRun(fixture, 'fr-refused', REFUSE_MARK + ' inspect the station then push the registry update');
       const end = endOf(ev);
       A.eq(end && end.payload && end.payload.reason, 'error', 'the refused run ended with reason error');
       const errEv = ev.filter(e => e.name === 'agent.run.error').pop();
@@ -136,7 +136,7 @@ async function settle(state, stableMs, maxMs) {
     // ---- ARM 2 — control: a 400 on the request shape still earns its one failure review ----
     {
       const before = frCalls().length;
-      const ev = await driveRun(fixture, 'fr-shape', SHAPE_MARK + ' inspect the farm then push the registry update');
+      const ev = await driveRun(fixture, 'fr-shape', SHAPE_MARK + ' inspect the station then push the registry update');
       const end = endOf(ev);
       A.eq(end && end.payload && end.payload.reason, 'error', 'the control run ended with reason error');
       await settle(mock.state);
@@ -146,7 +146,7 @@ async function settle(state, stableMs, maxMs) {
     // ---- ARM 3 — control: a capability 404 (image input) is model_not_found on a request PART; its review still runs ----
     {
       const before = frCalls().length;
-      const ev = await driveRun(fixture, 'fr-image', IMAGE_MARK + ' inspect the farm then push the registry update');
+      const ev = await driveRun(fixture, 'fr-image', IMAGE_MARK + ' inspect the station then push the registry update');
       const end = endOf(ev);
       A.eq(end && end.payload && end.payload.reason, 'error', 'the image-input run ended with reason error');
       const errEv = ev.filter(e => e.name === 'agent.run.error').pop();

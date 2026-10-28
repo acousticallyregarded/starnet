@@ -13,7 +13,7 @@ const threads = [
   { id: 'th_aaa', title: 'GPU price watcher', spec: 'build a price watcher for GPUs someday' },
   { id: 'th_bbb', title: 'Discord moderation bot', spec: 'I want a Discord bot for my server' }
 ];
-const beliefs = { goals: ['ship Homestead v1'] };
+const beliefs = { goals: ['ship StarNet v1'] };
 
 // ---- 1. the THREADS block appears in the candidate directive, with citable tags ----
 {
@@ -30,7 +30,7 @@ const beliefs = { goals: ['ship Homestead v1'] };
 // ---- 2. a candidate citing a thread TAG survives the veto AND resolves the threadId ----
 {
   const reply =
-    'JOB: Build the GPU price watcher\nKIND: advance-goal\nGROUNDS: [t1] the Farmer wanted a GPU price watcher\nCONFIDENCE: high\nSPEC: a runnable price-watch script';
+    'JOB: Build the GPU price watcher\nKIND: advance-goal\nGROUNDS: [t1] the Commander wanted a GPU price watcher\nCONFIDENCE: high\nSPEC: a runnable price-watch script';
   const cands = AP.parseCandidates(reply, { eligible: AP.ARCHETYPES, beliefs, threads });
   A.eq(cands.length, 1, 'a thread-tag-cited candidate survives the grounding veto');
   A.eq(cands[0].threadId, 'th_aaa', 'the cited tag [t1] resolves to the real thread id');
@@ -58,7 +58,7 @@ const beliefs = { goals: ['ship Homestead v1'] };
   const dir = AP.buildCandidateDirective({ beliefs, eligible: AP.ARCHETYPES });
   A.ok(dir.indexOf('OPEN THREADS') < 0, 'no THREADS block when no threads are passed (back-compat)');
   const cands = AP.parseCandidates(
-    'JOB: Ship v1\nKIND: advance-goal\nGROUNDS: ship Homestead v1\nCONFIDENCE: high\nSPEC: a checklist',
+    'JOB: Ship v1\nKIND: advance-goal\nGROUNDS: ship StarNet v1\nCONFIDENCE: high\nSPEC: a checklist',
     { eligible: AP.ARCHETYPES, beliefs });
   A.eq(cands.length, 1, 'belief-grounded candidate still works with no threads');
   A.ok(!cands[0].threadId, 'no threadId when nothing was cited');

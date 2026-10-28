@@ -85,7 +85,7 @@ const count = (hay, needle) => hay.split(needle).length - 1;
     const notes = notesOf(late.messages);
     A.eq(notes.length, 1, 'the model request carries one earlier-conversation note');
     A.eq(count(String(notes[0] && notes[0].content), RULE), 1, 'the turn-1 instruction rides in it verbatim, once');
-    A.ok(/EARLIER IN THIS CONVERSATION: 9 earlier messages/.test(String(notes[0] && notes[0].content)), 'the note says how many Farmer messages it carries (12 sent, 3 still in the window)');
+    A.ok(/EARLIER IN THIS CONVERSATION: 9 earlier messages/.test(String(notes[0] && notes[0].content)), 'the note says how many Commander messages it carries (12 sent, 3 still in the window)');
     // on this non-Claude chat wire (OpenRouter test/model) it is the fenced leading text of the newest user turn: strict chat
     // templates refuse a second system message (provider.js userSideHostNotes)
     A.eq(late.messages.filter(m => m.role === 'system').length, 1, 'the system prompt is the only system message');

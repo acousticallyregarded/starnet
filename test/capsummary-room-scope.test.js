@@ -335,7 +335,7 @@ const BEFORE_I = '\n<capabilities_ground_truth>\nThese are your REAL powers this
   const resOff = officeRun(off);
   A.ok(resOff.tools.indexOf('web_search') < 0 && resOff.tools.indexOf('notebook.write') < 0 && resOff.tools.indexOf('fs.read') >= 0, 'fixture: the switches dropped web + memory');
   const n = summarizeCapabilities(resOff, { surface: 'interactive', disabledCaps: off, scopeFn: scopeI });
-  A.ok(!/SERVER CART|long-term memory|DISH[^.]*in RESEARCH/.test(n), 'a switched-off web or memory family is never offered as gear to place in RESEARCH: ' + n.slice(n.indexOf('If the Farmer')));
+  A.ok(!/SERVER CART|long-term memory|DISH[^.]*in RESEARCH/.test(n), 'a switched-off web or memory family is never offered as gear to place in RESEARCH: ' + n.slice(n.indexOf('If the Commander')));
   A.ok(n.indexOf('Place the STUDIO in RESEARCH, the room your desk is in: gear in any other room (like the STUDIO in HOME) does not reach you.') >= 0, 'the STUDIO, not switched off, is still the room fix');
   // every switchable floor family off: byte-identical to the note with no scope, in each shape resolve.js takes
   const all = ['web', 'memory', 'studio'];

@@ -104,14 +104,14 @@ try {
   const diagnostics = collectDiagnostics(cdp);
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.requestAnimationFrame = cb => setTimeout(() => cb(performance.now()), 60); window.cancelAnimationFrame = id => clearTimeout(id);' });
   await cdp.send('Page.navigate', { url: base + '/' });
-  check('the real page reaches the live farm', await waitDevReady(cdp, evalJS, { url: base + '/', tries: 60 }));
+  check('the real page reaches the live station', await waitDevReady(cdp, evalJS, { url: base + '/', tries: 60 }));
   const hero = await evalJS(cdp, `(() => { const h = App.agents().find(a => a.id === 'agent'); return h && h.name; })()`);
   const before = await evalJS(cdp, SCREEN);
   check('no window is open before the ask', Array.isArray(before) && before.length === 0, JSON.stringify(before));
 
   // ---- the Commander TYPES the ask into COMMS; the lead shows four places, then one that cannot exist ----
   mock.script = [
-    { name: 'tool_search', args: { query: 'open a window to show the Farmer' } },
+    { name: 'tool_search', args: { query: 'open a window to show the Commander' } },
     { name: 'station_show', args: { place: 'deliverables' } },
     { name: 'station_show', args: { place: 'settings-spending' } },
     { name: 'station_show', args: { place: 'agent-config', agent: String(hero || '').toLowerCase() } },
@@ -122,12 +122,12 @@ try {
   for (let i = 0; i < 360 && mock.results.length < mock.script.length; i++) await sleep(500);   // ≤3 min: a loaded gate is slow
   const R = mock.results;
   check('the model received every result', R.length === mock.script.length, R.length + ' of ' + mock.script.length + (R.length === mock.script.length ? '' : ' :: model saw ' + JSON.stringify(mock.seen.slice(-8)) + ' :: COMMS ' + JSON.stringify(await evalJS(cdp, `(() => ({ busy: !!(Chat.isBusy && Chat.isBusy()), input: (document.getElementById('chat-input') || {}).value, lines: [...document.querySelectorAll('#chat .msg, #chat-log > *')].slice(-4).map(x => x.innerText.slice(0, 120)) }))()`))));
-  check('tool_search reveals station_show', /farm[._]show/.test(R[0] || ''), (R[0] || '').slice(0, 300));
-  check('shown: MY WORK › DELIVERABLES', /^OPEN on the Farmer's screen: MY WORK › DELIVERABLES/.test(R[1] || ''), (R[1] || '').slice(0, 200));
-  check('shown: SETTINGS › SPENDING LIMITS', /^OPEN on the Farmer's screen: SETTINGS › SPENDING LIMITS/.test(R[2] || ''), (R[2] || '').slice(0, 200));
-  check('shown: the hero\'s CONFIG (by name, any case)', new RegExp('^OPEN on the Farmer\'s screen: CREW › AGENTS › CONFIG for ' + hero).test(R[3] || ''), (R[3] || '').slice(0, 200));
+  check('tool_search reveals station_show', /station[._]show/.test(R[0] || ''), (R[0] || '').slice(0, 300));
+  check('shown: MY WORK › DELIVERABLES', /^OPEN on the Commander's screen: MY WORK › DELIVERABLES/.test(R[1] || ''), (R[1] || '').slice(0, 200));
+  check('shown: SETTINGS › SPENDING LIMITS', /^OPEN on the Commander's screen: SETTINGS › SPENDING LIMITS/.test(R[2] || ''), (R[2] || '').slice(0, 200));
+  check('shown: the hero\'s CONFIG (by name, any case)', new RegExp('^OPEN on the Commander\'s screen: CREW › AGENTS › CONFIG for ' + hero).test(R[3] || ''), (R[3] || '').slice(0, 200));
   check('an agent that does not exist is refused with the real crew', /^REFUSED: no agent called "Nobody-Here" \(crew: /.test(R[4] || ''), (R[4] || '').slice(0, 200));
-  check('shown: the Recruitment Bay', /^OPEN on the Farmer's screen: CREW › RECRUIT/.test(R[5] || ''), (R[5] || '').slice(0, 200));
+  check('shown: the Recruitment Bay', /^OPEN on the Commander's screen: CREW › RECRUIT/.test(R[5] || ''), (R[5] || '').slice(0, 200));
 
   // ---- the screen really shows it ----
   await sleep(600);
@@ -158,11 +158,11 @@ try {
   await sleep(800);
   const cleared = ((await evalJS(cdp, SCREEN)) || []).length;
   mock.results = []; mock.phase = MARK + '-UNWATCHED';
-  mock.script = [{ name: 'tool_search', args: { query: 'open a window to show the Farmer' } }, { name: 'station_show', args: { place: 'settings' } }];
+  mock.script = [{ name: 'tool_search', args: { query: 'open a window to show the Commander' } }, { name: 'station_show', args: { place: 'settings' } }];
   const headers = { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: base };
   const res = await fetch(base + '/api/run', { method: 'POST', headers, body: JSON.stringify({ key: 'sk-or-v1-fake', model: 'test/model', agentId: 'agent', isTask: true, messages: [{ role: 'user', content: MARK + '-UNWATCHED open my settings' }] }) });
   await res.text();
-  check('unwatched run: the model was told the screen was left alone', /^REFUSED: the Farmer is not looking at this conversation/.test(mock.results[1] || ''), (mock.results[1] || '').slice(0, 200));
+  check('unwatched run: the model was told the screen was left alone', /^REFUSED: the Commander is not looking at this conversation/.test(mock.results[1] || ''), (mock.results[1] || '').slice(0, 200));
   const after = ((await evalJS(cdp, SCREEN)) || []).filter(w => /^SETTINGS/.test(w.title));
   check('unwatched run: no SETTINGS window appeared', after.length === 0, 'cleared to ' + cleared + ' windows; settings now ' + after.length);
 

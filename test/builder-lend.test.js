@@ -69,7 +69,7 @@ const WORKER_ONLY = composeOffice({ surface: 'autonomous', lead: false });
   A.eq(dispatchTool.schema.properties.workers.items.properties.builder, { type: 'boolean' }, 'a worker takes builder: boolean');
   A.ok(/BUILDER: builder:true lends that worker your station\.map\/plan\/build for this job; builds follow your approval setting\./.test(dispatchTool.description), 'the dispatch tool says what builder:true lends');
   // review threads-backend-13: under Full Access or a cached grant a lent build shows no card, so never promise one
-  A.ok(!/asks the Farmer|approves each build/.test(dispatchTool.description), 'the dispatch tool never promises a card on every build');
+  A.ok(!/asks the Commander|approves each build/.test(dispatchTool.description), 'the dispatch tool never promises a card on every build');
   await dispatchTool.run({ workers: [{ agentId: 'builder', prompt: 'rebuild the lab', builder: true }, { agentId: 'scout', prompt: 'look around' }] }, leadCtx(LEAD));
   A.eq(ro.calls.length, 2, 'both workers ran');
   A.eq(types(ro.calls[0]), ['builder', 'workbench'], 'the Build Manager runs with the lent builder on top of the workbench');
@@ -102,7 +102,7 @@ const WORKER_ONLY = composeOffice({ surface: 'autonomous', lead: false });
     const calls = [];
     const ro = async (o) => { calls.push(o); await gate; return { reason: 'done', messages: [{ role: 'assistant', content: 'ok' }], usd: 0 }; };
     const { dispatchTool } = makeOrchestrationTools({ runOnce: ro, roster: () => roster, key: 'k', model: 'm', newId: counter(), subagents });
-    const started = JSON.parse((await dispatchTool.run({ workers: [{ agentId: 'builder', prompt: 'expand the farm', builder: true }], background: true }, leadCtx(LEAD))).content);
+    const started = JSON.parse((await dispatchTool.run({ workers: [{ agentId: 'builder', prompt: 'expand the station', builder: true }], background: true }, leadCtx(LEAD))).content);
     await new Promise(r => setImmediate(r));
     A.eq(types(calls[0]), ['builder', 'workbench'], 'a background Build Manager runs with the lent builder');
     const id = started[0].id;

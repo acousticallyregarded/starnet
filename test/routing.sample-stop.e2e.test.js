@@ -113,7 +113,7 @@ async function startSseCollector(url) {
   const ac = new AbortController();
   const events = [];
   const res = await fetch(url, { signal: ac.signal });
-  A.eq(res.status, 200, 'the farm SSE feed opens');
+  A.eq(res.status, 200, 'the station SSE feed opens');
   const reader = res.body.getReader();
   (async () => {
     const dec = new TextDecoder();
@@ -198,7 +198,7 @@ function twoStagePlan() {
     A.ok(!!firstRequest && firstRequest.closedAt == null, 'fixture: the first job has its own hanging provider request: ' + JSON.stringify(firstRequest));
     if (!firstRequest) throw new Error('the first sample never reached its provider');
     const busy = await call('/api/routing/sample', {});
-    A.eq(busy.status, 409, 'while it rides, a second sample is still refused (one per farm)');
+    A.eq(busy.status, 409, 'while it rides, a second sample is still refused (one per station)');
     const stop = await call('/api/routing/sample/stop');
     A.eq(stop.status, 200, 'the stop is accepted');
     A.ok(stop.j && stop.j.ok === true && stop.j.stopped === true && stop.j.halted >= 1, 'it killed the running job\'s run: ' + JSON.stringify(stop.j));

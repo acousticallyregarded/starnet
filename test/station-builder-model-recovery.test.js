@@ -331,7 +331,7 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
   const search = makeToolSearchTool({ registry: { get: n => reg.get(n) || null } }).toolSearchTool;
   const ctx = { deferred: ['station.map', 'station.plan', 'station.build', 'station.make_prop', 'station.test_line', 'station.start_line', 'app.create', 'app.edit', 'session.create'].filter(n => reg.has(n)),
     advertised: ['loop.create', 'routine.create', 'task.create', 'station.layout', 'tool.search'] };
-  for (const q of ['farm builder - create assembly lines and workflows', 'farm builder create assembly line workflow', 'farm builder']) {
+  for (const q of ['farm builder - create assembly lines and workflows', 'farm builder create assembly line workflow', 'station builder']) {
     const r = await search.run({ query: q }, ctx), shown = (r.control && r.control.revealTools) || [];
     A.ok(['station.map', 'station.plan', 'station.build'].every(n => shown.indexOf(n) >= 0), '"' + q + '" reveals station.map, station.plan and station.build: ' + JSON.stringify(shown) + ' ' + String(r.content).slice(0, 160));
   }

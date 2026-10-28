@@ -112,7 +112,7 @@ const { WorkshopStore } = require('../frontend/app/workshopstore.js');
   cards = [];
   await WorkshopStore.presentOnReturn();
   A.eq(cards.length, 1, 'a genuine return reveals the newest undecided deliverable\'s card');
-  A.eq(cards[0].o.sessionId, 'workshop-run-B', 'that card lives in its own session, never the stream the Farmer left open');
+  A.eq(cards[0].o.sessionId, 'workshop-run-B', 'that card lives in its own session, never the stream the Commander left open');
   A.ok(Workstreams.unread(wsA), 'an undecided deliverable\'s session goes unread again on a genuine return — undecided = still owed');
   A.eq(wsA.lastActiveAt, builtStampA, 'the re-offer never re-stamps lastActiveAt — the rail\'s "last worked" time stays the build\'s, not a perpetual "now" (2026-07-18 timestamp-honesty fix)');
 

@@ -111,7 +111,7 @@ function checkCall(call, label) {
     A.ok(r1.calls.length >= 1 && r2.calls.length >= 1, 'both messages reached the model');
     const n1 = checkCall(r1.calls[0], 'message 1'), n2 = checkCall(r2.calls[0], 'message 2');
     A.eq(JSON.stringify(r2.calls[0].body.messages[0]), JSON.stringify(r1.calls[0].body.messages[0]), 'system[0] is byte-identical across the two messages');
-    A.ok(/Request 1: tell me a joke$/.test(n1) && /Request 2: tell me another joke$/.test(n2), 'the Farmer\'s words close their own turn, unchanged');
+    A.ok(/Request 1: tell me a joke$/.test(n1) && /Request 2: tell me another joke$/.test(n2), 'the Commander\'s words close their own turn, unchanged');
     A.eq(text(r2.calls[0].body.messages[1].content), 'Request 1: tell me a joke', 'history replays right after the system prompt, without any note');
 
     // ---- a long chat whose window dropped its first turns: the earlier-conversation note ----

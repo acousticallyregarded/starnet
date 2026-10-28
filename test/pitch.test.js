@@ -16,7 +16,7 @@ A.eq(P.shouldPitch(ready), { go: true, reason: 'ready' }, 'pitches once task is 
 A.eq(P.shouldPitch(Object.assign({}, ready, { alreadyPitched: true })), { go: false, reason: 'already-pitched' }, 'never pitches twice (fire-once)');
 A.eq(P.shouldPitch(Object.assign({}, ready, { firstTaskDone: false })), { go: false, reason: 'awaiting-first-task' }, 'no advice before it has done one real task');
 A.eq(P.shouldPitch({ firstTaskDone: true, knownDims: ['identity', 'stack'] }), { go: false, reason: 'missing:goals' }, 'cannot pitch a build without knowing the goal');
-A.eq(P.shouldPitch({ firstTaskDone: true, knownDims: ['goals'] }), { go: false, reason: 'too-cold' }, 'stays quiet when it barely knows the Farmer');
+A.eq(P.shouldPitch({ firstTaskDone: true, knownDims: ['goals'] }), { go: false, reason: 'too-cold' }, 'stays quiet when it barely knows the Commander');
 A.eq(P.shouldPitch({}).go, false, 'defensive: empty state never pitches');
 A.eq(P.shouldPitch().go, false, 'defensive: no state never pitches, never throws');
 
@@ -39,8 +39,8 @@ A.ok(dir.indexOf('daily digest') >= 0, 'directive carries a recipe tagline when 
 A.ok(/run code/.test(dir) && /web access/.test(dir), 'directive lists the capabilities it actually has');
 A.ok(dir.indexOf('wrote a hello file and verified it') >= 0, 'directive references the first task it just did');
 A.ok(/PITCH:/.test(dir) && /WHY:/.test(dir) && /BUILD:/.test(dir) && /GAP:/.test(dir), 'directive demands the strict tagged reply format');
-A.ok(/pain|eats their time|recurring chore/i.test(dir), 'directive aims the pitch at the Farmer pain points (Slice 6 — shared by First Pitch + the suggestion engine)');
-A.ok(/keep meaning|ambition|what they actually want|never reach/i.test(dir), 'directive also aims at the Farmer ambitions (Slice 7 — closing the pain->ambition gap)');
+A.ok(/pain|eats their time|recurring chore/i.test(dir), 'directive aims the pitch at the Commander pain points (Slice 6 — shared by First Pitch + the suggestion engine)');
+A.ok(/keep meaning|ambition|what they actually want|never reach/i.test(dir), 'directive also aims at the Commander ambitions (Slice 7 — closing the pain->ambition gap)');
 
 // deterministic — same ctx in, byte-identical directive out (cache-warmth + testability)
 A.eq(P.buildDirective({ recipes: [{ id: 'x', name: 'X' }] }), P.buildDirective({ recipes: [{ id: 'x', name: 'X' }] }), 'buildDirective is deterministic');
@@ -126,7 +126,7 @@ A.eq(P.SUGGEST_SESSION_CAP, 1, 'default session cap is one idea');
 /* ---------- the STARTER — the guaranteed floor under the tutorial's close ---------- */
 const sd0 = P.buildStarterDirective({ capabilities: [] });
 A.ok(/INTERNAL/.test(sd0) && /Do not run any tools/.test(sd0), 'starter directive is internal + reason-only');
-A.ok(/NO placed tools yet — compute only/.test(sd0), 'a toolless farm is stated honestly (no promised reach)');
+A.ok(/NO placed tools yet — compute only/.test(sd0), 'a toolless station is stated honestly (no promised reach)');
 A.ok(/^MOVE:/m.test(sd0) && /^WHY:/m.test(sd0), 'starter directive demands MOVE/WHY');
 A.ok(/LEARNS the most/.test(sd0), 'a cold dossier steers the move toward learning-while-delivering');
 const sd1 = P.buildStarterDirective({ capabilities: [{ id: 'cabinet', label: 'FILES' }, { id: 'web', label: 'WEB' }] });

@@ -107,7 +107,7 @@ try {
     m.stopReviews([w1, w2, gone]);
     const rows = m.snapshot().reviews;
     A.eq(rows.length, 1, 'E-STOP files the finished part of an incomplete hand-off (never a worker cancelled with its lead)');
-    A.eq(rows[0].status, 'cancelled', 'and cancels it: the Farmer stopped everything');
+    A.eq(rows[0].status, 'cancelled', 'and cancels it: the Commander stopped everything');
     A.eq(rows[0].members.map(x => x.workerId).join(','), 'w1', 'only the finished worker is filed; the worker cancelled with its lead is never folded in');
     A.eq(rows[0].waitingOn.map(x => x.workerId).join(','), 'w2', 'the still-running worker is named as waiting, and the parent-cancelled one is not');
   }

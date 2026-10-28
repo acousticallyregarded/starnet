@@ -130,7 +130,7 @@ try {
   const diagnostics = collectDiagnostics(cdp);
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.requestAnimationFrame = cb => setTimeout(() => cb(performance.now()), 60); window.cancelAnimationFrame = id => clearTimeout(id);' });
   await cdp.send('Page.navigate', { url: base + '/' });
-  check('the real page reaches the live farm', await waitDevReady(cdp, evalJS, { url: base + '/', tries: 60 }));
+  check('the real page reaches the live station', await waitDevReady(cdp, evalJS, { url: base + '/', tries: 60 }));
 
   // two sessions and a specialist to change, made the way the UI makes them, then saved
   const setup = await evalJS(cdp, `(async () => {
@@ -144,7 +144,7 @@ try {
 
   // ---- ONE lead run: find the tools, read, then change the station the way a Commander would ask ----
   mock.script = [
-    { name: 'tool_search', args: { query: 'farm settings' } },                                                              // 0
+    { name: 'tool_search', args: { query: 'station settings' } },                                                              // 0
     { name: 'station_settings', args: {} },                                                                                       // 1
     { name: 'station_control', args: { action: 'agent.rename', args: { agent: 'agent', name: 'Atlas' } } },                       // 2
     { name: 'station_control', args: { action: 'agent.personality', args: { agent: 'ATLAS', personality: 'composed' } } },         // 3
@@ -169,7 +169,7 @@ try {
   const R = mock.results;
   check('the model received every result', R.length === mock.script.length, R.length + ' of ' + mock.script.length);
   const ok = i => typeof R[i] === 'string' && /^{"done":|^{"crew"|^{"budget/.test(R[i]);
-  check('tool_search reveals the three tools', /station\.settings|station_settings/.test(R[0] || '') && /farm[._]control/.test(R[0] || '') && /farm[._]power/.test(R[0] || ''), (R[0] || '').slice(0, 300));
+  check('tool_search reveals the three tools', /station\.settings|station_settings/.test(R[0] || '') && /station[._]control/.test(R[0] || '') && /station[._]power/.test(R[0] || ''), (R[0] || '').slice(0, 300));
   check('station_settings reads the crew, sessions and look', ok(1) && /"crew"/.test(R[1]) && /Research notes/.test(R[1]) && /"look"/.test(R[1]) && /"options"/.test(R[1]), (R[1] || '').slice(0, 200));
   for (const [i, what] of [[2, 'rename the hero'], [3, 'personality'], [4, 'rename a session'], [5, 'pin it'], [6, 'archive one'], [7, 'the look'], [8, 'pause learning'], [9, 'cap spending (station_power)'], [12, 'delete the researcher'], [13, 'delete a session'], [15, 'pin the hero\'s model']])
     check('changed: ' + what, ok(i), (R[i] || '').slice(0, 240));
@@ -217,20 +217,20 @@ try {
   const workspace2 = join(root, 'workspace2'), appPort2 = await freePort(), base2 = 'http://127.0.0.1:' + appPort2;
   materializeSeedWorkspace(workspace2, 'test/model');
   sidecar2 = bootSeededSidecar({ port: appPort2, scratchDir: workspace2, model: 'test/model', key: 'sk-or-v1-fake', fullAccess: false, env: Object.assign({ SKYNET_OPENROUTER_BASE: mock.base }, iso) });
-  check('ASK farm starts (Full Access off)', await waitUp(base2 + '/'));
+  check('ASK station starts (Full Access off)', await waitUp(base2 + '/'));
   const token2 = await bootToken(base2, base2);
   await cdp.send('Page.navigate', { url: base2 + '/' });
-  check('ASK farm page is live', await waitDevReady(cdp, evalJS, { url: base2 + '/', tries: 60 }));
+  check('ASK station page is live', await waitDevReady(cdp, evalJS, { url: base2 + '/', tries: 60 }));
   mock.results = [];
   mock.script = [
-    { name: 'tool_search', args: { query: 'farm settings' } },
+    { name: 'tool_search', args: { query: 'station settings' } },
     // a COMMS-typed task settles its Task Brief before consequential tools (a real model does exactly this)
-    { name: 'brief_proceed', args: { objective: 'change the farm settings the Farmer asked for', deliverable: 'the settings changed' } },
+    { name: 'brief_proceed', args: { objective: 'change the station settings the Commander asked for', deliverable: 'the settings changed' } },
     { name: 'station_control', args: { action: 'look.set', args: { look: { theme: 'blue' } } } },
     { name: 'station_power', args: { action: 'budget.set', args: { perDay: 9 } } },
     { name: 'station_power', args: { action: 'fullpower.set', args: { on: true } } }
   ];
-  await evalJS(cdp, `(() => { const t = document.getElementById('chat-input'); t.value = ${JSON.stringify(MARK + ' please make my farm blue, set my daily spending cap to $9 and turn on full power')}; t.dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('chat-send').click(); return true; })()`);
+  await evalJS(cdp, `(() => { const t = document.getElementById('chat-input'); t.value = ${JSON.stringify(MARK + ' please make my station blue, set my daily spending cap to $9 and turn on full power')}; t.dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('chat-send').click(); return true; })()`);
   const cards = [], keys = [];
   const answers = ['Approve once', 'Approve once', 'Deny'];
   for (let i = 0; i < 240 && cards.length < answers.length; i++) {
@@ -245,7 +245,7 @@ try {
     await sleep(500);
   }
   check('three approval cards appeared in COMMS', cards.length === 3, cards.length + ' cards');
-  check('card 1 names the look change in the farm\'s own words', /NOVA wants to change the farm's look/.test(cards[0] || ''), (cards[0] || '').slice(0, 300));
+  check('card 1 names the look change in the station\'s own words', /NOVA wants to change the station's look/.test(cards[0] || ''), (cards[0] || '').slice(0, 300));
   check('card 2 names the new $9 daily cap', /wants to set your spending limits: perDay \$9/.test(cards[1] || ''), (cards[1] || '').slice(0, 300));
   check('⛔ an escalation card offers Approve once / Deny only (no Always, no Full access)', [1, 2].every(i => JSON.stringify(keys[i] || []) === JSON.stringify(['Approve once', 'Deny'])) && (keys[0] || []).indexOf('Always') >= 0 && (keys[0] || []).indexOf('Full access') >= 0, JSON.stringify(keys));
   check('card 3 names Full Power for what it is', /FULL POWER: every agent acts on this computer without asking/.test(cards[2] || ''), (cards[2] || '').slice(0, 300));

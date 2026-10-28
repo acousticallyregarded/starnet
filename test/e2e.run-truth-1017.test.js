@@ -61,7 +61,7 @@ function startMockProvider() {
         if (!parsed.tools || !parsed.tools.length) {
           // the post-run passes: failure review asks for LESSON lines, reflection for FACT/PREFERENCE lines
           if (/FAILED/.test(sys)) say('LESSON: Always confirm where the weekly report data lives before drafting the report.');
-          else if (/reflecting/.test(sys) && /REPORTFILE/.test(prompt)) say('PREFERENCE: The Farmer never wants weekly reports longer than one page.');
+          else if (/reflecting/.test(sys) && /REPORTFILE/.test(prompt)) say('PREFERENCE: The Commander never wants weekly reports longer than one page.');
           else say('NONE');
           res.write('data: [DONE]\n\n'); res.end(); return;
         }
@@ -134,7 +134,7 @@ async function runTo(B, H, body, onEvent) {
       const id = 'w-runtruth1017';
       const made = await (await fetch(B + '/api/widgets/configure', { method: 'POST', headers: H, body: JSON.stringify({
         id, label: 'AI spend', request: 'total spend this month from the ledger', display: 'metric', source: { kind: 'agent', id: 'starnet' } }) })).json();
-      A.ok(made.widget && made.widget.config && made.widget.config.version === 1, 'Connected apps > Homestead > Create: the widget is configured (version 1)');
+      A.ok(made.widget && made.widget.config && made.widget.config.version === 1, 'Connected apps > StarNet > Create: the widget is configured (version 1)');
       const second = await fetch(B + '/api/widgets/configure', { method: 'POST', headers: H, body: JSON.stringify({
         id: 'w-other1017', label: 'Other', request: 'something else', display: 'metric', source: { kind: 'agent', id: 'starnet' } }) });
       A.eq(second.status, 200, 'a second configured widget exists (the one this refresh must not touch)');

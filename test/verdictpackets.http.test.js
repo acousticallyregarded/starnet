@@ -19,7 +19,7 @@ const mock = http.createServer((req, res) => {
   if (req.url.includes('/models')) { res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify({data: [{id: 'test/model', context_length: 128000, pricing: {prompt: '0', completion: '0'}, supported_parameters: ['tools']}]})); }
   let raw = ''; req.on('data', d => { raw += d; }); req.on('end', () => {
     try { seen.push(JSON.parse(raw)); } catch (_) {}
-    const review = raw.indexOf('FARMER VERDICT ON THIS RUN') >= 0;
+    const review = raw.indexOf('COMMANDER VERDICT ON THIS RUN') >= 0;
     // the cold-model probe's review: no byte ever comes back (a local model still loading, a provider that hung once).
     // Matched FIRST: it runs last, and its review prompt also names the earlier probe runs.
     if (review && raw.indexOf('cold-model probe') >= 0) { hung.push(res); return; }
@@ -70,10 +70,10 @@ const until = async (fn, ms) => { const end = Date.now() + ms; while (Date.now()
     A.ok(armed && armed.state === 'held' && armed.reviewStatus === 'pending', 'armed grace job is durable before HTTP acknowledges it');
     await stop(); await boot();
     A.ok(/\[skills\] restored 1 verdict review packet/.test(out), 'armed review job restores across a second restart');
-    const reviewed = await until(() => seen.slice(before).some(b => JSON.stringify(b.messages || []).indexOf('FARMER VERDICT ON THIS RUN: MISSED') >= 0), 15000);
+    const reviewed = await until(() => seen.slice(before).some(b => JSON.stringify(b.messages || []).indexOf('COMMANDER VERDICT ON THIS RUN: MISSED') >= 0), 15000);
     A.ok(reviewed, 'the review ran on a rebuilt provider, with the verdict in its prompt');
-    const req = seen.slice(before).find(b => JSON.stringify(b.messages || []).indexOf('FARMER VERDICT ON THIS RUN') >= 0);
-    A.ok(req && JSON.stringify(req.messages).indexOf('three bullets, not an essay') >= 0, 'and the Farmer\'s correction');
+    const req = seen.slice(before).find(b => JSON.stringify(b.messages || []).indexOf('COMMANDER VERDICT ON THIS RUN') >= 0);
+    A.ok(req && JSON.stringify(req.messages).indexOf('three bullets, not an essay') >= 0, 'and the Commander\'s correction');
     A.ok(req && JSON.stringify(req.messages).indexOf('Write the weekly status report') >= 0, 'over the restored transcript');
     A.ok(await until(() => !JSON.parse(fs.readFileSync(file, 'utf8')).rows.some(row => row.runId === end.payload.runId && row.state === 'held' && row.reviewStatus !== 'completed'), 5000), 'successful review durably leaves the held queue');
     const completedCalls=seen.length; await stop(); await boot();
@@ -84,7 +84,7 @@ const until = async (fn, ms) => { const end = Date.now() + ms; while (Date.now()
     // Negative: a pass whose provider failed before it changed anything stays queued for its retry.
     const taskRun = async directive => (await (await fetch(base + '/api/run', {method: 'POST', headers, body: JSON.stringify({agentId: 'agent', key: 'sk-or-v1-packets-fixture', model: 'test/model', isTask: true, messages: [{role: 'user', content: directive}]})})).text()).split('\n').filter(Boolean).map(s => JSON.parse(s)).find(e => e.name === 'agent.run.end');
     const heldRow = id => JSON.parse(fs.readFileSync(file, 'utf8')).rows.find(row => row.runId === id && row.state === 'held');
-    const reviewCalls = probe => seen.filter(b => { const s = JSON.stringify(b.messages || []); return s.indexOf('FARMER VERDICT ON THIS RUN') >= 0 && s.indexOf(probe) >= 0; }).length;
+    const reviewCalls = probe => seen.filter(b => { const s = JSON.stringify(b.messages || []); return s.indexOf('COMMANDER VERDICT ON THIS RUN') >= 0 && s.indexOf(probe) >= 0; }).length;
     const ceiling = await taskRun('Draft the iteration-ceiling probe memo.');
     A.eq(ceiling && ceiling.payload.reason, 'done', 'ceiling probe run completed');
     A.ok((await api('/api/growth/ratings', {runId: ceiling.payload.runId, verdict: 'miss', epoch: 1})).body.skillReviewArmed === true, 'ceiling probe review armed');

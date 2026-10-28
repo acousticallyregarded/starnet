@@ -97,7 +97,7 @@ const { makeAgentLifecycle } = require('../sidecar/agent-lifecycle.js');
       let agent = CTX.agent;
       const fetch = CTX.fetch;
       const World = CTX.World;
-      const farm = CTX.station;
+      const station = CTX.station;
       const Workstreams = CTX.Workstreams;
       const StationUI = CTX.StationUI;
       function liveAgents() { return [...agents.values()]; }
@@ -130,7 +130,7 @@ const { makeAgentLifecycle } = require('../sidecar/agent-lifecycle.js');
   A.ok(accepted.events.indexOf('fetch') < accepted.events.indexOf('agents.delete:scout'), 'fetch completes before local removal');
   A.ok(accepted.events.includes('focus:agent'), 'focused deletion hands COMMS to the hero');
   A.ok(accepted.events.includes('despawn:scout'), 'accepted deletion removes the floor body');
-  A.ok(accepted.events.includes('unbind:bay-scout:'), 'accepted deletion clears farm bindings');
+  A.ok(accepted.events.includes('unbind:bay-scout:'), 'accepted deletion clears station bindings');
   A.ok(accepted.events.includes('streams.remove:scout'), 'accepted deletion retires bound workstreams');
   A.ok(accepted.events.includes('persist'), 'accepted deletion persists the surviving state');
 
@@ -152,7 +152,7 @@ const { makeAgentLifecycle } = require('../sidecar/agent-lifecycle.js');
     };
     const summon = new Function('CTX', `
       const Specialties = { get: () => null };
-      const farm = CTX.station;
+      const station = CTX.station;
       let lastRosterPush = CTX.rosterResult;
       function summonAgent(spec, opts) {
         CTX.events.push('summon:' + opts.activate + ':' + opts.desk);

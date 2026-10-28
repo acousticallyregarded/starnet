@@ -68,7 +68,7 @@ const store = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.
   const ls = store();
   const p1 = page(ls);
   p1.api.showCoachOnce();
-  A.eq(p1.coach.hidden, false, 'a new farm shows the tip once');
+  A.eq(p1.coach.hidden, false, 'a new station shows the tip once');
   p1.timers.shift()();   // the 15 s fade
   A.ok(p1.coach.hidden && !ls.getItem('starnet.navcoach.seen'), 'the fade hides it without retiring it (an unnoticed tip may come back)');
   p1.api.dismissCoach();   // a dock opens (navdock toggle → dismissCoach())

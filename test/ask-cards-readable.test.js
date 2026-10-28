@@ -217,7 +217,7 @@ const byClass = (root, c) => all(root).filter(e => e._cls && e._cls.has(c));
     const g = vm.createContext({}); vm.runInContext(part(read('frontend/app/group-chat.js'), '  function pickItems(', '  // a pick-several key shows'), g);
     const O = ['Reddit', 'Reddit; HN', 'Reviews'];
     A.eq([...g.pickedIn('Reddit; HN', O)].join('|'), 'Reddit; HN', 'an option with ";" is one pick and never lights a shorter one inside it');
-    A.eq(g.togglePick('Reddit; also check X', 'Reviews', O), 'Reddit; also check X; Reviews', 'a toggle keeps what the Farmer typed');
+    A.eq(g.togglePick('Reddit; also check X', 'Reviews', O), 'Reddit; also check X; Reviews', 'a toggle keeps what the Commander typed');
     A.eq(g.togglePick('Reddit; HN; Reddit', 'Reddit', O), 'Reddit; HN', 'un-picking removes exactly that pick');
   }
   const statusEl = new El('span'), sc = vm.createContext({ statusEl, String });

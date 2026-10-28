@@ -57,7 +57,7 @@ const tick=()=>new Promise(r=>setImmediate(r));
   const {node,posts}=harness(st,(u)=>u==='/api/budget/settle'?settledReply:st);await tick();
   const line=node('#budget-spend').textContent;
   assert.match(line,/unavailable/);assert.match(line,/2 interrupted runs/);assert.match(line,/At least \$1\.2 today/);
-  assert.doesNotMatch(line,/Restore the ledger|Restart Homestead|\$0(?!\.)/,'never the old advice, never a guessed $0');
+  assert.doesNotMatch(line,/Restore the ledger|Restart StarNet|\$0(?!\.)/,'never the old advice, never a guessed $0');
   const rows=node('#budget-unsettled').children;assert.equal(rows.length,2,'one row per interrupted run');
   const [r1,r2]=rows;
   assert.equal(r1.className,'set-row bg-unsettled');assert.match(r1.textContent,/INTERRUPTED — Fix the build/);assert.match(r1.attrs['data-tip'],/openrouter · test\/m/);

@@ -173,7 +173,7 @@ let T = 0; const clock = () => (T += 10);
     A.ok(!!lineId, 'the compiled plan names the line this dock belongs to');
     const res = await c.advance({ agentId: 'researcher', text: 'findings', originalText: 'brief me', lineId: lineId });
     A.eq(res.agentId, 'writer', 'the BELTS decided that the writer runs second — nothing else was configured');
-    A.eq(res.text, 'FINAL COPY', "and the writer's output is what leaves the farm");
+    A.eq(res.text, 'FINAL COPY', "and the writer's output is what leaves the station");
     A.eq(res.stopped, null, 'the line ran to the OUTBOX');
     A.eq(log.length, 1, 'exactly one downstream run was bought');
 

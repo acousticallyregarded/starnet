@@ -112,13 +112,13 @@ module.exports = (async () => {
   const live = [{ id: 'anthropic/claude-sonnet-5', name: 'Claude Sonnet 5', supported_parameters: ['reasoning_effort', 'tools'] }];
   const mapped = await scenario('claude-sonnet-5', live, 'anthropic');
   A.eq(mapped.model, 'anthropic/claude-sonnet-5', 'direct Anthropic bare id maps to the catalog-confirmed managed id');
-  A.eq(mapped.provider, 'starnet', 'provider remains Homestead during reconciliation');
+  A.eq(mapped.provider, 'starnet', 'provider remains StarNet during reconciliation');
   A.eq(mapped.applied.length, 1, 'the reconciled pair is persisted through the app callback exactly once');
   A.eq(mapped.applied[0].reason, 'catalog_reconcile', 'the UI can explain that it updated the model');
   A.eq(mapped.applied[0].previousModel, 'claude-sonnet-5', 'the notice names the stale saved value');
 
   const stale = await scenario('claude-sonnet-4-5', live);
-  A.eq(stale.model, '', 'a model absent from a successful Homestead catalog is cleared, not silently used');
+  A.eq(stale.model, '', 'a model absent from a successful StarNet catalog is cleared, not silently used');
   A.eq(stale.applied[0].reason, 'catalog_unavailable', 'the app receives the explicit unavailable state');
   A.eq(stale.internals.catalogEquivalent('claude-sonnet-5', 'starnet', live), 'anthropic/claude-sonnet-5', 'mapping requires an exact live-catalog match');
   A.eq(stale.internals.catalogEquivalent('invented-model', 'starnet', live), '', 'mapping never invents a managed slug');

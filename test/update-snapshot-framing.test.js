@@ -151,7 +151,7 @@ const maxChars = 2000000;
       sleep: async () => { clock += 25; }
     });
     const made = await prep.prepare({ targetVersion: '0.14.1', browserStore: {} });
-    A.eq(made.ok, true, 'a farm of many small files gets its verified recovery point');
+    A.eq(made.ok, true, 'a station of many small files gets its verified recovery point');
     A.ok(made.receipt && made.receipt.snapshot.bytes <= maxChars, 'within the text limit (' + (made.receipt && made.receipt.snapshot.bytes) + ')');
     const tl = made.receipt && made.receipt.tooLarge;
     A.ok(tl && tl.files > LISTED, 'the receipt counts every left-out file, folded ones included (' + (tl && tl.files) + ')');

@@ -38,9 +38,9 @@ A.ok(/browser\.append\(makePropMount\(\)\)/.test(build) && !/browser\.append\(ma
 const mount = fn('makePropMount');
 A.ok(/const box = makePropPanel\(\);/.test(mount), '…which wraps the props lane\'s own panel, untouched');
 A.ok(/makeJob && makeJob\.status !== 'done' && makeJob\.status !== 'failed'\) \|\| !!makePreview \|\| !!makeMsg/.test(mount) && /const open = makeOpen \|\| busy;/.test(mount),
-  '…held OPEN while a paid job runs, a preview or a message waits (a job the Farmer paid for is never hidden behind a key)');
+  '…held OPEN while a paid job runs, a preview or a message waits (a job the Commander paid for is never hidden behind a key)');
 A.ok(/inp\.addEventListener\('focus', \(\) => \{ makeOpen = true;/.test(mount) && /door\.onclick = \(\) => \{ makeOpen = true; chooseLibrarySection\('decoration'\);/.test(build),
-  '…and opens when its field takes the focus, or the EQUIPMENT/ABILITIES door sends the Farmer to it');
+  '…and opens when its field takes the focus, or the EQUIPMENT/ABILITIES door sends the Commander to it');
 A.ok(/\.refit-makeprop\.is-compact > :not\(\.refit-makeprop-head\):not\(\.refit-makeprop-cta\) \{ display: none !important; \}/.test(easy) && /\.is-compact \.refit-makeprop-cta \.bb \{/.test(easy),
   'at rest it is ONE row: the title and the credits key (conversion stays in view)');
 A.ok(/\.refit-overlay\[data-catalog="true"\] \.refit-hint \.refit-hint-keys \{ display: none; \}/.test(easy) && /white-space: nowrap; overflow: hidden; text-overflow: ellipsis; \}/.test(easy),
@@ -75,13 +75,13 @@ A.ok(/ArrowLeft: \[-1, 0\], ArrowRight: \[1, 0\], ArrowUp: \[0, -1\], ArrowDown:
 A.ok(key.indexOf("if ((selectedPropId || groupIds.length) && tool === 'select')") > 0 && key.indexOf("if ((selectedPropId || groupIds.length) && tool === 'select')") < key.indexOf("const map = { '0': 'select'"), '…before the number keys pick tools');
 const dup = fn('duplicateSelected');
 A.ok(/const spec = copySpecOf\(p\), at = freeSpotNear\(spec, p\.x, p\.y\);/.test(dup) && /if \(res\.id\) \{ selectedPropId = res\.id; renderSelection\(\); \}/.test(dup), 'a duplicate lands in the nearest clear spot and becomes the selection (Ctrl+D again makes a row)');
-A.ok(!/agentId/.test(fn('copySpecOf')), '…a lone prop\'s copy never carries an agent binding (the COPY tool\'s own rule — a CLIP of a line carries its crew only where that agent is on this farm: build-clip.test)');
+A.ok(!/agentId/.test(fn('copySpecOf')), '…a lone prop\'s copy never carries an agent binding (the COPY tool\'s own rule — a CLIP of a line carries its crew only where that agent is on this station: build-clip.test)');
 A.ok(/if \(res && res\.ok\) \{ selectedPropId = null;/.test(fn('deleteSelected')), 'a delete that was refused keeps the selection');
 A.ok(/station\.propById\(hoverPropId \|\| selectedPropId\)/.test(build), 'R / M turn and flip the selected object (a hovered one still wins)');
 A.ok(/if \(id !== 'select' && !\(o && o\.keepGroup\)\) buildGroup =/.test(build), 'Ctrl+C from the Props tab keeps the Props tab up');
 
 /* ---------- 4. no stuck tooltip ---------- */
-A.ok(/raf = requestAnimationFrame\(frame\);\n[^\n]*\n[^\n]*\n    try \{ document\.dispatchEvent\(new Event\('scroll'\)\); \} catch \(_\) \{\}/.test(build), 'opening REFIT sends the farm tooltip its hide signal');
+A.ok(/raf = requestAnimationFrame\(frame\);\n[^\n]*\n[^\n]*\n    try \{ document\.dispatchEvent\(new Event\('scroll'\)\); \} catch \(_\) \{\}/.test(build), 'opening REFIT sends the station tooltip its hide signal');
 A.ok(/<link rel="stylesheet" href="css\/refit-easy\.css">/.test(html) && html.indexOf('css/refit-easy.css') > html.indexOf('css/refit-polish.css'), 'the stylesheet loads after the REFIT glass it refines');
 A.ok(/\.refit-library-tabs \.bb:hover::before, \.refit-overlay \.refit-library-tabs \.bb:hover::after/.test(easy), 'the library tabs never wear the old [ ] hover brackets');
 
@@ -106,7 +106,7 @@ A.ok(/cut = top \+ \(bot - top\) \* k;/.test(dv) && /ctx\.clip\(\);/.test(dv) &&
   '…a cut line sweeps down through it and it fades behind the cut, then is gone');
 A.ok(/drawVanishing\(now\);\n  \}/.test(build), '…drawn after the floor\'s props, every frame it lasts');
 A.ok(/SFX\.voice\(\{ freq: 140, glide: 62,/.test(fn('sfxLand')) && /SFX\.noise\(\{ dur: 0\.26,/.test(fn('sfxVanish')) && /!SFX\.ctx\) return;/.test(fn('sfxLand')) && /!SFX\.ctx\) return;/.test(fn('sfxVanish')),
-  'a low thunk to land, a falling hiss to dissolve — the farm\'s own synth, silent until audio is unlocked');
+  'a low thunk to land, a falling hiss to dissolve — the station\'s own synth, silent until audio is unlocked');
 const feelBlock = build.slice(build.indexOf('THINGS LAND, THINGS DISSOLVE'), build.indexOf('function drawFlashes('));
 A.ok(feelBlock.length > 0 && !/confetti|particle|sparkle/i.test(feelBlock.replace(/no particles, no confetti/, '')), 'eerie, not cute: no particles, no confetti');
 A.ok(/feel: \(\) => \(\{ landing: \[\.\.\.landings\.keys\(\)\], vanishing: vanishing\.length, selected: selectedPropId \}\)/.test(build), 'CDP proof can read what is landing / dissolving mid-animation');
@@ -303,7 +303,7 @@ A.ok(/if \(!ids\.length && !bb\.n\) \{ if \(!d\.add\) setSelection\(\[\]\); retu
 /* ---------- 9. rooms are easy ---------- */
 const orc = fn('openRoomCard');
 A.ok(/cardCloseAll\(\);\n    selectRoom\(roomId\);/.test(orc) && !/class(Name)? ?= ?['"]refit-guide/.test(orc), 'a room click selects the room — no mid-screen sheet any more');
-A.ok(/if\(selectedRoomId\)\{\n      const rm=farm&&station\.roomById\(selectedRoomId\);\n      if\(rm\)\{host\.hidden=false;root\.classList\.add\('has-selection'\);return renderRoomCard\(host,rm\);\}/.test(build),
+A.ok(/if\(selectedRoomId\)\{\n      const rm=station&&station\.roomById\(selectedRoomId\);\n      if\(rm\)\{host\.hidden=false;root\.classList\.add\('has-selection'\);return renderRoomCard\(host,rm\);\}/.test(build),
   'the selected room\'s card docks where a prop\'s does, above the library');
 const rc = fn('renderRoomCard');
 A.ok(/class="refit-room-name"/.test(rc) && /nameEl\.onblur = saveName;/.test(rc) && /if \(e\.key === 'Enter'\) \{ e\.preventDefault\(\); nameEl\.blur\(\); \}/.test(rc) && /e\.key === 'Escape'\) \{ e\.preventDefault\(\); nameEl\.value = saved;/.test(rc),
@@ -321,14 +321,14 @@ A.ok(/r\.x1 = Math\.min\(r0\.x1 \+ dx, r0\.x2 - min \+ 1\)/.test(fn('resizedRect
 const rk = fn('resizeCheck');
 A.ok(/station\.canPlaceRoom\(\[nr\], rm\.kind, rm\.id\)/.test(rk) && /it would be left off the deck/.test(rk) && /A belt would be left off the deck/.test(rk),
   'the ghost asks resizeRoom\'s own two questions, naming what is in the way');
-A.ok(/const res = pre && pre\.ok \? keepsHalls\(\(\) => station\.resizeRoom\(rm\.id, nr\)\) : pre;/.test(fn('commitRoomResize')), 'the release resizes through WorldModel.resizeRoom (one undo), keeping every path joined');
+A.ok(/const res = pre && pre\.ok \? keepsHalls\(\(\) => station\.resizeRoom\(rm\.id, nr\)\) : pre;/.test(fn('commitRoomResize')), 'the release resizes through WorldModel.resizeRoom (one undo), keeping every hallway joined');
 A.ok(/if \(g\.kind === 'resize'\) return/.test(fn('placementReason')), 'a resize refusal says the room\'s own reason (never "Blocked by" a prop inside it)');
 A.ok(/station\.moveRoom\(rm\.id, dx, dy\)/.test(fn('nudgeRoom')) && /deleteSelectedRoom\(orientEv\(\)\)/.test(key) && /nudgeRoom\(RA\[0\] \* n, RA\[1\] \* n, orientEv\(\)\)/.test(key),
   'with a room selected the arrows nudge it (its contents ride) and Delete deletes it');
 A.ok(/press Delete again to delete/.test(fn('deleteSelectedRoom')) && /now - roomDelArmedAt > \(cutArmFor\(rm\.id\) \? 6000 : 2500\)/.test(fn('deleteSelectedRoom')), '…on the SECOND press within 2.5 s (a room takes everything on it) — or anywhere in the 6 s window of a SEND TO cut warning for THIS room (final floor lane M15; repair: never a stale, unrelated warning’s)');
 A.ok(/on\.forEach\(p => vanishProp\(p\)\)/.test(fn('doDeleteRoom')), 'a deleted room\'s contents dissolve');
 const re = fn('runRoomEdit');
-A.ok(/StationBuilder\.planEdit\(station\.serialize\(\), req, env\)/.test(re) && /StationBuilder\.apply\(farm, r\.plan, env\)/.test(re), 'FURNISH / CLEAR are the farm builder\'s own planned edit, applied as planned (one undo)');
+A.ok(/StationBuilder\.planEdit\(station\.serialize\(\), req, env\)/.test(re) && /StationBuilder\.apply\(station, r\.plan, env\)/.test(re), 'FURNISH / CLEAR are the station builder\'s own planned edit, applied as planned (one undo)');
 A.ok(/if \(gear\.length && !confirmed\) \{ roomAsk = /.test(re) && /WorldModel\.capForProp/.test(fn('gearLost')) && /back\.has\(p\.t\)/.test(fn('gearLost')),
   'a plan that takes EQUIPMENT out (and does not bring the same piece back) is not applied on the first click');
 A.ok(/FURNISH ANYWAY/.test(rc) && /KEEP IT/.test(rc) && /agents here lose what/.test(rc), '…the card names what goes, and the two ways on');

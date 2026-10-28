@@ -104,7 +104,7 @@ function attachBus(B, token) {
   const events = [];
   const ctrl = new AbortController();
   const ready = fetch(B + '/api/channels/events?' + sseQuery(token), { signal: ctrl.signal }).then(res => {
-    A.eq(res.status, 200, 'the farm bus opens');
+    A.eq(res.status, 200, 'the station bus opens');
     const reader = res.body.getReader();
     const dec = new TextDecoder();
     let buf = '';
@@ -123,7 +123,7 @@ function attachBus(B, token) {
             events.push(Object.assign({ at: Date.now() }, ev));
             if (ev.name === 'station.command') {
               const p = ev.payload || {};
-              const out = (p.verb === 'station.dispatch_start' || p.verb === 'station.dispatch_end' || p.verb === 'station.deliver') ? { ok: true, result: {} } : { ok: false, error: 'unknown farm verb: ' + p.verb };
+              const out = (p.verb === 'station.dispatch_start' || p.verb === 'station.dispatch_end' || p.verb === 'station.deliver') ? { ok: true, result: {} } : { ok: false, error: 'unknown station verb: ' + p.verb };
               fetch(B + '/api/station/ack', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-StarNet-Token': token, Origin: B },
                 body: JSON.stringify(Object.assign({ id: p.id }, out)) }).catch(() => {});
             }
@@ -217,7 +217,7 @@ async function until(fn, ms, label) {
       'a background worker\'s ask never rides the lead\'s own stream (that stream ends with the turn)');
 
     const askOf = who => bus.events.find(e => e.name === 'permission.prompt' && e.payload && e.payload.workerAgentId === who);
-    await until(() => askOf('writer') && askOf('drafter'), 15000, 'both background workers asking on the farm bus');
+    await until(() => askOf('writer') && askOf('drafter'), 15000, 'both background workers asking on the station bus');
     const writerAsk = askOf('writer').payload, drafterAsk = askOf('drafter').payload;
     A.ok(askOf('drafter').at > leadEndedAt, 'the second worker asked after the lead\'s turn was already over');
     for (const p of [writerAsk, drafterAsk]) {
@@ -251,7 +251,7 @@ async function until(fn, ms, label) {
     const ans = await (await fetch(B + '/api/consent', { method: 'POST', headers: H, body: JSON.stringify({ runId: leadRunId, promptId: writerAsk.promptId, decision: 'once' }) })).json();
     A.eq(ans.ok, true, 'POST /api/consent with the prompt\'s runId answers a background ask after the lead ended');
     A.ok(!ans.gone, 'an answer that landed is never reported gone');
-    await until(() => bus.events.some(e => e.name === 'permission.response' && e.payload && e.payload.promptId === writerAsk.promptId && e.payload.decision === 'once'), 5000, 'the answer announced on the farm bus');
+    await until(() => bus.events.some(e => e.name === 'permission.response' && e.payload && e.payload.promptId === writerAsk.promptId && e.payload.decision === 'once'), 5000, 'the answer announced on the station bus');
     const writerFile = path.join(fixture.workspace, 'writer', 'launch-email.md');
     await until(() => fs.existsSync(writerFile), 8000, 'the approved write landing in the writer\'s workspace');
     A.ok(fs.existsSync(writerFile), 'the approved background write really ran');
@@ -289,10 +289,10 @@ async function until(fn, ms, label) {
       'the run record says the page closed while it waited on the opportunity-brief.md approval');
     const tr = await (await fetch(B + '/api/transcript?agent=agent&stream=ws_reload&limit=50', { headers: H })).json();
     const line = (tr.turns || []).find(t => t && t.sys && /closed, reloaded or reconnected/.test(t.content || ''));
-    A.ok(!!line, 'after the reload the conversation carries the farm\'s line about the ended run');
+    A.ok(!!line, 'after the reload the conversation carries the station\'s line about the ended run');
     if (line) {
       A.ok(/nothing was approved/.test(line.content) && /opportunity-brief\.md/.test(line.content), 'the line names what waited and that nothing was approved: ' + line.content);
-      A.eq(line.transcriptPending, true, 'the line is the farm\'s (re-sent on each read, never stacked by a merge)');
+      A.eq(line.transcriptPending, true, 'the line is the station\'s (re-sent on each read, never stacked by a merge)');
       A.eq(line.sourceRunId, reloadRunId, 'the line belongs to that run');
       const turns = tr.turns || [];
       const userIdx = turns.findIndex(t => t.role === 'user' && /write the brief yourself/.test(t.content || ''));

@@ -53,7 +53,7 @@ async function startModel() {
       const users = JSON.stringify((body.messages || []).filter(m => m && m.role === 'user'));
       const toolDone = (body.messages || []).some(m => m && m.role === 'tool');
       if (/IMG_/.test(users) && !toolDone) {
-        return sse(res, [{ tool_calls: [{ index: 0, id: 'render', type: 'function', function: { name: 'image_generate', arguments: JSON.stringify({ prompt: 'a red sunrise over the farm' }) } }] }], 'tool_calls');
+        return sse(res, [{ tool_calls: [{ index: 0, id: 'render', type: 'function', function: { name: 'image_generate', arguments: JSON.stringify({ prompt: 'a red sunrise over the station' }) } }] }], 'tool_calls');
       }
       return sse(res, [{ content: toolDone ? 'Done for today.' : 'Nothing to draw.' }]);
     });
@@ -77,7 +77,7 @@ async function startModel() {
     await sidecar.start();
     const perms = await sidecar.json('GET', '/api/permissions');
     A.eq(perms.status, 200, 'the permissions read answers');
-    A.ok(perms.body && perms.body.masterBypass === false && perms.body.envFullAccess === false, 'the farm is in the default ASK posture (no Full Access)');
+    A.ok(perms.body && perms.body.masterBypass === false && perms.body.envFullAccess === false, 'the station is in the default ASK posture (no Full Access)');
     A.ok(!JSON.stringify(perms.body.grants || []).includes('studio'), 'and holds no standing studio grant');
 
     async function routine(name, prompt, extra) {
@@ -146,7 +146,7 @@ async function startModel() {
     await runNow(tainted);
     A.eq(model.imageRequests.length, before, 'a run that starts on another routine\'s output generates nothing');
     const lifted = toolResultFor('IMG_TAINT');
-    A.ok(/switched off for the rest of THIS run because it read content from outside Homestead/.test(lifted), 'the refusal says the grant was lifted for this run (got: ' + lifted.slice(0, 200) + ')');
+    A.ok(/switched off for the rest of THIS run because it read content from outside StarNet/.test(lifted), 'the refusal says the grant was lifted for this run (got: ' + lifted.slice(0, 200) + ')');
   } catch (error) {
     error.message += '\nSidecar output (tail):\n' + sidecar.output().slice(-6000);
     throw error;

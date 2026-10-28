@@ -102,7 +102,7 @@ const userCopies = (list, words) => (list || []).filter(m => m && m.role === 'us
     A.eq(audit.length, 1, 'the audit line is in the file exactly once');
     A.eq(p2.sends.length, 1, 'the chat gets exactly one message after the restart');
     const notice = (p2.sends[0] || {}).text || '';
-    A.ok(/restarted/.test(notice) && /"append audit line now"/.test(notice), 'it says the farm restarted while working on THAT request');
+    A.ok(/restarted/.test(notice) && /"append audit line now"/.test(notice), 'it says the station restarted while working on THAT request');
     A.ok(/already begun 1 tool step/.test(notice) && /NOT run again/.test(notice), 'it says a step had begun and that nothing was run again');
     A.ok(!/Appended one line/.test(notice), 'no reply claims the work was just done');
     A.eq(userCopies(p2.store.loadHistory('tg_4242'), 'append audit line now'), 1, 'the transcript holds the request once, not twice');
@@ -134,7 +134,7 @@ const userCopies = (list, words) => (list || []).filter(m => m && m.role === 'us
     p2.hub.onStatus({ state: 'up' });
     await waitFor(() => p2.store.loadInbox('telegram').length === 0 && p2.sends.length >= 2);
     A.eq(p2.runs.length, 1, 'nothing could have happened twice, so the message runs again — once');
-    A.eq(userCopies(p2.runs[0].messages, words), 1, 'the second go sends the model the request ONCE, not as the Farmer asking twice');
+    A.eq(userCopies(p2.runs[0].messages, words), 1, 'the second go sends the model the request ONCE, not as the Commander asking twice');
     A.eq(p2.runs[0].retryUserRunId, firstRunId, 'the second go reuses the interrupted run\'s directive row (runOnce retryUserRunId)');
     A.eq(userCopies(p2.store.loadHistory('tg_55'), words), 1, 'the transcript files the request once');
     A.ok(/restarted/.test(p2.sends[0].text) && /had not begun any tool step/.test(p2.sends[0].text), 'the chat is told this is a second go after a restart');

@@ -108,7 +108,7 @@ function startMock() {
     assert.ok(!r1.calls.includes('lead+'), 'the lead paid for no further turn once its run cap was spent: ' + JSON.stringify(r1.calls));
     assert.equal(r1.lead.reason, 'budget', 'the lead stops at its PER RUN cap, not "done" past it (got ' + r1.lead.reason + ')');
     assert.equal(r1.lead.budgetScope, 'run', 'the stop names the per-RUN cap');
-    assert.equal(r1.lead.budgetCapUsd, CAP_USD, 'the stop carries the $0.05 cap the Farmer set');
+    assert.equal(r1.lead.budgetCapUsd, CAP_USD, 'the stop carries the $0.05 cap the Commander set');
     assert.ok(r1.workers.some(w => w.reason === 'budget'), 'the workers past the cap stop with reason budget: ' + JSON.stringify(r1.workers.map(w => w.reason)));
     assert.ok(r1.workers.filter(w => w.reason === 'budget').every(w => w.budgetScope === 'run' && w.budgetCapUsd === CAP_USD), 'a stopped worker names the lead run\'s $0.05 cap');
     const st = await fixture.json('GET', '/api/budget/status');

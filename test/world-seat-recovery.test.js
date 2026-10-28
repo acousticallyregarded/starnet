@@ -18,7 +18,7 @@ A.eq(g.path(7,7,32,8,null),null,'fixture desk is unreachable');
 step(b,seat,16,0);A.eq([b.px,b.py],[90,95],'unreachable worker stays in place');A.eq(b.sitting,false,'unreachable worker does not sit in empty space');A.eq(b.working,true,'real work stays active while route is unavailable');
 st.placeHallway({rect:{x1:18,y1:3,x2:23,y2:4}});g=st.projectGeometry();step=runtime(g);
 let maxJump=0;for(let n=0;n<5000&&!b.sitting;n++){const x=b.px,y=b.py;step(b,seat,16,1000+n*16);maxJump=Math.max(maxJump,Math.hypot(b.px-x,b.py-y));}
-A.ok(b.sitting,'worker recovers when a path opens');A.ok(maxJump<1.2,'recovered trip walks rather than teleports');A.eq([b.px,b.py],[384,107],'even-width desk uses centred foot');
+A.ok(b.sitting,'worker recovers when a hallway opens');A.ok(maxJump<1.2,'recovered trip walks rather than teleports');A.eq([b.px,b.py],[384,107],'even-width desk uses centred foot');
 for(const face of ['north','south','east','west']){const s={tx:8,ty:9,face};const c={px:102,py:119};step(c,s,16,10000);A.eq(c.dir,face,'desk arrival faces '+face);}
 const same={px:102,py:119};step(same,{tx:8,ty:9,cx:7.5,face:'east'},16,10000);A.ok(Math.abs(same.px-102)<1,'same-tile centring does not jump six pixels');
 let reachable=false,arrived=0;const hero={px:90,py:95};
@@ -84,9 +84,9 @@ if(src.includes('function invalidateRefitLeisure(')){
  const st=WM.create(),added=st.addProp({...side,x:5,y:3,agentId:'agent'});
  A.ok(added.ok,'turned assigned desk is valid model geometry');
  const store=require('../sidecar/station-store').makeStationStore();
- A.ok(store.setSaveDoc({station:st.serialize()}).ok,'farm save accepts the turned workstation');
+ A.ok(store.setSaveDoc({station:st.serialize()}).ok,'station save accepts the turned workstation');
  const restored=WM.deserialize(store.getStation()).projectGeometry().props.find(p=>p.id===added.id);
- A.eq([restored.r,restored.w,restored.h,restored.agentId],[3,1,2,'agent'],'facing, effective footprint and assignment survive the real farm save/model seam');
+ A.eq([restored.r,restored.w,restored.h,restored.agentId],[3,1,2,'agent'],'facing, effective footprint and assignment survive the real station save/model seam');
 }
 /* A doorway re-enters entity depth order using its detailed art when available. */
 {

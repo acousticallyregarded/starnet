@@ -71,7 +71,7 @@ function cannedFetch(url) {
 const fixture = {
   models: [{ id: 'replay/model', context_length: 8000, pricing: { prompt: '0.000001', completion: '0.000002' }, supportsTools: true }],
   turns: [
-    [ { type: 'text', delta: 'On it, Farmer — searching.' },
+    [ { type: 'text', delta: 'On it, Commander — searching.' },
       { type: 'tool_start', index: 0, id: 'c1', name: 'web_search' },
       { type: 'tool_args', index: 0, chunk: '{"query":"the answer"}' },
       { type: 'usage', usage: { prompt_tokens: 40, completion_tokens: 8, total_tokens: 48 } },

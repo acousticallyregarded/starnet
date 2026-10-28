@@ -26,8 +26,8 @@ A.ok(/id === 'agent'[\s\S]{0,40}return false/.test(need[0]),
   'the hero is excluded — its starter desk is seeded at wake and its stream owns the first-run hint');
 A.ok(/!agents\.has\(id\)[\s\S]{0,40}return false/.test(need[0]),
   'an id that is not on the live roster is never claimed to owe a desk');
-A.ok(/if \(!farm \|\|[\s\S]{0,180}return false/.test(need[0]),
-  'it fails CLOSED without a farm — the app never claims a floor state it cannot prove');
+A.ok(/if \(!station \|\|[\s\S]{0,180}return false/.test(need[0]),
+  'it fails CLOSED without a station — the app never claims a floor state it cannot prove');
 A.ok(/needsWorkstation: needsWorkstation/.test(app) && /openDeskPlacement: openDeskPlacement/.test(app),
   'both the read and the door it offers are exposed on the App API for the session to use');
 

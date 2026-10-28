@@ -126,10 +126,10 @@ async function startModel() {
       if (blob.includes('ROUTINE_LABELS')) return sse(res, [{ content: 'LABELS_START\nMEDIA: N/A\n- MEDIA: TV/radio\nMEDIA: Reuters.com\nLABELS_END' }]);
       if (blob.includes('ROUTINE_LONG')) return sse(res, [{ content: 'LONG_START\n' + Array.from({ length: 220 }, (_, i) => 'finding ' + i + ': the overnight digest line with details').join('\n') + '\nLONG_END' }]);
       if (blob.includes('ROUTINE_RENDER')) {
-        if (!toolDone) return sse(res, [{ tool_calls: [{ index: 0, id: 'render', type: 'function', function: { name: 'image_generate', arguments: JSON.stringify({ prompt: 'a red sunrise over the farm' }) } }] }], 'tool_calls');
+        if (!toolDone) return sse(res, [{ tool_calls: [{ index: 0, id: 'render', type: 'function', function: { name: 'image_generate', arguments: JSON.stringify({ prompt: 'a red sunrise over the station' }) } }] }], 'tool_calls');
         return sse(res, [{ content: 'Fresh render for today.' }]);
       }
-      return sse(res, [{ content: 'Farm is quiet today.' }]);
+      return sse(res, [{ content: 'Station is quiet today.' }]);
     });
   });
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, HOST, resolve); });
@@ -203,7 +203,7 @@ async function waitFor(pred, ms, label) {
     A.ok(photo.files[0].bytes.equals(SEEDED_PNG), 'the exact bytes of the workspace file');
     const words = telegram.calls.slice(mark).filter(c => c.method === 'sendMessage').map(c => String(c.fields.text || ''));
     A.ok(words.some(t => t.indexOf("Here is today's chart.") >= 0), 'the routine\'s words are delivered too');
-    A.ok(words.every(t => t.indexOf('ATTACH:') < 0), 'the ATTACH line is not shown to the Farmer');
+    A.ok(words.every(t => t.indexOf('ATTACH:') < 0), 'the ATTACH line is not shown to the Commander');
     const order = telegram.calls.slice(mark).map(c => c.method);
     A.ok(order.indexOf('sendMessage') >= 0 && order.indexOf('sendMessage') < order.indexOf('sendPhoto'), 'words first, then the file (a failed upload never costs the message)');
     const attachReq = model.requests.find(r => userOf(r).indexOf('ROUTINE_ATTACH') >= 0);
@@ -215,10 +215,10 @@ async function waitFor(pred, ms, label) {
     mark = telegram.calls.length;
     await runNow(missingJob);
     const missingMsg = await waitFor(() => telegram.calls.slice(mark).find(c => c.method === 'sendMessage' && String(c.fields.text || '').indexOf('Chart attached.') >= 0), 10000, 'the missing-chart message');
-    A.ok(String(missingMsg.fields.text).indexOf('ATTACH: charts/missing.png') >= 0, 'the line naming the file stays in the message, so the Farmer sees which file was meant');
+    A.ok(String(missingMsg.fields.text).indexOf('ATTACH: charts/missing.png') >= 0, 'the line naming the file stays in the message, so the Commander sees which file was meant');
     await sleep(500);
     A.ok(!telegram.calls.slice(mark).some(c => c.method === 'sendPhoto' || c.method === 'sendDocument'), 'nothing was uploaded for an unreadable path');
-    A.ok(!telegram.calls.slice(mark).some(c => /could not be attached|saved in the workspace/.test(String(c.fields.text || ''))), 'and the farm never claims a file it never saw is saved on it');
+    A.ok(!telegram.calls.slice(mark).some(c => /could not be attached|saved in the workspace/.test(String(c.fields.text || ''))), 'and the station never claims a file it never saw is saved on it');
 
     /* ---- 3b. a digest's uppercase field labels are its words, not files (review 2026-10-23) ---- */
     const labelsJob = await routine('Media monitor', 'ROUTINE_LABELS write the media digest');

@@ -30,7 +30,7 @@ const { COLS, ROWS, walkable, path } = geo;
 
 const cells = [];
 for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (walkable(x, y, null)) cells.push({ x, y });
-A.ok(cells.length > 100, 'fixture farm has a substantial walkable area');
+A.ok(cells.length > 100, 'fixture station has a substantial walkable area');
 
 /* deterministic pair sampling — the gate must not depend on Math.random */
 let seed = 12345;

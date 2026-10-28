@@ -237,7 +237,7 @@ function coreOver(tree, blessSink, links) {
     ok(r.ok === true, 'a folder reached through a symlinked ancestor still blesses');
     ok(blessed === path.resolve('/mnt/data/code/proj'), 'the RECORDED root is the canonical realpath, not the typed link path (got ' + blessed + ')');
     ok(r.root === path.resolve('/mnt/data/code/proj'), 'and the response reports that same canonical root, so the rail row and the guard agree');
-    ok(r.typedRoot === path.resolve('/home/me/code/proj'), 'the path the Farmer recognizes is still available for the notice');
+    ok(r.typedRoot === path.resolve('/home/me/code/proj'), 'the path the Commander recognizes is still available for the notice');
 
     // ...and the un-linked case is byte-identical to before
     let blessed2 = null;

@@ -35,7 +35,7 @@ async function journey() {
       const did = name => messages.slice(lastUser + 1).some(m => (m.tool_calls || []).some(t => t.function && t.function.name === name));
       if (auxiliary) delta.content = phase === 'reflect' ? 'FACT: ' + fact : 'NONE';
       else if (phase === 'stated' || phase === 'inverted') {
-        if ((body.tools || []).some(t => t.function && t.function.name === 'brief_proceed') && !did('brief_proceed')) tool('brief_proceed', { objective: 'Save the Farmer\'s indentation preference in durable memory' });
+        if ((body.tools || []).some(t => t.function && t.function.name === 'brief_proceed') && !did('brief_proceed')) tool('brief_proceed', { objective: 'Save the Commander\'s indentation preference in durable memory' });
         else if (!did('notebook_write')) tool('notebook_write', { title: 'Indentation', body: phase === 'inverted' ? 'User prefers tabs over spaces for indentation' : note, pinned: true });
         else delta.content = "I've saved your indentation preference.";
       } else delta.content = 'The request has been reviewed and handled. ' + 'The plan covers the deploy target and the rollout order. '.repeat(4);
@@ -74,7 +74,7 @@ async function journey() {
     assert.equal(a.end.payload.reason, 'done', JSON.stringify(a.events.slice(-4)));
     let recs = await records();
     assert.equal(recs.length, 1, JSON.stringify(recs));
-    assert.equal(recs[0].confirmation, 'user-stated', 'the note is recorded as the Farmer\'s own words');
+    assert.equal(recs[0].confirmation, 'user-stated', 'the note is recorded as the Commander\'s own words');
     assert.equal(recs[0].statedQuote, 'From now on, always use spaces instead of tabs for indentation', 'with the sentence that proves it');
     assert.equal(recs[0].scope, 'global', 'a standing instruction is not trapped in the chat it was said in');
     const ra = await receipts(a.runId);
@@ -84,7 +84,7 @@ async function journey() {
     phase = 'other'; const from = calls.length;
     const b = await run('Write a function that parses one CSV line.', 'chat-b', false);
     const fence = calls.slice(from).flatMap(c => c.messages).map(m => String(m.content)).find(s => s.includes('<recalled-memory>')) || '';
-    assert.ok(fence.includes('[note_1] [user-stated] Indentation — ' + note + ' (saved ' + today + ')'), 'another chat recalls it as the Farmer\'s words, dated: ' + fence.slice(0, 600));
+    assert.ok(fence.includes('[note_1] [user-stated] Indentation — ' + note + ' (saved ' + today + ')'), 'another chat recalls it as the Commander\'s words, dated: ' + fence.slice(0, 600));
     assert.ok(/newer one wins/.test(fence) && /latest message beats any memory/.test(fence), 'under the conflict rule');
     assert.deepEqual(await receipts(b.runId), [], 'a run that saved nothing has an empty receipt');
 
@@ -95,7 +95,7 @@ async function journey() {
     const inverse = (await json('GET', '/api/memory/records?agent=inverter')).body.records[0];
     assert.ok(inverse, 'the model wrote its synthetic reversed note');
     assert.ok(inverse.confirmation !== 'user-stated' && !inverse.statedQuote,
-      'reversed instruction is not the Farmer\'s own words: ' + JSON.stringify(inverse));
+      'reversed instruction is not the Commander\'s own words: ' + JSON.stringify(inverse));
     assert.equal(inverse.scope, 'stream', 'the host does not promote an inverted preference across chats');
     const saveResult = inverted.events.filter(e => e.name === 'agent.tool_result').map(e => JSON.stringify(e.payload)).join(' ');
     assert.ok(!/Recorded as the Commander.s own words/.test(saveResult), 'no false provenance receipt');

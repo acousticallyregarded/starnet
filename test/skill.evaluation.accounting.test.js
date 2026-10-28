@@ -173,7 +173,7 @@ async function main() {
     const two = evaluationLimits({ cases: 2, runCapUsd: 1 });
     assert.equal(two.runs, 4, 'every case runs once without and once with the proposal');
     assert.ok(two.wallClockMs >= 4 * 90000, 'four ~15 s x 6-call runs fit the clock (' + two.wallClockMs + ' ms)');
-    assert.equal(two.perRunUsd, 1, 'a run gets the Farmer\'s per-run cap');
+    assert.equal(two.perRunUsd, 1, 'a run gets the Commander\'s per-run cap');
     assert.equal(two.totalUsd, 4, 'the whole evaluation is bounded by runs x that cap');
     assert.equal(evaluationLimits({ cases: 12, runCapUsd: 1 }).wallClockMs, 20 * 60000, 'the clock never passes 20 minutes');
     assert.equal(evaluationLimits({ cases: 1 }).wallClockMs, 180000);
@@ -241,7 +241,7 @@ async function main() {
     if (unmetered) {
       assert.equal(thrown, null, 'an unmetered case settles instead of throwing');
       assert.equal(ledger.health().complete, true, 'no unsettled receipt from an unmetered evaluation');
-      assert.equal(strict.check('another-run', 'another-agent', 0), null, 'farm spend stays governable');
+      assert.equal(strict.check('another-run', 'another-agent', 0), null, 'station spend stays governable');
       assert.equal(accounting.canContinue(), true, 'later cases can still run');
     } else {
       assert.match(String(thrown && thrown.message), /incomplete/, 'metered unpriced spend still fails closed');

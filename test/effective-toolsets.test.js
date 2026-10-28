@@ -36,7 +36,7 @@ for (const p of [
 ]) A.ok(station.addProp(p).ok, 'explanation fixture prop fits');
 const leadFiles = Equipment.inspect(station,'lead','war_intelcab');
 const workerFiles = Equipment.inspect(station,'worker','war_intelcab');
-A.eq(leadFiles.count,1,'unassigned lead sees the cabinet across the farm');
+A.eq(leadFiles.count,1,'unassigned lead sees the cabinet across the station');
 A.eq(workerFiles.count,0,'remote bay does not grant cabinet from a different desk room');
 A.ok(workerFiles.placed.includes('dish'),'worker explanation uses its desk room despite remote bay');
 A.ok(!workerFiles.placed.includes('cabinet'),'no station-wide grant is invented for a room-bound worker');
@@ -63,10 +63,10 @@ A.eq(Equipment.access('cabinet',null).state,'unknown','failed read never implies
 A.eq(Equipment.access('connector',asView(leadFiles)).state,'service','connection state is not inferred from generic toolsets');
 const leadWeb = Equipment.inspect(station,'lead','comms_dish');
 A.eq(Equipment.access('dish',asView(leadWeb,{disabled:{comms:false}})).state,'available','optional outbound messaging does not mislabel core browser access');
-A.eq(JSON.stringify(WM.deserialize(station.serialize()).doc()),JSON.stringify(station.doc()),'reading explanations leaves saved farm unchanged');
+A.eq(JSON.stringify(WM.deserialize(station.serialize()).doc()),JSON.stringify(station.doc()),'reading explanations leaves saved station unchanged');
 const { savedPlacement } = require('../sidecar/capability/saved-placement.js');
 A.eq(savedPlacement({station:station.serialize()}, 'worker').map(o => o.objectType).sort(), workerFiles.placed.filter(t => t !== 'computer' && t !== 'connector').sort(), 'saved floor uses the same desk scope as equipment help');
-A.ok(savedPlacement({station:station.serialize()}, 'lead').some(o => o.objectType === 'cabinet'), 'unassigned primary uses saved farm gear');
+A.ok(savedPlacement({station:station.serialize()}, 'lead').some(o => o.objectType === 'cabinet'), 'unassigned primary uses saved station gear');
 const beforeSavedRead = JSON.stringify(station.serialize());
 savedPlacement({station:station.serialize()}, 'worker');
 A.eq(JSON.stringify(station.serialize()), beforeSavedRead, 'saved placement read is non-mutating');

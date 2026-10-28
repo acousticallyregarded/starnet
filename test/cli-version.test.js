@@ -39,7 +39,7 @@ try {
 
   const mac = path.join(root, 'StarNet.app', 'Contents');
   install(path.join(mac, 'Resources'));
-  fs.writeFileSync(path.join(mac, 'Info.plist'), '<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict>\n  <key>CFBundleName</key>\n  <string>Homestead</string>\n  <key>CFBundleShortVersionString</key>\n  <string>9.8.7</string>\n</dict></plist>\n');
+  fs.writeFileSync(path.join(mac, 'Info.plist'), '<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0"><dict>\n  <key>CFBundleName</key>\n  <string>StarNet</string>\n  <key>CFBundleShortVersionString</key>\n  <string>9.8.7</string>\n</dict></plist>\n');
   A.eq(version(path.join(mac, 'Resources')), 'starnet 9.8.7', 'the macOS app: the bundle\'s own Info.plist version');
 
   const win = path.join(root, 'StarNet');

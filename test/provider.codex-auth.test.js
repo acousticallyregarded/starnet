@@ -174,7 +174,7 @@ function jwt(claims) {
       env: { LOCALAPPDATA: localBase, APPDATA: roamingBase }
     });
     A.eq(files[0], pathMod.join(currentRoot, 'codex', 'tokens.json'), 'current workspace is checked first');
-    A.ok(files.indexOf(pathMod.join(legacyRoot, 'codex', 'tokens.json')) >= 0, 'legacy Homestead workspace token is a candidate');
+    A.ok(files.indexOf(pathMod.join(legacyRoot, 'codex', 'tokens.json')) >= 0, 'legacy StarNet workspace token is a candidate');
     A.ok(files.indexOf(pathMod.join(sidecarDir, 'workspaces', 'codex', 'tokens.json')) >= 0, 'old install-sidecar workspace token is a candidate');
 
     const currentFile = files[0];

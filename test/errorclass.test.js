@@ -164,7 +164,7 @@ const F = (err, status, opts) => friendlyError(err, status, opts);
 
   // network / transport loss -> retryable network. The KIND is unchanged by proof; only the COPY moves, because
   // the kind drives behavior (retry, no door) while the copy is the part that names a culprit.
-  v = F(new Error('cannot reach the HOMESTEAD sidecar — start it with `npm start`'));
+  v = F(new Error('cannot reach the STARNET sidecar — start it with `npm start`'));
   A.eq(v.kind, 'network', 'transport loss -> network');
   A.eq(v.retryable, true, 'network retryable');
   A.eq(F(new Error('Failed to fetch')).kind, 'network', 'browser "Failed to fetch" -> network');
@@ -313,7 +313,7 @@ const F = (err, status, opts) => friendlyError(err, status, opts);
 
   const B = (err, status) => friendlyErrorBrowser(err, status);
   A.eq(B(new Error('sidecar HTTP 500')).kind, 'server_error', 'browser: 5xx -> server_error');
-  A.eq(B(new Error('cannot reach the HOMESTEAD sidecar — start it')).kind, 'network', 'browser: unreachable -> network');
+  A.eq(B(new Error('cannot reach the STARNET sidecar — start it')).kind, 'network', 'browser: unreachable -> network');
   A.eq(B(new Error('Failed to fetch')).kind, 'network', 'browser: Failed to fetch -> network');
   A.eq(B(new Error('sidecar HTTP 429')).kind, 'rate_limit', 'browser: 429 -> rate_limit');
   A.eq(B(new Error('sidecar HTTP 401')).kind, 'auth', 'browser: 401 -> auth');

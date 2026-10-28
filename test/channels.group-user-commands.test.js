@@ -24,7 +24,7 @@ const { makeUserCommands, menuEntries, execRefusal } = require('../sidecar/userc
 const FILE = { commands: [
   { name: 'standup', type: 'alias', target: '/routine list' },
   { name: 'disk', type: 'exec', command: 'echo disk-ok' },
-  { name: 'disk-usage', type: 'alias', target: '/usage', desc: 'How much the farm spent' }
+  { name: 'disk-usage', type: 'alias', target: '/usage', desc: 'How much the station spent' }
 ] };
 const store = makeUserCommands({ fs: { existsSync: () => true, readFileSync: () => JSON.stringify(FILE) }, file: 'usercommands.json' });
 const userList = store.load();
@@ -97,7 +97,7 @@ const settle = () => new Promise(r => setTimeout(r, 10));
     A.eq(ctx && ctx.ownerTrusted, false, 'a group is never owner-trusted: shell commands stay refused there');
     A.eq(ctx && ctx.ownerDmExec, true, 'a hub that mints ownerTrusted has an owner DM where they run');
     A.ok(/never run in a group/.test(t.sends[0] || '') && /DM/.test(t.sends[0] || ''), 'the refusal says why, and to use the DM');
-    A.ok(!/only run in the Homestead desktop app, not over messaging/.test(t.sends[0] || ''), 'the false "desktop only" line is gone');
+    A.ok(!/only run in the StarNet desktop app, not over messaging/.test(t.sends[0] || ''), 'the false "desktop only" line is gone');
   }
   {
     const t = build();
@@ -147,7 +147,7 @@ const settle = () => new Promise(r => setTimeout(r, 10));
     A.eq(rows.map(r => r.command), ['standup', 'disk', 'disk_usage'], 'every command is listed, dashes as underscores');
     A.ok(rows.every(r => /^[a-z0-9_]{1,32}$/.test(r.command) && r.description.length >= 1 && r.description.length <= 256), 'every row fits Telegram\'s grammar');
     A.eq(rows[0].description, 'Runs /routine list', 'an alias without a description names its target');
-    A.eq(rows[2].description, 'How much the farm spent', 'the Farmer\'s own description wins');
+    A.eq(rows[2].description, 'How much the station spent', 'the Commander\'s own description wins');
     A.ok(!/echo/.test(rows[1].description), 'an exec row never publishes its shell snippet to the group');
     const clash = menuEntries([{ name: 'status', type: 'alias', target: '/usage' }, { name: 'copy', type: 'alias', target: '/usage' }], reserved);
     A.eq(clash, [], 'a name a built-in owns is never listed (the built-in would run)');
@@ -167,7 +167,7 @@ const settle = () => new Promise(r => setTimeout(r, 10));
     const surfaces = starts.map(i => idx.slice(i, idx.indexOf('\n  });', i))).filter(b => !/channel: '(sample|trigger)'/.test(b));
     A.ok(surfaces.length >= 5, 'found the Telegram, multi-bot, Discord, generic and dev hubs (' + surfaces.length + ')');
     A.ok(surfaces.every(b => /runSlash:/.test(b) && /userCommandNames:/.test(b)), 'every one is handed runSlash + userCommandNames');
-    A.ok(/function publishCommandMenu[\s\S]{0,700}channelMenuCommands\(\)/.test(idx), 'the published menu includes the Farmer\'s commands');
+    A.ok(/function publishCommandMenu[\s\S]{0,700}channelMenuCommands\(\)/.test(idx), 'the published menu includes the Commander\'s commands');
     A.ok(/userExecRefusal\(out\.directive\.name, \{ chatType: ctx\.chatType/.test(idx), 'runSlashForChannel words its refusal per chat');
   }
 

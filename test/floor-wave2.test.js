@@ -128,7 +128,7 @@ function clipRig(full) {
 {
   const world = read('frontend/app/world.js');
   A.ok(/ORPHAN_JUNCTION: 'NOT ON A BELT — BELT INTO IT'/.test(src) && /ORPHAN_JUNCTION: 'NOT ON A BELT — BELT INTO IT'/.test(world), 'ORPHAN_JUNCTION says BELT INTO IT on both surfaces (moving a junction onto a belt is refused: ANOTHER BELT RUNS HERE)');
-  A.ok(!/MOVE IT ONTO THE LINE|NOT ON A BELT — MOVE IT'/.test(src + world), '…and nothing still tells the Farmer to move it onto the line');
+  A.ok(!/MOVE IT ONTO THE LINE|NOT ON A BELT — MOVE IT'/.test(src + world), '…and nothing still tells the Commander to move it onto the line');
   const why = src.slice(src.indexOf('const VAL_WHY = {'), src.indexOf('const valWhy ='));
   A.ok(/ORPHAN_JUNCTION: '[^']*drag from the machine[^']*'/i.test(why), 'the hover card\'s long form says the whole fix');
   // the fix it names really works: a machine belted into a beltless junction clears the finding
@@ -590,7 +590,7 @@ function fedRig() {
   const lineKey = P.compileRoutingPlan(s.projectGeometry()).lineOfProp[I];
   const fedAll = { feedState: () => ({ known: true, fed: true }) };
   const facts = f => Object.assign({}, fedAll, { startFacts: () => f });
-  A.eq(finReal(s, I, { world: fedAll }), '② CHOOSE WHAT STARTS THIS LINE', 'a channel or routine SOMEWHERE on the farm is no start of this line (it said ✓ AUTOMATIC START CONFIGURED)');
+  A.eq(finReal(s, I, { world: fedAll }), '② CHOOSE WHAT STARTS THIS LINE', 'a channel or routine SOMEWHERE on the station is no start of this line (it said ✓ AUTOMATIC START CONFIGURED)');
   const job = (o2) => Object.assign({ id: 'j1', name: 'morning', agentId: 'ava', dockId: R.B1, runsLine: true, enabled: true, scheduleDisplay: 'daily 9:00' }, o2 || {});
   A.eq(finReal(s, I, { world: facts({ cron: { enabled: true, jobs: [job()] } }) }), '✓ AUTOMATIC START CONFIGURED', 'a routine that runs THIS line from its entry step: ✓ AUTOMATIC START CONFIGURED');
   A.eq(finReal(s, I, { world: facts({ cron: { enabled: true, jobs: [job({ agentId: 'zed', dockId: null })] } }) }), '② CHOOSE WHAT STARTS THIS LINE', 'a routine for an agent on no step of this line: still open');
@@ -599,7 +599,7 @@ function fedRig() {
   A.eq(finReal(s, I, { world: facts({ chans: { telegram: { configured: true, connected: true, agentName: 'Zed' } } }), agents: [{ id: 'ava', name: 'Ava' }, { id: 'zed', name: 'Zed' }] }), '② CHOOSE WHAT STARTS THIS LINE', 'a channel answering as someone else: still open');
   A.eq(finReal(s, I, { world: facts({ lt: { triggers: [{ id: 't1', lineId: lineKey, kind: 'webhook', enabled: true, blockedBy: null }] } }) }), '✓ AUTOMATIC START CONFIGURED', 'an armed webhook of this line: ✓');
   A.eq(finReal(s, I, { world: facts({ lt: { triggers: [{ id: 't1', lineId: lineKey, kind: 'webhook', enabled: true, blockedBy: 'E-STOP is on' }] } }) }), '② CHOOSE WHAT STARTS THIS LINE', 'a webhook the server holds back: still open');
-  A.eq(finReal(s, I, { world: Object.assign({ schedOffFor: () => true }, facts({ cron: { enabled: false, jobs: [job()] } })) }), '② SCHEDULING IS OFF — TURN IT ON', 'this line\'s routine saved while scheduling is off says so, whatever else feeds the farm (the farm flag hid it)');
+  A.eq(finReal(s, I, { world: Object.assign({ schedOffFor: () => true }, facts({ cron: { enabled: false, jobs: [job()] } })) }), '② SCHEDULING IS OFF — TURN IT ON', 'this line\'s routine saved while scheduling is off says so, whatever else feeds the station (the station flag hid it)');
 }
 
 /* ---------- build-13 a + b: which SEND TO arcs draw while one is being re-aimed ---------- */

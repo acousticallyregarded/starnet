@@ -112,7 +112,7 @@ function buildStub(dir) {
     // ---- op's environment: OP_* yes, station secrets no ----
     const names = fs.readFileSync(log, 'utf8').split(/\r?\n/).filter(Boolean);
     A.ok(names.indexOf('OP_ACCOUNT') >= 0 && names.indexOf('OP_STUB_LOG') >= 0, 'the user\'s OP_* vars reach op');
-    A.ok(!names.some(n => /^(HOMESTEAD|SKYNET)_/i.test(n)), 'no STARNET_/SKYNET_ variable reaches op — got ' + names.filter(n => /^(HOMESTEAD|SKYNET)_/i.test(n)).join(','));
+    A.ok(!names.some(n => /^(STARNET|SKYNET)_/i.test(n)), 'no STARNET_/SKYNET_ variable reaches op — got ' + names.filter(n => /^(STARNET|SKYNET)_/i.test(n)).join(','));
 
     // ---- a refused reference is saved, and says why it is not ready ----
     const lk = await j('POST', '/api/servicekeys', { name: 'Locked Thing', key: LOCKED });

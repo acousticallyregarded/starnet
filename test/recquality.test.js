@@ -104,7 +104,7 @@ A.eq(RQ.staleness(old, NOW, thinDim, 'goals').stale, true, 'old AND under-confir
 A.eq(RQ.staleness(recent, NOW, thinDim, 'goals').stale, false, 'a recent belief is never stale, however thin the dimension');
 A.eq(RQ.staleness(old, NOW, uRead, 'goals').stale, false, 'an OLD belief in a well-corroborated dimension is not stale — age alone is not doubt');
 A.eq(RQ.staleness({ id: 'p', text: 't', pinned: true, updatedAt: NOW - 900 * DAY }, NOW, thinDim, 'goals').stale, false,
-  'a PINNED belief is never stale — the farm does not second-guess what the Farmer pinned');
+  'a PINNED belief is never stale — the station does not second-guess what the Commander pinned');
 A.eq(RQ.staleness({ id: 'u', text: 't' }, NOW, thinDim, 'goals').stale, false, 'an undatable belief is never stale (unknown age is not evidence)');
 A.eq(RQ.staleness(old, null, thinDim, 'goals').stale, false, 'no clock → no staleness claim');
 A.eq(RQ.staleness(old, NOW, null, 'goals').stale, false, 'no understanding read → no staleness claim (fail-open to neutral)');

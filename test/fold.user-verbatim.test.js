@@ -153,7 +153,7 @@ function scripted(ctx, n, requests) {
     ]);
     A.eq(got.length, 2, 'the attachment text and the steering note are collected; the screenshot, hook and assistant are not');
     A.ok(got[0].text.indexOf('look at this') === 0 && got[0].text.indexOf('base64') < 0 && /1 image attached/.test(got[0].text), 'an attachment keeps its words, names its image, never its bytes');
-    A.eq(got[1], { kind: 'steer', text: 'use the staging db only', fullChars: 23 }, 'a steering note is carried as the Farmer wrote it');
+    A.eq(got[1], { kind: 'steer', text: 'use the staging db only', fullChars: 23 }, 'a steering note is carried as the Commander wrote it');
   }
 
   A.report('fold.user-verbatim.test');

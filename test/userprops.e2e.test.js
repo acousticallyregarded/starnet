@@ -140,7 +140,7 @@ test('player props: generate on credits, land locally, list + serve, survive res
     if (store) {
       const d = store.db.prepare("SELECT usd, meta FROM ledger WHERE kind='debit' AND account=?").all(account);
       assert.equal(d.length, 3, 'real cloud: size + draw + check each billed once');
-      assert.equal(Math.round(d.reduce((s, r) => s + r.usd, 0) * 1e6) / 1e6, job.costUsd, 'real cloud: the farm shows exactly what the ledger debited');
+      assert.equal(Math.round(d.reduce((s, r) => s + r.usd, 0) * 1e6) / 1e6, job.costUsd, 'real cloud: the station shows exactly what the ledger debited');
     }
   } finally {
     await fixture.dispose().catch(() => {});

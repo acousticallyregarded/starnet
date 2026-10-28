@@ -334,7 +334,7 @@ test('every overlay drawn equals trunk, under the budget and past it; past it th
   sameBlits(now, was, 'under the budget');
   assert.ok(now.blits.length >= 5 * 100, '(setup: ' + now.blits.length + ' blits, most props lit)');
   assert.ok(was.perFrame.slice(1).every(r => r.builds > 50), '(setup: past the old budget trunk rebuilds every frame)');
-  assert.equal(now.stats.evictions, 0, 'the farm sits under the 4x budget');
+  assert.equal(now.stats.evictions, 0, 'the station sits under the 4x budget');
   assert.ok(now.perFrame.slice(1).every(r => r.builds <= 24 && r.reads === 0), 'and only the flickering props build, with no readback');
   // Past the 4x budget: 40 overlays of 392 x 92 px in a cycle, 29 fit. Same plain LRU as trunk, so the same builds.
   const big = Array.from({ length: 40 }, (_, i) => [f({ w: 30, h: 3, id: 'big' + i, x: 1, y: 1 + i * 4 }), nth(i)]);

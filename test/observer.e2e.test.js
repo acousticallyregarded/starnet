@@ -119,7 +119,7 @@ async function until(fn, ms, label) {
 (async () => {
   const seenSystems = [];
   const mock = await startMockOpenRouter([
-    { when: 'say hello', text: 'Hello from the farm.' },
+    { when: 'say hello', text: 'Hello from the station.' },
     { when: 'write the notes file', tool: { name: 'fs.write', args: { path: 'observe-notes.md', content: 'approved from the terminal' } } }
   ], seenSystems);
   const providerEnv = {
@@ -222,7 +222,7 @@ async function until(fn, ms, label) {
       // no StarNet page connected: the roster takes it (a headless station is its own source of truth)
       const r1 = await fixture.json('POST', '/api/agent/model', { agentId: 'rook', model: 'test/other-model', provider: 'openrouter' });
       A.eq([r1.status, r1.body && r1.body.via], [200, 'roster'], 'headless: the roster takes the new model');
-      A.eq((await rosterOf('rook')).model, 'test/other-model', 'and the farm reads it back');
+      A.eq((await rosterOf('rook')).model, 'test/other-model', 'and the station reads it back');
       const r1e = await fixture.json('POST', '/api/agent/model', { agentId: 'rook', model: 'test/other-model', provider: 'openrouter', effort: 'high' });
       A.eq([r1e.status, r1e.body && r1e.body.via, (await rosterOf('rook')).reasoningEffort], [200, 'roster', 'high'], 'headless: an effort set with it lands on the roster, and the runtime roster says it (the terminal reads it there)');
       A.eq((await fixture.json('POST', '/api/agent/model', { agentId: 'ghost', model: 'm', provider: 'openrouter' })).status, 404, 'an unknown agent is refused');
@@ -253,7 +253,7 @@ async function until(fn, ms, label) {
     {
       const rosterOf = async id => ((await fixture.json('GET', '/api/runtime/agent')).body.agents || []).find(a => a.agentId === id) || {};
       const y1 = await fixture.json('POST', '/api/agent/approval', { agentId: 'rook', mode: 'full' });
-      A.eq([y1.status, y1.body && y1.body.via, (await rosterOf('rook')).approvalMode], [200, 'roster', 'full'], 'headless: /yolo sets that one agent\'s approval mode on the roster, and the farm reads it back');
+      A.eq([y1.status, y1.body && y1.body.via, (await rosterOf('rook')).approvalMode], [200, 'roster', 'full'], 'headless: /yolo sets that one agent\'s approval mode on the roster, and the station reads it back');
       A.eq((await fixture.json('POST', '/api/agent/approval', { agentId: 'rook', mode: 'maybe' })).status, 400, 'approval is ask or full, nothing else');
       A.eq((await fixture.json('POST', '/api/agent/approval', { agentId: 'ghost', mode: 'ask' })).status, 404, 'an unknown agent is refused');
       await fixture.json('POST', '/api/agent/approval', { agentId: 'rook', mode: 'ask' });

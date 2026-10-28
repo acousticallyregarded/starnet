@@ -36,7 +36,7 @@ const { starnetManual } = require('../sidecar/manual.js');
   A.ok(/COMMS/.test(m), 'names COMMS (where you task an agent)');
   A.ok(/SCHEDULES/.test(m), 'names SCHEDULES (built-in scheduled work, AUTOMATE)');
   // the 0.13 dock (sweep 2026-10-02): every menu path the agent tells the Commander exists — no 0.12.5 dock buttons
-  A.ok(!/⇄ ABILITIES|✉ CHANNELS|AUTOMATION \(dock|MCP CONNECTORS|Add a custom API key|BUILD FARM/.test(m), 'names no 0.12.5 dock button or removed tab');
+  A.ok(!/⇄ ABILITIES|✉ CHANNELS|AUTOMATION \(dock|MCP CONNECTORS|Add a custom API key|BUILD STATION/.test(m), 'names no 0.12.5 dock button or removed tab');
   A.ok(/CONNECT › ABILITIES/.test(m) && /CONNECT › CHANNELS/.test(m) && /MY WORK/.test(m) && /AUTOMATE/.test(m), 'names the 0.13 menus');
   A.ok(/Recruitment Bay/.test(m), 'names the Recruitment Bay (summon)');
   A.ok(/APPROVAL/.test(m), 'names APPROVAL/APPROVALS');

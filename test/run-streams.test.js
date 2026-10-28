@@ -73,7 +73,7 @@ const KEY = 'k1aaaaaaaaaa', KEY2 = 'k2bbbbbbbbbb';
   const { rs } = harness();
   const res = fakeRes();
   const id = rs.open(res);
-  A.eq(rs.attach('no-such-stream', KEY), null, 'a stream the farm does not hold refuses the run');
+  A.eq(rs.attach('no-such-stream', KEY), null, 'a stream the station does not hold refuses the run');
   A.eq(rs.attach(id, 'short'), null, 'a malformed key is refused');
   A.eq(rs.attach(id, 'bad key with spaces'), null, 'a key outside the charset is refused');
   A.ok(rs.attach(id, KEY), 'a good key joins');

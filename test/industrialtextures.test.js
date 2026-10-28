@@ -138,7 +138,7 @@ async function main() {
   equal(floorPaths.size,Surface.MATERIALS.length,'no floor selection silently shares a fallback image');
   equal(wallPaths.size,Surface.WALLS.length,'no wall selection silently shares a fallback image');
   const failure=load({fail:'/remaster/floors/hex.png'}); await failure.finish();
-  equal(failure.api.enabled(),false,'one failed asset prevents a mixed old/new farm');
+  equal(failure.api.enabled(),false,'one failed asset prevents a mixed old/new station');
   equal(failure.dataset.textureRevision,'native','failed pack reports native fallback');
   const noPaint=canvas(100,100), c=noPaint.getContext('2d');
   for(const [method,args] of [['floor',[0,0,12,0,0]],['wall',[0,0,12,39,0]],['shell',[12,12,0,0]],['shellPlate',[0,0,12,12]],['workstation',[0,0,36,12]],['chair',[0,0,12,12]],['furniture',['console-bank',0,0,36,12]]])
@@ -233,7 +233,7 @@ async function main() {
   const unlit=load({darkScreens:true}); await unlit.finish();
   equal(unlit.api.workstationEmitter(0,0,36,12),null,'noncyan and dark artwork invents no screen emitter');
   ok(neutralPaintResponds,'neutral paint changes the authored material luminance');
-  equal(api.crate(canvas().getContext('2d'),0,0,24,12),true,'normal farm uses the user-approved crate');
+  equal(api.crate(canvas().getContext('2d'),0,0,24,12),true,'normal station uses the user-approved crate');
   const review=load({review:true});
   equal(review.api.crate(canvas().getContext('2d'),0,0,24,12),false,'pending review art retains native fallback');
   await review.finish();

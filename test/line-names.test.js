@@ -146,7 +146,7 @@ function twoUnnamed() {
   // (merge with the release-review lane 10-12: the key resolves to its compiled record first — a retired key goes through its
   // prop's current line — and the record's key is what the one rule names)
   A.ok(/station\.lineName\((rec\.)?lineId\)/.test(lw) &&/'UNNAMED LINE'/.test(lw) && !/lineLetter\(lineId\)/.test(lw) && !/ip\.label/.test(lw), 'LINE WATCH / crate cards: lwLineName is station.lineName (never lineLetter of the key prop, never its label: M17 / M23)');
-  A.ok(/'SENDS TO ' \+ \(\(farm && station\.lineName \? station\.lineName\(st\.toLine\)/.test(world), 'the OUTBOX SENDS TO plate names its target by lineName');
+  A.ok(/'SENDS TO ' \+ \(\(station && station\.lineName \? station\.lineName\(st\.toLine\)/.test(world), 'the OUTBOX SENDS TO plate names its target by lineName');
   A.ok(/const incomingNames = incoming\.map\(s => \{ const st = H\.station\(\); return \(st && st\.lineName \? st\.lineName\(s\.fromLine\) : null\) \|\| 'another line'; \}\);/.test(panel) && !/'LINE ' \+ s\.fromLine/.test(panel), 'the INBOX FED text names the sending line by lineName, never "LINE p3"');
   A.ok(/function sendName\(intakeId\) \{\s*const ip = station\.propById\(intakeId\);\s*return ip \? lineWordOf\(ip\) : 'A REMOVED LINE';/.test(build) && /station\.lineName\(id\)/.test(fn(build, '  function lineWordOf(ip) {')), 'Build: the SEND TO name and an INBOX\'s machine name read lineName');
   // (repair: lineWordOf takes the prop, its id or a preview entry's propId — `id` — so the lock reads lineName(id))

@@ -9,14 +9,14 @@ const { makeSaveStore } = require('../sidecar/savestore.js');
 const turn = (role, content) => ({ role, content });
 const ws = (id, history, extra) => Object.assign({ id, title: 'S ' + id, agentId: 'agent', lane: 'active', kind: 'chat', history, runIds: [] }, extra || {});
 const station = {
-  schema: 'starnet.save', version: 6, agent: { id: 'agent', name: 'NOVA' }, station: { floor: 'farm floor' }, generalId: 'g-station',
+  schema: 'starnet.save', version: 6, agent: { id: 'agent', name: 'NOVA' }, station: { floor: 'station floor' }, generalId: 'g-station',
   deletedIds: ['gone'], _saveRevision: 46,
   workstreams: [
     ws('g-station', [turn('user', 'hi')], { title: null }),
     ws('same', [turn('user', 'a'), turn('assistant', 'b')]),
     ws('grown', [turn('user', 'q')]),
     ws('ahead', [turn('user', 'x'), turn('assistant', 'y')]),
-    ws('split', [turn('user', 'one'), turn('assistant', 'farm answer')]),
+    ws('split', [turn('user', 'one'), turn('assistant', 'station answer')]),
     ws('station-only', [turn('user', 'kept')])
   ]
 };
@@ -26,36 +26,36 @@ const windowSave = {
   workstreams: [
     ws('g-window', [turn('user', 'hi'), turn('assistant', 'more general')], { title: null }),
     ws('same', [turn('user', 'a'), turn('assistant', 'b')]),
-    ws('grown', [turn('user', 'q'), turn('assistant', 'answer the farm never saved')]),
+    ws('grown', [turn('user', 'q'), turn('assistant', 'answer the station never saved')]),
     ws('ahead', [turn('user', 'x')]),
     ws('split', [turn('user', 'one'), turn('assistant', 'window answer')]),
     ws('new-1', [turn('user', 'routine run while away')]),
     ws('worker', [turn('user', 'sub')], { parentStreamId: 'g-window', worker: true }),
-    ws('gone', [turn('user', 'deleted on purpose on the farm')])
+    ws('gone', [turn('user', 'deleted on purpose in the station')])
   ]
 };
 const before = JSON.stringify(station), beforeWindow = JSON.stringify(windowSave);
 const r = plan(station, windowSave);
-assert.equal(JSON.stringify(station), before, 'the farm object is not modified');
+assert.equal(JSON.stringify(station), before, 'the station object is not modified');
 assert.equal(JSON.stringify(windowSave), beforeWindow, 'the preserved save is not modified');
 const by = id => r.doc.workstreams.find(w => w.id === id);
 
-assert.deepEqual(r.added, ['new-1', 'worker'], 'sessions the farm lacks are added');
-assert.equal(by('worker').parentStreamId, 'g-station', 'a worker under the window\'s General files under the farm\'s');
+assert.deepEqual(r.added, ['new-1', 'worker'], 'sessions the station lacks are added');
+assert.equal(by('worker').parentStreamId, 'g-station', 'a worker under the window\'s General files under the station\'s');
 assert.deepEqual(r.extended.sort(), ['g-station', 'grown'], 'a continued conversation is taken whole');
 assert.equal(by('grown').history.length, 2);
-assert.equal(by('g-station').history.length, 2, 'the window\'s General is the farm\'s General');
+assert.equal(by('g-station').history.length, 2, 'the window\'s General is the station\'s General');
 assert.equal(r.doc.workstreams.filter(w => w.title == null).length, 1, 'never a second General');
-assert.equal(by('ahead').history.length, 2, 'the farm\'s longer copy stays');
+assert.equal(by('ahead').history.length, 2, 'the station\'s longer copy stays');
 assert.deepEqual(r.copied, ['split~restored'], 'a session both sides changed keeps both');
-assert.equal(by('split').history[1].content, 'farm answer');
+assert.equal(by('split').history[1].content, 'station answer');
 assert.equal(by('split~restored').history[1].content, 'window answer');
 assert.equal(by('split~restored').title, 'S split (restored copy)');
-assert.equal(by('gone'), undefined, 'a session the farm deleted stays deleted');
-assert.ok(by('station-only'), 'the window\'s delete never removes a farm session');
-for (const w of station.workstreams) assert.ok(by(w.id), 'nothing the farm holds is lost: ' + w.id);
-assert.equal(r.doc.agent.name, 'NOVA', 'the roster stays the farm\'s');
-assert.deepEqual(r.doc.station, station.station, 'the floor stays the farm\'s');
+assert.equal(by('gone'), undefined, 'a session the station deleted stays deleted');
+assert.ok(by('station-only'), 'the window\'s delete never removes a station session');
+for (const w of station.workstreams) assert.ok(by(w.id), 'nothing the station holds is lost: ' + w.id);
+assert.equal(r.doc.agent.name, 'NOVA', 'the roster stays the station\'s');
+assert.deepEqual(r.doc.station, station.station, 'the floor stays the station\'s');
 assert.deepEqual(r.doc.deletedIds, ['gone']);
 assert.equal(restorable(station, windowSave), 5);
 
@@ -88,15 +88,15 @@ assert.equal(restorable(station, { workstreams: 'not a list' }), 0);
   const stBefore = JSON.stringify(st);
   const p = plan(st, kept);
   const at = id => p.doc.workstreams.find(w => w.id === id);
-  assert.equal(JSON.stringify(st), stBefore, '3b: the farm object is not modified');
+  assert.equal(JSON.stringify(st), stBefore, '3b: the station object is not modified');
   assert.equal(at('cleared').history.length, 0, '3b: a session cleared after the window last used it stays cleared');
   const ren = at('renamed');
   assert.deepEqual(ren.history.map(t => t.content), ['plan q4', 'draft'], '3b: the missing turn is appended');
   assert.deepEqual({ title: ren.title, archived: ren.archived, pinned: ren.pinned, lane: ren.lane, runIds: ren.runIds, deliverables: ren.deliverables },
-    { title: 'Q4 plan (final)', archived: true, pinned: false, lane: 'shipped', runIds: ['run-s'], deliverables: ['d.md'] }, '3b: every station-side field stays the farm\'s');
-  assert.deepEqual(at('new-empty').history.map(t => t.content), ['typed in the other window'], '3b: an empty session the window worked in AFTER the farm last did gets its turns');
-  assert.equal(at('checkpointed').history.length, 0, '3b: a session the farm\'s clear checkpoint names is never refilled');
-  assert.equal(at('cleared-then-used~restored'), undefined, '3b: nor copied back beside the farm\'s new turns');
+    { title: 'Q4 plan (final)', archived: true, pinned: false, lane: 'shipped', runIds: ['run-s'], deliverables: ['d.md'] }, '3b: every station-side field stays the station\'s');
+  assert.deepEqual(at('new-empty').history.map(t => t.content), ['typed in the other window'], '3b: an empty session the window worked in AFTER the station last did gets its turns');
+  assert.equal(at('checkpointed').history.length, 0, '3b: a session the station\'s clear checkpoint names is never refilled');
+  assert.equal(at('cleared-then-used~restored'), undefined, '3b: nor copied back beside the station\'s new turns');
   assert.equal(at('born-empty').history.length, 1, '3b: an empty session never active since it was created (so never cleared) gets the turns');
   assert.deepEqual([p.added, p.extended.sort(), p.copied], [[], ['born-empty', 'new-empty', 'renamed'], []]);
   assert.equal(restorable(st, kept), 3, '3b: the offer counts exactly what a restore brings back');
@@ -121,7 +121,7 @@ assert.equal(restorable(station, { workstreams: 'not a list' }), 0);
     { id: 'gone', title: 'Deleted', createdAt: 1000, lastActiveAt: 2500, history: [turn('user', 'said before the delete')] },
     { id: 'back-later', title: 'Reopened there', createdAt: 1000, lastActiveAt: 3500, history: [turn('user', 'said after the delete')] }] };
   const p = plan(st, kept, { forgotten });
-  assert.deepEqual(p.extended, ['R'], 'r2 #3: a revived session the farm holds live is extended (never "deleted")');
+  assert.deepEqual(p.extended, ['R'], 'r2 #3: a revived session the station holds live is extended (never "deleted")');
   assert.deepEqual(p.doc.workstreams.find(w => w.id === 'R').history.map(t => t.content), ['r1', 'r2 typed in the stale window']);
   assert.deepEqual(p.added, ['back-later'], 'r2 #3: a session worked in after its delete comes back; one last used before it stays deleted');
   assert.equal(restorable(st, kept, { forgotten }), 2, 'r2 #3: the offer counts exactly those');
@@ -135,7 +135,7 @@ assert.equal(restorable(station, { workstreams: 'not a list' }), 0);
   const cleared = [turn('user', 'o1 (cleared)'), turn('assistant', 'o2 (cleared)')];
   const st = { generalId: 'g', deletedIds: [], workstreams: [{ id: 'g', title: null, history: [turn('user', 'hi')] },
     { id: 'X', title: 'Payroll', createdAt: 1000, lastActiveAt: 2000, history: [] },
-    { id: 'Y', title: 'Continued', createdAt: 1000, lastActiveAt: 2600, history: [turn('user', 'farm after the clear')] }],
+    { id: 'Y', title: 'Continued', createdAt: 1000, lastActiveAt: 2600, history: [turn('user', 'station after the clear')] }],
     sessionUndo: { kind: 'clear', at: 2000, activeId: 'X', rows: [{ id: 'X', history: cleared }, { id: 'Y', history: cleared }] } };
   const behind = { generalId: 'g', workstreams: [{ id: 'g', title: null, history: [turn('user', 'hi')] },
     { id: 'X', title: 'Payroll', createdAt: 1000, lastActiveAt: 3000, history: cleared.concat([turn('user', 'b1 typed AFTER the clear')]) },
@@ -144,7 +144,7 @@ assert.equal(restorable(station, { workstreams: 'not a list' }), 0);
   const at = id => p.doc.workstreams.find(w => w.id === id);
   assert.deepEqual(at('X').history.map(t => t.content), ['b1 typed AFTER the clear'], 'r2 #2: the post-clear turn comes back; the cleared ones do not');
   assert.deepEqual(at('Y~restored').history.map(t => t.content), ['y1 typed AFTER the clear'], 'r2 #2: beside a continued session, the copy holds only post-clear turns');
-  assert.equal(at('Y').history.length, 1, 'r2 #2: the farm\'s continued session is untouched');
+  assert.equal(at('Y').history.length, 1, 'r2 #2: the station\'s continued session is untouched');
   assert.ok(!JSON.stringify(p.doc.workstreams).includes('(cleared)'), 'r2 #2: no cleared turn is in any restored session');
   assert.equal(restorable(st, behind), 2);
   // a copy last active at or before the clear brings nothing back for that session
@@ -157,7 +157,7 @@ const root = fs.mkdtempSync(path.join(os.tmpdir(), 'save-restore-'));
 try {
   const store = makeSaveStore({ fs, pathMod: path, root, clock: { now: () => 1000 } });
   assert.deepEqual(store.conflicts('agent'), []);
-  assert.equal(store.backup('agent', 'restore-1'), null, 'no farm file, nothing to copy');
+  assert.equal(store.backup('agent', 'restore-1'), null, 'no station file, nothing to copy');
   assert.equal(store.save('agent', { ...station, _saveRevision: 0 }, { compareRevision: true }).revision, 1000, 'a first save on an empty file takes the clock revision (review 10-23 #2)');
   const refused = store.save('agent', { ...windowSave, _saveRevision: 0, _saveClient: 'window-a' }, { compareRevision: true });
   assert.equal(refused.recovery, 'agent.save-conflict-window-a.json');

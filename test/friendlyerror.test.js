@@ -30,7 +30,7 @@ for (const raw of [
   A.ok(/running fine/i.test(v.userMessage), raw + ' reassures the user their install is healthy');
 }
 // …and the browser-side wordings must NOT be captured by the upstream bucket (they really are local transport).
-for (const raw of ['Failed to fetch', 'cannot reach the HOMESTEAD sidecar', 'terminated', 'Load failed']) {
+for (const raw of ['Failed to fetch', 'cannot reach the STARNET sidecar', 'terminated', 'Load failed']) {
   A.eq(friendlyError(new Error(raw)).kind, 'network', raw + ' stays a LOCAL transport verdict');
 }
 
@@ -416,7 +416,7 @@ for (const raw of [
     'BROWSER: a bare sidecar 500 keeps the local-service copy');
   A.eq(friendlyError(Object.assign(new Error('sidecar HTTP 500 — internal error'), { status: 500 })).kind,
     'server_error', 'DELEGATE: a bare sidecar 500 keeps the local-service copy');
-  A.ok(/local starnet service/i.test(KINDS.server_error.msg), 'the local copy still exists for the proven-local case');
+  A.ok(/local homestead service/i.test(KINDS.server_error.msg), 'the local copy still exists for the proven-local case');
   // the two ladders must agree on the flagship shape, or the halves drift again
   A.eq(kindFromRaw('anthropic http 529 - overloaded', null),
     friendlyError(new Error('Anthropic http 529 - Overloaded')).kind,
@@ -564,7 +564,7 @@ const wrongServerCase = (async () => {
   const remoteRaw = 'The model server at ollama.lan ran out of memory. Free memory on that machine, or choose a smaller model from the model picker in COMMS before trying again. [http 500 - failed to allocate CUDA0 buffer]';
   const remote = friendlyError(Object.assign(new Error(remoteRaw), { status: 500, localModelMemory: true }));
   A.eq(remote.kind, 'local_model_memory', 'a remote allocation failure has the memory kind');
-  A.ok(/^The model server at ollama\.lan ran out of memory\./.test(remote.userMessage) && !/Close other local models|restart Homestead/.test(remote.userMessage), 'and says which machine, never local advice: ' + remote.userMessage);
+  A.ok(/^The model server at ollama\.lan ran out of memory\./.test(remote.userMessage) && !/Close other local models|restart StarNet/.test(remote.userMessage), 'and says which machine, never local advice: ' + remote.userMessage);
   A.eq(require('../frontend/app/friendlyerror.js')._internals.kindFromRaw(remoteRaw, 500), 'local_model_memory', 'the browser fallback reads the remote prefix too');
   A.eq(require('../frontend/app/friendlyerror.js')._internals.kindFromRaw(raw, 500), 'local_model_memory',
     'browser fallback does not mistake the runtime termination for a network loss or generic 500');

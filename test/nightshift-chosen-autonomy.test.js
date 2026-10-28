@@ -180,7 +180,7 @@ for (const [label, weight] of [['confirmed synthesis', 'synth'], ['own words', '
   // one real run is its own grounding (the activity path), seeds or not
   const ran = makeHost(1);
   ran.commanderPosture.set(Autonomy.applyPreset(Autonomy.fresh(), 'build'), snap);
-  A.eq(ran.nightshiftPrecheck(), { ok: true }, 'the same seeded farm with one recent user run clears the gate (the run is the grounding)');
+  A.eq(ran.nightshiftPrecheck(), { ok: true }, 'the same seeded station with one recent user run clears the gate (the run is the grounding)');
 }
 
 /* ===== 3. the floor stays honest: nothing of the Commander's to cite → stand down pre-spend, name the one thing needed ===== */
@@ -312,7 +312,7 @@ function gateFor(snap, preset) {
     const r = await awakeningRun({ help: true, label: 'Help me figure that out' }, null, helpBrain);
     A.ok(r.directives.some(d => /THE TUESDAY/.test(d) && /helpRequested/.test(d)), 'help only: the dig reply ran on the help request');
     A.ok(goalsWeights(r.snap).length >= 2, 'help only: the dig and the read wrote goals beliefs (' + goalsWeights(r.snap).length + ')');
-    A.eq(goalsWeights(r.snap).filter(w => w !== 'seed'), [], 'help only: every goals belief is a SEED (no words of the Farmer’s yet)');
+    A.eq(goalsWeights(r.snap).filter(w => w !== 'seed'), [], 'help only: every goals belief is a SEED (no words of the Commander’s yet)');
     const g = gateFor(r.snap, 'build');
     A.eq([g.pre, g.tick.fired, g.beats], [{ ok: false, reason: 'readiness' }, false, 0], 'help only: the chosen posture holds, nothing spent');
   }

@@ -68,7 +68,7 @@ function desktopBrowser(seam, lease, prompts) {
   A.eq(seam.launches.length, 1, 'ordinary desktop browsing launches once');
   A.eq(seam.launches[0].options.headed, false, 'ordinary desktop browsing remains headless');
   A.eq(seam.launches[0].options.syntheticInputOnly, true, 'ordinary browsing retains synthetic-input isolation');
-  A.eq(seam.launches[0].options.profileDir, stationProfile, 'ordinary browsing uses the persistent farm profile');
+  A.eq(seam.launches[0].options.profileDir, stationProfile, 'ordinary browsing uses the persistent station profile');
 
   const login = firstRun.tools.find(tool => tool.name === 'browser.login');
   const result = await login.run({ url: 'https://www.linkedin.com/login' }, {});
@@ -79,7 +79,7 @@ function desktopBrowser(seam, lease, prompts) {
   A.eq(seam.launches[1].options.headed, true, 'LinkedIn login opens a real visible browser');
   A.eq(seam.launches[1].options.syntheticInputOnly, false, 'human login does not inherit synthetic-input restrictions');
   A.eq(seam.launches[1].options.forceHeadless, false, 'the attended login explicitly overrides ordinary headless policy');
-  A.eq(seam.launches[1].options.profileDir, stationProfile, 'the visible browser uses the farm profile');
+  A.eq(seam.launches[1].options.profileDir, stationProfile, 'the visible browser uses the station profile');
   A.eq(seam.launches[1].navigated, ['https://www.linkedin.com/login'], 'the visible browser opens the requested LinkedIn login page');
   A.eq(seam.launches[2].options.headed, false, 'Done returns control to a headless browser');
   A.eq(seam.launches[2].options.syntheticInputOnly, true, 'Done restores ordinary input isolation');
@@ -94,7 +94,7 @@ function desktopBrowser(seam, lease, prompts) {
   await secondRun.session.navigate('https://www.linkedin.com/feed/');
   A.eq(seam.launches.length, 4, 'a restarted sidecar launches a fresh browser process');
   A.eq(seam.launches[3].options.headed, false, 'the restarted sidecar resumes ordinary headless browsing');
-  A.eq(seam.launches[3].options.profileDir, stationProfile, 'the restarted sidecar reuses the authenticated farm profile');
+  A.eq(seam.launches[3].options.profileDir, stationProfile, 'the restarted sidecar reuses the authenticated station profile');
   A.ok(lease.state.released >= 1 && lease.state.acquired >= 2, 'the persistent profile lease survives clean run handoff');
   await secondRun.session.close();
 

@@ -114,7 +114,7 @@ async function startSseCollector(url) {
   const ac = new AbortController();
   const events = [];
   const res = await fetch(url, { signal: ac.signal });
-  A.eq(res.status, 200, 'the farm SSE feed opens');
+  A.eq(res.status, 200, 'the station SSE feed opens');
   const reader = res.body.getReader();
   (async () => {
     const dec = new TextDecoder();
@@ -225,7 +225,7 @@ function twoStagePlan() {
     const prior = ((await (await fetch(B + '/api/save?agent=agent', { headers })).json()) || {}).save;
     const sv = await fetch(B + '/api/save', { method: 'POST', headers,
       body: JSON.stringify({ schema: 'starnet.save', version: 5, _saveRevision: (prior && prior._saveRevision) || 0, updatedAt: Date.now(), agent: { id: 'agent' }, station: stDoc }) });
-    A.ok(sv.status === 200 && ((await sv.json()) || {}).ok === true, 'the farm the line runs on (two bays, a workstation each, a workbench) is saved');
+    A.ok(sv.status === 200 && ((await sv.json()) || {}).ok === true, 'the station the line runs on (two bays, a workstation each, a workbench) is saved');
     const posted = await fetch(B + '/api/routing', { method: 'POST', headers, body: JSON.stringify(twoStagePlan()) });
     A.eq(posted.status, 200, 'the two-stage floor deploys');
     sse = await startSseCollector(B + '/api/channels/events?' + require('./_httpToken.js').sseQuery(token));
@@ -250,7 +250,7 @@ function twoStagePlan() {
        The mock provider recorded every request body; the ENTRY dock's brief must ride its run's SYSTEM
        context, and the RECEIVING dock's brief must ride the handoff turn's USER text (the shared
        Pipeline.handoffPrompt 5th param via the chain runner's stageBrief seam). ---- */
-    const BRIEF_HDR = 'YOUR STANDING BRIEF FOR THIS FARM:';
+    const BRIEF_HDR = 'YOUR STANDING BRIEF FOR THIS STATION:';
     const lastUserOf = rq => { const m = [...((rq && rq.messages) || [])].reverse().find(x => x && x.role === 'user'); return String((m && m.content) || ''); };
     const sysOf = rq => ((rq && rq.messages) || []).filter(x => x && x.role === 'system').map(x => String(x.content || '')).join('\n');
     // the station's own background jobs (the quest master reads recent activity, which can quote the sample) are not the
@@ -276,7 +276,7 @@ function twoStagePlan() {
     const placed = sse.events.filter(e => e.name === 'workitem.placed').map(e => e.payload || {});
     const deliveredEv = sse.events.filter(e => e.name === 'workitem.delivered').map(e => e.payload || {});
     const entry = placed.find(p => p.kind === 'sample');
-    A.ok(entry, 'the entry crate (kind:sample) rode the farm bus');
+    A.ok(entry, 'the entry crate (kind:sample) rode the station bus');
     A.eq(entry.queueId, 'research-agent', 'the entry crate queues at the routed dock');
     A.eq(entry.sample, true, 'the entry crate carries the additive sample:true marker');
     A.ok(placed.some(p => p.kind === 'chain' && p.agentId === 'writer-agent'), 'the chain hop placed its own crate at the downstream dock');
@@ -460,7 +460,7 @@ function twoStagePlan() {
     await sse.settle(800);
     const scopedCrate = sse.events.filter(e => e.name === 'workitem.placed').map(e => e.payload || {})
       .find(p => p.workitemId === scoped.j.workitemId);
-    A.ok(scopedCrate, 'the scoped sample\'s entry crate rode the farm bus');
+    A.ok(scopedCrate, 'the scoped sample\'s entry crate rode the station bus');
     A.eq(scopedCrate.queueId, 'beta-agent', 'the crate queues at line B\'s dock');
     A.eq(scopedCrate.lineId, lineB, 'the crate carries line B — the chain seed scopes the whole ride to the named line');
 

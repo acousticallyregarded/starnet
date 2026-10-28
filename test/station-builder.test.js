@@ -814,7 +814,7 @@ for (const c of T.catalog) {
   // every side, a hallway or open plan, and a named size
   for (const side of ['north', 'south', 'east', 'west']) for (const hallway of [true, false, 5]) {
     const st = fresh(), before = snap(st), home = room(st, 'HOME'), n0 = st.rooms().length;
-    const r = SB.planBuild(st.serialize(), { rooms: [{ name: 'Wing', size: 'large', beside: 'HOME', side, hallway }] }, E), what = side + (hallway === false ? ' open' : ' path ' + hallway);
+    const r = SB.planBuild(st.serialize(), { rooms: [{ name: 'Wing', size: 'large', beside: 'HOME', side, hallway }] }, E), what = side + (hallway === false ? ' open' : ' hallway ' + hallway);
     A.ok(r.ok && r.plan.summary === 'WING, a new 24 × 14 room ' + side + ' of HOME, ' + (hallway === false ? 'open to it' : 'through a path') + ': empty floor, ready for lines and furniture.', what + ': plans (' + (r.error || r.plan.summary) + ')');
     if (!r.ok) continue;
     A.ok(SB.apply(st, r.plan, E).ok, what + ': builds');
@@ -2059,7 +2059,7 @@ for (const c of T.catalog) {
     return { ok: false, error: 'unknown verb' }; } };
   const memo = new Map(), RSm = require('../frontend/app/roomstyles.js');
   const tools = makeStationTools({ station: bridge, now: () => 1000, planMemo: memo, lineMenu: () => SB.catalog(M), styleMenu: () => RSm.menu(), roomMenu: () => RSm.roomMenu(),
-    kitMenu: () => T.kits().map(k => ({ name: k.name, about: k.about })), presetMenu: () => ['RESEARCH FARM'] });
+    kitMenu: () => T.kits().map(k => ({ name: k.name, about: k.about })), presetMenu: () => ['RESEARCH STATION'] });
   const mapT = tools.mapTool, planT = tools.planTool, buildT = tools.buildTool;
   A.eq([mapT.scope, mapT.requiresConsent, planT.scope, planT.requiresConsent, buildT.scope, buildT.requiresConsent, buildT.taintLocked], ['read', false, 'read', false, 'write', true, true], 'the map and plan change nothing; build needs approval and is taint-locked (briefs persist into later runs)');
   A.ok([mapT, planT, buildT].every(t => /^FARM BUILDER, step [123]: /.test(t.description)), 'all three say FARM BUILDER, so one tool_search finds them together');
@@ -2069,7 +2069,7 @@ for (const c of T.catalog) {
   A.ok(/1 LAYOUT, the way to a beautiful farm: \{ "layout": \{ "pattern": "diamond" \| "concourse"/.test(d) && /diamond \(the usual one\) = every room on an even grid all round the main room/.test(d) && /To ADD rooms later, send a layout again with only the new rooms: they take the next free places of the same diamond, or go down the same concourse/.test(d) && /concourse = a wide path from one side of the main room/.test(d), 'the planner leads with the diamond, says how to grow it, and offers the concourse');
   A.ok(/Room styles: lounge \(a lounge: a TV, a couch on a big rug/.test(d) && /cozy \(a cozy den: a TV, bookshelves/.test(d) && /works \(a conveyor hall: its floor kept for workflow lines/.test(d), 'it lists every whole-room style');
   A.ok(/replace: true lays the whole farm out again around the main room/.test(d) && /backed up for RESTORE PREVIOUS/.test(d), 'it says what replace does and that the old layout is backed up');
-  A.ok(/size: small 12×8, medium 18×11, large 24×14, giant 36×20/.test(d) && /LINES: .*build_test \(ENGINEER → TESTER\)/.test(d) && /KITS WORKROOM/.test(d) && /PRESETS RESEARCH FARM/.test(d) && /zone styles cozy, lounge/.test(d), 'sizes, lines, kits, presets and zone styles are all on the menu');
+  A.ok(/size: small 12×8, medium 18×11, large 24×14, giant 36×20/.test(d) && /LINES: .*build_test \(ENGINEER → TESTER\)/.test(d) && /KITS WORKROOM/.test(d) && /PRESETS RESEARCH (?:STATION|FARM)/.test(d) && /zone styles cozy, lounge/.test(d), 'sizes, lines, kits, presets and zone styles are all on the menu');
   A.ok(/Never give up after one refusal, and never say something was built that station\.build did not report\./.test(d), 'and how to treat a refusal');
   A.ok(planT.schema.properties.layout.type === 'object' && planT.schema.properties.rooms.type === 'array' && planT.schema.properties.restyle.type === 'object' && !planT.schema.properties.x, 'its schema takes every form and no position');
   // each form rides to the page's own planner for it, untouched
@@ -2081,7 +2081,7 @@ for (const c of T.catalog) {
     [{ shape: ['WRITER', { review: true }] }, 'station.plan_line'],
     [{ purpose: 'fix bugs and test them' }, 'station.plan_line'],
     [{ kit: 'LIBRARY' }, 'station.plan_room'],
-    [{ preset: 'RESEARCH FARM', replace: true }, 'station.plan_room'],
+    [{ preset: 'RESEARCH STATION', replace: true }, 'station.plan_room'],
     [{ zones: [{ area: 'left', style: 'cozy' }] }, 'station.plan_room']];
   for (const [req, verb] of forms) { await planT.run(req, {}); A.eq(calls[calls.length - 1], [verb, { request: req }], JSON.stringify(req).slice(0, 60) + ' goes to ' + verb); }
   await planT.run({ restyle: { room: 'HOME', floorStyle: 'teal' } }, {});
@@ -2243,7 +2243,7 @@ for (const c of T.catalog) {
   A.ok(/^A picture of DEN as it renders now \(640 x 420 px; it shows tiles x 23-54, y -1-22 with the wall faces above, about 20 px a tile\)\. Judge it as a designer/.test(lk.content) && /station\.map \{ room \}/.test(lk.content) && lk.summary === 'looked at DEN' && !/UklGRg/.test(lk.content), 'with a note that says what it shows, and never the bytes as text');
   A.eq(calls[calls.length - 1], ['station.map', { look: 'Den' }], 'the page is asked for that room');
   A.ok(/ Issues Homestead sees in this room \(fix every one\): the chair at \(30, 4\) faces west, away from the long table beside it/.test(lk.content), 'a room look carries the issues Homestead sees beside the picture');
-  const lkAll = await mapT.run({ look: 'the whole farm' }, {});
+  const lkAll = await mapT.run({ look: 'the whole station' }, {});
   A.eq(calls[calls.length - 1], ['station.map', { look: true }], 'look: "the whole farm" asks for all of it');
   A.ok(/^REFUSED: The page sent no picture/.test(lkAll.content), 'a reply with no picture is refused, never passed off as one');
   const lkBad = await mapT.run({ look: 'Void' }, {});

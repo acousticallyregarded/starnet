@@ -152,7 +152,7 @@ function seed(ws) {
 
     // ---- 3. after the Commander approves it, the same skill is delivered ----
     const allow = await fetch(B + '/api/agent-skills/allow', { method: 'POST', headers: hdr, body: JSON.stringify({ agentId: 'gate', id: risky.id }) });
-    A.eq(allow.status, 200, 'the Farmer approves the withheld skill');
+    A.eq(allow.status, 200, 'the Commander approves the withheld skill');
     r = await run('/skill Risky Deploy');
     A.ok(r.system.indexOf('WITHHELD SKILLS') < 0, 'it is no longer withheld');
     A.ok(r.all.indexOf(RISKY_NEEDLE) >= 0, 'and its body IS delivered now that the human blessed it');

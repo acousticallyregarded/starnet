@@ -88,7 +88,7 @@ A.ok(/name: 'team\.summon'[^\n]*\n\s*briefExempt: true/.test(require('fs').readF
   const ready = { status: 'ready' };
   A.eq(Policy.canMutate(ready, control, { name: 'station.control', args: { action: 'group.add', args: { agents: ['COPY', 'STRATEGY'] } } }).ok, true, 'group.add passes an unsettled brief');
   A.eq(Policy.canMutate(ready, control, { name: 'station.control', args: { setting: 'group.add', agents: 'COPY' } }).ok, true, 'however the model spells the call (readCall)');
-  A.eq(Policy.canMutate(ready, control, { name: 'station.control', args: { action: 'session.delete' } }).ok, false, 'any other farm change still waits');
+  A.eq(Policy.canMutate(ready, control, { name: 'station.control', args: { action: 'session.delete' } }).ok, false, 'any other station change still waits');
   A.eq(Policy.canMutate(ready, control).ok, false, 'no call, no exemption (fail closed)');
   A.eq(Policy.canMutate(ready, power, { name: 'station.power', args: { action: 'group.add' } }).ok, false, 'station.power never qualifies');
   A.ok(/const gate = TaskBriefPolicy\.canMutate\(taskBriefState\.brief, liveTool, c\);/.test(require('fs').readFileSync(require('path').join(__dirname, '..', 'sidecar', 'index.js'), 'utf8')), 'the host gate hands the call to the policy');
@@ -431,7 +431,7 @@ A.eq(Policy.canMutate({ status: 'executing' }, { scope: 'execute' }).ok, true, '
     A.ok((/renderProse\(r\.body, shownText[,)]/.test(chatSrcT) || (/renderProse\(r\.body, parts\[pi\][,)]/.test(chatSrcT) && /const parts = [^\n]*shownText\.split\(/.test(chatSrcT))) && /const shownText = [^\n]*Fork\.stripMarkers\(m\.content\)/.test(chatSrcT), 'history re-renders strip markers from server-synced rows');
   }
 
-  const cx = CommanderContext.compose({ brief: resumed, dossier: 'FARMER DOSSIER\n- Goals: ship', existingSystem: '', patterns: s2.patterns(5) });
+  const cx = CommanderContext.compose({ brief: resumed, dossier: 'COMMANDER DOSSIER\n- Goals: ship', existingSystem: '', patterns: s2.patterns(5) });
   A.ok(/ORIGINAL REQUEST: Build me a dashboard/.test(cx) && /=> operators/.test(cx), 'composer carries original task + answered decision');
   A.ok(/strength="weak; never override current instructions"/.test(cx), 'relationship evidence is truthfully labelled weak');
 
@@ -441,7 +441,7 @@ A.eq(Policy.canMutate({ status: 'executing' }, { scope: 'execute' }).ok, true, '
   const hubSrc = fs.readFileSync(path.join(__dirname, '../sidecar/channels/hub.js'), 'utf8');
   const orchestrationSrc = fs.readFileSync(path.join(__dirname, '../sidecar/tools/builtin/orchestration.js'), 'utf8');
   A.ok(/taskBriefStore\.prepare/.test(indexSrc) && /TaskIntent\.directive/.test(indexSrc), 'runOnce prepares the durable brief and injects the shared doctrine');
-  A.ok(/taskContext:\s*taskContextBlock/.test(indexSrc) && /workerSystem/.test(orchestrationSrc), 'delegated workers inherit the settled brief without re-questioning the Farmer');
+  A.ok(/taskContext:\s*taskContextBlock/.test(indexSrc) && /workerSystem/.test(orchestrationSrc), 'delegated workers inherit the settled brief without re-questioning the Commander');
   A.ok(/taskQuestionAsked/.test(indexSrc) && /!taskQuestionAsked/.test(indexSrc), 'clarifications suppress completed-task learning sweeps');
   A.ok(/\{ source: 'marker' \}/.test(indexSrc) && !/The model identified a material unresolved decision/.test(indexSrc), 'the marker settle path records honestly instead of fabricating validation metadata');
   A.ok(/bufferedTaskEnd/.test(indexSrc) && /taskQuestionAsked\s*\?\s*'clarifying'/.test(indexSrc) && !/taskQuestionAsked\s*\?\s*'cancelled'/.test(indexSrc), 'clarification ends as the honest additive clarifying terminal before global completed-work listeners run');
@@ -585,7 +585,7 @@ A.eq(Policy.canMutate({ status: 'executing' }, { scope: 'execute' }).ok, true, '
       return reg.get('brief.ask').run(args).then(() => '').catch(e => e.message);
     })();
     A.ok(/repeatedly answered "use your judgment"/.test(gate) && /correctable assumption/.test(gate), 'the refusal steers to deciding + surfacing an assumption, never to silent guessing');
-    A.ok(/tq-hint/.test(chatSrc) && /more than one is fine/.test(chatSrc), 'the chip row tells the Farmer a typed answer is accepted');
+    A.ok(/tq-hint/.test(chatSrc) && /more than one is fine/.test(chatSrc), 'the chip row tells the Commander a typed answer is accepted');
     A.ok(/\.tq-hint/.test(cssSrc), 'the typed-answer hint is styled as a quiet affordance note');
   }
 
@@ -610,7 +610,7 @@ A.eq(Policy.canMutate({ status: 'executing' }, { scope: 'execute' }).ok, true, '
     threads: [{ title: 'finish the changelog verifier' }],
     worksignal: 'dominant lane: workbench; 4 completed task-runs',
     verdicts: { kinds: { research: { weight: 0.4, positive: 3, negative: 0 } } },
-    activity: ['Ship the Homestead beta (yesterday)']
+    activity: ['Ship the StarNet beta (yesterday)']
   });
   A.ok(/<commander_evidence provenance="observed; weak; never override the current request">/.test(evidenceCx), 'one provenance-labelled evidence block composes the learned model for every execution lane');
   A.ok(/release automation/.test(evidenceCx) && /automate release notes/.test(evidenceCx), 'topic claims carry their stored evidence quote');

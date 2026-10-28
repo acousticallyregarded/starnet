@@ -146,10 +146,10 @@ function gauge(cs) {
   const TIER = 'remembers up to 200k tokens of chat (the model can hold 1M, but it bills a higher rate for a prompt over 200k)';
   const WHOLE = 'remembers up to 1M tokens of chat';
   A.eq(routedHint('starnet', 'openrouter'), WHOLE,
-    'a StarNet-credits farm picking the OPENROUTER card: an OpenRouter run keeps the whole window, so no 200k tier is named');
+    'a StarNet-credits station picking the OPENROUTER card: an OpenRouter run keeps the whole window, so no 200k tier is named');
   A.eq(routedHint('openrouter', 'starnet'), TIER,
-    'an OpenRouter farm (the default) picking the HOMESTEAD card: a Homestead run works in 200k, so the hint names it');
-  A.eq([routedHint('starnet', 'starnet'), routedHint('openrouter', 'openrouter')], [TIER, WHOLE], 'the farm and the card agree: unchanged');
+    'an OpenRouter station (the default) picking the STARNET card: a StarNet run works in 200k, so the hint names it');
+  A.eq([routedHint('starnet', 'starnet'), routedHint('openrouter', 'openrouter')], [TIER, WHOLE], 'the station and the card agree: unchanged');
   // a picked catalog row with no runWindow (the codex sign-in list on the OPENAI card: rows are { id, name }) names no
   // tier from ANOTHER route's catalog (illustrative numbers: the rule, not a real gpt-5.5 tier)
   {

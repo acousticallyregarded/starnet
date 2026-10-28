@@ -76,13 +76,13 @@ const toolNames = call => ((call && call.body.tools) || []).map(t => (t && t.fun
     const specs = { empty: [], label: ['WEB & BROWSER'], tool: ['web_request'], unknown: ['bogus'], free: ['todo'] };
     const ids = {};
     for (const name of Object.keys(specs)) {
-      const made = await fixture.json('POST', '/api/cron', { name: 'Legacy ' + name, prompt: 'ROUTINE-' + name.toUpperCase() + ' check the farm news', schedule: 'every 1h', agentId: 'agent', model: 'test/model', provider: 'openrouter' });
+      const made = await fixture.json('POST', '/api/cron', { name: 'Legacy ' + name, prompt: 'ROUTINE-' + name.toUpperCase() + ' check the station news', schedule: 'every 1h', agentId: 'agent', model: 'test/model', provider: 'openrouter' });
       A.eq(made.status, 200, 'created routine ' + name);
       ids[name] = made.body && made.body.job && made.body.job.id;
     }
     const refused = await runNow(ids.empty);
-    A.eq(refused.status, 400, 'Run Now with no farm key is refused before any spend');
-    const SENTENCE = 'no OPENROUTER API key is saved on this farm for this routine — connect or re-save it under SETTINGS → AI & MODELS, or set OPENROUTER_API_KEY in the environment that starts Homestead';
+    A.eq(refused.status, 400, 'Run Now with no station key is refused before any spend');
+    const SENTENCE = 'no OPENROUTER API key is saved on this station for this routine — connect or re-save it under SETTINGS → AI & MODELS, or set OPENROUTER_API_KEY in the environment that starts StarNet';
     A.eq(refused.body && refused.body.error, SENTENCE, 'the refusal is the shared sentence (was "connect a OpenRouter API key to run this scheduled routine")');
 
     /* ---- 2. legacy toolset lists heal on load and are persisted ---- */
@@ -133,7 +133,7 @@ const toolNames = call => ((call && call.body.tools) || []).map(t => (t && t.fun
     const end = events(ran.text).filter(e => e.name === 'agent.run.end').pop();
     A.eq(end && end.payload && end.payload.reason, 'done', 'the routine run completes: ' + ran.text.slice(-300));
     const emptyCall = callFor(mock.calls, 'ROUTINE-EMPTY');
-    A.eq(emptyCall && emptyCall.auth, 'Bearer ' + PAGE_KEY, 'the provider saw the key the Farmer saved in the page');
+    A.eq(emptyCall && emptyCall.auth, 'Bearer ' + PAGE_KEY, 'the provider saw the key the Commander saved in the page');
     A.ok(toolNames(emptyCall).some(n => /^web_/.test(n)), 'the routine whose toolsets were lost to [] now has web tools: ' + toolNames(emptyCall).join(','));
     const labelRun = await runNow(ids.label);
     A.eq(labelRun.status, 200, 'the label routine runs');
@@ -163,11 +163,11 @@ const toolNames = call => ((call && call.body.tools) || []).map(t => (t && t.fun
     fs.mkdirSync(keysFile + '.bak', { recursive: true });   // the .bak can't be written: the removal can't be proven
     const rmFailed = await engineKey({ provider: 'openrouter', key: '', keyPool: [], baseUrl: '' });
     A.eq(rmFailed.status, 500, 'a REMOVE the disk did not prove is a failure');
-    A.ok(rmFailed.body && rmFailed.body.removing === true && /KEEP using it until a retry succeeds/.test(rmFailed.body.error) && !/chat in this browser still works/.test(rmFailed.body.error), 'a failed REMOVE says routines keep using the farm copy (never "chat still works"): ' + (rmFailed.body && rmFailed.body.error));
+    A.ok(rmFailed.body && rmFailed.body.removing === true && /KEEP using it until a retry succeeds/.test(rmFailed.body.error) && !/chat in this browser still works/.test(rmFailed.body.error), 'a failed REMOVE says routines keep using the station copy (never "chat still works"): ' + (rmFailed.body && rmFailed.body.error));
     mock.calls.length = 0;
     A.eq((await runNow(ids.empty)).status, 200, 'and that is true: Run Now still runs');
     A.eq((callFor(mock.calls, 'ROUTINE-EMPTY') || {}).auth, 'Bearer ' + PAGE_KEY, 'on the key the REMOVE could not delete');
-    A.ok(fs.readFileSync(keysFile, 'utf8').indexOf(PAGE_KEY) >= 0, 'and the main file was put back to what the farm runs on (a restart agrees with the answer)');
+    A.ok(fs.readFileSync(keysFile, 'utf8').indexOf(PAGE_KEY) >= 0, 'and the main file was put back to what the station runs on (a restart agrees with the answer)');
     fs.rmSync(keysFile + '.bak', { recursive: true, force: true });
 
     /* ---- 6. an operator env var outranks the page copy ---- */

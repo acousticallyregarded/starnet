@@ -16,9 +16,9 @@ const index = read('sidecar/index.js');
 
 // the grant
 const grant = index.match(/runStationBrowser = await browserViews\.sessionForRun\(\{[^}]*\}\)/);
-A.ok(!!grant, 'runOnce asks browser-view for the farm browser');
+A.ok(!!grant, 'runOnce asks browser-view for the station browser');
 A.ok(grant && /interactive:\s*surface === 'interactive' && o\.stationBrowser === true/.test(grant[0]),
-  'the farm browser is granted only to an interactive run that is ALSO marked as started from COMMS');
+  'the station browser is granted only to an interactive run that is ALSO marked as started from COMMS');
 
 // who marks a run as COMMS
 const marks = index.match(/stationBrowser:\s*true/g) || [];
@@ -30,18 +30,18 @@ A.ok(/loginPrompt:\s*askHuman/.test(around) && /surface:\s*'interactive', prompt
 
 // the unattended / remote callers never claim it
 for (const rel of ['sidecar/channels/hub.js', 'sidecar/remote/host.js']) {
-  A.ok(!/stationBrowser/.test(read(rel)), rel + ' never claims the farm browser');
+  A.ok(!/stationBrowser/.test(read(rel)), rel + ' never claims the station browser');
 }
 // the group-session runOnce (surface 'interactive', lead only for the group's lead) must not either
 const group = index.indexOf("surface: 'interactive', lead: t.agentId === g.leadId, groupTools: tools");
 A.ok(group > 0, 'the group-session run is still where this test expects it');
 const groupCall = index.slice(group - 1500, group + 1500);
-A.ok(!/stationBrowser/.test(groupCall), 'group sessions never claim the farm browser');
+A.ok(!/stationBrowser/.test(groupCall), 'group sessions never claim the station browser');
 
 // the view: no station view unless interactive
 {
   const views = makeBrowserViews({ now: () => 0, makeStationSession: () => ({}) });
-  A.eq(views.sessionForRun({ agentId: 'nova', runId: 'r1', interactive: false }), null, 'a run that is not granted gets no farm view (a private browser)');
+  A.eq(views.sessionForRun({ agentId: 'nova', runId: 'r1', interactive: false }), null, 'a run that is not granted gets no station view (a private browser)');
   A.eq(views.sessionForRun({ agentId: 'nova', runId: 'r2' }), null, '…including one that says nothing');
 }
 A.report('browser-station-privacy.test');

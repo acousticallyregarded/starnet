@@ -271,7 +271,7 @@ const dcall = (name, args) => ({ id: 'c', name, args, argsRaw: JSON.stringify(ar
           { type: 'tool_args', index: 0, chunk: '"body":"I am online"}' },
           { type: 'usage', usage: { prompt_tokens: 10, completion_tokens: 6, total_tokens: 16 } },
           { type: 'done', finishReason: 'tool_calls' } ],
-        [ { type: 'text', delta: 'Noted, Farmer.' },
+        [ { type: 'text', delta: 'Noted, Commander.' },
           { type: 'usage', usage: { prompt_tokens: 20, completion_tokens: 4, total_tokens: 24 } },
           { type: 'done', finishReason: 'stop' } ]
       ]
@@ -416,12 +416,12 @@ const dcall = (name, args) => ({ id: 'c', name, args, argsRaw: JSON.stringify(ar
     const reg = makeRegistry();
     makeNotebookTools({ store, clock: makeClock(1000), findSimilar }).register(reg);
 
-    const first = await reg.dispatch(dcall('notebook.write', { title: 'Preference', body: 'the Farmer prefers npm start over npm run serve' }), { agentId: 'ag' });
+    const first = await reg.dispatch(dcall('notebook.write', { title: 'Preference', body: 'the Commander prefers npm start over npm run serve' }), { agentId: 'ag' });
     A.ok(/Saved note/.test(first.content), 'the first phrasing is saved');
     A.eq(store.get('notebook:ag').length, 1, 'one record stored');
 
     // a PARAPHRASE of the same belief — exact-text equality would miss this
-    const again = await reg.dispatch(dcall('notebook.write', { title: 'Preference', body: 'Farmer prefers to run npm start rather than npm run serve' }), { agentId: 'ag' });
+    const again = await reg.dispatch(dcall('notebook.write', { title: 'Preference', body: 'Commander prefers to run npm start rather than npm run serve' }), { agentId: 'ag' });
     A.ok(!again.isError, 'a restatement is a SUCCESS, not an error (an error would trigger a reworded retry)');
     A.ok(/already remember/i.test(again.content), 'the reply says the belief is already held');
     A.ok(/note_1/.test(again.content), 'names the entry that already holds it');
@@ -446,7 +446,7 @@ const dcall = (name, args) => ({ id: 'c', name, args, argsRaw: JSON.stringify(ar
 
     // the challenge must NOT emit — a receipt for a write that did not happen is a false claim
     let emitted = 0;
-    await reg.dispatch(dcall('notebook.write', { title: 'Preference', body: 'the Farmer prefers npm start over serve' }),
+    await reg.dispatch(dcall('notebook.write', { title: 'Preference', body: 'the Commander prefers npm start over serve' }),
       { agentId: 'ag', runId: 'r1', emit: () => { emitted++; } });
     A.eq(emitted, 0, 'a challenged duplicate emits no memory.write and no deliverable');
     A.eq(store.get('notebook:ag').length, 3, 'and still writes nothing');

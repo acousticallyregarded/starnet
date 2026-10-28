@@ -15,7 +15,7 @@ const readyHook=init.slice(start,end);
 A.ok(start>=0&&end>start&&readyHook.length<900,'test executes the actual init readiness subscription');
 function setup({r=3,goal='work',sitting=false,failed=false,unloaded=false}={}){
  const draft=WM.create(),added=draft.addProp({t:'desk2',x:6,y:3,w:r%2?1:2,h:r%2?2:1,r,agentId:'hero'});
- A.ok(added.ok,'saved rotated compact desk fits real farm geometry');
+ A.ok(added.ok,'saved rotated compact desk fits real station geometry');
  const station=WM.deserialize(draft.serialize()),geo=station.projectGeometry();
  let derivations=0;const project=station.projectGeometry;station.projectGeometry=(...a)=>{derivations++;return project(...a);};
  let finish,available=false;
@@ -28,7 +28,7 @@ function setup({r=3,goal='work',sitting=false,failed=false,unloaded=false}={}){
   const T=12,ctx={},now=0,CRT={};let blocked=new Set(),desk=null,seat=null,deskPropId=null,deskFace='north',bakeDirty=false,redraws=0;
   const redrawNow=()=>{redraws++;},drawLitProp=p=>draws.push(p);
   ${helpers}
-  if(geo&&farm)placeDesk();
+  if(geo&&station)placeDesk();
   ${readyHook}
   return {state:()=>({seat,deskFace,blocked,geo,bakeDirty,redraws}),
    direct:()=>{const p=deskPropFor(agent.id);return p&&deskSeat(p);},
@@ -75,7 +75,7 @@ async function main(){
  A.eq(JSON.stringify(failed.hero),failedBody,'failed pack leaves the current activity untouched');
  A.eq([failed.runtime.state().bakeDirty,failed.runtime.state().redraws],[false,0],'failed pack does not activate a remaster redraw');
  const early=setup({unloaded:true});await early.finish();
- A.eq(early.runtime.state().seat,null,'readiness before farm load is safe; later placeDesk owns initial seating');
+ A.eq(early.runtime.state().seat,null,'readiness before station load is safe; later placeDesk owns initial seating');
  A.report('world-texture-ready');
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

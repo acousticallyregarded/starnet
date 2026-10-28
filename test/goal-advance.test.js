@@ -33,15 +33,15 @@ const q = (id, status, milestoneId) => ({ id, title: 'quest ' + id, status, goal
   A.ok(fin && /quest a/.test(fin.evidence) && !/quest c/.test(fin.evidence), 'the evidence names the completed quests of this step only');
   A.eq(GA.slateFinished(Object.assign(goal(), { milestones: null }), [q('a', 'done')]), null, 'a summary-only mirror (older webview) never advances blind');
   const attest = (id, st) => Object.assign(q(id, st), { contract: { type: 'attest' } }), artifact = (id, st) => Object.assign(q(id, st), { contract: { type: 'artifact', key: 'x.md' } });
-  A.eq(GA.slateFinished(goal(), [attest('a', 'done'), attest('b', 'dismissed')]).authority, 'commander-confirmed', 'a step settled only by the Farmer own reports is THEIR word ("You confirmed"), never a harness proof');
-  A.eq(GA.slateFinished(goal(), [artifact('a', 'done'), attest('b', 'done')]).authority, 'harness-contract', 'a step with mechanically-proven work is a harness record ("Homestead recorded")');
+  A.eq(GA.slateFinished(goal(), [attest('a', 'done'), attest('b', 'dismissed')]).authority, 'commander-confirmed', 'a step settled only by the Commander own reports is THEIR word ("You confirmed"), never a harness proof');
+  A.eq(GA.slateFinished(goal(), [artifact('a', 'done'), attest('b', 'done')]).authority, 'harness-contract', 'a step with mechanically-proven work is a harness record ("StarNet recorded")');
   A.eq(GA.slateFinished(Object.assign(goal(), { id: 'other' }), [q('a', 'done')]), null, 'quests bound to another goal never settle this one');
 
   // ---- overlay: journey completions fold on, next step recomputes, the Commander's chosen step is honored
   const o = GA.overlay(goal(), new Set(['g_1:g_1:m1']));
   A.eq([o.done, o.total, o.pct, o.milestoneId, o.next], [1, 3, 33, 'g_1:m2', 'Write issue one'], 'a recorded completion advances the mirror to the next open step');
   const chosen = GA.overlay(Object.assign(goal(), { milestoneId: 'g_1:m3', next: 'Get ten subscribers' }), new Set(['g_1:g_1:m1']));
-  A.eq(chosen.milestoneId, 'g_1:m3', 'a still-open step the Farmer chose stays the next step');
+  A.eq(chosen.milestoneId, 'g_1:m3', 'a still-open step the Commander chose stays the next step');
   const stale = GA.overlay(Object.assign(goal(), { milestones: goal().milestones }), new Set(['g_1:g_1:m1', 'g_1:g_1:m2']));
   A.eq(stale.milestoneId, 'g_1:m3', 'a stale push naming a finished step can never walk the plan backwards');
   const all = GA.overlay(goal(), new Set(['g_1:g_1:m1', 'g_1:g_1:m2', 'g_1:g_1:m3']));

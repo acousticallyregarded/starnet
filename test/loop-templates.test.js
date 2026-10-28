@@ -18,7 +18,7 @@ const T = require('../frontend/app/loop-templates.js');
   for (const t of all) {
     A.ok(t.name && t.tagline && t.blurb, t.id + ' is presentable (name/tagline/blurb)');
     A.ok(t.shape.length >= 2, t.id + ' declares a visible cycle for the stepper');
-    A.ok(t.params.length >= 1, t.id + ' asks the Farmer something');
+    A.ok(t.params.length >= 1, t.id + ' asks the Commander something');
     A.ok(t.params.length <= 3, t.id + ' asks at MOST 3 things — a wall of fields is the confusion we are removing');
     A.ok(['hard', 'soft'].indexOf(t.rigor) >= 0, t.id + ' declares its rigor honestly');
     A.ok(['check-green', 'empty-digests', 'never'].indexOf(t.exitOn) >= 0, t.id + ' has a real exit condition');
@@ -101,7 +101,7 @@ const T = require('../frontend/app/loop-templates.js');
 // ---- 7. a template can be overridden but never silently downgraded ---------------------------------------
 {
   const spec = T.buildSpec('research', { question: 'q' }, { gate: 'auto', name: 'my loop', perDayUsd: 3 });
-  A.eq(spec.gate, 'auto', 'the Farmer may explicitly choose full access');
+  A.eq(spec.gate, 'auto', 'the Commander may explicitly choose full access');
   A.eq(spec.name, 'my loop', 'and name it');
   A.eq(spec.perDayUsd, 3, 'and cap its daily spend');
   A.eq(T.buildSpec('research', { question: 'q' }).gate, 'review', 'but the DEFAULT stays review when nothing is passed');

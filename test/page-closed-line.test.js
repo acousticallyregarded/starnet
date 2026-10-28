@@ -52,13 +52,13 @@ const row = (id, role, content, ts) => ({ streamId: 'ws_a', agentId: 'agent', ro
   ];
   const out = projectConversation(turns, id => runs[id] || null);
   const lines = out.filter(t => t.sys);
-  A.eq(lines.length, 1, 'exactly one farm line: the run that waited on an approval when its page closed');
+  A.eq(lines.length, 1, 'exactly one station line: the run that waited on an approval when its page closed');
   const line = lines[0] || {};
   A.eq(out.indexOf(line), 3, 'the line sits right after that run\'s last row (before the next request)');
   // "reconnected": the page's own teardown (App.disconnect → Chat.abort → re-entry) drops the stream the same way a reload does
   A.eq(line.content, '■ the run ended when this page closed, reloaded or reconnected while it waited for your approval to write opportunity-brief.md — nothing was approved',
     'the line names what waited and that nothing was approved');
-  A.eq(line.transcriptPending, true, 'the line is the farm\'s copy (merges replace, never stack it)');
+  A.eq(line.transcriptPending, true, 'the line is the station\'s copy (merges replace, never stack it)');
   A.eq(line.error, true, 'the line is a status row the model never reads back as its own words');
   A.eq(line.role, 'assistant', 'it renders where the run\'s reply would have been');
   A.eq(line.sourceRunId, 'closed', 'the line belongs to the run that ended');

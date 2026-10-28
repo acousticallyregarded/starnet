@@ -18,7 +18,7 @@ function fakeRepo(opts) {
     branch: opts.branch || 'feat/harness-backend',
     head: HEAD,
     subject: opts.subject || 'qa: record something',
-    notes: opts.notes || '# Homestead v0.10.7\n\n- old notes\n',
+    notes: opts.notes || '# StarNet v0.10.7\n\n- old notes\n',
     claimsPass: opts.claimsPass !== false,
     tags: Object.assign({}, opts.tags || {}),
     files: Object.assign({ [KEY]: 'secret', 'qa/product-perfect/claims.json': JSON.stringify({ releaseSurface: { old: true }, claims: [] }) }, opts.files || {}),
@@ -72,7 +72,7 @@ function fakeRepo(opts) {
       if (key.startsWith('node scripts/release-bump.mjs ')) {
         if (st.bumpFails) return { status: 1, stdout: '', stderr: 'release-bump: new version is not strictly greater' };
         A.eq(args[2], '--no-tag', 'bump is invoked with --no-tag (the tag goes on the re-lock commit)');
-        st.version = args[1]; st.notes = '# Homestead v' + args[1] + '\n\n- TODO: summarize what changed in this release.\n'; st.subject = 'release: v' + args[1]; st.claimsPass = false; st.head = 'd'.repeat(40); st.commitTs += 60;
+        st.version = args[1]; st.notes = '# StarNet v' + args[1] + '\n\n- TODO: summarize what changed in this release.\n'; st.subject = 'release: v' + args[1]; st.claimsPass = false; st.head = 'd'.repeat(40); st.commitTs += 60;
         return ok('committed: release: v' + args[1] + '\n');
       }
       return { status: 127, stdout: '', stderr: 'fixture: no such command ' + key };
@@ -147,7 +147,7 @@ A.eq([...STEPS], ['preflight', 'bump', 'notes', 'relock', 'gates', 'preflight-po
   A.eq(Object.keys(io.st.tags), [], 'no tag before notes');
 
   // operator writes the notes and amends (same HEAD subject)
-  io.st.notes = '# Homestead v0.10.8\n\n- fixed the thing\n';
+  io.st.notes = '# StarNet v0.10.8\n\n- fixed the thing\n';
   const r2 = runRitual(CTX, io);
   A.eq(r2.target, '0.10.8', 'run 2 keeps the SAME target from HEAD subject (no double bump)');
   A.eq(io.st.version, '0.10.8', 'run 2 did not bump again');
@@ -196,7 +196,7 @@ A.eq([...STEPS], ['preflight', 'bump', 'notes', 'relock', 'gates', 'preflight-po
 
 // ── --require-http makes the http receipt mandatory ──
 {
-  const io = fakeRepo({ version: '0.10.8', subject: 'qa(claims): re-lock the release surface for v0.10.8', notes: '# Homestead v0.10.8\n\n- notes\n' });
+  const io = fakeRepo({ version: '0.10.8', subject: 'qa(claims): re-lock the release surface for v0.10.8', notes: '# StarNet v0.10.8\n\n- notes\n' });
   io.st.files['.dogfood/gate-receipts/' + HEAD + '.fast.json'] = JSON.stringify({ commit: HEAD, gate: 'fast', green: true, steps: 654, at: 'x' });
   const r = runRitual(Object.assign({ requireHttp: true }, CTX), io);
   A.eq(r.stoppedAt, 'gates', 'fast-only receipt stops when --require-http');
@@ -208,14 +208,14 @@ A.eq([...STEPS], ['preflight', 'bump', 'notes', 'relock', 'gates', 'preflight-po
 {
   const io = fakeRepo();
   runRitual(CTX, io);                       // bump → notes stop (TODO scaffold)
-  io.st.notes = '# Homestead v0.10.8\n\n- fixed the thing\n<!-- #121 line goes here only if the i121 lane ships -->\n';
+  io.st.notes = '# StarNet v0.10.8\n\n- fixed the thing\n<!-- #121 line goes here only if the i121 lane ships -->\n';
   const r = runRitual(CTX, io);
   A.eq(r.stoppedAt, 'notes', 'a comment left in the notes stops at notes');
   const lines = r.steps.find(s => s.id === 'notes').lines;
   A.ok(lines.some(l => /HTML comment/.test(l) && /#121 line goes here/.test(l)), 'the stop names the comment it found');
   A.ok(!lines.some(l => /TODO scaffold/.test(l)), 'the stop does not call written notes the TODO scaffold');
   A.ok(!io.calls.some(c => /claims\.mjs --refresh-surface/.test(c)), 'no relock while the comment stands');
-  io.st.notes = '# Homestead v0.10.8\n\n- fixed the thing\n';
+  io.st.notes = '# StarNet v0.10.8\n\n- fixed the thing\n';
   const r2 = runRitual(CTX, io);
   A.eq(ids(r2).slice(0, 3), ['preflight:skipped', 'bump:done', 'notes:done'], 'with the comment gone the notes step is done');
 }
@@ -226,7 +226,7 @@ A.eq([...STEPS], ['preflight', 'bump', 'notes', 'relock', 'gates', 'preflight-po
   io.st.files['gate-fast.log'] = 'run-fast-tests: OK — 654 step(s) green\n';
   const lane = Object.assign({ allowLane: true }, CTX);
   runRitual(lane, io);                      // bump → notes stop
-  io.st.notes = '# Homestead v0.10.8\n\n- hotfix\n';
+  io.st.notes = '# StarNet v0.10.8\n\n- hotfix\n';
   runRitual(lane, io);                      // relock → gates stop
   io.st.files['gate-fast.log#mtime'] = (io.st.commitTs + 10) * 1000;
   const r = runRitual(Object.assign({ gatesProvenBy: ['gate-fast.log'] }, lane), io);
@@ -238,7 +238,7 @@ A.eq([...STEPS], ['preflight', 'bump', 'notes', 'relock', 'gates', 'preflight-po
 
 // ── tag collision at a different commit stops ──
 {
-  const io = fakeRepo({ version: '0.10.8', subject: 'qa(claims): re-lock the release surface for v0.10.8', notes: '# Homestead v0.10.8\n\n- n\n', tags: { 'v0.10.8': 'e'.repeat(40) } });
+  const io = fakeRepo({ version: '0.10.8', subject: 'qa(claims): re-lock the release surface for v0.10.8', notes: '# StarNet v0.10.8\n\n- n\n', tags: { 'v0.10.8': 'e'.repeat(40) } });
   io.st.files['.dogfood/gate-receipts/' + HEAD + '.fast.json'] = JSON.stringify({ commit: HEAD, gate: 'fast', green: true, steps: 1 });
   const r = runRitual({ version: '0.10.8', keyFile: KEY }, io);
   A.ok(['preflight-post', 'tag'].includes(r.stoppedAt), 'existing tag elsewhere stops before tagging (at ' + r.stoppedAt + ')');

@@ -45,7 +45,7 @@ function notebookWriteTurn() {
   ];
 }
 const reportTurn = [
-  { type: 'text', delta: 'Done, Farmer.' },
+  { type: 'text', delta: 'Done, Commander.' },
   { type: 'usage', usage: { prompt_tokens: 18, completion_tokens: 4, total_tokens: 22 } },
   { type: 'done', finishReason: 'stop' }
 ];

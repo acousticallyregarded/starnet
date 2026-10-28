@@ -89,7 +89,7 @@ const withNiche = items.concat([{ id: 'niche-gpu', name: 'GPU Price Watch', tagl
 const nicheOff = R.rankRecipes(withNiche, { score: profile, limit: 3 });
 const nicheOn = R.rankRecipes(withNiche, { score: profile, topics: WARM, limit: 3 });
 A.ok(!nicheOff.some(r => r.id === 'niche-gpu'), 'without topics the niche recipe does not rank (no other signal touches it)');
-A.ok(nicheOn.some(r => r.id === 'niche-gpu'), 'a warm learned topic promotes the recipe the Farmer actually keeps working on');
+A.ok(nicheOn.some(r => r.id === 'niche-gpu'), 'a warm learned topic promotes the recipe the Commander actually keeps working on');
 A.eq(R.rankRecipes(withNiche, { score: profile, topics: COLD, limit: 3 }).map(r => r.id).join(','), nicheOff.map(r => r.id).join(','), 'and a COLD topic promotes nothing');
 
 // determinism (the whole file's contract: same input → same order)
@@ -104,7 +104,7 @@ const niche = withNiche[withNiche.length - 1];
 A.eq(R.forYouReason(niche, { topics: WARM }), TM.reason(TM.match(WARM, 'GPU Price Watch tracks gpu prices daily watch prices general ops')), 'the FOR YOU reason is the topic WHY when a topic matched');
 // (the reason leads with "it" so the shared "because …" framing composes into a sentence — see recommend.js whyLine)
 A.ok(R.forYouReason(niche, { topics: COLD, goalText: 'watch prices closely' }).indexOf('it matches your goal') === 0, 'a goal match is named when no topic matched');
-A.eq(R.forYouReason(niche, { launches: { 'niche-gpu': { n: 2, rated: { great: 3 } } } }), 'you rated this work great 3×', 'the Farmer\'s own verdicts are cited before raw launches');
+A.eq(R.forYouReason(niche, { launches: { 'niche-gpu': { n: 2, rated: { great: 3 } } } }), 'you rated this work great 3×', 'the Commander\'s own verdicts are cited before raw launches');
 A.eq(R.forYouReason(niche, { launches: { 'niche-gpu': { n: 4 } } }), 'you have launched this 4×', 'a launch count is cited when nothing stronger fired');
 A.eq(R.forYouReason(niche, {}), '', 'with NO real signal the card claims no reason at all (never a fabricated one)');
 A.eq(R.forYouReason(null, { topics: WARM }), '', 'a missing recipe yields no reason');
@@ -160,7 +160,7 @@ A.eq(plain.ref, '/w/fresh', 'without topics the most recently touched project wi
 
 // TIE-BREAK: a warm topic flips a NEAR-neighbour…
 const flipped = NF.resolveFocus(Object.assign({ topics: PRICE_TOPIC }, near), { now: NOW });
-A.eq(flipped.ref, '/w/pricewatch-tracker', 'a warm topic flips a near-tie toward the subject the Farmer keeps working on');
+A.eq(flipped.ref, '/w/pricewatch-tracker', 'a warm topic flips a near-tie toward the subject the Commander keeps working on');
 A.ok(flipped.why.some(w => w.indexOf('pricewatch tracker') >= 0), 'the flipped focus CITES the topic that moved it: ' + JSON.stringify(flipped.why));
 A.ok(flipped.why.length >= 2, 'the topic line is ADDED to the existing evidence, never replaces it');
 

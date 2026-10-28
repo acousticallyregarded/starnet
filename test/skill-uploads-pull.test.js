@@ -58,9 +58,9 @@ function sub(over) {
 
   // ---- refusals ----
   const why = (s, metas) => (P.planPull([s], ctx(metas)).skipped[0] || {}).why || '';
-  A.ok(/Homestead Original/.test(why(sub({ slug: 'daily-briefing', files: sub({ slug: 'daily-briefing' }).files }))), 'a bundled original\'s name is refused');
+  A.ok(/StarNet Original/.test(why(sub({ slug: 'daily-briefing', files: sub({ slug: 'daily-briefing' }).files }))), 'a bundled original\'s name is refused');
   A.ok(/another author's upload/.test(why(sub(), { 'meeting-recap-writer': { version: '1.0.0', submission: { owner: OTHER } } })), 'another author\'s name is refused');
-  A.ok(/Homestead publishes already/.test(why(sub(), { 'meeting-recap-writer': { version: '1.0.0', upstream: { url: 'https://x' } } })), 'an adapted pick\'s name is refused');
+  A.ok(/StarNet publishes already/.test(why(sub(), { 'meeting-recap-writer': { version: '1.0.0', upstream: { url: 'https://x' } } })), 'an adapted pick\'s name is refused');
   A.ok(/digest the reviewer approved/.test(why(sub({ digest: 'f'.repeat(64) }))), 'a package that is not the approved one is refused');
   const withScript = sub().files.concat([{ path: 'references/run.sh', content: 'echo hi' }]);
   A.ok(/not a file the market allows/.test(why(sub({ files: withScript }))), 'a script file is refused');
@@ -76,7 +76,7 @@ function sub(over) {
   // ---- NOTICE.md ----
   const notice = fs.readFileSync(path.join(ROOT, 'NOTICE.md'), 'utf8');
   const once = P.creditNotice(notice, [{ slug: 'meeting-recap-writer', credit: 'Test Author', license: 'MIT' }]);
-  A.ok(once.indexOf('### Shared by Homestead users') > once.indexOf('## Skill Market (skills-catalog/)') && once.indexOf('### Shared by Homestead users') < once.indexOf('## Bundled fonts'), 'uploads are credited inside the Skill Market section');
+  A.ok(once.indexOf('### Shared by StarNet users') > once.indexOf('## Skill Market (skills-catalog/)') && once.indexOf('### Shared by StarNet users') < once.indexOf('## Bundled fonts'), 'uploads are credited inside the Skill Market section');
   A.ok(once.indexOf('| `meeting-recap-writer` | Test Author | MIT |') >= 0, 'one row per upload');
   const twice = P.creditNotice(once, [{ slug: 'meeting-recap-writer', credit: '[Evil](https://x.example) | b', license: 'CC-BY-4.0' }, { slug: 'second-skill', credit: 'Bo', license: 'MIT' }]);
   A.eq((twice.match(/\| `meeting-recap-writer` \|/g) || []).length, 1, 'an update replaces its row');

@@ -331,7 +331,7 @@ Promise.resolve(catchup).then(async summary => {
   const pendingRun=XpStore.syncRunHistory(1,()=>new Promise(resolve=>{releaseRun=resolve;}));
   const pendingRatings=XpStore.syncRatingHistory(1,()=>new Promise(resolve=>{releaseRatings=resolve;}));
   const pendingPost=XpStore.recordWorkRating({runId:'old-station',verdict:'great'},()=>new Promise(resolve=>{releasePost=resolve;}));
-  const replacement={id:'agent',name:'New farm',stats:Xp.fresh()};
+  const replacement={id:'agent',name:'New station',stats:Xp.fresh()};
   await XpStore.init({getAgent:()=>replacement,agents:()=>[replacement],station:Xp.fresh()});
   releaseRun({snapshotAt:10000,runs:[{runId:'old-station',agentId:'agent',reason:'done',ts:9999}]});
   releaseRatings({snapshotAt:10000,ratings:[missing]});

@@ -46,7 +46,7 @@ const BUILDER = ['station.map', 'station.plan', 'station.build', 'station.make_p
 
 (async () => {
   // the walker's searches find the whole builder (the label phrase "station builder" scores like a name)
-  for (const q of ['farm builder - create assembly lines and workflows', 'farm builder create assembly line workflow', 'farm builder']) {
+  for (const q of ['farm builder - create assembly lines and workflows', 'farm builder create assembly line workflow', 'station builder']) {
     const r = await ask(q);
     A.ok(['station.map', 'station.plan', 'station.build'].every(n => r.shown.indexOf(n) >= 0), '"' + q + '" reveals station.map, station.plan and station.build: ' + JSON.stringify(r.shown));
   }

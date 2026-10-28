@@ -307,7 +307,7 @@ const redact = (s) => String(s).replace(/sk-[A-Za-z0-9]{8,}/g, '[redacted]');
     { streamId: 'research', agentId: 'ada', role: 'assistant', content: 'PARTIAL RAW WORK', sourceRunId: 'w1', dispatchState: 'pending', ts: 11 },
     { streamId: 'research', agentId: 'ada', role: 'assistant', content: 'MORE PARTIAL WORK', sourceRunId: 'w1', dispatchState: 'pending', ts: 12 }
   ];
-  const interrupted = projectConversation(rows, id => id === 'w1' ? { runId: 'w1', reason: 'interrupted', error: 'interrupted: Homestead stopped before this run finished; it can be continued' } : null);
+  const interrupted = projectConversation(rows, id => id === 'w1' ? { runId: 'w1', reason: 'interrupted', error: 'interrupted: StarNet stopped before this run finished; it can be continued' } : null);
   A.eq(interrupted.filter(t => !t.sys).map(t => t.content), ['Find three JWST facts'], 'an interrupted delegated run keeps its directive');
   A.eq(interrupted[0] && interrupted[0].from, 'nova', 'the directive keeps who sent it');
   const status = interrupted.filter(t => t.sys);
@@ -341,7 +341,7 @@ const redact = (s) => String(s).replace(/sk-[A-Za-z0-9]{8,}/g, '[redacted]');
   }
   // Once the run has an accepted answer the station stops sending the line, and the saved copy goes with it.
   const healed = merges[0][1](merges[0][1]([], interrupted), [rows[0]]);
-  A.ok(!healed.some(t => t.sys), 'a saved interrupted line is not kept once the farm no longer reports it');
+  A.ok(!healed.some(t => t.sys), 'a saved interrupted line is not kept once the station no longer reports it');
 }
 
 // Full accepted output and the bounded execution preview have separate durability contracts.

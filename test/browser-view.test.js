@@ -77,23 +77,23 @@ function rig(extra) {
     const { clk, made, attended, views } = rig();
     A.eq(views.list().station.open, false, 'no browser until somebody uses it');
     const o = await views.open('google.com');
-    A.ok(o.ok && o.url === 'https://google.com/', 'the Farmer opens a page');
+    A.ok(o.ok && o.url === 'https://google.com/', 'the Commander opens a page');
     A.eq(o.remembered, true, 'on the durable profile: sign-ins are remembered (the session says so)');
-    A.eq(views.list().station.open, true, 'the farm browser is open');
-    A.eq(views.list().station.driver, null, 'nobody is driving: it is the Farmer\'s');
+    A.eq(views.list().station.open, true, 'the station browser is open');
+    A.eq(views.list().station.driver, null, 'nobody is driving: it is the Commander\'s');
 
     const prompt = () => 'ask';
     const sess = views.sessionForRun({ agentId: 'nova', runId: 'r1', interactive: true, loginPrompt: prompt });
-    A.ok(!!sess, 'an interactive run is given the farm browser');
+    A.ok(!!sess, 'an interactive run is given the station browser');
     // a run that has not browsed yet is NOT the driver: the Commander keeps their browser
     A.eq(views.list().station.driver, null, 'a run that has not touched the browser is not "driving"');
-    A.ok((await views.input({ type: 'text', text: 'still mine' })).ok, '…so the Farmer can keep using it while the agent thinks');
+    A.ok((await views.input({ type: 'text', text: 'still mine' })).ok, '…so the Commander can keep using it while the agent thinks');
     A.eq(made[0].hands.length, 0, 'and nothing has changed hands');
     made[0].inputs.length = 0;
     // its first real browser call takes the wheel
     const seen = await sess.handoffSurface().pageInfo();
     A.eq(views.list().station.driver, null, 'asking a passive question (where is the page?) does not take the wheel either');
-    A.eq(seen.url, 'https://google.com/', 'THE page the Farmer opened is what the agent browser has');
+    A.eq(seen.url, 'https://google.com/', 'THE page the Commander opened is what the agent browser has');
     await sess.back();
     A.eq(made.length, 1, 'no second browser was created: it is the same one');
     A.eq(made[0].navs[made[0].navs.length - 1][0], 'back', 'the agent call reached the shared browser');
@@ -104,13 +104,13 @@ function rig(extra) {
 
     // the Commander's hands are NEVER refused, even while an agent drives (Andrew 2026-10-02: "the whole point was for it
     // to be interactive inside of the window") — one AGENT driver at a time, but you can always click and type
-    A.eq((await views.input({ type: 'text', text: 'x' })).ok, true, 'while the agent drives, the Farmer can still type');
+    A.eq((await views.input({ type: 'text', text: 'x' })).ok, true, 'while the agent drives, the Commander can still type');
     A.eq(made[0].inputs.length, 1, '…and it reaches the page');
     const second = views.sessionForRun({ agentId: 'kira', runId: 'r2', interactive: true });
     let busyErr = ''; try { await second.navigate('https://example.org/'); } catch (e) { busyErr = e.message; }
     A.ok(/in use by another run/.test(busyErr), 'a second run cannot drive it while another is: it is told so');
     A.eq(made[0].url, 'https://google.com/', '…and the page did not move');
-    A.eq(views.sessionForRun({ agentId: 'nova', runId: 'r3', interactive: false }), null, 'an unattended run never gets the farm browser (it uses a private one)');
+    A.eq(views.sessionForRun({ agentId: 'nova', runId: 'r3', interactive: false }), null, 'an unattended run never gets the station browser (it uses a private one)');
     A.eq((await views.close()).ok, false, 'it cannot be closed under a driving run');
 
     // the agent navigates; the Commander watches it live
@@ -128,11 +128,11 @@ function rig(extra) {
     A.eq(views.list().station.driver, null, 'and nobody is driving');
     A.eq(attended.prompt, undefined, 'the ended run\'s consent channel is gone');
     const f2 = await views.frame('station', 0, 0);
-    A.ok(f2.ok && f2.page.url === 'https://youtube.com/', 'after the run the Farmer still sees what the agent opened');
+    A.ok(f2.ok && f2.page.url === 'https://youtube.com/', 'after the run the Commander still sees what the agent opened');
     A.eq(f2.driver, null, 'with nobody driving');
 
     // now the Commander drives it
-    A.ok((await views.input({ type: 'text', text: 'hello' })).ok, 'the Farmer types into the same page');
+    A.ok((await views.input({ type: 'text', text: 'hello' })).ok, 'the Commander types into the same page');
     A.eq(made[0].inputs[made[0].inputs.length - 1].text, 'hello', 'it reached the page');
     A.eq((await views.input({ type: 'nonsense' })).ok, false, 'an unknown input event is refused');
     await views.open('localhost:5173');
@@ -155,12 +155,12 @@ function rig(extra) {
     const sess = views.sessionForRun({ agentId: 'nova', runId: 'r1', interactive: true });
     A.eq(views.list().station.open, false, 'not "open" until the agent actually opens a page (truth, not intent)');
     await sess.navigate('https://youtube.com/');
-    A.eq(made.length, 1, 'the first browser call of the agent opens the farm browser');
+    A.eq(made.length, 1, 'the first browser call of the agent opens the station browser');
     A.eq(views.list().station.open, true, 'open once it has a page');
     A.eq(views.list().station.driver.agentId, 'nova', 'and the agent is driving');
     views.releaseRun('r1');
     const f = await views.frame('station', 0, 0);
-    A.ok(f.ok && f.page.url === 'https://youtube.com/', 'the Farmer opens the window after the run and YouTube is there');
+    A.ok(f.ok && f.page.url === 'https://youtube.com/', 'the Commander opens the window after the run and YouTube is there');
   }
 
   // ---- a SECOND run while one drives: it browses in its own private browser instead of failing (release review) ----
@@ -175,7 +175,7 @@ function rig(extra) {
     A.eq(privMade, 1, '…in a private browser made for it');
     A.eq(made[0].url, 'https://first.example/', 'the shared browser was not touched');
     A.eq(views.list().station.driver.runId, 'r1', 'the first run still drives the shared browser');
-    A.ok(views.list().agents.some(a => a.runId === 'r2'), 'the Farmer can watch the second run\'s private browser');
+    A.ok(views.list().agents.some(a => a.runId === 'r2'), 'the Commander can watch the second run\'s private browser');
     await second.navigate('https://second.example/two');
     A.eq(privMade, 1, 'one run, one browser: it stays private for the rest of the run');
     views.releaseRun('r2');
@@ -194,7 +194,7 @@ function rig(extra) {
     A.eq(made[0].hands[made[0].hands.length - 1].downloadDir, '/ws/nova/downloads', 'while nova drives, downloads land in nova\'s folder');
     views.releaseRun('r1');
     await tick(); await tick();
-    A.eq(made[0].hands[made[0].hands.length - 1].downloadDir, '/home/me/Downloads', 'after the run, the Farmer\'s downloads go to their own Downloads folder');
+    A.eq(made[0].hands[made[0].hands.length - 1].downloadDir, '/home/me/Downloads', 'after the run, the Commander\'s downloads go to their own Downloads folder');
   }
 
   // ---- STOP mid-tool: a late tool call of an ENDED run never takes the wheel back (release review, reproduced) ----
@@ -207,7 +207,7 @@ function rig(extra) {
     A.ok(/run has ended/.test(late), 'the ended run\'s late driving call is refused');
     A.eq(views.list().station.driver, null, 'nobody is shown driving');
     const typed = await views.input({ type: 'text', text: 'hi' });
-    A.eq(typed && typed.ok, true, 'the Farmer can still type in the browser');
+    A.eq(typed && typed.ok, true, 'the Commander can still type in the browser');
     const next = views.sessionForRun({ agentId: 'iris', runId: 'r2', interactive: true });
     await next.navigate('https://next.example/');
     A.eq(views.list().station.driver.runId, 'r2', 'and the next run can drive it');
@@ -253,7 +253,7 @@ function rig(extra) {
   {
     const { clk, made, ho, views } = rig();
     await views.open('example.com');
-    A.ok((await views.frame('station', 0, 0)).ok, 'the Farmer watches with nobody driving, then closes the window');
+    A.ok((await views.frame('station', 0, 0)).ok, 'the Commander watches with nobody driving, then closes the window');
     await views.sessionForRun({ agentId: 'nova', runId: 'r7', interactive: true }).forward();
     ho.live = true;   // the run hits a sign-in: STEP-IN streams this same browser
     const stops = made[0].stops;
@@ -301,14 +301,14 @@ function rig(extra) {
     views.unregisterRun('p1');
     A.eq(run.stops, stops, 'an ending run is forgotten WITHOUT reaching into its closing browser');
     A.eq((await views.frame('run:p1', 0, 0)).code, 'ended', 'an ended run has no picture');
-    A.eq(run.inputs.length, 0, 'a private run\'s browser never received Farmer input');
+    A.eq(run.inputs.length, 0, 'a private run\'s browser never received Commander input');
   }
 
   // ---- WARM: opening the window starts the browser in the background, once ----
   {
     const { made, views } = rig();
     const w1 = views.warm();
-    A.ok(w1.ok && w1.warming, 'opening the window starts the farm browser in the background');
+    A.ok(w1.ok && w1.warming, 'opening the window starts the station browser in the background');
     views.warm();
     await tick();
     A.eq(made.length, 1, 'one browser');
@@ -330,7 +330,7 @@ function rig(extra) {
     const r0 = await views.setMode('builtin');
     A.ok(r0.ok && saved === 'builtin', 'switching to BUILT-IN is saved');
     await views.open('example.com');
-    A.eq(modesMade[0], 'builtin', 'the farm browser is created in the chosen mode');
+    A.eq(modesMade[0], 'builtin', 'the station browser is created in the chosen mode');
     A.eq(views.list().station.mode, 'builtin', 'and the list says which mode is running');
     const r1 = await views.setMode('window');
     A.ok(r1.ok && r1.applied && saved === 'window', 'switching to CHROME WINDOW is saved and applied');
@@ -396,8 +396,8 @@ function rig(extra) {
     const { made, views } = rig({ sweepStationProfile: async () => { sweeps++; return sweepResult; } });
     await views.open('example.com');
     const r = await views.reset();
-    A.ok(r.ok && r.closed, 'reset closes the farm browser and reports ok');
-    A.eq(made[0].closed, 1, 'the farm session really closed');
+    A.ok(r.ok && r.closed, 'reset closes the station browser and reports ok');
+    A.eq(made[0].closed, 1, 'the station session really closed');
     A.eq(sweeps, 1, 'and the durable profile was swept for orphans');
     A.eq(r.sweep.killed, [300], 'the receipt carries the sweep verdict');
     sweepResult = { ok: false, found: 1, killed: [], survivors: [300], ours: [], locks: { removed: [], failed: [] }, error: null };

@@ -136,7 +136,7 @@ const ENV = { perRun: 3, perAgent: 5, perDay: 40, global: 100 };   // a fully-go
   A.eq(bc.DEFAULT_PER_DAY_USD, 25, 'the constant the sidecar wires is the same number');
   A.ok(bc.shippedDefaults() !== bc.shippedDefaults(), 'each call is a fresh copy (a caller cannot mutate the shipped table)');
   A.eq(bc.resolveCaps(shipped, {}), shipped, 'with nothing saved, the shipped defaults ARE the effective caps');
-  A.eq(bc.resolveCaps(shipped, { perDay: 0 }).perDay, 0, 'a saved 0 dials the shipped rail OFF (the Farmer\'s explicit choice wins)');
+  A.eq(bc.resolveCaps(shipped, { perDay: 0 }).perDay, 0, 'a saved 0 dials the shipped rail OFF (the Commander\'s explicit choice wins)');
   A.eq(bc.resolveCaps(shipped, { perDay: 100 }).perDay, 100, 'a saved value raises it');
   A.eq(bc.resolveCaps(Object.assign({}, shipped, { perDay: 40 }), {}).perDay, 40, 'an env value (SKYNET_BUDGET_PER_DAY) replaces the shipped default');
   // the governor actually blocks on it — this is the number that stops the overnight burn

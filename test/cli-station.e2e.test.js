@@ -59,9 +59,9 @@ function startMock(seen) {
           res.end('data: [DONE]\n\n');
         };
         if (msgs.some(m => m && m.role === 'tool')) return say('done');
-        if (/write the farm notes/i.test(text)) return tool('fs.write', { path: 'station-notes.md', content: 'approved from starnet approve' });
+        if (/write the station notes/i.test(text)) return tool('fs.write', { path: 'station-notes.md', content: 'approved from starnet approve' });
         if (/write the project note/i.test(text)) return tool('fs.write', { path: 'project-note.md', content: 'written from the folder starnet was started in' });
-        return say('Hello from the farm.');
+        return say('Hello from the station.');
       });
     });
     server.listen(0, HOST, () => resolve({ server, base: 'http://' + HOST + ':' + server.address().port + '/api/v1' }));
@@ -120,7 +120,7 @@ function hermetic(profile) {
     // the page starts work on its own conversation (the bare agent asks before every write; no task brief, so the
     // write goes straight to the approval gate)
     const pageEvents = [];
-    const payload = Buffer.from(JSON.stringify({ model: 'test/model', provider: 'openrouter', agentId: 'agent', streamId: 'desk-e2e', placed: [{ objectType: 'computer' }, { objectType: 'cabinet' }], messages: [{ role: 'user', content: 'write the farm notes' }] }));
+    const payload = Buffer.from(JSON.stringify({ model: 'test/model', provider: 'openrouter', agentId: 'agent', streamId: 'desk-e2e', placed: [{ objectType: 'computer' }, { objectType: 'cabinet' }], messages: [{ role: 'user', content: 'write the station notes' }] }));
     const pageDone = new Promise(resolve => {
       const req = http.request({ host: HOST, port: fixture.port, path: '/api/run', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': payload.length, 'X-StarNet-Token': fixture.token, Origin: fixture.baseUrl } }, res => {
         res.setEncoding('utf8'); let buf = '';
@@ -163,7 +163,7 @@ function hermetic(profile) {
     const mine = lines.filter(e => e.payload && e.payload.runId === runId).map(e => e.name);
     A.ok(mine.indexOf('agent.run.start') >= 0 && mine.indexOf('agent.tool_call') >= 0 && mine.indexOf('permission.prompt') >= 0 && mine.indexOf('agent.run.end') >= 0, 'watch --json streamed the run: ' + mine.join(','));
     const start = lines.find(e => e.name === 'agent.run.start' && e.payload.runId === runId);
-    A.ok(start && /write the farm notes/.test(start.payload.prompt || ''), 'with the asking prompt');
+    A.ok(start && /write the station notes/.test(start.payload.prompt || ''), 'with the asking prompt');
 
     /* ---- 4. -p marks a task ------------------------------------------------------------------- */
     seen.length = 0;
@@ -176,11 +176,11 @@ function hermetic(profile) {
     /* ---- 5. flow + a bare starnet in a pipe ----------------------------------------------------- */
     const fl = await cli(['flow', '--port', port], env);
     A.eq(fl.code, 0, 'flow exits 0');
-    A.ok(/no workflows on this farm yet/.test(fl.out), 'and says there are none: ' + fl.out);
+    A.ok(/no workflows on this station yet/.test(fl.out), 'and says there are none: ' + fl.out);
     const fj = JSON.parse((await cli(['flow', '--json', '--port', port], env)).out);
     A.eq(fj.flows, [], 'flow --json: an empty list');
     const bare = await cli([], env);
-    A.ok(bare.code === 0 && /starnet — run Homestead agents/.test(bare.out), 'a bare starnet without a terminal prints the usage');
+    A.ok(bare.code === 0 && /starnet — run StarNet agents/.test(bare.out), 'a bare starnet without a terminal prints the usage');
 
     /* ---- 6. the folder it was started in --------------------------------------------------------- */
     const proj = fs.mkdtempSync(path.join(os.tmpdir(), 'sk-cli-proj-'));
@@ -189,12 +189,12 @@ function hermetic(profile) {
     try {
       seen.length = 0;
       const before = await cli(['-p', 'write the project note', '--port', port, '--yes'], env, 60000, path.join(proj, 'src'));
-      A.ok(before.err.indexOf('· ' + projReal + ' is not a trusted project, so ') >= 0 && /works in its own workspace/.test(before.err), 'started in a project the farm does not trust: -p says so, naming the project: ' + before.err.slice(0, 400));
+      A.ok(before.err.indexOf('· ' + projReal + ' is not a trusted project, so ') >= 0 && /works in its own workspace/.test(before.err), 'started in a project the station does not trust: -p says so, naming the project: ' + before.err.slice(0, 400));
       A.ok(seen.length > 0 && !seen.some(s => /PROJECT FOLDER/.test(s.sys)), 'and the agent is told of no project folder');
       A.ok(!fs.existsSync(path.join(proj, 'project-note.md')) && fs.existsSync(path.join(fixture.workspace, 'agent', 'project-note.md')), 'its write landed in its own workspace, not the folder');
       // trusted the way the dashboard's y (and the app's PROJECTS rail) does it
       const b = await post(fixture, '/api/projects/bless', { path: projReal });
-      A.ok(b.status === 200 && b.json && b.json.ok && b.json.root, 'the farm trusts the project: ' + JSON.stringify(b.json));
+      A.ok(b.status === 200 && b.json && b.json.ok && b.json.root, 'the station trusts the project: ' + JSON.stringify(b.json));
       const root = b.json && b.json.root;
       seen.length = 0;
       const after = await cli(['-p', 'write the project note', '--port', port, '--yes'], env, 60000, path.join(proj, 'src'));
@@ -232,16 +232,16 @@ function hermetic(profile) {
     // saved floor above: a cabinet only, so the run lacks gear and the capability note says where gear is placed)
     const termRun = async (extra) => {
       seen.length = 0;
-      const r = await post(fixture, '/api/run', Object.assign({ model: 'test/model', provider: 'openrouter', agentId: 'agent', isTask: true, messages: [{ role: 'user', content: 'look around the farm' }] }, extra));
+      const r = await post(fixture, '/api/run', Object.assign({ model: 'test/model', provider: 'openrouter', agentId: 'agent', isTask: true, messages: [{ role: 'user', content: 'look around the station' }] }, extra));
       A.eq(r.status, 200, 'the run answered: ' + r.status);
       return seen.map(s => s.sys).join('\n');
     };
     const termSys = await termRun({ streamId: 'cli-agent', rosterSystem: true, client: 'terminal' });
     A.ok(termSys.indexOf('[TERMINAL] The Commander is talking to you from the StarNet terminal CLI') >= 0, 'the terminal run carries the [TERMINAL] note');
-    A.ok(termSys.indexOf('using Homestead from its TERMINAL CLI') >= 0, 'and the terminal manual pointer, not the desktop manual');
-    A.ok(termSys.indexOf('name the object to place in the Homestead desktop app to grant it') >= 0, 'and the capability note sends missing gear to the desktop app (the run\'s viewer reached summarizeCapabilities): ' + (termSys.match(/You do NOT have[^\n]*\n[^\n]*/) || [''])[0].slice(0, 300));
+    A.ok(termSys.indexOf('using StarNet from its TERMINAL CLI') >= 0, 'and the terminal manual pointer, not the desktop manual');
+    A.ok(termSys.indexOf('name the object to place in the StarNet desktop app to grant it') >= 0, 'and the capability note sends missing gear to the desktop app (the run\'s viewer reached summarizeCapabilities): ' + (termSys.match(/You do NOT have[^\n]*\n[^\n]*/) || [''])[0].slice(0, 300));
     const deskSys = await termRun({ streamId: 'desk-e2e-8', placed: [{ objectType: 'cabinet' }] });
-    A.ok(deskSys.indexOf('[TERMINAL]') < 0 && deskSys.indexOf('in the Homestead desktop app to grant it') < 0 && deskSys.indexOf('TERMINAL CLI') < 0, 'a page run on the same farm gets none of it');
+    A.ok(deskSys.indexOf('[TERMINAL]') < 0 && deskSys.indexOf('in the StarNet desktop app to grant it') < 0 && deskSys.indexOf('TERMINAL CLI') < 0, 'a page run on the same station gets none of it');
   } catch (e) {
     A.ok(false, 'cli-station e2e threw: ' + ((e && e.stack) || e));
   } finally {

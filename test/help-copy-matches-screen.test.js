@@ -41,7 +41,7 @@ A.ok(/fmEntry\('NO REPLY', 'Check the connection', 'Open <b>SYSTEM › SETTINGS 
 // ---- the glossary ----
 const gsrc = read('frontend/app/glossary.js');
 const entry = key => { const m = gsrc.match(new RegExp('\\n\\s+' + key + ':\\s+\'([^\']*)\'')); return m ? m[1] : ''; };
-A.ok(/your first agent; it leads and delegates/.test(entry('overseer')) && !/farm itself/.test(entry('overseer')),
+A.ok(/your first agent; it leads and delegates/.test(entry('overseer')) && !/station itself/.test(entry('overseer')),
   'the overseer is the first agent that leads and delegates: ' + entry('overseer'));
 A.ok(/CONNECT › ABILITIES/.test(entry('capability')) && !/SKILLS tab/.test(entry('capability')),
   'a capability readout points at ABILITIES, not a SKILLS tab: ' + entry('capability'));

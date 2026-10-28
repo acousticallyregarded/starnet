@@ -46,7 +46,7 @@ function shotGroup(i) {
     A.ok(!B64_RUN.test(all), 'no base64 run of 200+ chars reached the summarizer');
     A.ok(all.length < 8000, 'the whole input is small (' + all.length + ' chars, was ~900k)');
     A.eq((all.match(/\[image: screen capture from browser_screenshot\]/g) || []).length, 3, 'each screenshot is named as an image from the tool that captured it');
-    A.ok(all.indexOf('here is the mock I meant\n[image]') >= 0, 'a Farmer attachment keeps its words and names its image');
+    A.ok(all.indexOf('here is the mock I meant\n[image]') >= 0, 'a Commander attachment keeps its words and names its image');
     A.ok(/\[base64 data omitted: \d+ chars\]/.test(all), 'a raw base64 blob in a tool result is a sized marker');
     A.ok(all.indexOf('→ called browser_screenshot({"url":"https://example.test/p1"})') >= 0, 'the summarizer sees what was called');
   }

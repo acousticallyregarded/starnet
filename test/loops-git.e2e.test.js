@@ -172,7 +172,7 @@ function makeRepo() {
 
     const branch = git(['rev-parse', '--abbrev-ref', 'HEAD']).trim();
     A.ok(/^loop\//.test(branch), 'the repo is on the loop-owned branch: ' + branch);
-    A.ok(branch !== baseBranch, 'which is NOT the branch the Farmer was on');
+    A.ok(branch !== baseBranch, 'which is NOT the branch the Commander was on');
     A.eq(loop.branch, branch, 'and the loop record names the same branch the repo is actually on');
     A.eq(git(['rev-parse', baseBranch]).trim(), baseHead, 'the original branch was never moved');
 
@@ -184,7 +184,7 @@ function makeRepo() {
     // ---- 2. the Commander's own uncommitted work was NOT swept in --------------------------------------
     const touched = git(['show', '--pretty=format:', '--name-only', cands[0].commit]);
     A.ok(/src\/feature1\.js/.test(touched), 'the commit contains the file that pass created — ' + JSON.stringify(touched));
-    A.eq(/MY-NOTES\.txt/.test(touched), false, 'and NOT the Farmer\'s own uncommitted file');
+    A.eq(/MY-NOTES\.txt/.test(touched), false, 'and NOT the Commander\'s own uncommitted file');
     A.ok(/MY-NOTES\.txt/.test(git(['status', '--porcelain'])), 'which is still sitting there, untracked and untouched');
     A.eq(fs.readFileSync(path.join(repo, 'MY-NOTES.txt'), 'utf8'), 'my own unsaved work\n', 'with its contents intact');
 
@@ -214,7 +214,7 @@ function makeRepo() {
     A.eq(fs.existsSync(path.join(repo, 'src', 'feature1.js')), false, 'REJECT REALLY REMOVED THE CODE — feature1.js is gone from the tree');
     A.eq(fs.existsSync(path.join(repo, 'src', 'feature2.js')), false, 'and the cascaded iteration\'s file is gone too');
     A.eq(fs.readFileSync(path.join(repo, 'src', 'app.js'), 'utf8'), '// base\n', 'the pre-existing file is untouched');
-    A.eq(fs.readFileSync(path.join(repo, 'MY-NOTES.txt'), 'utf8'), 'my own unsaved work\n', 'and the Farmer\'s uncommitted work survived the undo');
+    A.eq(fs.readFileSync(path.join(repo, 'MY-NOTES.txt'), 'utf8'), 'my own unsaved work\n', 'and the Commander\'s uncommitted work survived the undo');
 
     // REVERT, NOT RESET — the original commits are all still reachable, so a mis-click is recoverable.
     A.ok(git(['cat-file', '-t', cands[0].commit]).trim() === 'commit', 'the rejected commit still exists (revert, never reset)');
@@ -270,10 +270,10 @@ function makeRepo() {
     A.eq(okBody.undone, [], 'an approval reverts nothing');
     A.eq(fs.existsSync(path.join(repo, clashPath)), true, 'the approved work is still in the tree');
     A.eq(git(['cat-file', '-t', fresh.commit]).trim(), 'commit', 'and still its own commit');
-    A.eq(okBody.branch, branch, 'and the response tells the Farmer which branch their approved work is on');
+    A.eq(okBody.branch, branch, 'and the response tells the Commander which branch their approved work is on');
 
     // nothing was ever pushed and the original branch never moved
-    A.eq(git(['rev-parse', baseBranch]).trim(), baseHead, 'the Farmer\'s original branch is exactly where they left it');
+    A.eq(git(['rev-parse', baseBranch]).trim(), baseHead, 'the Commander\'s original branch is exactly where they left it');
 
     await fetch(B + '/api/loops/control', { method: 'POST', headers, body: JSON.stringify({ id, action: 'stop' }) });
 

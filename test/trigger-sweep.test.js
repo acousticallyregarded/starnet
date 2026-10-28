@@ -253,10 +253,10 @@ function harness(opts) {
     const H = harness({ halted: () => true, faulted: () => true });
     const c = H.R.create({ kind: 'webhook', lineId: 'L1', maxPerHour: 10 }, { secretHash: T.hashSecret('k') });
     const why = H.R.view(c.trigger.id).blockedBy || '';
-    A.ok(/internal fault/.test(why) && !/E-STOP/.test(why), 'a fault-quiesced farm blocks the trigger in its own words, never E-STOP — ' + why);
+    A.ok(/internal fault/.test(why) && !/E-STOP/.test(why), 'a fault-quiesced station blocks the trigger in its own words, never E-STOP — ' + why);
     const H2 = harness({ halted: () => true });
     const c2 = H2.R.create({ kind: 'webhook', lineId: 'L1', maxPerHour: 10 }, { secretHash: T.hashSecret('k') });
-    A.ok(/E-STOP/.test(H2.R.view(c2.trigger.id).blockedBy || ''), 'the Farmer’s E-STOP still says E-STOP');
+    A.ok(/E-STOP/.test(H2.R.view(c2.trigger.id).blockedBy || ''), 'the Commander’s E-STOP still says E-STOP');
   }
 
   A.report('trigger-sweep.test');

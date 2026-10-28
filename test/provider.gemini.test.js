@@ -318,7 +318,7 @@ async function collect(provider, req) { const out = []; for await (const e of pr
     const p = makeGeminiProvider({ fetch: async () => new Response(sse, { status: 200, headers: { 'Content-Type': 'text/event-stream' } }), key: 'k' });
     const evs = [];
     for await (const e of p.stream({ model: 'gemini-3-pro', messages: [{ role: 'user', content: 'hi' }] })) evs.push(e);
-    A.eq(evs.filter(e => e.type === 'text').map(e => e.delta).join(''), 'The answer is 4.', 'a thought part NEVER reaches the answer the Farmer reads');
+    A.eq(evs.filter(e => e.type === 'text').map(e => e.delta).join(''), 'The answer is 4.', 'a thought part NEVER reaches the answer the Commander reads');
     A.eq(evs.filter(e => e.type === 'reasoning').length, 1, 'it comes back as reasoning instead, so nothing is silently discarded');
   }
 

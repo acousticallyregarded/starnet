@@ -430,7 +430,7 @@ const UP = '\x1b[A', DOWN = '\x1b[B', ESC = '\x1b';
     const at = d.mark();
     await d.keys('/yolo\r', 600);
     const said = d.since(at).replace(/\s+/g, ' ');
-    A.ok(/did not confirm in time/.test(said) && /The farm's roster says ULTRON will run without prompts right now/.test(said), 'yolo: unconfirmed, it says what the farm holds now: ' + (said.match(/The Homestead app.{0,200}/) || [''])[0]);
+    A.ok(/did not confirm in time/.test(said) && /The farm's roster says ULTRON will run without prompts right now/.test(said), 'yolo: unconfirmed, it says what the farm holds now: ' + (said.match(/The StarNet app.{0,200}/) || [''])[0]);
     A.ok(!/still will ask first/.test(said), 'yolo: never "still will ask first" while the roster says full');
     mode = 'roster';
     const at2 = d.mark();

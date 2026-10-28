@@ -135,7 +135,7 @@ A.eq(U.understanding(D.fresh(), { workSamples: 7.9 }).workSamples, 7, 'workSampl
 {
   // cold station: every requirement unmet, honestly named.
   const cold = U.readiness(D.fresh());
-  A.eq(cold.ready, false, 'a cold farm is not ready');
+  A.eq(cold.ready, false, 'a cold station is not ready');
   A.eq(cold.reasons, ['no-direction', 'no-person', 'too-thin'], 'a cold gate names every unmet requirement');
 
   // the blitz case: seed-weight beliefs everywhere (canned chips / doc copies) — breadth exists, grounding doesn't.

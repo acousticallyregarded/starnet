@@ -221,7 +221,7 @@ assert.equal(L.quotedTurns(null), false);
     assert.equal(v.queued[2].content, 'From now on use https://deploy:[redacted-secret]@ci.example.com for builds.', 'a password in a URL is scrubbed, user and host stay readable');
   }
   await s.say('Always CC my wife at jane.doe@example.com on invoices.', 'r-pii');
-  assert.equal(s.notes().length, 0, 'personal data waits for the Farmer too');
+  assert.equal(s.notes().length, 0, 'personal data waits for the Commander too');
   assert.equal(s.queued.length, 2);
   await s.say('From now on, use tabs for indentation.', 'r-tabs');
   assert.equal(s.notes().length, 1, 'an ordinary owner preference still saves without a deck');

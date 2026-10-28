@@ -25,10 +25,10 @@ function fakeDriver() {
     });
     const t0 = Date.now();
     await B.session.waitForProfile();
-    A.ok(Date.now() - t0 < 1000, 'no 8 s wait when the farm browser holds the profile');
+    A.ok(Date.now() - t0 < 1000, 'no 8 s wait when the station browser holds the profile');
     const url = await B.session.navigate('https://example.com/');
     A.eq(url, 'https://example.com/', 'the run browses');
-    A.eq(!!built[0].profileIsPersistent, false, 'on a TEMPORARY profile (it never touches the one the Farmer has open)');
+    A.eq(!!built[0].profileIsPersistent, false, 'on a TEMPORARY profile (it never touches the one the Commander has open)');
     A.ok(built[0].profileDir !== 'C:/tmp/profile', 'and never the durable profile directory');
   }
   // 2. lost to another RUN → the old refusal stands

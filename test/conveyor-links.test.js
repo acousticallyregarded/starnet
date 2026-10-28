@@ -114,9 +114,9 @@ for (const bp of WM.BLUEPRINTS) for (const crewed of [false, true]) {
   A.eq(out.version, 2, 'a v1 save loads and saves as v2');
   A.ok(Array.isArray(out.links) && out.links.length === st.links().length && out.links.length >= 10, '…carrying its links');
   const g = st.projectGeometry();
-  A.eq(P.compileRoutingPlan(g).hash, tilePlan.hash, '…and routes identically: same plan hash, so no farm re-arms');
+  A.eq(P.compileRoutingPlan(g).hash, tilePlan.hash, '…and routes identically: same plan hash, so no station re-arms');
   A.eq(P.compileRoutingPlan(g), tilePlan, '…same plan, field for field');
-  A.eq(WM.defaultDoc().version, 2, 'a new farm starts at v2');
+  A.eq(WM.defaultDoc().version, 2, 'a new station starts at v2');
 
   // a save's links are KEPT — only those the floor no longer stands behind drop, and every loose belt that joins two
   // machines is linked afresh, so a save an older build edited still routes by what is drawn

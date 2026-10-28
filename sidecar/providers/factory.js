@@ -153,7 +153,7 @@
       // is known, so the error names the actual remedy instead of a generic construction failure.
       if (!(opts.baseUrl || profile.baseUrl)) {
         throw new Error(id === 'starnet'
-          ? 'HOMESTEAD is not linked on this farm — link it in SETTINGS to run on credits (relink if you recently unlinked or reinstalled)'
+          ? 'STARNET is not linked on this farm — link it in SETTINGS to run on credits (relink if you recently unlinked or reinstalled)'
           : 'provider ' + id + ' has no endpoint configured (base URL missing)');
       }
       /* An Ollama server added as a CUSTOM OpenAI-compatible endpoint (http://…:11434/v1) got none of the Ollama

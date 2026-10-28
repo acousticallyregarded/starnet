@@ -47,10 +47,10 @@ function startUpstream() {
       const done = name => messages.slice(lastUser + 1).filter(m => (m.tool_calls || []).some(t => t.function && t.function.name === name)).length;
       const offered = name => (body.tools || []).some(t => t.function && t.function.name === name);
       if (auxiliary) delta.content = 'NONE';
-      else if (offered('brief_proceed') && !done('brief_proceed')) tool('brief_proceed', { objective: 'Answer the Farmer' });
+      else if (offered('brief_proceed') && !done('brief_proceed')) tool('brief_proceed', { objective: 'Answer the Commander' });
       else if (state.phase === 'seed') {
         if (done('notebook_write') === 0) tool('notebook_write', { title: 'Quokka codeword', body: 'The quokka codeword is Wallaby-Seven' });
-        else if (done('notebook_write') === 1) tool('notebook_write', { title: 'Quokka pet', body: 'The Farmer keeps a pet quokka named Wallaby-Nine', scope: 'global' });
+        else if (done('notebook_write') === 1) tool('notebook_write', { title: 'Quokka pet', body: 'The Commander keeps a pet quokka named Wallaby-Nine', scope: 'global' });
         else delta.content = 'Reply to: echo session uniqueword quokka — done.';
       } else if (state.phase === 'probe') {
         if (done('recall_conversation') === 0) tool('recall_conversation', { query: 'quokka platypus', scope: 'all' });

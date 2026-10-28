@@ -55,7 +55,7 @@ const touch = (root, name, sec) => fs.utimesSync(path.join(root, name), sec, sec
       cacheA.set('starnet.save', JSON.stringify(next)); W.push(next);
       A.eq(await W.flush({ force: true }), false, 'r1: that window\'s next autosave after START FRESH is refused');
       A.ok(W.health().conflict && W.health().conflict.reset === true, 'r1: as a reset (' + JSON.stringify(W.health().conflict) + ')');
-      A.eq(ref.host.saveStore.load('agent'), undefined, 'r1: the fresh workspace stays empty: the pre-reset farm never writes itself back');
+      A.eq(ref.host.saveStore.load('agent'), undefined, 'r1: the fresh workspace stays empty: the pre-reset station never writes itself back');
     }
     {
       // an import whose first send got NO answer (an outage) is still the Commander's import when it is sent again
@@ -69,7 +69,7 @@ const touch = (root, name, sec) => fs.utimesSync(path.join(root, name), sec, sec
       cache.set('starnet.save', JSON.stringify(backupDoc)); P.push(backupDoc, { restore: true });
       A.eq(await P.flush({ force: true }), false, 'r1: the import\'s first send gets no answer');
       A.eq(await P.flush({ force: true }), true, 'r1: sent again, the import lands on the empty file of the reset workspace');
-      A.eq(host.saveStore.load('agent').agent.name, 'OLD-BACKUP', 'r1: the farm is the imported backup');
+      A.eq(host.saveStore.load('agent').agent.name, 'OLD-BACKUP', 'r1: the station is the imported backup');
     }
 
     // ================= r2. work typed after a CLEAR comes back; a restore of nothing never drops this window =================
@@ -151,7 +151,7 @@ const touch = (root, name, sec) => fs.utimesSync(path.join(root, name), sec, sec
       const fresh = stationDoc({ agent: { id: 'agent', name: 'FRESH', createdAt: 8000 }, workstreams: [{ id: 'general', title: null, history: [turn('user', 'hi')] }].concat(big(50)) });
       host.saveStore.save('agent', fresh, { compareRevision: true });
       const v = JSON.parse(JSON.stringify(fresh)); v._saveRevision = 0; v._saveClient = 'window-v'; v.updatedAt = 9000; v.workstreams.push({ id: 'v-work', title: 'V', history: [turn('user', 'v')] });
-      A.ok(host.saveStore.save('agent', v, { compareRevision: true }).conflict, 'r4: window V of the fresh farm is preserved');
+      A.ok(host.saveStore.save('agent', v, { compareRevision: true }).conflict, 'r4: window V of the fresh station is preserved');
       const old = JSON.parse(JSON.stringify(fresh)); old.agent = { id: 'agent', name: 'OLD', createdAt: 5000 }; old._saveRevision = 42; old._saveClient = 'old-tab'; old.updatedAt = 9999;
       A.ok(host.saveStore.save('agent', old, { compareRevision: true }).predatesReset === true, 'r4: a stale pre-reset tab\'s copy is erased work');
       const t = Date.now() / 1000;
@@ -280,7 +280,7 @@ const touch = (root, name, sec) => fs.utimesSync(path.join(root, name), sec, sec
       const pa = page(asA, new Map());
       pa.push(stationDoc({ updatedAt: 9600, workstreams: [{ id: 'general', title: null, history: [turn('user', 'hi'), turn('assistant', 'A kept going')] }] }));
       A.eq(await pa.flush({ force: true }), false, 'r7: window A\'s next save is refused');
-      A.ok(!pa.health().conflict.ownSeed, 'r7: not as its own seed: another window\'s save is the farm\'s newest');
+      A.ok(!pa.health().conflict.ownSeed, 'r7: not as its own seed: another window\'s save is the station\'s newest');
       const light = stationUi(pa).light();
       A.ok(/another window saved newer/i.test(light.title) && !/restart/i.test(light.title), 'r7: the banner says another window saved, and no restart (' + light.title + ')');
     }

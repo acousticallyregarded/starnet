@@ -51,7 +51,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       const clock = clockAt(1000);
       const file = path.join(dir, 'session-tombstones.json');
       let t = makeSessionTombstones({ fs, path, file, now: clock.now });
-      A.eq(t.status(), 'absent', 'a fresh farm has no ledger yet');
+      A.eq(t.status(), 'absent', 'a fresh station has no ledger yet');
       A.eq(t.deletedAt('ws_a'), 0, 'a session nobody deleted has no stamp');
       A.eq(t.observe(undefined), [], 'a save with no deletedIds teaches nothing');
       A.eq(t.since(), 0, '…not even that the ledger has read a list');
@@ -107,7 +107,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
     try {
       const clock = clockAt(50);
       let t = makeSessionTombstones({ fs, path, file: path.join(dir, 'tomb.json'), now: clock.now });
-      A.eq(t.observe([]), [], 'a new farm\'s first list is empty');
+      A.eq(t.observe([]), [], 'a new station\'s first list is empty');
       A.eq(t.since(), 50, '…and it is the adopted first list all the same');
       clock.set(60);
       A.eq(t.observe(['ws_new']), ['ws_new'], 'after it, a delete is fresh');
@@ -243,7 +243,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       A.ok(/\(on: design the quokka landing page\)/.test(liked.content) && liked.feedbackRef, 'the fixture verdict quotes the rated work (the bug\'s premise)');
       await store.update('notebook:agent', () => [
         { id: 'note_1', title: 'Quokka', body: 'The quokka codeword is Wallaby-Seven', scope: 'stream', streamId: 'ws_gone', sourceRunId: 'run_gone_1', createdAt: 4000 },
-        { id: 'note_2', title: 'Pet', body: 'The Farmer keeps a pet quokka', scope: 'global', streamId: null, sourceRunId: 'run_gone_2', createdAt: 4500 },
+        { id: 'note_2', title: 'Pet', body: 'The Commander keeps a pet quokka', scope: 'global', streamId: null, sourceRunId: 'run_gone_2', createdAt: 4500 },
         deploy, twoKept, middle,
         { id: 'note_3d', title: 'Corrected', body: 'revised in the deleted chat', scope: 'global', sourceRunId: 'run_keep', updatedSourceRunId: 'run_gone_2', revision: 1, createdAt: 100 },
         laterKept,
@@ -256,7 +256,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
         { id: 'note_11', kind: 'profile', origin: 'feedback', title: 'Preference', body: 'LIKED: "dark mode"', content: 'LIKED: "dark mode"', scope: 'global', streamId: null, sourceRunId: 'run_gone_3', confirmation: 'user-confirmed', createdAt: 4700 }
       ]);
       await store.update('notebook:scribe', () => [{ id: 'note_1', title: 'Scribe saw it', body: 'quokka relayed', scope: 'global', sourceRunId: 'run_gone_2', createdAt: 4500 }]);
-      await appendPending(store, 'agent', 'run_gone_1', [{ id: 'p1', content: 'Farmer SSN-shaped secret from the deleted chat' }], 4000);
+      await appendPending(store, 'agent', 'run_gone_1', [{ id: 'p1', content: 'Commander SSN-shaped secret from the deleted chat' }], 4000);
       await appendPending(store, 'agent', 'run_keep', [{ id: 'p1', content: 'a pending proposal from the kept chat' }], 4200);
       await threads.add({ id: 'th_gone', title: 'Build a quokka tracker', spec: 'quokka', sourceRef: { streamId: 'ws_gone', runId: 'run_gone_1', date: 4000 } }, 4000);
       await threads.add({ id: 'th_keep', title: 'Ship the platypus plan', spec: 'platypus', sourceRef: { streamId: 'ws_keep', runId: 'run_keep', date: 4200 } }, 4200);
@@ -288,12 +288,12 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       const v = rec('note_7');
       A.eq([v.content, v.body, v.feedbackVerdict, v.feedbackWords, v.feedbackDirective, 'feedbackRef' in v, v.confirmation],
         ['LIKED: "matte, no gloss"', 'LIKED: "matte, no gloss"', 'great', ['matte, no gloss'], '', false, 'user-confirmed'],
-        'a like on a deleted session\'s run keeps the verdict and the Farmer\'s words, without the directive or the reference to the deleted work');
+        'a like on a deleted session\'s run keeps the verdict and the Commander\'s words, without the directive or the reference to the deleted work');
       A.ok(FeedbackMemory.isTaste(v), '…and it is still taste');
       const block = FeedbackMemory.renderTaste(FeedbackMemory.selectTaste(nb), lines => ({ text: lines.map(l => l.body + ' ' + l.content).join('\n') }), { agentId: 'agent' }).text;
       A.ok(/liked: "matte, no gloss"/.test(block) && /short bullets/.test(block), 'both verdicts still ride every later prompt\'s taste block: ' + block.slice(0, 300));
       A.ok(!/quokka/.test(block), '…and no word of the deleted session does');
-      A.eq([rec('note_9').content, rec('note_9').feedbackEdited], ['I love bold type', true], 'a verdict the Farmer edited keeps their wording, minus the deleted work\'s directive');
+      A.eq([rec('note_9').content, rec('note_9').feedbackEdited], ['I love bold type', true], 'a verdict the Commander edited keeps their wording, minus the deleted work\'s directive');
       A.eq([rec('note_10').feedbackDirective, rec('note_10').content], ['summarize the platypus plan', keptRating.content], 'a verdict on a kept session\'s run is untouched');
       A.eq(rec('note_11').content, 'LIKED: "dark mode"', 'an older verdict this module cannot rebuild keeps its stored words');
       A.eq(store.get('notebook:scribe'), [], 'another agent\'s notebook loses what the deleted session\'s run wrote there');
@@ -323,7 +323,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       const store = makeMemoryStore({ fs, path, workspaces: dir });
       const runs = [{ runId: 'run_review', streamId: 'workshop-run_review', ts: 500 }, { runId: 'run_new', streamId: 'ws_new', ts: 1500 }];
       await store.update('notebook:agent', () => [
-        { id: 'note_1', title: 'Deploy target', body: 'The Farmer deploys to fly.io region iad', scope: 'global', sourceRunId: 'run_review', createdAt: 500 },
+        { id: 'note_1', title: 'Deploy target', body: 'The Commander deploys to fly.io region iad', scope: 'global', sourceRunId: 'run_review', createdAt: 500 },
         { id: 'note_2', title: 'New', body: 'written in a session deleted after the upgrade', scope: 'global', sourceRunId: 'run_new', createdAt: 1500 }
       ]);
       A.eq(ledger.observe(['workshop-run_review']), [], 'the first boot of this build reads a delete made before it: no fresh delete');
@@ -365,7 +365,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
         const SFX = { bad() {}, close() {} };
         const StationUI = { notify() {}, setRoster() {} };
         const World = { despawnAgent() {} };
-        const farm = null;
+        const station = null;
         const fetch = CTX.fetch;
         function focusAgent(id) { agent = agents.get(id); }
         function loadActiveStream() {}
@@ -402,7 +402,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
         scribeNb = out.list;
       }
       await store.update('notebook:scribe', () => scribeNb);
-      await store.update('notebook:agent', () => [{ id: 'note_1', title: 'Diary', body: 'the Farmer wrote about their week', scope: 'stream', streamId: diary.id, sourceRunId: 'run_diary', createdAt: 1300 },
+      await store.update('notebook:agent', () => [{ id: 'note_1', title: 'Diary', body: 'the Commander wrote about their week', scope: 'stream', streamId: diary.id, sourceRunId: 'run_diary', createdAt: 1300 },
         { id: 'note_2', title: 'Worker', body: 'the worker read the diary', scope: 'global', sourceRunId: 'run_diary_worker', createdAt: 1350 }]);
       await threads.add({ id: 'th_bakery', title: 'Add a bakery order form', spec: 'bakery', sourceRef: { streamId: bakery.id, runId: 'run_bakery_1', date: 1100 } }, 1100);
       await threads.add({ id: 'th_diary', title: 'Plan the week from the diary', spec: 'diary', sourceRef: { streamId: diary.id, runId: 'run_diary', date: 1300 } }, 1300);
@@ -415,7 +415,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       A.ok(adopted.every(r => r.feedbackRef && r.feedbackDirective), '…each with its directive and its DESIGN ANCHOR reference');
       A.eq(await page.deleteAgent('scribe'), true, 'DELETE AGENT is accepted');
       A.ok(saved.deletedIds.indexOf(bakery.id) >= 0 && !W.get(bakery.id), 'its session left the rail (deletedIds, so the row never re-forms)');
-      A.ok(saved.forgetIds.indexOf(bakery.id) < 0, '…but it is not a conversation the Farmer deleted (not in forgetIds)');
+      A.ok(saved.forgetIds.indexOf(bakery.id) < 0, '…but it is not a conversation the Commander deleted (not in forgetIds)');
       A.ok(!!W.get(worker.id), '…and a worker thread it holds stays with the conversation that asked for it');
       A.eq(ledger.observeSave(saved), [], 'so the save that removes it forgets nothing');
       // a task card's remove (station.manage_task calls Workstreams.del(task.id), no forget)
@@ -425,7 +425,7 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       A.eq([ledger.deletedAt(bakery.id), ledger.deletedAt(card.id)], [0, 0], 'their history and recall read as before (no stamp)');
       // the Commander's rail Delete of the diary
       clock.set(3000);
-      A.eq(page.deleteWorkstream(diary.id), true, 'the Farmer deletes the diary from the rail');
+      A.eq(page.deleteWorkstream(diary.id), true, 'the Commander deletes the diary from the rail');
       A.eq(saved.forgetIds, [diary.id, worker.id], 'the rail Delete marks the conversation forgotten, and its worker thread with it');
       A.eq(ledger.observeSave(saved), [diary.id, worker.id], 'only those are fresh deletes for the sidecar');
       A.eq(ledger.unpurged().map(e => e.id).sort(), [diary.id, worker.id].sort(), '…and only their memory is due a purge');
@@ -435,8 +435,8 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
       const nb = store.get('notebook:agent');
       A.eq(nb.filter(r => r.adoptedFrom === 'scribe'), before, 'DELETE AGENT never strips adopted taste: both ratings survive the purge byte for byte');
       A.ok(nb.filter(r => r.adoptedFrom === 'scribe').every(r => r.feedbackRef && /bakery/.test(r.feedbackDirective)), '…their feedbackRef and directive included');
-      A.ok(/LIKED the result of: design the landing page for the bakery/.test(before[0].content) && /DISLIKED: "too busy, fewer colours" \(on: redo the bakery hero\)/.test(before[1].content), '…in the words the Farmer rated');
-      A.eq([counts.notes, nb.some(r => r.id === 'note_1'), nb.some(r => r.id === 'note_2')], [2, false, false], 'the Farmer\'s Delete still forgets what the diary and its worker wrote');
+      A.ok(/LIKED the result of: design the landing page for the bakery/.test(before[0].content) && /DISLIKED: "too busy, fewer colours" \(on: redo the bakery hero\)/.test(before[1].content), '…in the words the Commander rated');
+      A.eq([counts.notes, nb.some(r => r.id === 'note_1'), nb.some(r => r.id === 'note_2')], [2, false, false], 'the Commander\'s Delete still forgets what the diary and its worker wrote');
       A.eq(threads.list().map(t => t.id), ['th_bakery'], 'the idea mined from the deleted agent\'s session stays open; the diary\'s goes');
       // the page lists round-trip; a revive takes the id out of both (the sidecar keeps its stamp); NEW AGENT clears both
       W.init(JSON.parse(JSON.stringify(W.serialize())));
@@ -472,12 +472,12 @@ const clockAt = start => { let t = start; return { now: () => t, set: v => { t =
     A.ok(ledgerAt > 0 && storeAt > ledgerAt, 'the ledger is built before the transcript store reads anything');
     A.ok(/const transcriptStore = makeTranscriptStore\(\{[^\n]*deletedAt: id => sessionTombstones\.deletedAt\(id\)/.test(src), 'the transcript store reads through the ledger');
     const saveWrite = src.slice(src.indexOf('async function handleSaveWrite('), src.indexOf('async function handleGrowthRatings('));
-    A.ok(/result\.ok === true && agentId === 'agent'\) observeDeletedSessions\(body\)/.test(saveWrite), 'every accepted farm save feeds the ledger');
+    A.ok(/result\.ok === true && agentId === 'agent'\) observeDeletedSessions\(body\)/.test(saveWrite), 'every accepted station save feeds the ledger');
     const observeFn = src.slice(src.indexOf('function observeDeletedSessions(save)'), src.indexOf('function observeDeletedSessions(save)') + 400);
     A.ok(/fresh = sessionTombstones\.observeSave\(save\)/.test(observeFn), '…through observeSave, so only the save\'s forgetIds is forgotten (section 7)');
     const boot = src.slice(src.indexOf("const bootSave = saveStore.loadState('agent');"), src.indexOf("const bootSave = saveStore.loadState('agent');") + 900);
     A.ok(/bootSave\.status === 'ok' \|\| bootSave\.status === 'recovered' \? bootSave\.doc : bootSave\.status === 'absent' \? \{ forgetIds: \[\], deletedIds: \[\] \} : null/.test(boot)
-      && /observeDeletedSessions\(bootLists\)/.test(boot), 'the save on disk feeds the ledger at boot (a new farm with no save reads as empty first lists)');
+      && /observeDeletedSessions\(bootLists\)/.test(boot), 'the save on disk feeds the ledger at boot (a new station with no save reads as empty first lists)');
     // the page side: only the rail Delete (and station.control session.delete, which runs it) marks a conversation forgotten
     const cmds = fs.readFileSync(path.join(__dirname, '..', 'frontend', 'app', 'stationcommands.js'), 'utf8');
     A.ok(/action === 'remove'\) \{\s*if \(!Workstreams\.del\(task\.id\)\)/.test(cmds), 'station.manage_task\'s remove deletes the card without forget (task.manage runs unprompted under FULL POWER)');

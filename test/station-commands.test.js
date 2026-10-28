@@ -685,7 +685,7 @@ for (const text of ['', 'Older partial work.']) {
   }
   for (const file of ['orchestration.js', 'station.js']) {
     const src = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'tools', 'builtin', file), 'utf8');
-    for (const m of src.match(/(?:farm|ask)\('(station\.[^']+)'/g) || []) {
+    for (const m of src.match(/(?:station|ask)\('(station\.[^']+)'/g) || []) {
       const verb = /'([^']+)'/.exec(m)[1];
       A.ok(verbs.indexOf(verb) >= 0, file + ' asks for ' + verb + ', and the page can answer it');
     }

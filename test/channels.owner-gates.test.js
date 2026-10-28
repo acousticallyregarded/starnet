@@ -186,7 +186,7 @@ const msg = (userId, text, chatType, chatId) => ({ channel: 'telegram', chatId: 
     const idx = fs.readFileSync(path.join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
     A.ok(/const hostPowerWithheld = hostPowerWithheldFor\(o\);/.test(idx), 'runOnceCore computes the run-origin verdict');
     A.ok(/const agentFullAccessNow = \(\) => !hostPowerWithheld && /.test(idx), 'per-agent Full Access is withheld from non-owner channel runs');
-    A.ok(/const stationBypassNow = \(\) => !hostPowerWithheld && \(FULL_ACCESS \|\| masterBypassOn\(\)\);/.test(idx), 'the farm master bypass is withheld too');
+    A.ok(/const stationBypassNow = \(\) => !hostPowerWithheld && \(FULL_ACCESS \|\| masterBypassOn\(\)\);/.test(idx), 'the station master bypass is withheld too');
     A.ok(/withholdHostPower: hostPowerWithheld,/.test(idx), 'the verdict rides the host-context connectorAuthority into delegated workers');
     A.ok(!/fullAccess: FULL_ACCESS \|\| masterBypassOn\(\) \|\| agentFullAccessNow\(\)/.test(idx), 'no taint-boundary site reads the raw bypass anymore');
     A.ok(/masterBypass: stationBypassNow\(\), fullAccess: agentFullAccessNow,/.test(idx), 'the run authority gets the withheld-aware bypass');

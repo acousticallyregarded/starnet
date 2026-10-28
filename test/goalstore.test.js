@@ -178,7 +178,7 @@ const { GoalStore } = require('../frontend/app/goalstore.js');
   GoalStore.confirm(GoalStore.pendingDecomposition(), (await GoalStore.proposeDecomposition()).texts);
   A.ok(GoalStore.activeGoal(), 'a goal exists before reset');
   GoalStore.reset();
-  A.eq(GoalStore.activeGoal(), null, 'reset clears every goal tree (a new Farmer inherits nothing)');
+  A.eq(GoalStore.activeGoal(), null, 'reset clears every goal tree (a new Commander inherits nothing)');
   A.eq(mem['starnet.goals.v1'], undefined, 'reset removes the own localStorage key');
 
   /* ============================ 7. PERSISTENCE ROUND-TRIP (survives a re-init) ============================ */
@@ -285,24 +285,24 @@ const { GoalStore } = require('../frontend/app/goalstore.js');
   A.ok(GoalStore.acceptMilestone(gd.id, gd.milestones[1].id), 'a dismissed/dead binding re-accepts (recovery path)');
 
   /* ====== 10. REVIEW FIX 3 — a too-short EDIT declines; a valid edit persists the EDITED path ====== */
-  goalsBeliefs = [{ id: 'cd_60', text: 'a goal the farmer will edit' }];
+  goalsBeliefs = [{ id: 'cd_60', text: 'a goal the commander will edit' }];
   harnessReply = '1. model step one\n2. model step two\n3. model step three';
   const prop10 = await GoalStore.proposeDecomposition();
   // the Commander types "just do X" into the ✎ edit box — the resolver DECLINES; routing persists NOTHING
   const dShort = G.resolveConfirmChoice({ custom: true, value: 'just do X' }, prop10.texts);
-  A.eq(dShort.action, 'decline', 'a too-short edit resolves to decline (the Farmer rejected the tree)');
+  A.eq(dShort.action, 'decline', 'a too-short edit resolves to decline (the Commander rejected the tree)');
   const goalsBefore10 = GoalStore._state().goals.length;
   GoalStore.declineDecomposition(prop10.belief);          // the routing chat.js applies on 'decline'
   A.eq(GoalStore._state().goals.length, goalsBefore10, 'NOTHING was persisted — the unedited model tree never lands');
   A.eq(GoalStore.willOfferDecomposition(), false, 'the rejected belief state is marked offered (re-offer only on change)');
   // a VALID edit persists the EDITED milestones, not the model path
-  goalsBeliefs = [{ id: 'cd_61', text: 'a goal the farmer edits well' }];
+  goalsBeliefs = [{ id: 'cd_61', text: 'a goal the commander edits well' }];
   const prop10b = await GoalStore.proposeDecomposition();
   const dGood = G.resolveConfirmChoice({ custom: true, value: 'my alpha step; my beta step; my gamma step' }, prop10b.texts);
   A.eq(dGood.action, 'confirm', 'a valid 3-step edit resolves to confirm');
   const gEdited = GoalStore.confirm(prop10b.belief, dGood.path);
   A.ok(gEdited && gEdited.milestones.map(m => m.text).join('|') === 'my alpha step|my beta step|my gamma step',
-    'the EDITED path is what persists (never the model path the Farmer replaced)');
+    'the EDITED path is what persists (never the model path the Commander replaced)');
 
   /* ====== 11. REVIEW FIX 6 — the paid decomposition is SPENT ONCE per belief state (cache) ====== */
   goalsBeliefs = [{ id: 'cd_70', text: 'a goal whose proposal must not re-bill' }];
@@ -479,7 +479,7 @@ const { GoalStore } = require('../frontend/app/goalstore.js');
   /* ============ USER-STUDY LOOP: onboarding plans the mission it just confirmed ============ */
   GoalStore.reset();
   global.Harness.chat = async () => ({ text: '1. Shortlist three features\n2. Prototype the best one\n3. Ship it to five users', error: false });
-  goalsBeliefs = [{ id: 'cd_first', text: 'Wants the farm to: tidy my inbox' }, { id: 'cd_mission', text: 'Help choose and build useful features' }];
+  goalsBeliefs = [{ id: 'cd_first', text: 'Wants the station to: tidy my inbox' }, { id: 'cd_mission', text: 'Help choose and build useful features' }];
   const target = goalsBeliefs[1];
   const targeted = await GoalStore.proposeDecomposition(target);
   A.eq(targeted && targeted.belief.id, 'cd_mission', 'a targeted draft plans exactly the named belief, not the first goals belief');

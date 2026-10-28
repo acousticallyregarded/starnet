@@ -50,7 +50,7 @@ async function renderAccess(response, rejects = false, connected = true, posture
   return { target, summary, paths };
 }
 (async () => {
-  let out = await renderAccess({ authority: { unrestricted: true, approvalLabel: 'FULL ACCESS', filesystemLabel: 'Whole computer', profileLabel: 'FARM GEAR', revoke: 'Turn off override' },
+  let out = await renderAccess({ authority: { unrestricted: true, approvalLabel: 'FULL ACCESS', filesystemLabel: 'Whole computer', profileLabel: 'STATION GEAR', revoke: 'Turn off override' },
     toolsets: [{ label: 'FILES', available: true, enabled: false, consentGated: false, grantSource: 'Full Access' }] });
   assert.match(out.paths[0], /agent=nova&placed=cabinet/);
   assert.match(out.target.innerHTML, /AVAILABLE/);

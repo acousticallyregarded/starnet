@@ -66,7 +66,7 @@ try {
   r = store.save('agent', envelope(999, rev - 2, 'stale-tab', 'tab2'), { compareRevision: true });   // another tab: every page mints its own id
   A.ok(!r.ok && r.conflict && r.stale, 'a stale revision still conflicts');
   A.ok(fs.existsSync(path.join(root, r.recovery)), 'and the rejected snapshot is kept durably');
-  A.eq(store.load('agent').agent.name, 'v5', 'the farm is untouched by the stale tab');
+  A.eq(store.load('agent').agent.name, 'v5', 'the station is untouched by the stale tab');
   const legacy = store.save('agent', envelope(1, 0, 'old'), {});
   A.ok(!legacy.ok && legacy.stale, 'a legacy write with an older updatedAt is still refused on the fast path');
 

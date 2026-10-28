@@ -115,7 +115,7 @@ A.ok(/stepping back a rung/.test(notices[0].text) && !/leash|earn it back/.test(
 A.eq(TrustStore._state().earned.initiative, undefined, 'stepping back TO the manual floor clears the earned record');
 fb('work_miss');
 A.eq(setInitiativeCalls.length, 1, 'further misses with NO earned rung never touch the dial (the manual posture is untouchable)');
-A.eq(initiative, 'propose', 'the dial never goes below the Farmer\'s own floor');
+A.eq(initiative, 'propose', 'the dial never goes below the Commander\'s own floor');
 
 /* ---------- 7b. REVIEW BLOCKER regression — a STALE earned record must never move the dial ----------
    Non-dial posture writers (settings-backup import, permissions-level preset) can move initiative without the

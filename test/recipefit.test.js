@@ -21,17 +21,17 @@ const FULL = {
 };
 
 /* ---------- THE COLD STATION: silence, not theatre ---------- */
-A.eq(F.offers(recipes, {}).length, 0, 'a farm that knows nothing offers nothing');
+A.eq(F.offers(recipes, {}).length, 0, 'a station that knows nothing offers nothing');
 A.eq(F.offers(recipes, null).length, 0, 'a null context offers nothing');
 A.eq(F.offers(recipes, { launches: { 'fix-bug': { n: 9 } } }).length, 0,
   'launch history ALONE is not context — with no project, channel or topic there is nothing to bind to');
 A.eq(F.basis({}), '', 'no basis line without real context');
-A.eq(F.hasContext({}), false, 'hasContext is false on a cold farm');
+A.eq(F.hasContext({}), false, 'hasContext is false on a cold station');
 A.eq(F.hasContext({ projects: [{ root: 'x' }] }), true, 'one granted project is enough context to start');
 
 /* ---------- THE HONESTY LAW: every claim traces to a counter ---------- */
 const offers = F.offers(recipes, FULL, { limit: 8 });
-A.ok(offers.length > 0, 'a real farm gets offers');
+A.ok(offers.length > 0, 'a real station gets offers');
 for (const o of offers) {
   A.ok(o.why && o.why.length > 0, o.recipe.id + ' carries a reason (no card without an honest one)');
   // a claim naming a COUNT must name a count the context actually holds
@@ -45,13 +45,13 @@ for (const o of offers) {
 }
 // the basis line is auditable and states only what was counted
 A.eq(F.basis(FULL), '2 projects · 1 connected channel · 1 learned topic · 1 routine already running',
-  'the basis line states exactly what the farm looked at');
+  'the basis line states exactly what the station looked at');
 
 /* ---------- EXCLUSIONS ---------- */
 A.ok(!F.offers(recipes, FULL, { limit: 99 }).some(o => o.recipe.id === 'morning-brief'),
   'a recipe already running as a routine is NOT offered again');
 A.ok(!F.offers(recipes, FULL, { limit: 99 }).some(o => o.recipe.id === 'summarize'),
-  'a recipe the Farmer rated a miss stays sunk');
+  'a recipe the Commander rated a miss stays sunk');
 
 /* a connector recipe must not be offered to a station with no channel connected — that is an advert for a
    feature the Commander does not have, dressed as a readiness claim. */

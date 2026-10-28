@@ -51,7 +51,7 @@ for (const ev of ['workitem.placed', 'agent.run.start', 'agent.run.end', 'agent.
   A.ok(chapters.includes("'" + ev + "'"), 'a recording drives the renderer with the real ' + ev + ' event');
 A.ok(/StarnetDemoBridge\.emit\(n, p\)/.test(recorder) && /StarnetChapters\.perform\(/.test(recorder),
   'the recorder plays the shared chapter script through the embed bridge');
-A.ok(/captureStream\(30\)/.test(recorder) && /crop=\$\{CROP\.w\}:\$\{CROP\.h\}/.test(recorder), 'the recorder captures the farm canvas and crops it to the room');
+A.ok(/captureStream\(30\)/.test(recorder) && /crop=\$\{CROP\.w\}:\$\{CROP\.h\}/.test(recorder), 'the recorder captures the station canvas and crops it to the room');
 
 // ---- demo-boot: starter room + crew, bridge is emit-only ----
 A.ok(/function scopeTextures\(\)/.test(demo) && /ROOM_PROPS = \/\^\(desk\|war_intelcab\|gigs_servercart\|comms_dish\|workbench\|studio\|plant\|intake\|bay\|outbox\)/.test(demo),

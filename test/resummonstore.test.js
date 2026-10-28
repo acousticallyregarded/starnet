@@ -81,7 +81,7 @@ A.ok(lastNudge.options[1].skip === true, 'NOT NOW is a skip (dismiss) chip');
 // 3b. picking RUN IT AGAIN pre-fills a fresh run (agent + directive) — NEVER auto-running — + latches (persisted).
 lastNudge.onPick({ value: 'again' });
 A.eq(prefills.length, 1, 'RUN IT AGAIN pre-fills exactly one fresh run');
-A.eq(prefills[0].directive, 'brief me on X', 'the pre-fill carries the run\'s directive verbatim (the Farmer edits + sends)');
+A.eq(prefills[0].directive, 'brief me on X', 'the pre-fill carries the run\'s directive verbatim (the Commander edits + sends)');
 A.eq(prefills[0].agentId, 'agent', 'the pre-fill targets the run\'s agent');
 A.ok(/"run-A":"again"/.test(mem['starnet.resummon.v1'] || ''), 'the re-summon decision is persisted (never re-offered)');
 lastNudge = null;

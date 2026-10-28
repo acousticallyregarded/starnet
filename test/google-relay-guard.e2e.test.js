@@ -113,7 +113,7 @@ let nextTool = GMAIL_READ;                                       // which tool t
     assert.ok(sent.length > 0, 'the managed run reached the relay');
     for (const b of sent) {
       assert.ok(!names(b).some(n => /^mcp__gmail__/.test(n)), 'StarNet Managed is never offered Gmail tools');
-      assert.ok(!JSON.stringify(b).includes(MAIL), 'the mail body never reaches the Homestead relay');
+      assert.ok(!JSON.stringify(b).includes(MAIL), 'the mail body never reaches the StarNet relay');
     }
     assert.ok(sent.some(b => JSON.stringify(b.messages).includes('never sent to StarNet Managed')), 'the relay sees the withheld notice in its place');
 
@@ -138,8 +138,8 @@ let nextTool = GMAIL_READ;                                       // which tool t
     assert.ok(sentImap.length > 0, 'the managed run reached the relay');
     for (const b of sentImap) {
       assert.ok(!names(b).some(n => /^mcp__gmail-app-password__/.test(n)), 'StarNet Managed is never offered app-password Gmail tools');
-      assert.ok(!JSON.stringify(b).includes(IMAP_MAIL), 'IMAP mail content never reaches the Homestead relay');
-      assert.ok(!JSON.stringify(b).includes(IMAP_PASS), 'the app password never reaches the Homestead relay');
+      assert.ok(!JSON.stringify(b).includes(IMAP_MAIL), 'IMAP mail content never reaches the StarNet relay');
+      assert.ok(!JSON.stringify(b).includes(IMAP_PASS), 'the app password never reaches the StarNet relay');
     }
     assert.ok(sentImap.some(b => JSON.stringify(b.messages).includes('never sent to StarNet Managed')), 'the relay sees the withheld notice in its place');
     console.log('google-relay-guard.e2e: PASS (own-key run reads Gmail; StarNet Managed gets no Gmail tools and only the withheld notice; same for app-password Gmail over IMAP)');

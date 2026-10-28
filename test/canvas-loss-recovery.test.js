@@ -55,7 +55,7 @@ const spaceSrc = stripComments(app('spacebg.js'));
 const terrSrc = stripComments(app('terrain.js'));
 
 // the stripper itself must work, or every assertion below is vacuous
-A.ok(!/THE FARM MAY NEVER SILENTLY GO BLACK/.test(stripComments('/* THE FARM MAY NEVER SILENTLY GO BLACK */ var x = 1;')),
+A.ok(!/THE STATION MAY NEVER SILENTLY GO BLACK/.test(stripComments('/* THE STATION MAY NEVER SILENTLY GO BLACK */ var x = 1;')),
   'stripComments removes block comments (assertions bind to code, not prose)');
 A.ok(/var x = 1/.test(stripComments('// note\nvar x = 1;')), 'stripComments keeps the code around a line comment');
 A.ok(/'contextlost'/.test(stripComments("el.addEventListener('contextlost', f); /* c */")),
@@ -144,7 +144,7 @@ A.ok(/if \(!bakeWentBlank\(\)\) \{ futileRecoveries = 0; return; \}/.test(worldS
 A.ok(/if \(!recoverLostCanvases\([\s\S]{0,80}?\) return;\s*rebake\(\);/.test(worldSrc),
   'the watchdog rebakes inside the same call, so the fresh plate is testable immediately');
 A.ok(/const PROBE_MS = (\d+)/.test(worldSrc) && Number(/const PROBE_MS = (\d+)/.exec(worldSrc)[1]) <= 250,
-  'the sentinel is read at least 4x a second — a lost frame is a flicker, never a black farm');
+  'the sentinel is read at least 4x a second — a lost frame is a flicker, never a black station');
 
 /* ---- 4b. A GPU THAT STAYS BROKEN IS NOT HAMMERED (review world-render-02) ----
    Every futile retry is a full station bake (~2.5 s on a big industrial floor) plus, before this, a re-prepare of the whole
@@ -205,7 +205,7 @@ A.ok(/addEventListener\('focus'[\s\S]{0,120}?lastProbeAt = 0/.test(worldSrc),
    There is no JS API to lose a 2D context on demand, so the only way to keep this honest is a
    hook that reproduces its EFFECT: zero the plates in place, objects and sizes intact. */
 A.ok(/_dbgLoseCanvases/.test(worldSrc) && /return \{[\s\S]*\b_dbgLoseCanvases\b/.test(worldSrc),
-  'World exports _dbgLoseCanvases so the black farm can be reproduced on demand');
+  'World exports _dbgLoseCanvases so the black station can be reproduced on demand');
 A.ok(/_dbgCanvasLoss/.test(worldSrc) && /return \{[\s\S]*\b_dbgCanvasLoss\b/.test(worldSrc),
   'World exports _dbgCanvasLoss so a verify script can assert RECOVERY, not just returned pixels');
 A.ok(/function _dbgLosePixels\(\)/.test(spaceSrc), 'SpaceBG can zero its plates in place for the repro');

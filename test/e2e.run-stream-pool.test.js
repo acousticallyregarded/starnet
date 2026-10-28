@@ -129,7 +129,7 @@ const queuedOn = (pool) => Object.values(pool.requests).reduce((n, a) => n + a.l
     const pool = new http.Agent({ keepAlive: true, maxSockets: 6 });
     pools.push(pool);
     const sse = await request(pool, B, 'GET', '/api/channels/events?' + sseQuery(token), { headers: { 'X-StarNet-Token': token, Origin: B } });
-    A.eq(sse.res.statusCode, 200, 'the farm bus (SSE) holds its one connection, as a page\'s does');
+    A.eq(sse.res.statusCode, 200, 'the station bus (SSE) holds its one connection, as a page\'s does');
     sse.res.resume();
     const st = await request(pool, B, 'GET', '/api/run/stream', { headers: { 'X-StarNet-Token': token, Origin: B } });
     A.eq(st.res.statusCode, 200, 'GET /api/run/stream opens');
@@ -227,7 +227,7 @@ const queuedOn = (pool) => Object.values(pool.requests).reduce((n, a) => n + a.l
     A.eq(kRow.reason, 'cancelled', 'closing the page\'s stream stops the run on it, as closing its own response did');
     A.ok(kRow.pageClosed && (kRow.pageClosed.waitingOn || []).some(s => /approval/.test(s)), 'and its record says the page left while it waited on an approval');
     const gone = await json(pool, B, 'POST', '/api/run', H, runBody(CREW[11], { stream: { id: streamId, key: 'afterclose00' } }));
-    A.ok(gone.status === 409 && gone.j.code === 'run_stream_gone', 'a run naming a stream the farm no longer holds is refused (409 run_stream_gone)');
+    A.ok(gone.status === 409 && gone.j.code === 'run_stream_gone', 'a run naming a stream the station no longer holds is refused (409 run_stream_gone)');
     A.ok(!(await rowOf('afterclose00')), 'and nothing ran');
 
     // a body that names no stream: the response IS the run's stream, as always

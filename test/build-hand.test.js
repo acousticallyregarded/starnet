@@ -241,7 +241,7 @@ const frozen = s => JSON.stringify(s.serialize()) + '|' + s.getSeq() + '|' + s.c
   A.ok(/const k = geoVer \+ '\|' \+ src \+ '\|' \+ d\.cur\.tx \+ ',' \+ d\.cur\.ty \+ '\|' \+ \(flipPref \? 1 : 0\);/.test(hp) && /if \(k === handPvKey\) return handPvMemo;/.test(hp), 'the drag ghost is memoized per (edit, tile, corner) — the planner never runs per frame (H9)');
   const plan2 = fn('planHandGesture');
   A.ok(!/\.(connectBelt|mergeBelt|branchBelt|relinkTo|dropFrom|addProp|removeProp|junctionOnBelt)\(/.test(plan2), 'planning a drag never mutates the doc (previews only, H9)');
-  A.ok(/typeof station\.setSendTo === 'function'/.test(plan2), 'an OUTBOX onto another line\'s INBOX is SEND TO only when the farm can (feature-detected)');
+  A.ok(/typeof station\.setSendTo === 'function'/.test(plan2), 'an OUTBOX onto another line\'s INBOX is SEND TO only when the station can (feature-detected)');
   const ghost = fn('drawHandGhost');
   A.ok(/drawBeltPreview\(t, \{ path: plan\.path \}, col\)/.test(ghost) && !/convey\.drawBelts/.test(ghost), 'the ghost belt is drawn geometry — never a second convey.drawBelts (the atlas law, H9)');
   A.ok(/voiceSay\('activeFlow', box, box,/.test(ghost), '…and its one caption speaks through the arbiter');
@@ -269,8 +269,8 @@ const frozen = s => JSON.stringify(s.serialize()) + '|' + s.getSeq() + '|' + s.c
   A.ok(/station\.probeDrop\(/.test(od) && !/probeDrop/.test(hp + plan2), 'the fit probe runs once on RELEASE, never per frame');
   A.ok(/propType = c\.id;\s*setHand\(\{ t: c\.id \}, \{ silent: true \}\);/.test(fn('machinePalette')), 'the MACHINES shelf puts its pick in the same hand');
   A.ok(/data-handkey|dataset\.handkey = id/.test(build) && /key\('remove', 'REMOVE', 'R-CLICK'/.test(build) && /key\('pipette', 'PICK UP', 'Q'/.test(build) && /key\('corner', 'CORNER', 'R'/.test(build) && /key\('alt', 'ALT VIEW', 'ALT'/.test(build), 'touch gets a dock key for each gesture a finger lacks (right-click, Q, R, Alt)');
-  A.ok(!/b\.title = /.test(fn('hotbarEl')) && /b\.dataset\.tip = /.test(fn('hotbarEl')), 'the hotbar explains itself on the farm tooltip (no native title), never in sentences under the tiles');
-  A.ok(/agentHere\(held\.agentId\)/.test(fn('commitPropStamp')) && /if \(agentHere\(p\.agentId\)\) h\.agentId = p\.agentId;/.test(fn('handFromProp')), 'a pipetted crew travels only when that agent is on this farm');
+  A.ok(!/b\.title = /.test(fn('hotbarEl')) && /b\.dataset\.tip = /.test(fn('hotbarEl')), 'the hotbar explains itself in the station tooltip (no native title), never in sentences under the tiles');
+  A.ok(/agentHere\(held\.agentId\)/.test(fn('commitPropStamp')) && /if \(agentHere\(p\.agentId\)\) h\.agentId = p\.agentId;/.test(fn('handFromProp')), 'a pipetted crew travels only when that agent is on this station');
   /* ---- repair pass 2026-10-11 ---- */
   A.ok(/const CLICK_SLOP = 12;/.test(build) && /const slipped = drag\.cx == null \|\| Math\.hypot\(ev\.clientX - drag\.cx, ev\.clientY - drag\.cy\) >= CLICK_SLOP;/.test(fn('onMove'))
     && /if\(drag\.mode==='selectpress'&&drag\.moved&&slipped\)/.test(fn('onMove')) && /if\(drag\.mode==='beltpress'&&drag\.moved&&slipped\)drag\.mode='handbranch';/.test(fn('onMove'))

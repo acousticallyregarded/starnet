@@ -116,7 +116,7 @@ const goodRoutine = { kind: 'routine', why: 'you’ve launched the digest 4 time
 A.eq(Recommend.pick([dudSuggest, goodRoutine]).kind, 'routine',
   'a channel with a real record of duds loses its rank lead to one with a real record of hits');
 A.eq(Recommend.pick([{ kind: 'suggest', why: 'a' }, { kind: 'routine', why: 'b' }]).kind, 'suggest',
-  '…and with NOTHING known about either, the rank order is the tie-bias (a cold farm is unchanged)');
+  '…and with NOTHING known about either, the rank order is the tie-bias (a cold station is unchanged)');
 // thin evidence speaks later than well-corroborated evidence in the same band
 A.eq(Recommend.pick([{ kind: 'seed', why: 'a', strength: 0.05 }, { kind: 'routine', why: 'b', strength: 1 }]).kind, 'routine',
   'a one-off seed shape loses to a well-grounded routine nudge in the same band');
@@ -169,7 +169,7 @@ A.eq(Recommend.whyLine({ why: 'MCP connectors keep timing out' }), 'because MCP 
 /* THE SPINE NEVER REWRITES THE COMMANDER'S WORDS. Lower-casing "a plain leading capital" mangled the evidence
    itself — proper nouns, languages, products and people's names all got de-capitalized inside their own quote. */
 A.eq(Recommend.whyLine({ why: 'Python is the stack you work in' }), 'because Python is the stack you work in',
-  'a proper noun is NOT de-capitalized (it is the Farmer’s word, not the spine’s framing)');
+  'a proper noun is NOT de-capitalized (it is the Commander’s word, not the spine’s framing)');
 A.eq(Recommend.whyLine({ why: 'Andrew ships on Fridays' }), 'because Andrew ships on Fridays', 'nor is a person’s name');
 A.eq(Recommend.whyLine({ why: 'you said “Python is my stack”' }), 'because you said “Python is my stack”',
   'a quoted citation passes through verbatim');
@@ -203,7 +203,7 @@ const recBody = chatSrc.slice(iRecCard, iRecCard + 2600);
 A.ok(/rec-eyebrow/.test(recBody) && /rec-glyph/.test(recBody), 'the card leads with the eyebrow, glyph boxed on its own');
 // the eyebrow NAMES the noticer — every caller passes none, so a bare 'NOTICED' dropped the agent's identity
 A.ok(/name \? String\(name\)\.toUpperCase\(\) \+ ' NOTICED' : 'NOTICED'/.test(recBody),
-  'the eyebrow reads “◈ <AGENT> NOTICED” — the farm has a name, and the card says it');
+  'the eyebrow reads “◈ <AGENT> NOTICED” — the station has a name, and the card says it');
 A.ok(recBody.indexOf('rec-evidence') < recBody.indexOf("className = 'turnin-text'"),
   'the EVIDENCE line is rendered BEFORE the proposal (noticed → because → propose)');
 A.ok(recBody.indexOf("className = 'turnin-text'") < recBody.indexOf("className = 'consent-btns'"),
@@ -253,13 +253,13 @@ for (const [fn, probe] of [['function studyCard(', /recCite\(prop\.evidence, pro
   A.ok(probe.test(A.fnBody(chatSrc, fn)), fn.replace(/^(async )?function |\($/g, '') + ' cites by SOURCE, never blanket "you said"');
 }
 A.ok(/prop\.speaker === 'user'/.test(A.fnBody(chatSrc, 'function threadCiteKind(')),
-  'a mined thread claims speech only when threadmine located the quote in the Farmer’s own turns');
+  'a mined thread claims speech only when threadmine located the quote in the Commander’s own turns');
 /* …and a DOSSIER belief is cited by ITS recorded provenance, so the arc and the re-confirm card can no longer
    render a study-OBSERVED goal as words the Commander spoke (that is the exact mis-attribution above, on the one
    card whose whole subject is whether the station's memory can be trusted). */
 const citeKindBody = A.fnBody(chatSrc, 'function beliefCiteKind(');
 A.ok(citeKindBody.length > 0, 'chat.js derives a belief’s citation kind from the belief itself');
-A.ok(/w === 'stated' \|\| src === 'farmer'/.test(citeKindBody), 'only Commander-authored evidence may be rendered as speech');
+A.ok(/w === 'stated' \|\| src === 'commander'/.test(citeKindBody), 'only Commander-authored evidence may be rendered as speech');
 A.ok(/return '';/.test(citeKindBody), 'an observed / synthesised / seeded belief falls back to the neutral quote that claims no speaker');
 /* …and the two provenance holes the re-sweep found in that predicate (2026-08-04):
      · source:'curiosity' was a blanket "you said" — but a CANNED CHIP tap lands as weight:'seed'
@@ -269,7 +269,7 @@ A.ok(/return '';/.test(citeKindBody), 'an observed / synthesised / seeded belief
        to commander/stated (truthfully — an affirmation IS a statement of the content), so without the earlier
        check every later card would quote words the Commander never spoke. */
 A.eq(/src === 'curiosity'/.test(citeKindBody), false,
-  'a curiosity answer is NOT blanket-quoted as speech — a canned chip tap is the farm’s own sentence');
+  'a curiosity answer is NOT blanket-quoted as speech — a canned chip tap is the station’s own sentence');
 A.ok(/if \(ref === 'confirmed'\) return 'confirmed';/.test(citeKindBody),
   'an AFFIRMED belief cites the affirmation, never authorship');
 A.ok(citeKindBody.indexOf("ref === 'confirmed'") < citeKindBody.indexOf("w === 'stated'"),

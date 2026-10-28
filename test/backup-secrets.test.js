@@ -50,7 +50,7 @@ const SECRET_ROWS = {
   const bytes = JSON.stringify(bundle);
   eq(bundle.secretsIncluded, false, 'portable bundle explicitly declares that secrets are excluded');
   eq(bundle.store['starnet.save'], SAVE, 'agent save survives export');
-  eq(JSON.parse(bundle.store['starnet.station.v1']).theme, 'amber', 'farm settings survive export');
+  eq(JSON.parse(bundle.store['starnet.station.v1']).theme, 'amber', 'station settings survive export');
   eq(bundle.store['starnet.byok.model'], 'openai/gpt-safe-model-name', 'nonsecret model selection survives export');
   eq(bundle.notebook[0].title, 'safe memory', 'nonsecret memory survives export');
   for (const [key, sentinel] of Object.entries(SECRET_ROWS)) {

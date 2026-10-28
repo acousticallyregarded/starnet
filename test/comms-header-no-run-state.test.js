@@ -36,7 +36,7 @@ const hidden = (text) => classesFor(text).some(c => HIDDEN.indexOf(c) >= 0);
 for (const s of ['thinking…', 'working…', 'connecting…', 'stopping…', 'awaiting your approval…', 'awaiting your context…', 'awaiting your answer…', 'waking…', 'online']) {
   A.ok(hidden(s), 'the header never shows run state: "' + s + '" lands on a hidden class (' + classesFor(s).join(' ') + ')');
 }
-A.ok(!hidden('farm unreachable'), 'a fault still shows in the header');
+A.ok(!hidden('station unreachable'), 'a fault still shows in the header');
 A.ok(!/'online · also running in '/.test(chat), 'the header never names another session\'s run ("online · also running in …")');
 
 A.report('comms-header-no-run-state.test');

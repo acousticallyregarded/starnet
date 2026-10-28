@@ -36,15 +36,15 @@ let first = false;
 try { fs.writeFileSync(cfg.lockFile, String(process.pid), { flag: 'wx' }); first = true; } catch (_) {}
 if (!first) {
   if (terminalPid && state() === 'closing') {
-    logLine('second-launch --background: starnet session pid ' + terminalPid + ' arrived while Homestead is closing (its starnet sessions ended); start Homestead again once it has quit');
+    logLine('second-launch --background: starnet session pid ' + terminalPid + ' arrived while StarNet is closing (its starnet sessions ended); start StarNet again once it has quit');
   } else if (terminalPid) {
     fs.appendFileSync(cfg.joinFile, terminalPid + '\n');
-    logLine('second-launch --background: starnet session pid ' + terminalPid + ' joins the farm the terminal started');
+    logLine('second-launch --background: starnet session pid ' + terminalPid + ' joins the station the terminal started');
   }
   process.exit(0);
 }
 fs.writeFileSync(cfg.stateFile, 'starting');
-if (terminalPid) logLine('startup: started by starnet (--background, terminal pid ' + terminalPid + ') — the farm runs with the app\'s keys; the window stays parked until someone opens Homestead');
+if (terminalPid) logLine('startup: started by starnet (--background, terminal pid ' + terminalPid + ') — the station runs with the app\'s keys; the window stays parked until someone opens StarNet');
 
 const alive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return !!(e && e.code === 'EPERM'); } };
 const sleep = ms => new Promise(r => setTimeout(r, ms));

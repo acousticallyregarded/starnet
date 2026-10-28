@@ -124,7 +124,7 @@ async function wake(store) {
   };
   const custom = await failOf('custom', 'vendor-org/model-the-endpoint-refuses');
   A.ok(/Invalid Model Name/.test(custom), 'the endpoint\'s own refusal is kept: ' + custom);
-  A.ok(!/routed-catalog|HOMESTEAD|OPENROUTER|Switch the provider/i.test(custom), 'a CUSTOM endpoint is never told its vendor/model id is a routed-catalog id: ' + custom);
+  A.ok(!/routed-catalog|STARNET|OPENROUTER|Switch the provider/i.test(custom), 'a CUSTOM endpoint is never told its vendor/model id is a routed-catalog id: ' + custom);
   A.ok(custom.indexOf('"vendor-org/model-the-endpoint-refuses"') >= 0, 'the error names the exact id that was sent: ' + custom);
   const customBare = await failOf('custom', 'bare-model');
   A.ok(customBare.indexOf('"bare-model"') >= 0 && !/routed-catalog/.test(customBare), 'a slashless id on CUSTOM is named too: ' + customBare);

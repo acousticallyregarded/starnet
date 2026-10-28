@@ -56,7 +56,7 @@ A.ok(legacyRaw.tools.includes('computer.use') && legacyRaw.tools.includes('deskt
   A.ok(!onlyWeb.tools.includes('mcp:notion.read'), 'connectors require the explicit connectors family');
   A.ok(onlyWeb.tools.includes('quest.update') && onlyWeb.tools.includes('tool.search'), 'non-toggleable computer freebies remain available');
   A.eq(onlyWeb.approvalRules['shell.exec'], undefined, 'parallel approval map is attenuated with tool names');
-  A.eq(enforceEnabledToolsets(projected, { get: n => defs[n] }, null), projected, 'null keeps legacy farm grants unchanged');
+  A.eq(enforceEnabledToolsets(projected, { get: n => defs[n] }, null), projected, 'null keeps legacy station grants unchanged');
   // The computer freebies no switch can turn off survive a restriction too (a routine keeps its own notepad).
   const FREEBIE_TOOLS = ['quest.update', 'tool.search', 'todo', 'deliverable_note', 'station.inspect', 'station.show', 'manual.read', 'routine.notepad'];   // station.show: the same stationinfo grant as station.inspect (read, no consent; it refuses any run nobody is watching)
   for (const t of FREEBIE_TOOLS) {
@@ -123,7 +123,7 @@ A.ok(ownerAuthority.project({ name: 'shell.exec', capability: 'workbench' }), 'a
 A.ok(ownerAuthority.authorize({}, { name: 'shell.exec', capability: 'workbench' }).ok, 'an owner DM may execute shell commands');
 A.ok(ownerAuthority.authorize({}, { name: 'spotify_play', capability: 'jukebox' }).ok, 'an owner DM may control the active media session');
 A.ok(ownerAuthority.authorize({}, { name: 'mcp__demo__lookup', capability: 'mcp:demo' }).ok,
-  'an owner DM may call the Farmer\'s connected tools');
+  'an owner DM may call the Commander\'s connected tools');
 A.ok(ownerAuthority.authorize({}, { name: 'future.magic', capability: 'future-cap' }).ok,
   'an owner DM has the desktop surface\'s non-physical external authority');
 A.ok(!ownerAuthority.authorize({}, { name: 'computer.use', capability: 'physical-input' }).ok,

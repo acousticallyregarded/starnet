@@ -183,7 +183,7 @@ function runGit(args, opts) {
     A.ok(idxAfter.snapshots.some(x => x.id === preCrashIds[preCrashIds.length - 1]),
       'the NEWEST pre-crash snapshot specifically survived the post-crash write');
     A.ok(await store.restore(aid, survived[survived.length - 1]),
-      'and the Farmer can still roll back to a pre-crash snapshot');
+      'and the Commander can still roll back to a pre-crash snapshot');
 
     // ---- 11. SIZE CEILING: a tiny threshold forces a sweep; the repo shrinks and stays restorable ----
     const aid2 = 'sz';

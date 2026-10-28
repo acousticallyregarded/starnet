@@ -22,7 +22,7 @@ const GOOD = [
   'NAME: Market Analyst',
   'EMOJI: ⊞',
   'TAGLINE: Live competitive-pricing intel',
-  'PURPOSE: You track competitor pricing across the live web and brief the Farmer on moves that matter.',
+  'PURPOSE: You track competitor pricing across the live web and brief the Commander on moves that matter.',
   'MANUAL: Fetch real listings | Cite every price with source + date | Flag only meaningful moves',
   'KIT: dish, cabinet, notebook',
   'SKILLS: price-watch, web-research',
@@ -49,7 +49,7 @@ A.eq(good.draft.custom, true, 'the draft is a custom spec');
 /* an EMPTY field (SKILLS:) followed by another field must NOT swallow the next line — a common real LLM shape */
 const emptySkills = [
   'NAME: Cold Caller', 'EMOJI: ☎', 'TAGLINE: outbound sales outreach drafts',
-  'PURPOSE: Drafts outbound outreach the Farmer can send.', 'MANUAL: keep it short',
+  'PURPOSE: Drafts outbound outreach the Commander can send.', 'MANUAL: keep it short',
   'KIT: cabinet, notebook', 'SKILLS:',   // deliberately empty, immediately before WHY
   'WHY: your work leaned on files with no outreach role rostered'
 ].join('\n');

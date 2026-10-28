@@ -103,12 +103,12 @@ const lastSR = () => srInstances[srInstances.length - 1];
     t.Voice.startListening(); await tick();
     lastSR().fireInterim('hello comm');
     A.ok(t.input.value === 'hello comm', 'empty composer: interim preview renders into the box');
-    lastSR().fireInterim('hello farmer');
-    A.ok(t.input.value === 'hello farmer', 'empty composer: later interim replaces dictation\'s own preview');
-    lastSR().fireFinal('hello farmer'); await tick();
+    lastSR().fireInterim('hello commander');
+    A.ok(t.input.value === 'hello commander', 'empty composer: later interim replaces dictation\'s own preview');
+    lastSR().fireFinal('hello commander'); await tick();
     t.Voice.stopListening(); await tick();
     A.ok(t.input.value === '', 'empty composer: finalize clears dictation\'s own preview');
-    A.ok(t.sent().length === 1 && t.sent()[0] === 'hello farmer', 'empty composer: finalize sends the transcript');
+    A.ok(t.sent().length === 1 && t.sent()[0] === 'hello commander', 'empty composer: finalize sends the transcript');
   }
 
   // --- webSpeech: TYPED DRAFT — interims must never overwrite it --------------------------------
@@ -143,10 +143,10 @@ const lastSR = () => srInstances[srInstances.length - 1];
     A.ok(t.input.value === 'partial dict', 'mixing: interim rendered while the box was empty');
     t.input.value = 'partial dict plus my typing';           // the Commander edits/types over the preview
     lastSR().fireInterim('partial dictation grows');
-    A.ok(t.input.value === 'partial dict plus my typing', 'mixing: once the Farmer typed, interims stop overwriting');
+    A.ok(t.input.value === 'partial dict plus my typing', 'mixing: once the Commander typed, interims stop overwriting');
     lastSR().fireFinal('partial dictation grows'); await tick();
     t.Voice.stopListening(); await tick();
-    A.ok(t.input.value === 'partial dict plus my typing', 'mixing: finalize leaves the Farmer\'s hybrid text alone');
+    A.ok(t.input.value === 'partial dict plus my typing', 'mixing: finalize leaves the Commander\'s hybrid text alone');
     A.ok(t.sent().length === 1, 'mixing: the transcript still sends');
   }
 

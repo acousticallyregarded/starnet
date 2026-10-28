@@ -34,7 +34,7 @@ A.ok(!/autofold[\s\S]{0,60}&& conn\b/.test(ui),
 // ---- C. one-shot: only activating the summary takes the flag away for good ----
 A.ok(/querySelector\('summary'\)/.test(ui), 'the hand-toggle detector is scoped to the guide summary');
 A.ok(/summary\.addEventListener\('click', \(\) => \{ delete guide\.dataset\.autofold; \}\)/.test(ui),
-  'a pointer/keyboard summary activation clears the autofold flag so the UI never fights the Farmer');
+  'a pointer/keyboard summary activation clears the autofold flag so the UI never fights the Commander');
 A.ok(!/guide\.addEventListener\('toggle'/.test(ui),
   'programmatic guide.open changes cannot consume the human-override flag');
 A.ok(/dataset\.foldWired/.test(ui), 'the summary listener is installed once, not on every paint');

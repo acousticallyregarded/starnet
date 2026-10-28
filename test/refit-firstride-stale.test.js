@@ -54,7 +54,7 @@ assert.equal(ctx.rideAgentId, 'nova', '…on the same line');
 // a fresh session on a floor already seen narrates nothing
 ctx.ridePending = false; ctx.rideAgentId = null; ctx.ridePrevReach = null; ctx.rideFresh = false; ctx.seen = true;
 compile('foreman', 'nova');
-assert.equal(ctx.ridePending, false, 'a farm that already had its narrated ride never arms another');
+assert.equal(ctx.ridePending, false, 'a station that already had its narrated ride never arms another');
 
 /* …and the ride reads THIS compile's lines. rebake() recompiled the plan and called maybeFirstRide BEFORE regrouping the
    floor's lines (valComps), so the entry compile judged every line against no lines at all (null: nothing complete, nothing

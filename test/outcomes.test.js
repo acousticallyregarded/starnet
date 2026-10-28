@@ -35,7 +35,7 @@ A.eq(O.laneOf('nightshift-act-3'), 'night shift', 'nightshift streams');
 A.eq(O.laneOf('cron-job-1'), 'scheduled', 'cron streams');
 A.eq(O.laneOf('workshop-9'), 'workshop', 'workshop streams');
 A.eq(O.laneOf('loop-2'), 'loop', 'loop streams');
-A.eq(O.laneOf('sess-abc'), 'interactive', 'everything else is the Farmer at the console');
+A.eq(O.laneOf('sess-abc'), 'interactive', 'everything else is the Commander at the console');
 
 /* ── 3. support before speech ── */
 {
@@ -151,7 +151,7 @@ A.eq(O.successPrior(null, 'x'), null, '…and leans nothing');
   const verdicts = { 'radar-0': 'miss', 'radar-1': 'miss', 'radar-2': 'miss', 'radar-3': 'miss', 'radar-4': 'great' };
   const rated = O.fold(rows, { now: T, verdicts });
   const k = rated.keys['recipe:radar'];
-  A.eq(k.n + '/' + k.ok + '/' + k.fail, '5/1/4', 'four runs the Farmer rated missed count as failures');
+  A.eq(k.n + '/' + k.ok + '/' + k.fail, '5/1/4', 'four runs the Commander rated missed count as failures');
   A.eq(k.failReasons.rated_missed, 4, 'named as rated_missed');
   const line = O.lines(rated).find(l => l.indexOf('Stock Radar') >= 0);
   A.ok(line && line.indexOf('only 1 of 5 recent runs landed') >= 0 && line.indexOf('rated_missed ×4') >= 0, 'the line says it did not land, and why (' + line + ')');

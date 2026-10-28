@@ -24,7 +24,7 @@ A.ok(/\['watch', 'WATCH IT · FREE'/.test(panel) && /\['step', 'STEP THROUGH · 
 A.ok(/'▶ SEND A REAL JOB'\) \+ '<\/button>'/.test(panel) && /'③ SEND A REAL JOB'/.test(build) && (chat.match(/'▸ SEND A REAL JOB'/g) || []).length === 2 && !/RUN ONE REAL JOB'/.test(panel + build + chat), 'every sample control says SEND A REAL JOB (org P17: one word set)');
 A.ok(!/RUN A SAMPLE JOB/.test(panel + build + chat), 'the old "sample job" label is gone');
 A.ok(/function testJobForProp\(propId\)/.test(build) && /testJobForProp, close,/.test(build), 'Build answers the test job saved for a prop’s line');
-A.ok(/Build\.testJobForProp\(opts\.propId\)/.test(chat) && /job\.text \? \{ text: job\.text \}/.test(chat) && /job\.line \? \{ line: job\.line \}/.test(chat), 'the live INBOX card sends the Farmer’s own test job, scoped to its line');
+A.ok(/Build\.testJobForProp\(opts\.propId\)/.test(chat) && /job\.text \? \{ text: job\.text \}/.test(chat) && /job\.line \? \{ line: job\.line \}/.test(chat), 'the live INBOX card sends the Commander’s own test job, scoped to its line');
 
 /* X3 */
 A.ok(/name === 'agent\.tool_result' && p && p\.summary === 'denied'/.test(read('sidecar/index.js')), 'the step test’s runner records consent-refused tools from the real tool_result event');
