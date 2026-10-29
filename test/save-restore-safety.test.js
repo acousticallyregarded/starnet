@@ -135,7 +135,7 @@ function stationUi(cloudSave, uiStore) {
       A.ok(r && r.ok === true && r.added === 1, '1: the restore lands');
       await new Promise(res => setTimeout(res, 1400));   // the debounce would have fired by now
       const ids = host.saveStore.load('agent').workstreams.map(w => w.id);
-      A.ok(ids.includes('typed-just-now') && ids.includes('from-b'), '1: the station holds this window\'s just-typed session AND the restored one (' + ids + ')');
+      A.ok(ids.includes('typed-just-now') && ids.includes('from-b'), '1: the farm holds this window\'s just-typed session AND the restored one (' + ids + ')');
       A.eq(c._reloads.length, 1, '1: and the window reloads onto it');
     }
     {
@@ -164,13 +164,13 @@ function stationUi(cloudSave, uiStore) {
       A.ok(threw && /nothing was restored/i.test(threw) && /nothing was lost/i.test(threw), '1b: the restore stops and says why (' + threw + ')');
       A.eq(cs._reloads.length, 0, '1b: the window does not reload');
       A.ok(cacheA.has('starnet.save') && JSON.parse(cacheA.get('starnet.save')).workstreams.some(w => w.id === 'a-2'), '1b: the browser cache still holds the newest session');
-      A.ok(!host.saveStore.load('agent').workstreams.some(w => w.id === 'a-1'), '1b: nothing was merged into the station');
+      A.ok(!host.saveStore.load('agent').workstreams.some(w => w.id === 'a-1'), '1b: nothing was merged into the farm');
       // the rating catches up: the same click now saves first (into its own preserved file) and restores it whole
       host.setRatingAt(0);
       const r = await cs.restoreConflict(own);
       A.ok(r && r.ok === true, '1b: once this window\'s newest save is preserved, its own restore goes ahead');
       const ids = host.saveStore.load('agent').workstreams.map(w => w.id);
-      A.ok(ids.includes('a-1') && ids.includes('a-2'), '1b: and the station holds both of this window\'s sessions (' + ids + ')');
+      A.ok(ids.includes('a-1') && ids.includes('a-2'), '1b: and the farm holds both of this window\'s sessions (' + ids + ')');
       A.eq(cs._reloads.length, 1, '1b: then the window reloads');
     }
 
@@ -194,11 +194,11 @@ function stationUi(cloudSave, uiStore) {
       const clock0 = Date.now();
       let docF = stationDoc({ agent: { id: 'agent', name: 'FRESH', createdAt: 8000 }, updatedAt: Date.now() + 20 });
       for (let i = 0; i < 3; i++) { docF = JSON.parse(JSON.stringify(docF)); docF.updatedAt = Date.now() + 30 + i; docF.workstreams.push({ id: 'fresh-' + i, history: [turn('user', 'fresh ' + i)] }); cacheF.set('starnet.save', JSON.stringify(docF)); F.push(docF); A.eq(await F.flush({ force: true }), true, '2: fresh autosave ' + i + ' lands'); }
-      A.ok(F.revision() >= clock0 && F.revision() !== Sb.revision(), '2: the fresh station\'s line starts at the clock, not at 1 (' + F.revision() + ' vs the stale tab\'s ' + Sb.revision() + ')');
-      A.ok(!F.health().seeded, '2: a fresh station\'s first save is not called a re-seed');
+      A.ok(F.revision() >= clock0 && F.revision() !== Sb.revision(), '2: the fresh farm\'s line starts at the clock, not at 1 (' + F.revision() + ' vs the stale tab\'s ' + Sb.revision() + ')');
+      A.ok(!F.health().seeded, '2: a fresh farm\'s first save is not called a re-seed');
       docS = JSON.parse(JSON.stringify(docS)); docS.updatedAt = Date.now() + 50; docS._saveRevision = Sb.revision(); cacheS2.set('starnet.save', JSON.stringify(docS)); Sb.push(docS);
       A.eq(await Sb.flush({ force: true }), false, '2: the stale pre-reset tab\'s next save is still refused');
-      A.eq(host.saveStore.load('agent').agent.name, 'FRESH', '2: the station is still the fresh one');
+      A.eq(host.saveStore.load('agent').agent.name, 'FRESH', '2: the farm is still the fresh one');
     }
     {
       // a pre-reset copy at revision 0 on the empty file of a reset generation: refused (it used to land as a first save)
@@ -207,7 +207,7 @@ function stationUi(cloudSave, uiStore) {
       const store = makeSaveStore({ fs, pathMod: path, root, clock: { now: () => Date.now() } });
       const zero = store.save('agent', stationDoc({ _saveRevision: 0, updatedAt: 9000, _saveClient: 'old-page' }), { compareRevision: true });
       A.ok(zero.ok === false && zero.conflict === true && zero.reset === true, '2: a pre-reset copy at revision 0 is refused on the empty file (' + JSON.stringify(zero) + ')');
-      A.eq(store.load('agent'), undefined, '2: the station file stays empty');
+      A.eq(store.load('agent'), undefined, '2: the farm file stays empty');
       A.eq(conflictFiles(root).length, 1, '2: and the copy is kept aside, never lost');
       // RESTORE BACKUP of that same old station is the Commander's choice: it lands, and the wire flag is not stored
       const host = sidecar(root);
@@ -217,10 +217,10 @@ function stationUi(cloudSave, uiStore) {
       const backupDoc = stationDoc({ updatedAt: Date.now(), workstreams: [{ id: 'general', title: null, history: [turn('user', 'from the backup')] }] });
       cache.set('starnet.save', JSON.stringify(backupDoc));
       p.push(backupDoc, { restore: true });
-      A.eq(await p.flush({ force: true }), true, '2: an explicit RESTORE BACKUP of a pre-reset station lands on the empty file');
+      A.eq(await p.flush({ force: true }), true, '2: an explicit RESTORE BACKUP of a pre-reset farm lands on the empty file');
       const raw = fs.readFileSync(path.join(root, 'agent.save.json'), 'utf8');
-      A.ok(raw.indexOf('_saveRestore') < 0, '2: the restore flag never reaches the station file');
-      A.eq(host.saveStore.load('agent').workstreams[0].history[0].content, 'from the backup', '2: the station is the restored backup');
+      A.ok(raw.indexOf('_saveRestore') < 0, '2: the restore flag never reaches the farm file');
+      A.eq(host.saveStore.load('agent').workstreams[0].history[0].content, 'from the backup', '2: the farm is the restored backup');
       const next = JSON.parse(JSON.stringify(backupDoc)); next.updatedAt = Date.now() + 5; next.workstreams[0].history.push(turn('assistant', 'later'));
       cache.set('starnet.save', JSON.stringify(next)); p.push(next);
       A.eq(await p.flush({ force: true }), true, '2: and the next ordinary autosave lands on it');
@@ -229,7 +229,7 @@ function stationUi(cloudSave, uiStore) {
       receipt(root2, 7000);
       const store2 = makeSaveStore({ fs, pathMod: path, root: root2, clock: { now: () => Date.now() } });
       const fresh = store2.save('agent', stationDoc({ agent: { id: 'agent', name: 'NEW', createdAt: 9000 } }), { compareRevision: true });
-      A.ok(fresh.ok === true && !fresh.seeded && fresh.revision > 1, '2: a station founded after the reset saves (' + JSON.stringify(fresh) + ')');
+      A.ok(fresh.ok === true && !fresh.seeded && fresh.revision > 1, '2: a farm founded after the reset saves (' + JSON.stringify(fresh) + ')');
       // no receipt: a brand-new install's first save lands as before (at the clock revision)
       const root3 = workspace();
       const store3 = makeSaveStore({ fs, pathMod: path, root: root3, clock: { now: () => 4242 } });
@@ -313,7 +313,7 @@ function stationUi(cloudSave, uiStore) {
       A.eq([settled.conflicts, reads.station, reads.snapshot], [[], 0, 0], '3d: settled + dismissed copies: nothing is read again');
       // the station is never deep-cloned: an untouched session is the station's own object
       const pr = plan(st, { generalId: 'general', workstreams: [{ id: 'new', history: [turn('user', 'n')] }] });
-      A.ok(pr.doc.workstreams[5] === st.workstreams[5] && pr.doc !== st && pr.doc.workstreams !== st.workstreams, '3d: plan copies the station shallowly');
+      A.ok(pr.doc.workstreams[5] === st.workstreams[5] && pr.doc !== st && pr.doc.workstreams !== st.workstreams, '3d: plan copies the farm shallowly');
     }
     {
       // 3e. (why the 0.14.0 boot offer was held) a copy the station could not READ this instant — locked by an antivirus scan
@@ -334,7 +334,7 @@ function stationUi(cloudSave, uiStore) {
       const copy = Object.assign(JSON.parse(JSON.stringify(st)), { _saveRevision: 0, _saveClient: 'closed-window', updatedAt: 3000 });
       copy.workstreams.push({ id: 'lost-work', title: 'L', history: [turn('user', 'l')] });
       const r = host.saveStore.save('agent', copy, { compareRevision: true });
-      A.ok(r.conflict === true, 'fixture: a closed window\'s save is preserved beside the station');
+      A.ok(r.conflict === true, 'fixture: a closed window\'s save is preserved beside the farm');
       const busy = await host.conflicts();
       A.ok(busy.conflicts.length === 0 && !busy.more, '3e: an unreadable copy offers nothing this boot, and does not make the page ask again and again (' + JSON.stringify(busy) + ')');
       locked = false;
@@ -356,7 +356,7 @@ function stationUi(cloudSave, uiStore) {
       const t0 = process.hrtime.bigint();
       await host.conflicts();
       const ms = Number(process.hrtime.bigint() - t0) / 1e6;
-      console.log('  3d: GET /api/save/conflicts on a 3.2 MiB station with 20 snapshots: ' + ms.toFixed(0) + ' ms (was 787 ms)');
+      console.log('  3d: GET /api/save/conflicts on a 3.2 MiB farm with 20 snapshots: ' + ms.toFixed(0) + ' ms (was 787 ms)');
       A.ok(ms < 400, '3d: the boot offer stays far below the review\'s 787 ms (' + ms.toFixed(0) + ' ms)');
     }
 
@@ -368,7 +368,7 @@ function stationUi(cloudSave, uiStore) {
       // a fresh station founded after the reset, then the Commander restores the old station's backup into it
       host.saveStore.save('agent', stationDoc({ agent: { id: 'agent', name: 'VEGA', createdAt: 8000 } }), { compareRevision: true });
       const imp = host.saveStore.save('agent', stationDoc({ _saveRevision: host.saveStore.load('agent')._saveRevision, updatedAt: 9000, _saveClient: 'import-page' }), { compareRevision: true });
-      A.ok(imp.ok === true, '5: the restored backup (founded before the reset) is the station');
+      A.ok(imp.ok === true, '5: the restored backup (founded before the reset) is the farm');
       // a second window of THAT station falls behind; its work is preserved
       const behind = stationDoc({ _saveRevision: 1, updatedAt: 9500, workstreams: [{ id: 'general', title: null, history: [turn('user', 'hi')] }, { id: 'new-work', title: 'After the import', history: [turn('user', 'x')] }] });
       const r = host.saveStore.save('agent', Object.assign({}, behind, { _saveClient: 'window-b' }), { compareRevision: true });
@@ -398,10 +398,10 @@ function stationUi(cloudSave, uiStore) {
       const c = S.health().conflict;
       A.ok(c && c.conflict === true && !c.reset && c.predatesReset === true, '5: and told its copy is erased work (' + JSON.stringify(c) + ')');
       const light = stationUi(S).light();
-      A.ok(light.banner && !light.banner.some(t => /restore this window/i.test(t)), '5: its banner never shows a Restore key the station would refuse (' + JSON.stringify(light.banner) + ')');
-      A.ok(/before this computer.s station was reset/i.test(light.title) && !/another window/i.test(light.title), '5: and says why (' + light.title + ')');
+      A.ok(light.banner && !light.banner.some(t => /restore this window/i.test(t)), '5: its banner never shows a Restore key the farm would refuse (' + JSON.stringify(light.banner) + ')');
+      A.ok(/before this computer.s farm was reset/i.test(light.title) && !/another window/i.test(light.title), '5: and says why (' + light.title + ')');
       const refused = await host.restore(c.recovery);
-      A.ok(refused.ok === false && refused.predatesReset === true, '5: the station refuses that restore');
+      A.ok(refused.ok === false && refused.predatesReset === true, '5: the farm refuses that restore');
       A.eq((await host.conflicts()).conflicts.map(x => x.restorable), [0], '5: and never offers it at boot');
     }
 
@@ -447,7 +447,7 @@ function stationUi(cloudSave, uiStore) {
       const pre = host.saveStore.save('agent', stationDoc({ _saveRevision: 0, updatedAt: 1500, _saveClient: 'window-e',
         workstreams: [{ id: 'general', title: null, history: [turn('user', 'hi')] }, { id: 'e', history: [turn('user', 'e')] }] }), { compareRevision: true });
       const r = await host.restore(pre.recovery);
-      A.ok(r.ok === true && /^agent\.save-before-restore-\d+\.json$/.test(r.backup), '7: the restore copies the station aside first');
+      A.ok(r.ok === true && /^agent\.save-before-restore-\d+\.json$/.test(r.backup), '7: the restore copies the farm aside first');
       const kept = fs.readdirSync(root).filter(n => /^agent\.save-before-restore-/.test(n)).sort();
       A.eq(kept.length, 3, '7: only three restore backups are kept (' + kept + ')');
       A.ok(kept.includes(r.backup) && kept.includes('agent.save-before-restore-1005.json') && kept.includes('agent.save-before-restore-1004.json'), '7: the one just written and the newest older ones');

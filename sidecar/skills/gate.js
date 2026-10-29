@@ -128,7 +128,7 @@
     }
     function decide(skill) {
       if (skill && skill.pendingCandidate) return { action: 'ask', visible: false, approvable: false,
-        categories: categoriesOf(skill), reason: 'proposed revision awaits behavior evaluation and Commander approval; the active version is unchanged' };
+        categories: categoriesOf(skill), reason: 'proposed revision awaits behavior evaluation and Farmer approval; the active version is unchanged' };
       const stamped = str(skill && skill.guardAction).trim().toLowerCase();
       const rule = ruleAction(skill);
       const action = rule ? worseAction(stamped, rule) : stamped;
@@ -137,9 +137,9 @@
           reason: 'blocked by the skill guard' };
       }
       if (action === 'ask') {
-        if (isApproved(skill)) return { action: 'ask', visible: true, approvable: true, approved: true, categories: categoriesOf(skill), reason: 'approved by the Commander' };
+        if (isApproved(skill)) return { action: 'ask', visible: true, approvable: true, approved: true, categories: categoriesOf(skill), reason: 'approved by the Farmer' };
         return { action: 'ask', visible: false, approvable: true, approved: false, categories: categoriesOf(skill),
-          reason: 'needs the Commander\'s approval in ABILITIES > SKILLS' };
+          reason: 'needs the Farmer\'s approval in ABILITIES > SKILLS' };
       }
       return { action: action || 'allow', visible: true, approvable: false, categories: [], reason: '' };
     }

@@ -117,9 +117,9 @@
           '<div data-auto-panel="1" hidden><p class="sn-menu-note">Optional script and tool restrictions for this job.</p>' +
             '<label class="sn-menu-field">Pre-check script<input id="rt-script" class="key-input" placeholder="Path relative to the project"></label>' +
             '<label class="rt-term"><input type="checkbox" id="rt-no-agent"> Run the script only, without a model</label>' +
-            '<label class="sn-menu-field">Allowed toolsets<input id="rt-toolsets" class="key-input" placeholder="Toolset ids, e.g. web, cabinet; blank uses station defaults"></label></div>' +
+            '<label class="sn-menu-field">Allowed toolsets<input id="rt-toolsets" class="key-input" placeholder="Toolset ids, e.g. web, cabinet; blank uses farm defaults"></label></div>' +
           '<div data-auto-panel="2" hidden><p class="sn-menu-note">Choose where the result goes.</p>' +
-            '<label class="sn-menu-field">Result destination<select id="rt-deliver" class="key-input"><option value="local">Keep in StarNet</option><option value="origin">Return to this conversation</option></select></label>' +
+            '<label class="sn-menu-field">Result destination<select id="rt-deliver" class="key-input"><option value="local">Keep in Homestead</option><option value="origin">Return to this conversation</option></select></label>' +
             '<label class="rt-term"><input type="checkbox" id="rt-continue"> Allow follow-up in that conversation</label></div>' +
         '<div data-auto-panel="3" hidden><p class="sn-menu-note">This routine inherits the agent’s existing access. Extra unattended permissions are off unless you grant them below. Placing a WORKBENCH on the floor does not grant them.</p>' +
         // UNATTENDED TERMINAL GRANT — default OFF, and it must stay a deliberate tick: this is the one control
@@ -371,7 +371,7 @@
         if (createState) createState.textContent = schedulerArmed ? 'Scheduling is on. Saving adds this task to the schedule shown below.'
           : (j && j.halted) ? 'Scheduling is stopped (E-STOP). Saving keeps it stopped: it runs only after you press ▶ TURN SCHEDULING ON in Scheduled jobs.'
           : (j && j.armSet) ? 'Scheduling is off — you turned it off. Saving keeps it off: press ▶ TURN SCHEDULING ON in Scheduled jobs when you want it to run.'
-          : 'Scheduling is off. Saving turns it on for the whole station, so every saved schedule runs at its time.';   // the INBOX form's own words (workflowpanel.js) — one SAVE SCHEDULE, one sentence
+          : 'Scheduling is off. Saving turns it on for the whole farm, so every saved schedule runs at its time.';   // the INBOX form's own words (workflowpanel.js) — one SAVE SCHEDULE, one sentence
         maxConsecutive = (j && Number(j.maxConsecutiveFailures)) || 0;
         maxPendingDeliveries = (j && Number(j.maxPendingDeliveries)) || 0;
         // DEGRADED STORE (routine hardening, 2026-08-21): GET /api/cron carries `degraded` when cron.jobs.json AND
@@ -459,7 +459,7 @@
         schedulerArmed = false;
         listedJobs = [];
         const createState = body.querySelector('#rt-create-state');
-        if (createState) createState.textContent = 'Scheduling status could not be checked. Reconnect to the station before relying on an automatic run.';
+        if (createState) createState.textContent = 'Scheduling status could not be checked. Reconnect to the farm before relying on an automatic run.';
         listEl.innerHTML = '<div class="mc-detail">sidecar offline — start it to manage routines.</div>';
       }
     }
@@ -578,7 +578,7 @@
       // left the station keeps its own id as an option, so opening the form never silently retargets it.
       const curAgent = job.agentId || 'agent';
       const runAsOpts = roster.map(a => ({ id: a.id, name: a.name || a.id }));
-      if (!runAsOpts.some(a => a.id === curAgent)) runAsOpts.unshift({ id: curAgent, name: curAgent + ' (not on station)' });
+      if (!runAsOpts.some(a => a.id === curAgent)) runAsOpts.unshift({ id: curAgent, name: curAgent + ' (not on farm)' });
       const runAsField = job.noAgent ? '' :
         '<label class="sn-menu-field">Run as<select class="key-input" data-edit-agent>' +
           runAsOpts.map(a => '<option value="' + esc(a.id) + '"' + (a.id === curAgent ? ' selected' : '') + '>' + esc(a.name) + '</option>').join('') +
@@ -604,7 +604,7 @@
         if (action.dataset.edit === 'cancel') { sfx('click'); closeEdit(); return; }
         const name = nameEl.value.trim(), prompt = promptEl.value.trim();
         const error = !name ? 'give this routine a name' : (!prompt && !job.script ? 'enter instructions for this routine' : '')
-          || (utf8Bytes(JSON.stringify({ id, patch: { name, prompt } })) > EDIT_BODY_MAX ? 'these instructions are too long (the station accepts up to 64 KB) — shorten them' : '');
+          || (utf8Bytes(JSON.stringify({ id, patch: { name, prompt } })) > EDIT_BODY_MAX ? 'these instructions are too long (the farm accepts up to 64 KB) — shorten them' : '');
         if (error) { errorEl.textContent = error; errorEl.hidden = false; sfx('bad'); return; }
         // Only send changed fields. An agent may have edited the other field since this form opened;
         // posting both old values would silently undo that newer edit.
@@ -626,7 +626,7 @@
           }
           notify('routine updated', 'good'); sfx('click'); closeEdit(); refresh();
         } catch (e) {
-          errorEl.textContent = (e && e.message) || 'could not reach the station — changes were not saved';
+          errorEl.textContent = (e && e.message) || 'could not reach the farm — changes were not saved';
           errorEl.hidden = false; sfx('bad');
         } finally {
           editSaving = false;
@@ -648,7 +648,7 @@
       btn.classList.add('on');
       const savedTz = rowEl.dataset.tz || '';
       const zoneLabel = host.querySelector('.sp-tz');
-      if (zoneLabel) zoneLabel.textContent = 'repeating: ' + (savedTz || 'station time') + ' · once: your time';
+      if (zoneLabel) zoneLabel.textContent = 'repeating: ' + (savedTz || 'farm time') + ' · once: your time';
       const inp = host.querySelector('[data-sp-input]'), pv = host.querySelector('.rt-resched-pv');
       if (inp && pv) wirePreview(inp, pv, savedTz);
       const p = (typeof SchedPicker !== 'undefined') ? SchedPicker.mount(host, {}) : null;
@@ -667,7 +667,7 @@
           if (r && r.ok) { notify('rescheduled — ' + human((r.job && r.job.scheduleDisplay) || value), 'good'); sfx('click'); closeResched(); }
           else { notify((r && r.error) || 'could not reschedule — it still runs on its old schedule', 'warn'); sfx('bad'); b.disabled = false; b.textContent = '✓ SAVE SCHEDULE'; return; }
         } catch (_) {
-          notify('could not reach the station — the schedule was NOT changed', 'warn'); sfx('bad');
+          notify('could not reach the farm — the schedule was NOT changed', 'warn'); sfx('bad');
           b.disabled = false; b.textContent = '✓ SAVE SCHEDULE'; return;
         }
         refresh();
@@ -705,7 +705,7 @@
         box.innerHTML = runs == null ? '<div class="mc-detail" style="color:var(--bad)">could not read this routine’s history</div>'
           : runs.length ? runs.map(historyLine).join('')
           : '<div class="mc-detail dim">no recorded runs yet</div>';
-      } catch (_) { if (box.isConnected) box.innerHTML = '<div class="mc-detail" style="color:var(--bad)">could not reach the station</div>'; }
+      } catch (_) { if (box.isConnected) box.innerHTML = '<div class="mc-detail" style="color:var(--bad)">could not reach the farm</div>'; }
     }
 
     // row actions: run-now (stream + show the reply), toggle enable/disable, delete (two-step arm/confirm).
@@ -742,7 +742,7 @@
         // announce a delete the sidecar had REFUSED — and then refresh() re-drew the still-present row underneath it.
         sfx('bad');
         try { const r = await post('/api/cron/remove', { id }); notify(r.ok ? 'routine deleted' : 'could not delete this routine', r.ok ? 'good' : 'warn'); }
-        catch (_) { notify('could not reach the station — the routine was not deleted', 'warn'); }
+        catch (_) { notify('could not reach the farm — the routine was not deleted', 'warn'); }
         refresh(); return;
       }
       if (act === 'revoke') {
@@ -752,7 +752,7 @@
         // A REVOKE CLAIM MUST BE PROVEN, not assumed: a rejected request left the standing unattended grant in
         // force while the station said "access revoked" — the one lie a permission surface can never tell.
         try { const r = await post('/api/cron/update', { id, patch: { unattendedGrants: [] } }); notify(r.ok ? 'access revoked' : 'could NOT revoke access — the routine still has it', r.ok ? 'good' : 'warn'); }
-        catch (_) { notify('could not reach the station — access was NOT revoked', 'warn'); }
+        catch (_) { notify('could not reach the farm — access was NOT revoked', 'warn'); }
         refresh(); return;
       }
       if (act === 'allow-images') {
@@ -768,7 +768,7 @@
           const job = out && out.job;
           const saved = !!(job && Array.isArray(job.unattendedGrants) && job.unattendedGrants.indexOf('studio') >= 0);
           notify(saved ? 'this routine may now make images' : 'could NOT allow images — the routine still cannot make them', saved ? 'good' : 'warn');
-        } catch (_) { notify('could not reach the station — images were NOT allowed', 'warn'); }
+        } catch (_) { notify('could not reach the farm — images were NOT allowed', 'warn'); }
         refresh(); return;
       }
       if (act === 'toggle') {
@@ -779,7 +779,7 @@
         try {
           const r = await post('/api/cron/update', { id, patch: { enabled: !on } });
           if (!r.ok) notify(on ? 'could NOT pause — the routine is still armed' : 'could NOT enable this routine', 'warn');
-        } catch (_) { notify('could not reach the station — the routine was NOT ' + (on ? 'paused' : 'enabled'), 'warn'); }
+        } catch (_) { notify('could not reach the farm — the routine was NOT ' + (on ? 'paused' : 'enabled'), 'warn'); }
         refresh(); return;
       }
       if (act === 'run') {

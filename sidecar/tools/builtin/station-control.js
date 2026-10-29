@@ -52,8 +52,8 @@
   const def = (name, spec) => { A[name] = Object.assign({ name, power: () => false }, spec); };
 
   // ---- the crew (page: the Dossier CONFIG card's own setters) ----
-  def('agent.model', { page: true, takes: '{agent, model ("" = follow the station default), provider?, effort?}',
-    card: a => (a.model ? 'set ' + q(a.agent) + ' to the model ' + q(a.model) + (a.provider ? ' on ' + clip(a.provider, 30) : '') + (a.effort ? ', reasoning ' + clip(a.effort, 20) : '') : 'set ' + q(a.agent) + ' to follow the station\'s default model') + '.' });
+  def('agent.model', { page: true, takes: '{agent, model ("" = follow the farm default), provider?, effort?}',
+    card: a => (a.model ? 'set ' + q(a.agent) + ' to the model ' + q(a.model) + (a.provider ? ' on ' + clip(a.provider, 30) : '') + (a.effort ? ', reasoning ' + clip(a.effort, 20) : '') : 'set ' + q(a.agent) + ' to follow the farm\'s default model') + '.' });
   def('agent.personality', { page: true, takes: '{agent, personality}', card: a => 'give ' + q(a.agent) + ' the ' + clip(a.personality, 30) + ' personality.' });
   def('agent.rename', { page: true, takes: '{agent, name}', card: a => 'rename ' + q(a.agent) + ' to ' + q(a.name) + '.' });
   def('agent.skin', { page: true, takes: '{agent, skin}', card: a => 'change ' + q(a.agent) + '\'s look to the ' + clip(a.skin, 30) + ' skin.' });
@@ -83,7 +83,7 @@
     if (l && typeof l === 'object' && !Array.isArray(l)) return l; const flat = Object.assign({}, a); delete flat.look; return flat; };
   def('look.set', { page: true, takes: '{look: {theme?, textScale?, crtGlass?, flicker?, sound?, roomLighting?, backdrop?, hints?, …}} (station.settings lists every key and value)',
     shape: a => ({ look: lookOf(a) }), needs: a => Object.keys(a.look || {}).length ? '' : 'look.set named no look setting (e.g. {"look": {"hints": false}})',
-    card: a => 'change the station\'s look: ' + clip(Object.keys(a.look || {}).map(k => k + ' ' + (typeof a.look[k] === 'object' ? JSON.stringify(a.look[k]) : a.look[k])).join(', ') || 'nothing named', 160) + '.' });
+    card: a => 'change the farm\'s look: ' + clip(Object.keys(a.look || {}).map(k => k + ' ' + (typeof a.look[k] === 'object' ? JSON.stringify(a.look[k]) : a.look[k])).join(', ') || 'nothing named', 160) + '.' });
 
   // ---- spending (Settings › SPENDING LIMITS, AI & MODELS › FALLBACK MODELS) ----
   // "5" / "$5" from a model is the number it means (the card and the saved value read it the same way); anything else
@@ -102,7 +102,7 @@
     card: a => onOff(a.on) ? 'turn on station-wide FULL POWER: every agent acts on this computer without asking.' : 'turn station-wide FULL POWER off.',
     run: async (a, env) => {
       const r = await env.route('POST', '/api/permissions/bypass', { on: onOff(a.on) });
-      if (!onOff(a.on) && r && r.status < 400 && r.json && r.json.envFullAccess) return refusal('the Full Power switch is off, but Full Power STAYS ON: StarNet was started with SKYNET_FULL_ACCESS set, and only restarting it without that ends it');
+      if (!onOff(a.on) && r && r.status < 400 && r.json && r.json.envFullAccess) return refusal('the Full Power switch is off, but Full Power STAYS ON: Homestead was started with SKYNET_FULL_ACCESS set, and only restarting it without that ends it');
       return r;
     } });
   def('permission.grant', { takes: '{key: "cabinet:write"}', power: () => true, card: a => 'grant a standing approval for ' + clip(a.key, 40) + ' (no more asking for it).',
@@ -126,7 +126,7 @@
     run: async (a, env) => {
       // ⛔ /api/cron/arm also lifts the routines E-STOP in either direction: never touch it while the station is halted
       const h = await env.route('GET', '/api/halt');
-      if (h.json && h.json.halted) return refusal('the station (or part of it) is halted (an E-STOP or a paused overseer). Only the Commander resumes it (RESUME AUTOMATION in the top bar); the scheduler was not changed');
+      if (h.json && h.json.halted) return refusal('the farm (or part of it) is halted (an E-STOP or a paused overseer). Only the Farmer resumes it (RESUME AUTOMATION in the top bar); the scheduler was not changed');
       return env.route('POST', '/api/cron/arm', { enabled: onOff(a.on) });
     } });
   def('nightshift.focus', { takes: '{ref (an absolute trusted-project path, a thread id, or "goal"), kind?: project|thread|goal} — or {clear:true}',
@@ -140,7 +140,7 @@
 
   // ---- memory & learning ----
   def('memory.forget', { takes: '{agent, id}', card: a => 'make ' + q(a.agent || 'agent') + ' forget memory ' + clip(a.id, 40) + ' (it will not be learned again).',
-    run: (a, env) => env.route('POST', '/api/memory/forget', { agentId: a.agent || 'agent', id: a.id, reason: 'commander via chat' }) });
+    run: (a, env) => env.route('POST', '/api/memory/forget', { agentId: a.agent || 'agent', id: a.id, reason: 'farmer via chat' }) });
   def('memory.pin', { takes: '{agent, id, pinned?}', card: a => (a.pinned === false ? 'unpin' : 'pin') + ' memory ' + clip(a.id, 40) + ' for ' + q(a.agent || 'agent') + '.',
     run: (a, env) => env.route('POST', '/api/memory/pin', { agentId: a.agent || 'agent', id: a.id, pinned: a.pinned !== false }) });
   def('memory.edit', { takes: '{agent, id, content}', card: a => 'rewrite ' + q(a.agent || 'agent') + '\'s memory ' + clip(a.id, 40) + ' as: "' + clip(a.content, 200) + '".',
@@ -151,14 +151,14 @@
     run: (a, env) => env.route('POST', '/api/memory/config', pick(a, ['reflectEnabled', 'reflectCooldownMs', 'failureReviewEnabled', 'failureReviewCooldownMs'])) });
   def('learning.set', { takes: '{on}', card: a => (onOff(a.on) ? 'resume' : 'pause') + ' learning about you.',
     run: (a, env) => env.route('POST', '/api/personalization', { enabled: onOff(a.on) }) });
-  def('learning.wipe', { takes: '{}', card: () => 'WIPE what the station has learned about your interests (interests, scouting, recommendations), with the night shift\'s learning, declined study topics and workflow takeover notes.',
+  def('learning.wipe', { takes: '{}', card: () => 'WIPE what the farm has learned about your interests (interests, scouting, recommendations), with the night shift\'s learning, declined study topics and workflow takeover notes.',
     run: (a, env) => env.route('DELETE', '/api/personalization') });
 
   // ---- connections, abilities, skills ----
   def('connector.remove', { takes: '{id}', card: a => 'disconnect and remove the connector ' + q(a.id) + '.',
     run: async (a, env) => (await listed(env, '/api/connectors', 'connectors', c => c.id === a.id)) || env.route('POST', '/api/connectors/remove', { id: a.id }) });
   def('connector.refresh', { takes: '{id}', card: a => 'reconnect the connector ' + q(a.id) + '.', run: (a, env) => env.route('POST', '/api/connectors/refresh', { id: a.id }) });
-  def('ability.set', { takes: '{id (a toolset id from station.settings connections), on}', power: a => onOff(a.on), card: a => 'switch the ' + q(a.id) + ' abilities ' + (onOff(a.on) ? 'on' : 'off') + ' for the whole station.',
+  def('ability.set', { takes: '{id (a toolset id from station.settings connections), on}', power: a => onOff(a.on), card: a => 'switch the ' + q(a.id) + ' abilities ' + (onOff(a.on) ? 'on' : 'off') + ' for the whole farm.',
     run: (a, env) => env.route('POST', '/api/toolsets/' + enc(String(a.id || '')), { enabled: onOff(a.on) }) });
   def('skill.set', { takes: '{slug, on}', card: a => 'switch the skill ' + q(a.slug) + ' ' + (onOff(a.on) ? 'on' : 'off') + '.',
     run: async (a, env) => (await listed(env, '/api/skills', 'skills', s => (s.slug || s.id) === a.slug)) || env.route('POST', '/api/skills/toggle', { slug: a.slug, enabled: onOff(a.on) }) });
@@ -249,10 +249,10 @@
       const ch = String(a.channel || '').trim().toLowerCase();
       if (['telegram', 'discord', 'slack', 'matrix', 'signal'].indexOf(ch) < 0) return refusal('channel is telegram, discord, slack, matrix or signal');
       // the discord route ignores the body (it never forgets): say so rather than report a forget that did not happen
-      if (ch === 'discord' && onOff(a.forget)) return refusal('Discord can only be disconnected from here, not forgotten — the Commander uses FORGET in CONNECT › CHANNELS');
+      if (ch === 'discord' && onOff(a.forget)) return refusal('Discord can only be disconnected from here, not forgotten — the Farmer uses FORGET in CONNECT › CHANNELS');
       return env.route('POST', '/api/channels/' + ch + '/disconnect', { purge: onOff(a.forget) });
     } });
-  def('browser.mode', { takes: '{mode: builtin|window|chrome}', card: a => 'run the station browser ' + ({ builtin: 'inside StarNet', window: 'as its own Chrome window', chrome: 'in your own Chrome' }[String(a.mode || '').toLowerCase()] || clip(a.mode, 20)) + '.',
+  def('browser.mode', { takes: '{mode: builtin|window|chrome}', card: a => 'run the farm browser ' + ({ builtin: 'inside Homestead', window: 'as its own Chrome window', chrome: 'in your own Chrome' }[String(a.mode || '').toLowerCase()] || clip(a.mode, 20)) + '.',
     run: (a, env) => env.route('POST', '/api/browser/settings', { mode: String(a.mode || '').trim().toLowerCase() }) });
 
   // ---- group chats (COMMS) ----
@@ -311,11 +311,11 @@
   def('estop.engage', { takes: '{}', card: () => 'press the E-STOP: EVERY run stops (this one too), and routines, goal loops and the night shift stand down until you press RESUME AUTOMATION.',
     run: async (a, env) => {
       const h = await env.route('GET', '/api/halt');
-      if (h && h.json && h.json.halted) return { status: 200, json: { alreadyHalted: true, note: 'the station is already halted — only the Commander resumes it (RESUME AUTOMATION)' } };
+      if (h && h.json && h.json.halted) return { status: 200, json: { alreadyHalted: true, note: 'the farm is already halted — only the Farmer resumes it (RESUME AUTOMATION)' } };
       // the halt aborts every run, THIS one included, so it fires just after this result is handed back — the report
       // says "engaging", never "halted": the top bar's RESUME AUTOMATION is the proof the Commander sees
       env.later(() => { Promise.resolve(env.route('POST', '/api/halt')).catch(swallow('station-control.estop.engage')); }, 1500);
-      return { status: 200, json: { engaging: true, note: 'the E-STOP engages in a moment and stops this run too; say so in one line now — RESUME AUTOMATION in the top bar is how the Commander resumes' } };
+      return { status: 200, json: { engaging: true, note: 'the E-STOP engages in a moment and stops this run too; say so in one line now — RESUME AUTOMATION in the top bar is how the Farmer resumes' } };
     } });
 
   // ---- escalations: revoking or deleting a plugin or hook can LOOSEN the station (one may be a pre-tool veto guard),
@@ -332,7 +332,7 @@
   // incl. both per-run token ceilings (a Claude subscription; a model StarNet has no price for, issue #135)
   const LIMIT_KEYS = ['maxIters', 'maxConcurrentAgents', 'consentTimeoutMs', 'cronTickMs', 'maxSubscriptionTokens', 'maxUnpricedTokens'];
   def('limits.set', { takes: '{maxIters? 0-200, maxConcurrentAgents? 0-32, consentTimeoutMs? 5000-600000, cronTickMs? 5000-600000, maxSubscriptionTokens? 0-100000000, maxUnpricedTokens? 0-100000000} (0 = UNLIMITED, null = default; most apply at the next start)', power: () => true, keys: LIMIT_KEYS,
-    card: a => 'change the station\'s runtime limits: ' + clip(LIMIT_KEYS.filter(k => k in a).map(k => k + ' ' + (a[k] === 0 ? 'UNLIMITED' : a[k] == null ? 'default' : a[k])).join(', ') || 'nothing named', 160) + ' (most take effect at the next start).',
+    card: a => 'change the farm\'s runtime limits: ' + clip(LIMIT_KEYS.filter(k => k in a).map(k => k + ' ' + (a[k] === 0 ? 'UNLIMITED' : a[k] == null ? 'default' : a[k])).join(', ') || 'nothing named', 160) + ' (most take effect at the next start).',
     run: (a, env) => env.route('POST', '/api/runtime/knobs', pick(a, LIMIT_KEYS)) });
 
   /* ONE reading of the args, used by the tier check, the card's runner AND the page (sweep 2026-10-03). They read the
@@ -379,7 +379,7 @@
     const r = await env.route('GET', url);
     const rows = r && r.status < 400 && r.json && Array.isArray(r.json[field]) ? r.json[field] : null;
     if (!rows) return refusal('that list could not be read, so nothing was changed');
-    return rows.some(x => x && match(x)) ? null : refusal('there is no such ' + field.replace(/s$/, '') + ' on this station (station.settings lists them)');
+    return rows.some(x => x && match(x)) ? null : refusal('there is no such ' + field.replace(/s$/, '') + ' on this farm (station.settings lists them)');
   }
   const folderKey = p => String(p || '').trim().replace(/\\/g, '/').replace(/\/+$/, '').toLowerCase();
   function pick(o, keys) { const out = {}; for (const k of keys) if (o && Object.prototype.hasOwnProperty.call(o, k)) out[k] = o[k]; return out; }
@@ -392,9 +392,9 @@
   function cardFor(args, opts) {
     const call = readCall(args);
     const spec = A[call.action];
-    if (!spec) return 'make an unknown station change (it will be refused, and nothing will change)';
+    if (!spec) return 'make an unknown farm change (it will be refused, and nothing will change)';
     const a = argsFor(spec, call.args);
-    try { return spec.card(a, opts || {}).replace(/\.$/, ''); } catch (_) { return 'make the station change ' + spec.name; }
+    try { return spec.card(a, opts || {}).replace(/\.$/, ''); } catch (_) { return 'make the farm change ' + spec.name; }
   }
 
   /* READS for station.settings: one section at a time, so a 32k model is not handed every store at once */
@@ -449,7 +449,7 @@
     const rows = Object.values(A).filter(x => pre.some(p => p.endsWith('.') ? x.name.startsWith(p) : x.name === p))
       .map(x => (x.power({}) ? 'station.power' : 'station.control') + ' {"action": "' + x.name + '", "args": ' + x.takes + '}'
         + (!x.power({}) && x.power({ mode: 'full', on: true, reach: 'this-computer' }) ? '  (station.power when it widens access)' : ''));
-    if (sec === 'spending') rows.push('an interrupted run listed in unsettled is settled by the Commander alone');
+    if (sec === 'spending') rows.push('an interrupted run listed in unsettled is settled by the Farmer alone');
     return rows;
   }
 
@@ -462,23 +462,23 @@
     const refuse = (error, summary) => ({ content: 'REFUSED: ' + error + ' — do not report this change as done.', summary: summary || 'refused' });
 
     async function page(verb, args) {
-      if (!station) return { status: 503, json: { error: 'this run has no station page attached — open StarNet to change this' } };
+      if (!station) return { status: 503, json: { error: 'this run has no farm page attached — open Homestead to change this' } };
       let out; try { out = await station.request(verb, args || {}); } catch (e) { out = { ok: false, error: String((e && e.message) || e) }; }
-      return out && out.ok ? { status: 200, json: out.result } : { status: 409, json: { error: String((out && out.error) || 'the station did not answer') } };
+      return out && out.ok ? { status: 200, json: out.result } : { status: 409, json: { error: String((out && out.error) || 'the farm did not answer') } };
     }
     async function callRoute(method, url, body) {
-      if (!route) return { status: 503, json: { error: 'station settings are not reachable from this run' } };
+      if (!route) return { status: 503, json: { error: 'farm settings are not reachable from this run' } };
       try { return await route(method, url, body); } catch (e) { return { status: 500, json: { error: String((e && e.message) || e) } }; }
     }
     // a delay for the one action that must outlive its own result (estop.engage) — injectable for tests
     const later = typeof deps.later === 'function' ? deps.later : (fn, ms) => { const t = setTimeout(fn, ms); if (t && t.unref) t.unref(); };
     const env = { route: callRoute, page, later };
-    const errorOf = r => String((r && r.json && (r.json.error || r.json.reason)) || (r && r.text) || ('the station answered ' + (r && r.status)));
+    const errorOf = r => String((r && r.json && (r.json.error || r.json.reason)) || (r && r.text) || ('the farm answered ' + (r && r.status)));
     const shape = obj => { let s; try { s = JSON.stringify(obj); } catch (_) { s = '{}'; } return s.length > MAX_OUT ? s.slice(0, MAX_OUT) + '… (cut: ask for one section)' : s; };
 
     const settingsTool = {
       name: 'station.settings', capability: 'orchestrator', scope: 'read', requiresConsent: false, timeoutMs: 20000,
-      description: 'READ the Commander\'s station settings before changing them with station.control / station.power. section: crew (each agent\'s model, approval, reach, personality, skin; every session; the look; the allowed values for each) | spending | permissions | autonomy | memory {agent} | connections | skills | apps | projects | checkpoints {agent} | deliverables {agent} (away-work results to decide) | library (finished work) | away {agent} (its queue) | quests | groups | channels | limits | extensions | actions (every change you can make and what it takes).',
+      description: 'READ the Farmer\'s farm settings before changing them with station.control / station.power. section: crew (each agent\'s model, approval, reach, personality, skin; every session; the look; the allowed values for each) | spending | permissions | autonomy | memory {agent} | connections | skills | apps | projects | checkpoints {agent} | deliverables {agent} (away-work results to decide) | library (finished work) | away {agent} (its queue) | quests | groups | channels | limits | extensions | actions (every change you can make and what it takes).',
       schema: { type: 'object', properties: { section: { type: 'string', enum: SECTION_NAMES }, agent: { type: 'string' } } },
       run: async (args) => {
         const asked = String((args && args.section) || 'crew').trim().toLowerCase(), sec = SECTION_ALIAS[asked] || asked, spec = SECTIONS[sec];
@@ -487,7 +487,7 @@
           // [station.power] = always an escalation; [station.power when …] = only the value that widens access or spending
           const rows = Object.values(A).map(x => x.name + ' ' + x.takes + (x.power({}) ? '  [station.power]' : x.power({ mode: 'full', on: true, reach: 'this-computer' }) ? '  [station.power when it widens access]' : ''));
           return { content: 'station.control {action, args} — or station.power for the [station.power] ones:\n' + rows.join('\n')
-            + '\nNever possible (the Commander does these): entering or reading a key/password/sign-in (connectors.list gives them a CONNECT chip), answering a permission prompt, lifting an E-STOP.', summary: Object.keys(A).length + ' actions' };
+            + '\nNever possible (the Farmer does these): entering or reading a key/password/sign-in (connectors.list gives them a CONNECT chip), answering a permission prompt, lifting an E-STOP.', summary: Object.keys(A).length + ' actions' };
         }
         if (spec.page) {
           const r = await page('station.settings', {});
@@ -516,13 +516,13 @@
         // run that read outside content asks before it widens the leash (permissions.js, taint.js)
         freshConsent: isPower,
         description: isPower
-          ? 'ESCALATE a station setting for the Commander — only what widens access or spending: agent.approval full, agent.reach trusted-project/this-computer, agent.away_work on, fullpower.set on, budget.set, budget.resume, autonomy.set, scheduler.set on, permission.grant, key.unattended on, key.set on, ability.set on, skill.install, deliverable.decide keep, project.trust, plugin.approve|revoke|delete, hook.approve|revoke|delete, limits.set. Only when the Commander asked for it in this conversation; refused on runs nobody is watching. Same {action, args} as station.control.'
-          : 'CHANGE a station setting for the Commander when they ask, or bring crew into this conversation (group.add) — the same change their button makes, proven saved. {action, args}: agent.model|personality|rename|skin|approval|reach|away_work|delete, session.rename|pin|archive|delete, look.set, fallback.set, permission.revoke, fullpower.set off, nightshift.focus|avoid, memory.forget|pin|edit|reset|settings, learning.set|wipe, connector.remove|refresh, ability.set, skill.set|install|uninstall, key.set|remove, spotify.disconnect, channels.notify, app.delete|rename, project.untrust|forget, checkpoint.restore, deliverable.decide, deliverables.cleanup|restore, away.queue|remove, quest.dismiss|later, channel.disconnect, browser.mode, group.add (bring crew into this chat: the agents named join it; a one-on-one chat becomes a group chat, when your reply there ends), group.configure (an existing group chat; members = its WHOLE list), notifications.read|clear, estop.engage (the Commander alone resumes). station.settings section "actions" lists what each takes; read the current value first. Make the call BEFORE you say anything changed, and say only what its result says. Widening access or spending goes through station.power instead.',
+          ? 'ESCALATE a farm setting for the Farmer — only what widens access or spending: agent.approval full, agent.reach trusted-project/this-computer, agent.away_work on, fullpower.set on, budget.set, budget.resume, autonomy.set, scheduler.set on, permission.grant, key.unattended on, key.set on, ability.set on, skill.install, deliverable.decide keep, project.trust, plugin.approve|revoke|delete, hook.approve|revoke|delete, limits.set. Only when the Farmer asked for it in this conversation; refused on runs nobody is watching. Same {action, args} as station.control.'
+          : 'CHANGE a farm setting for the Farmer when they ask, or bring crew into this conversation (group.add) — the same change their button makes, proven saved. {action, args}: agent.model|personality|rename|skin|approval|reach|away_work|delete, session.rename|pin|archive|delete, look.set, fallback.set, permission.revoke, fullpower.set off, nightshift.focus|avoid, memory.forget|pin|edit|reset|settings, learning.set|wipe, connector.remove|refresh, ability.set, skill.set|install|uninstall, key.set|remove, spotify.disconnect, channels.notify, app.delete|rename, project.untrust|forget, checkpoint.restore, deliverable.decide, deliverables.cleanup|restore, away.queue|remove, quest.dismiss|later, channel.disconnect, browser.mode, group.add (bring crew into this chat: the agents named join it; a one-on-one chat becomes a group chat, when your reply there ends), group.configure (an existing group chat; members = its WHOLE list), notifications.read|clear, estop.engage (the Farmer alone resumes). station.settings section "actions" lists what each takes; read the current value first. Make the call BEFORE you say anything changed, and say only what its result says. Widening access or spending goes through station.power instead.',
         schema: { type: 'object', properties: { action: { type: 'string', enum: Object.keys(A) }, args: { type: ['object', 'string'] } } },
         run: async (input, ctx) => {
           const call = readCall(input);
           const spec = A[call.action];
-          if (!spec) return refuse((call.action ? 'there is no station action "' + clip(call.action, 40) + '"' : 'no action was named')
+          if (!spec) return refuse((call.action ? 'there is no farm action "' + clip(call.action, 40) + '"' : 'no action was named')
             + ' — call it as {action, args}, e.g. {"action": "budget.set", "args": {"perDay": 5}}; station.settings section "actions" lists every action and what it takes');
           const a = argsFor(spec, call.args);
           const missing = spec.needs ? spec.needs(a) : '';
@@ -535,11 +535,11 @@
             a.session = String(ctx.streamId);
           }
           const escalates = !!spec.power(a);
-          if (escalates && !isPower) return refuse(spec.name + ' with these values widens what agents may do or spend: call station.power with the same {action, args} (the Commander approves it separately)');
+          if (escalates && !isPower) return refuse(spec.name + ' with these values widens what agents may do or spend: call station.power with the same {action, args} (the Farmer approves it separately)');
           if (isPower && !escalates) return refuse(spec.name + ' with these values does not widen access: use station.control');
-          if (isPower && !watched) return refuse('this run is unattended (a routine, the night shift or a trigger): widening access or spending needs the Commander in a watched session — tell them what you would change');
+          if (isPower && !watched) return refuse('this run is unattended (a routine, the night shift or a trigger): widening access or spending needs the Farmer in a watched session — tell them what you would change');
           if (spec.name === 'agent.model' && a.model && a.provider && providerReady && !providerReady(String(a.provider))) {
-            return refuse('the provider "' + clip(a.provider, 30) + '" is not connected on this station (no key or sign-in): the Commander connects it in Settings › AI & MODELS first');
+            return refuse('the provider "' + clip(a.provider, 30) + '" is not connected on this farm (no key or sign-in): the Farmer connects it in Settings › AI & MODELS first');
           }
           // the run that asked, host-stamped LAST (a model cannot name another run): the page lets a chat take a change
           // that must wait for THIS run's reply to end only when the run asking is the one running there

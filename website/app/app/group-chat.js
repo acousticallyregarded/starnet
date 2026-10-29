@@ -174,13 +174,13 @@ const GroupChat = (() => {
     const deadlineMs = !body && opts && opts.deadlineMs > 0 && typeof AbortController === 'function' ? opts.deadlineMs : 0;
     const deadline = deadlineMs ? new AbortController() : null;
     const deadlineTimer = deadline ? setTimeout(() => deadline.abort(), deadlineMs) : 0;
-    const timedOut = () => Object.assign(new Error('The station did not answer in time.'), { name: 'TimeoutError' });
+    const timedOut = () => Object.assign(new Error('The farm did not answer in time.'), { name: 'TimeoutError' });
     try {
       let r;
       try { r = await fetch('/api/groups' + query, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : deadline ? { cache: 'no-store', signal: deadline.signal } : { cache: 'no-store' }); }
       catch (e) { if (deadline && deadline.signal.aborted) throw timedOut(); throw e; }
-      if (r.status === 401 || r.status === 403) throw new Error('Reconnect to this station by refreshing the page. Your conversation is saved.');
-      if (r.status === 404 && !body && !query) throw new Error('Group chat is unavailable on this server. Run the current StarNet backend, then try again.');
+      if (r.status === 401 || r.status === 403) throw new Error('Reconnect to this farm by refreshing the page. Your conversation is saved.');
+      if (r.status === 404 && !body && !query) throw new Error('Group chat is unavailable on this server. Run the current Homestead backend, then try again.');
       let out;
       try { out = await r.json(); } catch (_) { if (deadline && deadline.signal.aborted) throw timedOut(); throw new Error('The server could not load group chat. Try again.'); }
       if (!r.ok || !out?.ok) throw new Error(out?.error || 'Group request failed'); return out.result;
@@ -215,7 +215,7 @@ const GroupChat = (() => {
     const list = live.length ? live : roster;
     return list.filter(a => a && a.id).map(a => ({ id: a.id, name: String(a.name || a.id) }));
   }
-  function name(id) { return id === 'user' ? 'COMMANDER' : (roster.find(a => a.id === id)?.name || App.agents?.().find(a => a.id === id)?.name || id); }
+  function name(id) { return id === 'user' ? 'FARMER' : (roster.find(a => a.id === id)?.name || App.agents?.().find(a => a.id === id)?.name || id); }
   function colorOf(id) { const c = typeof App !== 'undefined' && App.agents ? App.agents().find(a => a.id === id)?.color : ''; return /^#[0-9a-f]{3,8}$/i.test(c || '') ? c : ''; }
   /* The group header: EVERY member by name in their roster colour (lead first), the count, and the + key (Andrew 10-04:
      "you cant even tell when the groupchat is there, it does not show all the agents"). No GROUP word in front of them —
@@ -494,7 +494,7 @@ const GroupChat = (() => {
       if (!(result && result.unchanged === true)) { group = result; paint(); }   // unchanged: the group on screen is current
     } catch (e) {
       if (e && e.name === 'TimeoutError') { /* past its deadline: asked again on the next beat, below; nothing on screen */ }
-      else if (gen === generation) showError(/not found/i.test(e.message || '') ? new Error('This group no longer exists on this station. Delete it from the session list.') : e);
+      else if (gen === generation) showError(/not found/i.test(e.message || '') ? new Error('This group no longer exists on this farm. Delete it from the session list.') : e);
       if (/not found/i.test(e.message || '')) { goneGen = gen; return; }   // never poll a gone group every 900 ms forever
     } finally { if (pollingGen === gen) pollingGen = -1; }
     if (gen === generation && active?.conversationMode === 'group') timer = setTimeout(() => poll(gen), POLL_BEAT_MS);
@@ -581,7 +581,7 @@ const GroupChat = (() => {
        message goes to that agent (no button under every bubble). The agent's roster colour
        carries the rail and the name, so who-said-what reads at a glance across N speakers. */
     const speaker = (author, target) => {
-      if (author === 'user') return h('span', { class: 'who' }, 'COMMANDER');
+      if (author === 'user') return h('span', { class: 'who' }, 'FARMER');
       const who = h('button', { type: 'button', class: 'who gc-who', 'aria-label': 'Reply to ' + name(author), onclick: () => { replyTo = target || null; selected = [author]; recipientLabel(); $('chat-input').focus(); } }, name(author).toUpperCase());
       return who;
     };
@@ -1022,7 +1022,7 @@ const GroupChat = (() => {
       ws.pendingJoin = { runId, ids: all, at: Date.now(), ...(brief ? { brief } : {}) }; save();
       return { joining: true, agents: all.map(name), note: agentNames(all) + (all.length > 1 ? ' join ' : ' joins ')
         + (isGeneral(ws) ? 'a new group chat that opens beside General' : 'this chat (it becomes a group chat, its history kept)')
-        + ' the moment this reply ends. If the reply is stopped or fails, nobody is added and the Commander is told in the chat.' };
+        + ' the moment this reply ends. If the reply is stopped or fails, nobody is added and the Farmer is told in the chat.' };
     }
     const g = await startGroup(ws, add);
     return { added: add, members: g.members, group: g.id, title: g.title };
@@ -1049,11 +1049,11 @@ const GroupChat = (() => {
     if (!ids.length) return notAdded(ws, job.ids, 'they are no longer on the crew');
     try {
       // the lead asked for them to work on the Commander's request: it gets the first turn in the group to hand them their parts
-      const kickoff = agentNames(ids) + (ids.length > 1 ? ' have' : ' has') + ' joined this chat at your request. Carry on with the Commander\'s request: give '
+      const kickoff = agentNames(ids) + (ids.length > 1 ? ' have' : ' has') + ' joined this chat at your request. Carry on with the Farmer\'s request: give '
         + (ids.length > 1 ? 'each of them their part' : 'them their part') + ' (group.handoff) and do your own.'
         // …starting from what the Commander already answered (review 10-14: from General the new group re-asked "What are
         // we launching?" seconds after they had answered it there)
-        + (job.brief ? ' The Commander already answered: ' + String(job.brief).replace(/[\s.;,]+$/, '') + '. Never ask those again.' : '');
+        + (job.brief ? ' The Farmer already answered: ' + String(job.brief).replace(/[\s.;,]+$/, '') + '. Never ask those again.' : '');
       const out = ws.conversationMode === 'group' ? await addAgents(ws, ids, null) : await startGroup(ws, ids, { kickoff });
       if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify(agentNames(ids) + (ids.length > 1 ? ' joined ' : ' joined ') + (out && out.title ? '"' + out.title + '"' : 'the chat'), 'good');
       return out;

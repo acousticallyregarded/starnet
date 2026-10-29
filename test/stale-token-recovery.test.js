@@ -163,7 +163,7 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
       A.eq(notes.length, 1, '… and the withheld notice is shown ONCE (boot + every later 403): ' + JSON.stringify(notes.map(n => n.text)));
       A.eq(notes[0].text, tokenWithheldNotice('lookup-failed'), 'the notice is the withheld wording, not the restart wording');
       A.ok(notes[0].opts && notes[0].opts.kind === 'alert' && notes[0].opts.key === 'token-withheld', 'kept in NOTIFICATIONS as one alert (it outlives the toast)');
-      A.eq(w.stale(), false, 'a withheld page is not a stale (restarted) session: no surface may say "the station restarted"');
+      A.eq(w.stale(), false, 'a withheld page is not a stale (restarted) session: no surface may say "the farm restarted"');
       A.eq(settled.length, 0, 'a withheld page never marks its own alert handled while the check fails');
       clock.now += 59000;
       await w.staleToken.settle(forbiddenToken(), '', null);
@@ -199,7 +199,7 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
       A.eq(notes.length, 0, 'a page that holds its key shows no withheld notice at boot');
       A.eq(settled, ['token-withheld'], '… and marks an alert left by an earlier withheld page as handled (the owner fixed it)');
       await w.staleToken.settle(forbiddenToken(), 'OLD', null);
-      A.ok(reads() === 1 && w.stale() === true && notes.length === 1 && /station restarted/.test(notes[0].text),
+      A.ok(reads() === 1 && w.stale() === true && notes.length === 1 && /farm restarted/.test(notes[0].text),
         'a keyed page whose token went stale keeps the restart + reload wording: ' + (notes[0] && notes[0].text));
     }
     // (live walk 10-14) a restart whose first page read comes back without the new key (the ownership check timed out on a
@@ -216,7 +216,7 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
       A.ok(reads() === 2 && w.stale() === true, '…every 3 s the page is read again while the key is missing — never once per poll (each read runs the ownership lookup)');
       A.eq(notes.length, 1, 'one notice for the whole refused stretch, not one per poll');
       const n = notes[0] || {};
-      A.ok(/station restarted/.test(n.text) && /keeps trying on its own/.test(n.text) && /reload this page/i.test(n.text) && !/could not reconnect/.test(n.text),
+      A.ok(/farm restarted/.test(n.text) && /keeps trying on its own/.test(n.text) && /reload this page/i.test(n.text) && !/could not reconnect/.test(n.text),
         'it says what is true: the page keeps trying, and a reload reconnects now: ' + n.text);
       A.ok(n.opts && n.opts.kind === 'alert' && n.opts.key === 'station-restarted', 'kept in NOTIFICATIONS as one alert (it outlives the four-second toast)');
       A.ok(n.opts && typeof n.opts.onClick === 'function' && /Friendly\.actionButton\(\{ action: 'reload' \}\)/.test(String(harness)), 'its toast\'s click takes the reload door COMMS error rows offer');
@@ -241,7 +241,7 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
       const { w, notes, settled } = wire(withheld, pageWith('NEW'));
       A.ok(typeof w.boot === 'function', 'the wiring has a boot step for an earlier page\'s alerts (' + (withheld || 'keyed') + ')');
       if (typeof w.boot === 'function') w.boot();
-      A.ok(settled.indexOf('station-restarted') >= 0, 'a booting page marks an earlier page\'s "station restarted" alert handled (' + (withheld || 'keyed') + ')');
+      A.ok(settled.indexOf('station-restarted') >= 0, 'a booting page marks an earlier page\'s "farm restarted" alert handled (' + (withheld || 'keyed') + ')');
       A.ok(withheld ? notes.length === 1 && /won’t take commands/.test(notes[0].text) : notes.length === 0,
         '…and raises only what is true of this page (' + (withheld || 'keyed') + '): ' + JSON.stringify(notes.map(x => x.text)));
     }
@@ -314,7 +314,7 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
   A.ok(/setToken: t => \{ apiToken = t; try \{ window\.__STARNET_API_TOKEN__ = t;/.test(harness),
     'adopting a token updates BOTH the cached header token and window.__STARNET_API_TOKEN__ (apiticket.js mints SSE/file/save tickets from it)');
   A.ok(/canRefresh: \(\) => !DESKTOP && !\(typeof window !== 'undefined' && window\.__STARNET_API__\) && \(!tokenWithheld \|\| withheldRetryDue\(\)\)/.test(harness),
-    'desktop never reads the page for a token (the shell keeps one token across respawns); a page the station kept its key from only when a transient retry is due');
+    'desktop never reads the page for a token (the shell keeps one token across respawns); a page the farm kept its key from only when a transient retry is due');
   A.ok(/if \(!inflight && !o\.canRefresh\(\)\) return Promise\.resolve\(''\);/.test(harness),
     'a refused call joins a page read already in flight without asking again (a rate-limited retry is shared, not refused)');
   A.ok(/sessionStale: \(\) => sessionStale/.test(harness), 'Harness exposes sessionStale() for the surfaces');
@@ -328,8 +328,8 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
     'RETRY with nothing recoverable re-asks the sidecar and SAYS so instead of a no-op reload');
   A.ok(/throw new Error\(refusedPageLine\(\) \|\| 'report unavailable'\)/.test(gate),
     'report export names a refused page (withheld key or stale session) instead of "report unavailable"');
-  A.ok(/could not check again — ' \+ \(refusedPageLine\(\) \|\| 'the station service did not answer'\)/.test(gate),
-    'RETRY names a refused page instead of "the station service did not answer"');
+  A.ok(/could not check again — ' \+ \(refusedPageLine\(\) \|\| 'the farm service did not answer'\)/.test(gate),
+    'RETRY names a refused page instead of "the farm service did not answer"');
   // the connect screen: a stale session is not an offline catalog, and not the user's network.
   const models = A.fnBody(app, 'async function loadModels(');
   A.ok(/const refused = refusedPageLine\(\);\s*countEl\.textContent = refused \? '\(' \+ refused \+ '\)' : '\(catalog offline — type or pick a slug\)'/.test(models),
@@ -350,7 +350,7 @@ const forbiddenToken = () => new Response('forbidden token', { status: 403 });
       && transient.indexOf('reload') < transient.indexOf('STARNET_TRUST_LOCAL_PEERS=1') && !/restarted/i.test(transient),
       'a transient withheld page offers a reload to re-run the check before the hatch, never "restarted": ' + transient);
     A.ok(!/reload/i.test(lineFor({ tokenWithheld: () => 'peer-not-found', sessionStale: () => true })), 'an older Harness without the retry probe offers no reload');
-    A.eq(lineFor({ tokenWithheld: () => '', sessionStale: () => true }), 'the station restarted; reload this page', 'a keyed page\'s stale session keeps the reload line');
+    A.eq(lineFor({ tokenWithheld: () => '', sessionStale: () => true }), 'the farm restarted; reload this page', 'a keyed page\'s stale session keeps the reload line');
     A.eq(lineFor({ tokenWithheld: () => '', sessionStale: () => false }), '', 'a page that is not refused has no line');
     A.eq(lineFor({}), '', 'an older Harness without either probe has no line');
   }

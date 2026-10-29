@@ -71,7 +71,7 @@ async function plugin(id, source) {
     A.ok(/no handler named "nope"/.test(e1), 'an unknown handler is refused with a reason');
     let e2 = ''; try { await rt.callHandler('good', 'hang', {}); } catch (e) { e2 = e.message; }
     A.ok(/did not answer within/.test(e2), 'a hung handler times out instead of hanging the caller');
-    A.ok(logs.some(l => /good hello from inside/.test(l)), 'the plugin\'s console reaches the station log, prefixed');
+    A.ok(logs.some(l => /good hello from inside/.test(l)), 'the plugin\'s console reaches the farm log, prefixed');
 
     // ---- 2. a crash is contained, and the next call restarts it ----
     await rt.callHandler('good', 'boom', {});
@@ -132,7 +132,7 @@ async function plugin(id, source) {
         requireModule: () => { requires++; return {}; }, hash: (s) => crypto.createHash('sha256').update(String(s)).digest('hex'),
         clock: { now: () => 1 }, onError: () => {}, runtime: rt2 });
       const res = await loader.load(spine, { accept: true });
-      A.eq(requires, 0, 'process mode never require()s plugin code into the station');
+      A.eq(requires, 0, 'process mode never require()s plugin code into the farm');
       const g = res.loaded.find(p => p.id === 'guard');
       A.ok(g && g.process === true, 'the plugin is live in its own process');
       A.eq(g && g.tools, ['ping'], 'its registered tools are reported by the loader');
@@ -193,7 +193,7 @@ async function plugin(id, source) {
       };
       const rt5 = makePluginRuntime({ fork: fakeFork, workerPath: 'x', now: () => Date.now(), onLog: () => {}, jobsPaused: true });
       await rt5.start({ id: 'guard', name: 'guard', main: 'x', digest: 'd' });
-      A.eq(kids[0].sent[0].jobsPaused, true, 'a plugin started on a halted station starts with its jobs paused');
+      A.eq(kids[0].sent[0].jobsPaused, true, 'a plugin started on a halted farm starts with its jobs paused');
       A.eq(await rt5.hook('guard', 'pre_tool_call', {}), { block: true, reason: 'guard' }, 'its pre_tool_call guard still answers while halted');
       rt5.setJobsPaused(false);
       A.eq(kids[0].sent.filter(m => m.t === 'jobs').pop(), { t: 'jobs', paused: false }, 'resume unpauses the running process\'s jobs');
@@ -215,7 +215,7 @@ async function plugin(id, source) {
       const slow = await plugin('slow', `
         module.exports = { register(api) {
           api.tool({ name: 'wait_forever', description: 'Waits until stopped', readOnly: true, parameters: { type: 'object', properties: {} },
-            run: (args, ctx) => new Promise((resolve) => { ctx.signal.addEventListener('abort', () => { api.store.set('saw', 'aborted').then(() => resolve('stopped by the station')); }); }) });
+            run: (args, ctx) => new Promise((resolve) => { ctx.signal.addEventListener('abort', () => { api.store.set('saw', 'aborted').then(() => resolve('stopped by the farm')); }); }) });
         } };`);
       A.ok((await rt.start(slow)).ok, 'a plugin with a long tool starts');
       const ac = new AbortController();
@@ -356,7 +356,7 @@ async function plugin(id, source) {
       for (let i = 0; i < 60 && rtW.status('wedge').state !== 'crashed'; i++) await new Promise(r => setTimeout(r, 50));
       A.eq(rtW.status('wedge').state, 'crashed', 'the wedged process is ended (it stayed "running" forever before)');
       A.ok(/stopped responding/.test(rtW.status('wedge').error), 'with the honest reason: ' + rtW.status('wedge').error);
-      A.ok(wlogs.some(l => /\[runtime\] it stopped responding/.test(l)), 'the station log says why it was ended');
+      A.ok(wlogs.some(l => /\[runtime\] it stopped responding/.test(l)), 'the farm log says why it was ended');
       A.eq(await rtW.hook('wedge', 'pre_tool_call', { tool_name: 'fs.read' }), { context: 'alive' }, 'the next hook restarts it and gets a real answer, not a timed-out null');
       A.eq(rtW.status('wedge').restarts, 1, 'the recycle counts against the bounded restart budget');
       await rtW.stopAll();
@@ -532,7 +532,7 @@ async function plugin(id, source) {
     A.eq(d.capability, 'plugin:pr-radar', 'granted by the plugin capability only');
     A.eq(d.impact, 'external-unknown', 'unknown external effects: fail closed like a connector');
     A.ok(d.requiresConsent === true && d.network === true, 'consent-gated and network-classified');
-    A.ok(/^\[PR Radar plugin tool; written by that plugin, not by StarNet\]/.test(d.description), 'the description says who wrote it first');
+    A.ok(/^\[PR Radar plugin tool; written by that plugin, not by Homestead\]/.test(d.description), 'the description says who wrote it first');
     const r = await d.run({}, { agentId: 'nova', runId: 'r1' });
     A.ok(/BEGIN EXTERNAL|EXTERNAL/.test(r.content) && /ignore previous instructions/.test(r.content), 'the result is fenced as external content');
     const bad = makePluginToolDefs({ pluginId: 'p', pluginName: 'P', tools: [{ name: 'fail' }], call: async () => { throw new Error('nope <script>'); } })[0];

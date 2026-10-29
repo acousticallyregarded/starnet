@@ -99,7 +99,7 @@ const Delegated = (() => {
 
   // a stale worker was cut off by a station restart, or stopped by the liveness check while the station stayed up
   // (the sidecar records that reason as "stalled: …"): say which, never a restart that did not happen
-  const staleLine = w => /^stalled\b/.test(String((w && w.reason) || '')) ? 'stopped after making no progress' : 'stopped when the station restarted';
+  const staleLine = w => /^stalled\b/.test(String((w && w.reason) || '')) ? 'stopped after making no progress' : 'stopped when the farm restarted';
   // why a worker ended, in a few plain words: the ledger's reason codes are internal ('refused', 'output_limit', …).
   // A code with no phrase shows as itself only while it is short; a long free-text reason shows nothing here.
   const WHY = { refused: 'couldn\'t start (too many running, or a sign-in is needed)', timeout: 'ran out of time', empty: 'the model sent an empty reply', refusal: 'the model declined the task',
@@ -142,7 +142,7 @@ const Delegated = (() => {
     if (w && w.status === 'running') {
       // the station stopped answering (Overseer.fresh): the last ledger can no longer vouch for this worker, so the row
       // claims neither working nor stopped — no live clock, no Stop key (a failed poll repaints at once)
-      if (typeof Overseer !== 'undefined' && Overseer.fresh && !Overseer.fresh()) return { cls: 'unknown', live: 'status unknown — station unreachable', t: '' };
+      if (typeof Overseer !== 'undefined' && Overseer.fresh && !Overseer.fresh()) return { cls: 'unknown', live: 'status unknown — farm unreachable', t: '' };
       // the worker's OWN run as CREW clocks it (every wait on the Commander excluded — rc walk #21: this branch still read the
       // ledger's wall clock, so a worker that waited on an approval read a minute ahead of CREW and the world tag); the
       // ledger's start only when this page never saw that run begin
@@ -163,7 +163,7 @@ const Delegated = (() => {
     // so it neither opens the card nor counts as a stopped or settled worker
     if (!r.worker) {
       const read = ledgerRead();
-      if (read !== 'answered') return { cls: 'unknown', live: read === 'unreachable' ? 'status unknown — station unreachable' : 'checking…', t: '', unread: read };
+      if (read !== 'answered') return { cls: 'unknown', live: read === 'unreachable' ? 'status unknown — farm unreachable' : 'checking…', t: '', unread: read };
     }
     const reason = String((w && w.reason) || k.lastRunReason || '');
     if (reason === 'budget' || reason === 'max_iters') return { cls: 'stopped', live: reason === 'budget' ? 'budget limit reached' : 'step limit reached', t: '' };

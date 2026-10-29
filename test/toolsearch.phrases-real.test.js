@@ -46,7 +46,7 @@ const BUILDER = ['station.map', 'station.plan', 'station.build', 'station.make_p
 
 (async () => {
   // the walker's searches find the whole builder (the label phrase "station builder" scores like a name)
-  for (const q of ['station builder - create assembly lines and workflows', 'station builder create assembly line workflow', 'station builder']) {
+  for (const q of ['farm builder - create assembly lines and workflows', 'farm builder create assembly line workflow', 'station builder']) {
     const r = await ask(q);
     A.ok(['station.map', 'station.plan', 'station.build'].every(n => r.shown.indexOf(n) >= 0), '"' + q + '" reveals station.map, station.plan and station.build: ' + JSON.stringify(r.shown));
   }
@@ -58,7 +58,7 @@ const BUILDER = ['station.map', 'station.plan', 'station.build', 'station.make_p
   /* a revealed later step of a numbered family brings the earlier steps (the fix round's live run searched "build an assembly
      line or workflow on the station", got station.build alone, and spent a second search on plan and map); a builder tool
      with no step number (test_line, start_line) brings nothing, so a plain test never carries the 13 KB station.plan */
-  const whole = await ask('build an assembly line or workflow on the station');
+  const whole = await ask('build an assembly line or workflow on the farm');
   A.ok(['station.map', 'station.plan', 'station.build'].every(n => whole.shown.indexOf(n) >= 0), 'the live run\'s first search reveals map, plan and build at once: ' + JSON.stringify(whole.shown));
   const add = await ask('add an assembly line');
   A.ok(add.shown.indexOf('station.plan') >= 0, '"add an assembly line" reveals station.plan (its first sentence names assembly lines): ' + JSON.stringify(add.shown));
@@ -66,13 +66,13 @@ const BUILDER = ['station.map', 'station.plan', 'station.build', 'station.make_p
   A.ok(test.shown.indexOf('station.test_line') >= 0 && test.shown.indexOf('station.plan') < 0, '"test the line" reveals station.test_line and never drags station.plan along: ' + JSON.stringify(test.shown));
   // a browser query never drags the builder along (the 13 KB station.plan declaration would ride every later turn)
   const back = await ask('go back to the previous page');
-  A.ok(back.listed.indexOf('browser.back') >= 0 && !back.shown.some(n => /^station\./.test(n)) && back.shown.indexOf('browser.detach') < 0, '"go back to the previous page" names browser.back and reveals no station tool: ' + JSON.stringify({ shown: back.shown, listed: back.listed }));
+  A.ok(back.listed.indexOf('browser.back') >= 0 && !back.shown.some(n => /^station\./.test(n)) && back.shown.indexOf('browser.detach') < 0, '"go back to the previous page" names browser.back and reveals no farm tool: ' + JSON.stringify({ shown: back.shown, listed: back.listed }));
   const tab = await ask('open a new tab');
   A.ok(tab.shown.indexOf('browser.tabs') >= 0 && !tab.shown.some(n => /^station\./.test(n)), '"open a new tab" reveals browser.tabs: ' + JSON.stringify(tab.shown));
   const type = await ask('type text into an input field');
   A.ok(type.listed.indexOf('browser.type') >= 0 && !type.shown.some(n => /^station\./.test(n)), '"type text into an input field" names browser.type: ' + JSON.stringify({ shown: type.shown, listed: type.listed }));
-  const setting = await ask('change a station setting');
-  A.eq(setting.shown[0], 'station.settings', '"change a station setting" reveals station.settings first');
+  const setting = await ask('change a farm setting');
+  A.eq(setting.shown[0], 'station.settings', '"change a farm setting" reveals station.settings first');
   const app = await ask('create an app dashboard');
   A.eq(app.shown[0], 'app.create', 'a query with no label phrase finds what it names first');
   A.report('toolsearch.phrases-real');

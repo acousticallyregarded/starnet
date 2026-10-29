@@ -45,13 +45,13 @@
         try { r = await opts.poll(s.seq, s.abort && s.abort.signal); }
         catch (_) {
           if (!s.on || gen !== s.gen) return;
-          if (++fails > 5) { stop(); if (opts.onEnd) opts.onEnd({ code: 'lost', error: 'Lost the picture from the station.' }); return; }
+          if (++fails > 5) { stop(); if (opts.onEnd) opts.onEnd({ code: 'lost', error: 'Lost the picture from the farm.' }); return; }
           await new Promise(res => setTimeout(res, 400 * fails));
           continue;
         }
         fails = 0;
         if (!s.on || gen !== s.gen) return;
-        if (r.status !== 200 || !r.body || !r.body.ok) { stop(); if (opts.onEnd) opts.onEnd(r.body || { code: 'lost', error: 'The station stopped answering.' }); return; }
+        if (r.status !== 200 || !r.body || !r.body.ok) { stop(); if (opts.onEnd) opts.onEnd(r.body || { code: 'lost', error: 'The farm stopped answering.' }); return; }
         if (r.body.page && opts.onPage) opts.onPage(r.body.page);
         const f = r.body.frame;
         if (f && f.data) {

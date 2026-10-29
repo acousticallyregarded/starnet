@@ -18,13 +18,13 @@ A.eq(SR.shouldReviewRun(tiny, { verdict: 'miss', enabled: false }), false, 'the 
 
 /* ---------- the prompt: verdict + correction ride in ---------- */
 const p = SR.buildPrompt({ verdict: 'miss', correction: '  shorter,   bullets only  ', correctionSource: 'message', messages: tiny.messages });
-A.ok(p.indexOf('COMMANDER VERDICT ON THIS RUN: MISSED the mark') !== -1, 'a miss is named as a miss');
+A.ok(p.indexOf('FARMER VERDICT ON THIS RUN: MISSED the mark') !== -1, 'a miss is named as a miss');
 A.ok(p.indexOf('in their words: "shorter, bullets only"') !== -1, 'the correction is quoted verbatim, whitespace collapsed');
 A.ok(p.indexOf('NEXT run of this class of task does not repeat') !== -1, 'the reviewer is given the one job');
 const pOk = SR.buildPrompt({ verdict: 'ok', messages: tiny.messages });
 A.ok(pOk.indexOf('CLOSE, but short of the mark') !== -1 && pOk.indexOf('No written correction') !== -1, 'ok without a correction says so honestly');
-A.eq(SR.buildPrompt({ verdict: 'great', messages: tiny.messages }).indexOf('COMMANDER VERDICT'), -1, 'a great verdict adds no block');
-A.eq(SR.buildPrompt({ messages: tiny.messages }).indexOf('COMMANDER VERDICT'), -1, 'a size-triggered review is byte-identical in shape (no block)');
+A.eq(SR.buildPrompt({ verdict: 'great', messages: tiny.messages }).indexOf('FARMER VERDICT'), -1, 'a great verdict adds no block');
+A.eq(SR.buildPrompt({ messages: tiny.messages }).indexOf('FARMER VERDICT'), -1, 'a size-triggered review is byte-identical in shape (no block)');
 A.ok(SR.buildPrompt({ verdict: 'miss', correction: 'x'.repeat(2000), messages: [] }).indexOf('x'.repeat(601)) === -1, 'a correction is capped at 600 chars');
 
 /* ---------- the packet store ---------- */
@@ -208,7 +208,7 @@ A.ok(VERDICTS_THAT_TEACH.has('ok') && VERDICTS_THAT_TEACH.has('miss') && !VERDIC
   g.stash('run-old', { agentId: 'a' }); t += 10; g.stash('run-b', {}); t += 10; g.stash('run-c', {});
   A.eq(g.arm('run-old', 'miss', j => { fired.push(j.runId); return true; }), true, 'the oldest parked run is rated miss and armed');
   t += 10; g.stash('run-d', {});
-  A.eq(g.holding('run-old'), true, 'RATCHET: another run ending on a full station does not evict the armed review');
+  A.eq(g.holding('run-old'), true, 'RATCHET: another run ending on a full farm does not evict the armed review');
   A.eq(timers.filter(h => h.live).length, 1, 'its grace timer is still live');
   A.ok(g.has('run-b') && g.has('run-d'), 'an armed review does not count against the parked-packet cap');
   t += 10; g.stash('run-e', {});

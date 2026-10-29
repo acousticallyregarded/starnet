@@ -446,14 +446,14 @@ const { note: failNote } = require('../../failopen');
     function staleWriteError(rel, drift) {
       const error = new Error(drift
         ? 'stale write refused: ' + unseenChanges(rel, drift) + '. This write would erase them, so nothing was written. fs.read it again and re-apply your change on top of the current content.'
-        : 'stale write refused: ' + rel + ' changed on disk after you read it — someone else (another agent, or the Commander) edited it. Read it again and re-apply your change on top of the current content, or use fs.edit/fs.patch so your change merges instead of replacing the file.');
+        : 'stale write refused: ' + rel + ' changed on disk after you read it — someone else (another agent, or the Farmer) edited it. Read it again and re-apply your change on top of the current content, or use fs.edit/fs.patch so your change merges instead of replacing the file.');
       error.precondition = { code: 'fresh_read_required', requiredTool: 'fs.read', requiredState: 'current_file_observed' };
       return error;
     }
     // fs.edit / fs.append / fs.patch over a file whose bytes moved since this agent last read or wrote it (`st` = its stamp)
     function changedSinceReadError(what, rel, st) {
       const error = new Error(what + ' refused: ' + (st && st.drift ? unseenChanges(rel, st.drift)
-        : rel + ' changed on disk since you last read or wrote it (something else changed it: another agent, the Commander, or a process such as a shell command)')
+        : rel + ' changed on disk since you last read or wrote it (something else changed it: another agent, the Farmer, or a process such as a shell command)')
         + ' — nothing was written. fs.read it again and redo your change against the current content.');
       error.precondition = { code: 'fresh_read_required', requiredTool: 'fs.read', requiredState: 'current_file_observed' };
       return error;
@@ -1617,7 +1617,7 @@ const { note: failNote } = require('../../failopen');
         let matcher;
         if (args.regex) {
           const risk = catastrophicRegex(q);
-          if (risk) throw new Error('that regex can backtrack catastrophically (' + risk + ') and would stall the station — ' +
+          if (risk) throw new Error('that regex can backtrack catastrophically (' + risk + ') and would stall the farm — ' +
             'rewrite it without nesting one repeat inside another (e.g. "\\s+" instead of "(\\s+)+"), or drop "regex" and search for a plain substring');
           let re; try { re = new RegExp(q, ic ? 'i' : ''); } catch (e) { throw new Error('invalid regex: ' + ((e && e.message) || e)); }
           // blow-up scales with input length, so a model-supplied pattern never sees a whole long line

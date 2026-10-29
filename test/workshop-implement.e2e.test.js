@@ -69,7 +69,7 @@ function startMockOpenRouter() {
               // Commander's typed steer (the "which of these five things" answer) as an overriding instruction?
               const sawSource = /workshop\/[A-Za-z0-9-]+\/automation-backlog\.md/.test(prompt);
               const forbidsPlan = /BUILD, DO NOT RE-PLAN/.test(prompt);
-              const sawSteer = /THE COMMANDER TOLD YOU WHAT TO BUILD/.test(prompt) && /do the PowerShell one first/.test(prompt);
+              const sawSteer = /THE FARMER TOLD YOU WHAT TO BUILD/.test(prompt) && /do the PowerShell one first/.test(prompt);
               const steerWins = /if the plan and their instruction\s*\n?\s*disagree, THEY win/.test(prompt);
               tool('i0', 'fs_write', { path: dir + '/probe.txt', content: 'SAW_SOURCE=' + sawSource + '\nFORBIDS_REPLAN=' + forbidsPlan + '\nSAW_STEER=' + sawSteer + '\nSTEER_WINS=' + steerWins + '\n' });
             } else if (toolResults === 1) {
@@ -231,7 +231,7 @@ fs.renameSync = function(src,dst){
     A.ok(/SAW_SOURCE=true/.test(probe), 'the implement prompt named the source plan file (the run reads the real plan)');
     A.ok(/FORBIDS_REPLAN=true/.test(probe), 'the implement prompt forbids delivering another plan');
     // THE STEER: a plan lists several things; what the Commander typed on the card is how they pick one.
-    A.ok(/SAW_STEER=true/.test(probe), 'the Commander’s typed instruction reached the BUILD prompt (not the chat stream)');
+    A.ok(/SAW_STEER=true/.test(probe), 'the Farmer’s typed instruction reached the BUILD prompt (not the chat stream)');
     A.ok(/STEER_WINS=true/.test(probe), 'and it outranks the plan’s own ordering when the two disagree');
     // it is also recorded as the build's provenance, so the delivery card can say WHY in the Commander's words.
     const implItem = ((await (await fetch(B + '/api/workshop/backlog?agent=builder', { headers })).json()).backlog || [])
@@ -298,7 +298,7 @@ fs.renameSync = function(src,dst){
     await post('/api/autonomy/posture', { posture: { initiative: 'free', reach: 'sandbox' } });
     // prove the rung actually took — otherwise every assertion below silently tests the DEFAULT rung.
     const rung = await (await fetch(B + '/api/autonomy/posture', { headers })).json();
-    A.eq(((rung.summary) || {}).initiative, 'free', 'the station really is at FREE for this leg');
+    A.eq(((rung.summary) || {}).initiative, 'free', 'the farm really is at FREE for this leg');
     await post('/api/workshop/queue', { agentId: 'builder', id: 'item-freeplan', title: 'Free-rung plan' });
     const freeShift = await readNdjson(await post('/api/workshop/shift', { agentId: 'builder' }));
     const freeRes = ((freeShift.find(e => e.name === 'workshop.shift.result') || {}).payload || {});
@@ -308,7 +308,7 @@ fs.renameSync = function(src,dst){
     A.eq((freeRes.manifest || {}).planOnly, false, 'what lands at FREE is the finished thing, not a plan');
     A.eq((freeRes.manifest || {}).implementOf, freeRes.chainedFrom, 'the build records the plan it came from');
     const freeDir = path.join(ws, 'builder', 'workshop', freeRes.runId);
-    A.ok(fs.existsSync(path.join(freeDir, 'snapshot.ps1')), 'the built artifact really exists on disk — the Commander wakes to a THING');
+    A.ok(fs.existsSync(path.join(freeDir, 'snapshot.ps1')), 'the built artifact really exists on disk — the Farmer wakes to a THING');
     const freePending = await (await fetch(B + '/api/workshop/pending?agent=builder', { headers })).json();
     A.ok(freePending.pending.some(m => m.runId === freeRes.runId), 'the finished build is what waits for a decision');
     A.ok(!freePending.pending.some(m => m.runId === freeRes.chainedFrom), 'the intermediate plan does not also nag for one');
@@ -348,7 +348,7 @@ fs.renameSync = function(src,dst){
     const leashShift = await readNdjson(await post('/api/workshop/shift', { agentId: 'builder' }));
     const leashRes = ((leashShift.find(e => e.name === 'workshop.shift.result') || {}).payload || {});
     A.eq(leashRes.reason, 'built', 'BUILD (DRAFTS) delivers too');
-    A.ok(!leashRes.chainedFrom, 'but it does NOT auto-chain — that rung is where the Commander presses the button');
+    A.ok(!leashRes.chainedFrom, 'but it does NOT auto-chain — that rung is where the Farmer presses the button');
     A.eq((leashRes.manifest || {}).planOnly, true, 'so what arrives is the plan, and the card offers to build it');
 
     // 8. gates.

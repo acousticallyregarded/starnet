@@ -117,7 +117,7 @@ function makeLanListener(deps) {
     const host = (o && o.host) || '0.0.0.0';
     const port = Number(o && o.port) || 0;
     return new Promise((resolve, reject) => {
-      const s = http.createServer((req, res) => { handle(req, res).catch(() => { try { send(res, 500, { ok: false, error: 'station error' }); } catch (e) { note('remote.lan.send', e); } }); });
+      const s = http.createServer((req, res) => { handle(req, res).catch(() => { try { send(res, 500, { ok: false, error: 'farm error' }); } catch (e) { note('remote.lan.send', e); } }); });
       s.headersTimeout = 15000;
       s.requestTimeout = 30000;
       s.on('error', (e) => { if (!bound) reject(e); else log('listener error: ' + ((e && e.message) || e)); });

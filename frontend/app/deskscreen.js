@@ -334,7 +334,7 @@ const DeskScreen = (() => {
         ? '<pre class="ds-diff">' + sc.body.split('\n').map(l => '<span class="' + (/^\+/.test(l) ? 'ds-add' : /^-/.test(l) ? 'ds-del' : /^@@/.test(l) ? 'ds-hunk' : '') + '">' + (esc(l) || ' ') + '</span>').join('\n') + '</pre>'
         : '<pre class="ds-' + (sc.kind === 'term' ? 'term' : 'page') + '">' + (esc(sc.body) || '<span class="ds-dim">' + (s.done ? '(nothing came back)' : '…') + '</span>') + '</pre>';
     const partial = s.partial && !(s.args && Object.keys(s.args).length)
-      ? '<p class="ds-dim ds-partial">' + (v.src && v.src.stream ? 'Loading this step…' : 'This run was started outside this window, so its full screen is available once it ends. For now the station reports only the tool name.') + '</p>' : '';
+      ? '<p class="ds-dim ds-partial">' + (v.src && v.src.stream ? 'Loading this step…' : 'This run was started outside this window, so its full screen is available once it ends. For now the farm reports only the tool name.') + '</p>' : '';
     return '<div class="ds-app" data-app="' + sc.app.toLowerCase() + '" data-s="' + (!s.done ? 'run' : s.held ? 'held' : s.isError ? 'bad' : 'ok') + '">'
       + '<div class="ds-bar"><span class="ds-appname">' + esc(sc.app) + '</span><span class="ds-target">' + esc(clip(sc.target, 120)) + '</span>'
       + (canOpenPage(s, sc) ? '<button type="button" class="bb xs ds-openpage" data-a="page" data-path="' + esc(sc.target) + '">OPEN PAGE</button>' : '')
@@ -385,7 +385,7 @@ const DeskScreen = (() => {
       if (ho) { state = 'ask'; label = (ho.state === 'taken' ? 'YOU HAVE ITS BROWSER' : 'NEEDS YOU') + ' · ' + dur(v.now - v.live.startedAt); html = handoffHtml(ho, v.name) + html; }
       if (v.ask) html = '<p class="ds-ask">Waiting for your approval' + (v.ask.tool ? ' to use ' + esc(toolName(v.ask.tool)) : '') + '. Answer it in COMMS.</p>' + html;
       if (v.live.partial) html = '<p class="ds-dim">Joined mid-run: screens from before this page was watching aren\'t shown.</p>' + html;
-      if (stopNote && v.now - stopAt > 12000) stopNote = 'The station hasn\'t confirmed the stop yet. It is still running.';
+      if (stopNote && v.now - stopAt > 12000) stopNote = 'The farm hasn\'t confirmed the stop yet. It is still running.';
     } else if (v.unseen) {
       state = 'running';
       label = 'WORKING' + (v.unseen.startedAt ? ' · ' + dur(v.now - v.unseen.startedAt) : '');
@@ -486,8 +486,8 @@ const DeskScreen = (() => {
     const stop = body.querySelector('.ds-stop');
     const doStop = () => {
       const v = view(); const rid = v.live && v.live.runId; if (!rid) return;
-      stopAt = clock(); stopNote = 'Stop sent. Waiting for the station to confirm…'; paint();
-      postJson('/api/cancel', { runId: rid }).then(r => { if (!r.ok) { stopNote = 'The station refused the stop (http ' + r.status + ').'; paint(); } });
+      stopAt = clock(); stopNote = 'Stop sent. Waiting for the farm to confirm…'; paint();
+      postJson('/api/cancel', { runId: rid }).then(r => { if (!r.ok) { stopNote = 'The farm refused the stop (http ' + r.status + ').'; paint(); } });
     };
     if (typeof ArmConfirm !== 'undefined' && ArmConfirm.wire) ArmConfirm.wire(stop, { armedLabel: 'CONFIRM STOP', onConfirm: doStop });
     else stop.addEventListener('click', doStop);

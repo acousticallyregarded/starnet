@@ -153,11 +153,11 @@ function fakeStack(tools) {
   A.ok(/function readJSON/.test(station), 'reads go through readJSON, not a bare (await fetch()).json()');
   A.ok(/if \(!r\.ok\) return/.test(station), 'a 4xx/5xx is detected instead of being parsed as data');
   A.ok(/offline: true/.test(station) && /offline: false/.test(station),
-    'readJSON separates "never reached the station" from "the station refused" — a two-state boolean cannot');
+    'readJSON separates "never reached the farm" from "the farm refused" — a two-state boolean cannot');
   A.ok(/res\.offline/.test(station), 'the failure line keys off res.offline, so only a real outage says start-it');
   A.ok(/it is running, so this is not a start-it problem/.test(station),
-    'an errored-but-reachable station says so in words, instead of blaming the station being down');
-  A.ok(/couldn\\?['’]t read this from the station/.test(station),
+    'an errored-but-reachable farm says so in words, instead of blaming the farm being down');
+  A.ok(/couldn\\?['’]t read this from the farm/.test(station),
     'a failed read is reported as a FAILED READ, never rendered as a confirmed-empty list');
   A.ok(/HTTP ' \+ res\.status|HTTP ' \+ r\.status/.test(station), 'the status code reaches the user, so the cause is diagnosable');
 

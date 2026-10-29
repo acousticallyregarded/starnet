@@ -100,10 +100,10 @@ async function run() {
   {
     const store = fakeStore(); let lastRun = null; const sends = [];
     const runOnce = async (o) => { lastRun = o; o.emit('agent.run.start', { agentId: o.agentId, runId: o.runId, trigger: 'event', model: o.model }); o.emit('agent.token', { agentId: o.agentId, runId: o.runId, delta: 'hi' }); o.emit('agent.run.end', { agentId: o.agentId, runId: o.runId, reason: 'done', turns: 1, usd: 0 }); };
-    const hub = makeChannelHub({ runOnce, store, send: (c, t) => { sends.push({ c, t }); return Promise.resolve({ ok: true }); }, secrets: () => ({ key: 'k', model: 'm', agentId: 'agent', system: 'You are ULTRON, the Commander\'s agent.' }), classify: () => false, newId: idGen() });
+    const hub = makeChannelHub({ runOnce, store, send: (c, t) => { sends.push({ c, t }); return Promise.resolve({ ok: true }); }, secrets: () => ({ key: 'k', model: 'm', agentId: 'agent', system: 'You are ULTRON, the Farmer\'s agent.' }), classify: () => false, newId: idGen() });
     await hub.onInbound(dm('hey'));
     A.eq(lastRun.agentId, 'agent', 'configured agentId used verbatim (same as the app -> shared notebook/memory/workspace)');
-    A.ok(lastRun.system.indexOf('You are ULTRON, the Commander\'s agent.') === 0, 'the REAL composed system prompt is used, not the default persona');
+    A.ok(lastRun.system.indexOf('You are ULTRON, the Farmer\'s agent.') === 0, 'the REAL composed system prompt is used, not the default persona');
     A.eq((store.hist.get('agent') || []).length, 2, 'history stored under the shared agentId');
     A.eq(store.hist.has('tg_555'), false, 'did NOT create a separate tg_<chatId> agent');
   }
@@ -119,7 +119,7 @@ async function run() {
     await mk('You are the TELEGRAM persona.').onInbound(dm('hello'));
     A.ok(runs[0].system.indexOf('You are the TELEGRAM persona.') === 0, 'a string persona opens the system prompt: ' + JSON.stringify(runs[0].system.slice(0, 40)));
     await mk(undefined).onInbound(dm('hello'));
-    A.ok(runs[1].system.indexOf('You are the Commander\'s AI agent') === 0, 'no persona -> the default persona: ' + JSON.stringify(runs[1].system.slice(0, 40)));
+    A.ok(runs[1].system.indexOf('You are the Farmer\'s AI agent') === 0, 'no persona -> the default persona: ' + JSON.stringify(runs[1].system.slice(0, 40)));
     A.ok(runs.every(r => !/=>/.test(r.system.slice(0, 20))), 'no run is handed function source as its persona');
   }
 
@@ -349,7 +349,7 @@ async function run() {
     // (a) the LINE'S OWN TRIGGER: a channel message the belts walk from the INBOX to the entry dock
     await hub.onInbound(dm('research the competitors', 'open'));
     A.eq(ranAgents, ['researcher', 'writer', 'editor'], 'work that rode in through the door runs the WHOLE line');
-    A.ok(/editor output/.test(sends[sends.length - 1].t), "and the LAST stage's answer is what leaves the station");
+    A.ok(/editor output/.test(sends[sends.length - 1].t), "and the LAST stage's answer is what leaves the farm");
 
     // (a2) the SAME chat again, now carrying the binding the hub auto-saved: still the line's own work
     ranAgents.length = 0;
@@ -732,7 +732,7 @@ async function run() {
     A.eq(aborted, 1, 'E-STOP aborted the one in-flight channel run');
     await parked;
     A.ok(!sends.some(s => /half an answ/.test(s)), 'the stale partial is still abandoned');
-    A.ok(sends.some(s => /E-STOP/.test(s)), 'the chat is TOLD the run was stopped from the station');
+    A.ok(sends.some(s => /E-STOP/.test(s)), 'the chat is TOLD the run was stopped from the farm');
     A.eq(sends.filter(s => /E-STOP/.test(s)).length, 1, 'the stop notice is delivered exactly once');
   }
 
@@ -752,7 +752,7 @@ async function run() {
     markFaulted(hub._internals.inflight);
     A.eq(killAll(null, hub._internals.inflight), 1, 'fault: the containment aborted the one in-flight channel run');
     await parked;
-    A.eq(sends.filter(s => /internal fault/.test(s)).length, 1, 'fault: the chat is told once that the station hit a fault — ' + JSON.stringify(sends));
+    A.eq(sends.filter(s => /internal fault/.test(s)).length, 1, 'fault: the chat is told once that the farm hit a fault — ' + JSON.stringify(sends));
     A.ok(!sends.some(s => /E-STOP/.test(s)), 'fault: never "E-STOP was pressed"');
   }
 
@@ -945,7 +945,7 @@ async function run() {
     A.ok(/2,000,000-token per-run ceiling/.test(subscription) && /Runtime limits/.test(subscription), 'the subscription TOKEN ceiling names its real lever: ' + subscription);
     A.ok(!/\)\.\)/.test(subscription) && /STARNET_MAX_SUBSCRIPTION_TOKENS\.\)$/.test(subscription), 'the subscription note ends cleanly, never "…).)": ' + subscription);
     const cancelled = await endWith({ reason: 'cancelled' }, { token: 'partial' });
-    A.ok(/stopped from the StarNet app/.test(cancelled), 'a station-side cancel says who stopped it: ' + cancelled);
+    A.ok(/stopped from the Homestead app/.test(cancelled), 'a station-side cancel says who stopped it: ' + cancelled);
     const stuck = await endWith({ reason: 'error' }, { error: 'loop guard: fs_read failed 3 times with identical arguments — stopping a stuck loop' });
     A.ok(/got stuck repeating one step: fs_read failed 3 times/.test(stuck), 'a loop-guard stop leads with what happened in plain words: ' + stuck);
   }

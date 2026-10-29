@@ -91,7 +91,7 @@
         // Tell the user what actually triggers a restore point under their current config, not an aspirational promise.
         const empty = (j && j.enabled)
           ? 'NO RESTORE POINTS YET.<br><span>They appear once this agent runs a command or edits a file at a WORKBENCH.</span>'
-          : 'NO RESTORE POINTS YET.<br><span>They appear once this agent runs a <b>shell command</b>. File-edit snapshots aren\'t enabled on this station.</span>';
+          : 'NO RESTORE POINTS YET.<br><span>They appear once this agent runs a <b>shell command</b>. File-edit snapshots aren\'t enabled on this farm.</span>';
         listEl.innerHTML = healthNote(j && j.health, snaps) +(snaps.length ? snaps.map(row).join('') : '<div class="fb-empty">' + empty + '</div>');
       } catch (_) { listEl.innerHTML = '<div class="mc-detail">sidecar offline — start it to manage restore points.</div>'; }
     }

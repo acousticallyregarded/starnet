@@ -192,7 +192,7 @@
     /* path.trust is not a tool the model calls — it is the station's FOLDER-TRUST ask, and because an ACP
        session sends its cwd as the project root it is very often the FIRST card a user ever sees here. Titling
        it "path.trust" made the most important first impression unreadable. */
-    if (n === 'path.trust' && path) return 'Allow StarNet to work in ' + short(path);
+    if (n === 'path.trust' && path) return 'Allow Homestead to work in ' + short(path);
     if (n === 'shell.exec' && args && args.cmd) return 'Run ' + short(args.cmd);
     if (n === 'shell.exec' && args && args.command) return 'Run ' + short(args.command);
     if (n === 'verify.run' && args && args.cmd) return 'Verify ' + short(args.cmd);
@@ -239,14 +239,14 @@
     // projected (agent.run.end budgetProjected): the run family's calls still in flight already took what was left, so
     // the run stopped BEFORE its cap — never say it hit one it did not reach (bug d3a76db3 review)
     if (r === 'budget' && projected === true) return atBalance === true
-      ? '\n\n(stopped: this run stopped before it would spend more than what is left on your StarNet balance — add credits in StarNet under SETTINGS → AI & MODELS.)'
-      : '\n\n(stopped: this run stopped before it would pass its per-run spend cap — raise it in StarNet under SETTINGS › SPENDING LIMITS.)';
+      ? '\n\n(stopped: this run stopped before it would spend more than what is left on your StarNet balance — add credits in Homestead under SETTINGS → AI & MODELS.)'
+      : '\n\n(stopped: this run stopped before it would pass its per-run spend cap — raise it in Homestead under SETTINGS › SPENDING LIMITS.)';
     // a StarNet run whose ceiling admission clamped to the balance (agent.run.end budgetCapIsBalance): raising a cap
     // does nothing — the wallet ran out
-    if (r === 'budget' && atBalance === true) return '\n\n(stopped: this run used what was left on your StarNet balance — add credits in StarNet under SETTINGS → AI & MODELS.)';
-    if (r === 'budget') return '\n\n(stopped: this run hit a spend cap — raise or clear it in StarNet under SETTINGS › SPENDING LIMITS.)';
+    if (r === 'budget' && atBalance === true) return '\n\n(stopped: this run used what was left on your StarNet balance — add credits in Homestead under SETTINGS → AI & MODELS.)';
+    if (r === 'budget') return '\n\n(stopped: this run hit a spend cap — raise or clear it in Homestead under SETTINGS › SPENDING LIMITS.)';
     if (r === 'max_iters') return '\n\n(stopped: reached the step limit for one turn — send "continue" to keep going.)';
-    if (r === 'error') return '\n\n(stopped: the run failed inside StarNet — check the station log for the error.)';
+    if (r === 'error') return '\n\n(stopped: the run failed inside Homestead — check the farm log for the error.)';
     return '';
   }
 
@@ -341,7 +341,7 @@
       // account-level and configured in the station, so we do not silently adopt them — and we say so once
       // rather than letting the user wonder why their editor's MCP tools are absent.
       if (Array.isArray(p.mcpServers) && p.mcpServers.length) {
-        log('ignoring ' + p.mcpServers.length + ' client-supplied MCP server(s): StarNet connectors are configured in the station');
+        log('ignoring ' + p.mcpServers.length + ' client-supplied MCP server(s): Homestead connectors are configured on the farm');
       }
       return { sessionId: sessionId };
     }
@@ -390,7 +390,7 @@
       let text = turn.text;
       if (turn.images) {
         text += (text ? '\n\n' : '') + '[' + turn.images + ' image(s) were attached in the editor but could not be '
-          + 'forwarded: StarNet\'s ACP bridge does not carry image attachments yet. Say so if the answer depends on them.]';
+          + 'forwarded: Homestead\'s ACP bridge does not carry image attachments yet. Say so if the answer depends on them.]';
       }
       if (turn.unsupported.length) log('prompt contained unsupported block type(s): ' + turn.unsupported.join(', '));
 
@@ -454,7 +454,7 @@
 
         if (name === 'agent.run.error') {
           const msg = str(q.message);
-          if (msg) messageChunk(sessionId, '\n\n(StarNet run error: ' + msg + ')');
+          if (msg) messageChunk(sessionId, '\n\n(Homestead run error: ' + msg + ')');
           return;
         }
       };
@@ -514,7 +514,7 @@
         // A transport failure is not a protocol failure: the turn ends, and the user is told plainly.
         const msg = (e && e.message) || String(e);
         log('run failed: ' + msg);
-        messageChunk(sessionId, (answer ? '\n\n' : '') + '(StarNet could not complete this turn: ' + msg + ')');
+        messageChunk(sessionId, (answer ? '\n\n' : '') + '(Homestead could not complete this turn: ' + msg + ')');
         reason = 'error';
       } finally {
         s.run = null;

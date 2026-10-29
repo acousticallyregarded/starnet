@@ -52,7 +52,7 @@ const throwsMsg = async (fn) => { try { await fn(); return ''; } catch (e) { ret
     // the crew finds app.create by searching "app": its description must keep OUTSIDE builds away (a Netlify site and
     // a React todo became StarNet apps on 10-02 before this line)
     const createDesc = tools.defs.find(d => d.name === 'app.create').description;
-    A.ok(/INSIDE StarNet/.test(createDesc) && /NOT for anything meant to run, be published or be shipped outside StarNet/.test(createDesc) && /framework codebase/.test(createDesc) && /add-on for the Commander's own web browser/.test(createDesc), 'app.create says it is only for apps inside StarNet, never a site/project/script to ship elsewhere');
+    A.ok(/INSIDE Homestead/.test(createDesc) && /NOT for anything meant to run, be published or be shipped outside Homestead/.test(createDesc) && /framework codebase/.test(createDesc) && /add-on for the Farmer's own web browser/.test(createDesc), 'app.create says it is only for apps inside Homestead, never a site/project/script to ship elsewhere');
     // (sweep 2026-10-02) …without the words people SEARCH for those asks: tool_search matches description substrings and
     // shows only the first sentence, so "a website, a React project, a browser extension" made it reveal app.create as
     // the top hit for exactly "browser extension" / "host a site" / "react project"
@@ -98,14 +98,14 @@ const throwsMsg = async (fn) => { try { await fn(); return ''; } catch (e) { ret
     told.length = 0;
     await apps.publish(a.id, 'brief', { date: '2026-09-29', items: [{ title: 'T', source: 'S' }] });
     A.eq((await apps.dataGet(a.id, 'brief')).items[0].title, 'T', 'publish stores the data the page reads');
-    A.eq((await apps.dataGet(a.id, '_meta')).updatedAt, clock, 'the station stamps when it was updated');
-    A.eq(await apps.dataKeys(a.id), ['brief'], 'the station\'s _meta is not listed as the app\'s data');
+    A.eq((await apps.dataGet(a.id, '_meta')).updatedAt, clock, 'the farm stamps when it was updated');
+    A.eq(await apps.dataKeys(a.id), ['brief'], 'the farm\'s _meta is not listed as the app\'s data');
     A.eq(told, [['data', a.id]], 'publish tells the open window');
     await apps.publish(a.id, 'brief', JSON.stringify({ items: [{ title: 'S' }] }));
     A.eq((await apps.dataGet(a.id, 'brief')).items[0].title, 'S', 'JSON sent as text (models do this) is stored as the value the page reads');
     await apps.publish(a.id, 'note', '{ not json');
     A.eq(await apps.dataGet(a.id, 'note'), '{ not json', 'plain text stays text');
-    A.ok(/kept by the station/.test(await throwsMsg(() => apps.publish(a.id, '_meta', { updatedAt: 9e12 }))), 'the crew cannot forge the updated time');
+    A.ok(/kept by the farm/.test(await throwsMsg(() => apps.publish(a.id, '_meta', { updatedAt: 9e12 }))), 'the crew cannot forge the updated time');
     A.ok(/store key/.test(await throwsMsg(() => apps.publish(a.id, 'bad key!', 1))), 'a bad key is refused');
 
     // ---- schedule ----
@@ -118,7 +118,7 @@ const throwsMsg = async (fn) => { try { await fn(); return ''; } catch (e) { ret
     A.ok(/THE APP IS THE DELIVERY/.test(job.prompt) && /never put the result in your reply instead/.test(job.prompt), 'the routine is told the app, not its reply, is the delivery');
     A.ok(/real date is in your \[RUNTIME\] block/.test(job.prompt) && !/FIRST call app\.read/.test(job.prompt), 'the routine points at the real date in its [RUNTIME] block (no tool call just to learn the date)');
     A.ok(/app\.write the whole new file/.test(job.prompt) && /app\.check/.test(job.prompt), 'an automated update may change the app ITSELF (rewrite + check the page), not only its data');
-    A.eq((await apps.describe(a.id)).schedule.task, 'research today\'s AI news', 'describe gives the task back (the AUTO-UPDATE box shows the Commander\'s own words)');
+    A.eq((await apps.describe(a.id)).schedule.task, 'research today\'s AI news', 'describe gives the task back (the AUTO-UPDATE box shows the Farmer\'s own words)');
     let desc = await apps.describe(a.id);
     A.ok(desc.schedule && desc.schedule.nextRunAt === 5000 && desc.schedule.armed === false && desc.updatedAt === clock, 'describe reports the routine\'s own next run, armed state and the last update');
     await apps.schedule(a.id, { every: 'every 6h', task: 'again' });
@@ -156,13 +156,13 @@ const throwsMsg = async (fn) => { try { await fn(); return ''; } catch (e) { ret
     A.ok(s2.jobId === s1.jobId && jobs.get(s1.jobId).schedule === 'every 6h' && /two/.test(jobs.get(s1.jobId).prompt), 'a second SAVE edits the same routine in place');
     { let seenPatch = null; const upd = cron.update; cron.update = async (jid, p) => { seenPatch = p; return upd(jid, p); };
       await apps.schedule(a.id, { every: 'every 6h', task: 'crew task', byAgent: true });
-      A.ok(seenPatch && seenPatch.byAgent === true && /as the crew set it up/.test(seenPatch.prompt) && !/Commander's own words/.test(seenPatch.prompt), 'QA 10-02: a crew edit reaches the station as the crew (its grants drop) and never claims to be the Commander\'s words');
+      A.ok(seenPatch && seenPatch.byAgent === true && /as the crew set it up/.test(seenPatch.prompt) && !/Farmer's own words/.test(seenPatch.prompt), 'QA 10-02: a crew edit reaches the farm as the crew (its grants drop) and never claims to be the Farmer\'s words');
       await apps.schedule(a.id, { every: 'every 6h', task: 'two' });
-      A.ok(seenPatch && seenPatch.byAgent === false && /Commander's own words/.test(seenPatch.prompt), 'the Commander\'s own SAVE stays the Commander\'s words');
+      A.ok(seenPatch && seenPatch.byAgent === false && /Farmer's own words/.test(seenPatch.prompt), 'the Farmer\'s own SAVE stays the Farmer\'s words');
       // review 10-02: a crew edit that changes only HOW OFTEN keeps the exact prompt — no grant drop, no relabel
       const before = seenPatch.prompt;
       await apps.schedule(a.id, { every: 'every 12h', task: 'two', byAgent: true });
-      A.ok(seenPatch && seenPatch.byAgent === false && seenPatch.prompt === before && seenPatch.schedule === 'every 12h', 'a crew schedule-only change keeps the prompt byte-for-byte (grants and the Commander\'s words stay)');
+      A.ok(seenPatch && seenPatch.byAgent === false && seenPatch.prompt === before && seenPatch.schedule === 'every 12h', 'a crew schedule-only change keeps the prompt byte-for-byte (grants and the Farmer\'s words stay)');
       cron.update = upd; }
     A.ok(!jobs.has('orphan'), 'an orphan routine of the same app (from a race) is retired');
     A.ok(told.every((t) => t[0] === 'data'), 'a schedule change refreshes the bar only — it never reloads the open app window');
@@ -192,8 +192,8 @@ const throwsMsg = async (fn) => { try { await fn(); return ''; } catch (e) { ret
     const grants = CAP_REGISTRY.computer ? JSON.stringify(CAP_REGISTRY.computer) : JSON.stringify(CAP_REGISTRY);
     A.ok(toolNames().every(n => grants.includes(n)), 'every app tool is granted by the computer');
     const r = await run('app.read', { app: a.id });
-    A.ok(/^Today is \w+day, September 29, 2026/.test(r.content), 'app.read opens with the station\'s real date');
-    A.ok(/Data keys: brief/.test(r.content) && /HOW A STARNET APP WORKS/.test(r.content), 'app.read lists the data keys and carries the build guide');
+    A.ok(/^Today is \w+day, September 29, 2026/.test(r.content), 'app.read opens with the farm\'s real date');
+    A.ok(/Data keys: brief/.test(r.content) && /HOW A HOMESTEAD APP WORKS/.test(r.content), 'app.read lists the data keys and carries the build guide');
     A.ok(/OK — no problems/.test((await run('app.check', { app: a.id })).content), 'a good page checks clean');
     await run('app.write', { app: a.id, path: 'index.html', content: '<body style="background:#fff"><script>fetch("https://x"); (</script></body>' });
     const c = (await run('app.check', { app: a.id })).content;

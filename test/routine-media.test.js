@@ -100,7 +100,7 @@ const { MAX_FILES } = require('../sidecar/tools/builtin/comms.js');
     // upgrade review 2026-10-23: only a routine granted ALLOW IMAGES has its generated pictures sent unasked; a
     // routine that makes images for another purpose (wallpapers into a folder) keeps its chat words-only
     const ungranted = M.pickFiles({ named: [], runs: runs, agentId: 'agent' });
-    A.eq(ungranted.files, [], 'without the images grant, generated images stay on the station');
+    A.eq(ungranted.files, [], 'without the images grant, generated images stay on the farm');
     A.eq(M.pickFiles({ named: ['charts/today.png'], runs: runs, agentId: 'agent' }).files.map(f => f.path), ['charts/today.png'], 'a file the reply names still rides without the grant');
 
     const none = M.pickFiles({ named: [], runs: [{ agentId: 'agent', artifacts: [{ kind: 'file', path: 'x.md' }] }], agentId: 'agent', generatedImages: true });
@@ -171,11 +171,11 @@ const { MAX_FILES } = require('../sidecar/tools/builtin/comms.js');
     A.ok(/this file could not be attached here/.test(one) && /"charts\/missing\.png"/.test(one) && /saved in the workspace/.test(one), 'one missed file is named, with where it is');
     A.ok(/these files/.test(M.missedNote(['a.png', 'b.png'])), 'several are named together');
 
-    A.eq(M.deliveryNote([]), '', 'a routine that stays on the station gets no attachment instruction');
+    A.eq(M.deliveryNote([]), '', 'a routine that stays on the farm gets no attachment instruction');
     const note = M.deliveryNote(['Telegram', 'Telegram', 'Discord']);
     A.ok(/Telegram \/ Discord chat/.test(note), 'the note names the platforms it delivers to, once each');
     A.ok(/ATTACH: <workspace-relative path>/.test(note), 'and the exact line format');
-    A.ok(/station sends this routine's reply/.test(note), 'it says the STATION delivers the reply');
+    A.ok(/farm sends this routine's reply/.test(note), 'it says the FARM delivers the reply');
     A.ok(/do not look up chat targets or call channel\.send/.test(note), 'and rules out the lookup and the send an unattended run cannot make');
     A.ok(/Never write that the message or a file cannot be sent/.test(note), 'and forbids the "cannot send" line a live model wrote');
   }

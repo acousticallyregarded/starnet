@@ -77,7 +77,7 @@
      have…" line is a complaint, not a reusable correction). TRANSIENT: a one-off blip is noise, not a durable
      belief — unless the line itself describes a recurring/pattern shape, which the second alternative admits. */
   const RESTATE = /^(the\s+)?(run|task|job|attempt|it)\s+(failed|errored|crashed|was\s+(cancelled|aborted)|timed\s+out|hit\s+(the\s+)?(budget|limit|cap|max))\W*$/i;
-  const BLAME = /^(the\s+)?(user|commander|model|provider|agent)\s+(should\s+have|shouldn't\s+have|failed\s+to|was\s+(wrong|bad|at\s+fault)|didn'?t|is\s+to\s+blame)\b/i;
+  const BLAME = /^(the\s+)?(user|commander|farmer|model|provider|agent)\s+(should\s+have|shouldn't\s+have|failed\s+to|was\s+(wrong|bad|at\s+fault)|didn'?t|is\s+to\s+blame)\b/i;
   const TRANSIENT = /\b(one[-\s]?off|momentary|temporar(?:y|ily)|transient|blip|glitch|fluke)\b/i;
   const RECURRENT = /\b(recurr?(?:ing|ent|ed)|repeated(?:ly)?|pattern|every\s+(time|attempt|retry)|each\s+(time|attempt|retry)|consistently|again)\b/i;
   /* GATE-SKIP: a lesson that teaches the agent to route around a step the host REQUIRES. The first-hour walk
@@ -176,9 +176,9 @@
       ' durable LESSONS worth remembering for future runs — one per line, each tagged LESSON:. A lesson names ' +
       'what failed, why, and what to do differently next time — concrete and reusable, never a restatement of ' +
       'the failure, never blame. Skip one-off transient noise (a single network blip) unless a recovery ' +
-      'pattern is visible across attempts. The Commander reads these lessons: write them in plain words about ' +
+      'pattern is visible across attempts. The Farmer reads these lessons: write them in plain words about ' +
       'the task, never internal tool names, schemas or error codes. Never advise skipping, bypassing or treating ' +
-      'as optional a step the station requires (the task brief, an approval, consent, a permission) — if such a ' +
+      'as optional a step the farm requires (the task brief, an approval, consent, a permission) — if such a ' +
       'step kept failing, the lesson is how to satisfy it. If nothing durable can be learned, reply NONE.\n\n' +
       head.join('\n') + (body ? ('\n\nTRANSCRIPT TAIL:\n' + body) : '');
   }

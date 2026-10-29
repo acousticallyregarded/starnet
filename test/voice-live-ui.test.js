@@ -34,8 +34,8 @@ assert.match(source, /noiseFloor\s*\+\s*\(outputActive\s*\?\s*0\.025\s*:\s*0\.00
 assert.doesNotMatch(source, /durationMs\s*>=\s*20000/, 'the former 20-second hard cutoff is removed');
 assert.match(source, /scheduleReconnect\(/, 'lost microphones enter the reconnect state machine');
 assert.match(source, /approvalCommand\(lower\)/, 'run-scoped approvals can be answered by an explicit voice command');
-assert.match(source, /agentCommand\(value,\s*lower\)/, 'voice can select the active Starnet agent without provider coupling');
-assert.match(source, /Harness\.getProv/, 'the controller reports the active Starnet provider');
+assert.match(source, /agentCommand\(value,\s*lower\)/, 'voice can select the active Homestead agent without provider coupling');
+assert.match(source, /Harness\.getProv/, 'the controller reports the active Homestead provider');
 assert.doesNotMatch(source, /CODEX OAUTH/, 'provider-agnostic voice UI does not claim Codex is required');
 assert.match(source, /attachCoordinator\(\{\s*onState,\s*onAssistant,\s*onOutputLevel,\s*onTiming[\s\S]*?onSpeechInterrupted[\s\S]*?\}\)/, 'live controller subscribes to real agent output levels');
 assert.match(source, /bar\.dataset\.src\s*=\s*cell\.src/, 'wave history preserves which side of the conversation produced each sample');
@@ -48,11 +48,11 @@ assert.match(chatSource, /Local Live voice stopped\./, '/voice live toggles the 
 assert.doesNotMatch(chatSource, /Hands-free voice mode toggled\./, 'slash command no longer activates the legacy hands-free loop');
 assert.match(voiceSource, /const endFailed\s*=\s*error\s*=>[\s\S]*?onSpeakEnd\(\)[\s\S]*?onFail/, 'media failures clear speaking and meter state before the queue advances');
 assert.match(voiceSource, /currentAudioCleanup/, 'interrupted blob playback has an explicit URL cleanup path');
-assert.match(css, /\.live-voice-panel\s*\{[^}]*position:\s*fixed/s, 'controller follows the user across StarNet views');
+assert.match(css, /\.live-voice-panel\s*\{[^}]*position:\s*fixed/s, 'controller follows the user across Homestead views');
 assert.match(css, /\.lv-head\s*\{[^}]*cursor:\s*grab/s, 'header advertises the drag affordance');
 assert.match(css, /\.lv-wave i\[data-src="self"\]/, 'the user side of the shared waveform has an explicit visual contract');
 assert.match(css, /\.lv-wave i\[data-src="agent"\]/, 'the agent side of the shared waveform has an explicit visual contract');
-assert.match(css, /\[data-state="hearing"\][\s\S]*?\.lv-heard[\s\S]*?display:\s*-webkit-box/, 'recognized words stay visible while the Commander is speaking');
+assert.match(css, /\[data-state="hearing"\][\s\S]*?\.lv-heard[\s\S]*?display:\s*-webkit-box/, 'recognized words stay visible while the Farmer is speaking');
 assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]*?\.lv-x\s*\{[^}]*pointer-events:\s*auto/, 'touch users always have a reachable close control');
 
 // Exercise the endpoint policy, not only its spelling. The chosen pause is the base truth; a partial that
@@ -117,7 +117,7 @@ function bodyOf(name) {
   const startBody = bodyOf('start');
   assert.match(startBody, /readiness\.probeFailed[\s\S]*?reload this page to reconnect voice/, 'stale pages receive an actionable reload message');
   assert.match(startBody, /if \(withheld\) setUnrecoverableError\(withheld\);/, 'a withheld page shows the withheld notice as its error');
-  assert.ok(startBody.indexOf('withheld ?') > 0 && startBody.indexOf('withheld ?') < startBody.indexOf('station restarted'),
+  assert.ok(startBody.indexOf('withheld ?') > 0 && startBody.indexOf('withheld ?') < startBody.indexOf('farm restarted'),
     'the withheld check comes before every restart line');
   assert.ok(
     startBody.indexOf('readiness.probeFailed') < startBody.indexOf('openMicrophone(seq)'),
@@ -278,7 +278,7 @@ assert.match(bodyOf('chipCommand'), /\.click\(\)/, 'a spoken pick clicks the REA
   assert.equal(matchChoice('la', chips), -1, 'a two-letter fragment is too little to act on');
   assert.equal(matchChoice('', chips), -1, 'silence picks nothing');
 }
-assert.match(voiceSource, /if \(!forcedSpeak\) return false;/, "restoreSpeak never undoes the Commander's own speaker choice");
+assert.match(voiceSource, /if \(!forcedSpeak\) return false;/, "restoreSpeak never undoes the Farmer's own speaker choice");
 
 /* ⛔ THE METER IS REAL ON THE FALLBACK LEG TOO. The dictation leg used to scroll
    nothing — the engine that listens exposes no frame clock — so the strip sat flat for both voices while

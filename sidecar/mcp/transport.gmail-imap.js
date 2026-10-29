@@ -279,7 +279,7 @@ function makeGmailImapTransport(opts) {
         // Prove the credential works (IMAP LOGIN + mailbox list) before the connector reports connected.
         await withImap(null, s => mailboxes(s));
         result = { protocolVersion: (msg.params && msg.params.protocolVersion) || '2025-06-18', capabilities: { tools: {} },
-          serverInfo: { name: 'StarNet Gmail app-password connector (IMAP/SMTP)', version: '1' } };
+          serverInfo: { name: 'Homestead Gmail app-password connector (IMAP/SMTP)', version: '1' } };
       } else if (msg.method === 'tools/list') result = { tools: TOOLS };
       else if (msg.method === 'tools/call') result = await callTool(msg.id, msg.params && msg.params.name, (msg.params && msg.params.arguments) || {});
       else if (msg.method === 'ping') result = {};

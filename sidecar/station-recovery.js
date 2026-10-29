@@ -132,7 +132,7 @@ function sanitizeManagedJson(rel, raw, options = {}) {
     for (const key of machinePaths) reauthentication.push({ kind: 'project-path', id: key.slice(5), reason: 'Machine-specific path authority is not transferable; restore or relocate the project, then re-authorize it.', fields: ['permissions.allow'] });
   } else if (p === 'connectors/state.json') {
     if (typeof doc.format === 'string' && doc.format.startsWith('starnet.connector-vault.')) {
-      if (typeof options.readConnectorState !== 'function') throw new Error('Encrypted connector export requires the running StarNet app and its unlocked OS credential store.');
+      if (typeof options.readConnectorState !== 'function') throw new Error('Encrypted connector export requires the running Homestead app and its unlocked OS credential store.');
       doc = options.readConnectorState();
       if (!doc || doc.version !== 2 || !Array.isArray(doc.configs) || !isObj(doc.oauth)) throw new Error('Encrypted connector export could not verify the original settings.');
     }
@@ -420,7 +420,7 @@ function capture(opts) {
     for (const it of candidates) it.categories = categoriesFor(it.rel);
     const plan = budgetPlan(candidates, budget, maxChars, chars);
     // only the list of what is left out can get here (~a million folders, or a tiny maxChars): say so instead of V8's 'Invalid string length'
-    if (plan.base > maxChars) throw new Error('the station has too many files to list within a pre-update recovery point');
+    if (plan.base > maxChars) throw new Error('the farm has too many files to list within a pre-update recovery point');
     over = plan.over;
     chars = plan.base;   // from here: the text of what has actually been admitted, in priority order
     // read in priority order, so the guard below (a .bak promotion can differ in size) only ever drops the LOWER rows
@@ -533,8 +533,8 @@ function capture(opts) {
 
 function validate(bundle) {
   const errors = [];
-  if (!bundle || bundle.schema !== SCHEMA) errors.push('not a StarNet station recovery bundle');
-  if (bundle && Number(bundle.version) > VERSION) errors.push('bundle was created by a newer StarNet recovery format');
+  if (!bundle || bundle.schema !== SCHEMA) errors.push('not a Homestead farm recovery bundle');
+  if (bundle && Number(bundle.version) > VERSION) errors.push('bundle was created by a newer Homestead recovery format');
   const files = bundle && Array.isArray(bundle.files) ? bundle.files : [];
   const browser = bundle && Array.isArray(bundle.browser) ? bundle.browser : [];
   const seen = new Set();

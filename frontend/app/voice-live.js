@@ -133,7 +133,7 @@ const VoiceLive = (() => {
     panel.hidden = true;
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'false');
-    panel.setAttribute('aria-label', 'Starnet local live voice');
+    panel.setAttribute('aria-label', 'Homestead local live voice');
     panel.innerHTML = [
       '<header class="lv-head">',
         '<span class="lv-brand">LOCAL LIVE</span>',
@@ -162,7 +162,7 @@ const VoiceLive = (() => {
         '<option value="2600">PATIENT · 2.6S</option>',
       '</select></label>',
       '<details class="lv-details"><summary>VOICE DETAILS</summary><dl class="lv-rail">',
-        '<div class="lv-row"><dt>ROUTE</dt><dd id="lv-route">LOCAL SPEECH · ACTIVE STARNET AGENT</dd></div>',
+        '<div class="lv-row"><dt>ROUTE</dt><dd id="lv-route">LOCAL SPEECH · ACTIVE HOMESTEAD AGENT</dd></div>',
         '<div class="lv-row lv-row-dl"><dt>SPEECH</dt><dd id="lv-model">LOCAL MODELS: CHECKING</dd></div>',
         '<div class="lv-row"><dt>LATENCY</dt><dd id="lv-timing" title="First words: detected speech to transcript. Send: last voiced frame to submission. Speech start: latest spoken chunk queued to actual playback.">Speak to measure this turn.</dd></div>',
         '<div class="lv-row"><dt>TASK</dt><dd id="lv-task" class="lv-task">No active task detected.</dd></div>',
@@ -350,7 +350,7 @@ const VoiceLive = (() => {
     const withheld = response.status === 403 && typeof Harness !== 'undefined' && Harness
       && typeof Harness.tokenWithheld === 'function' && Harness.tokenWithheld()
       ? ((typeof Harness.tokenWithheldNotice === 'function' && Harness.tokenWithheldNotice())
-        || 'StarNet could not confirm this browser is yours — see the station notice.')
+        || 'Homestead could not confirm this browser is yours — see the farm notice.')
       : '';
     return {
       probeFailed: true,
@@ -611,7 +611,7 @@ const VoiceLive = (() => {
       if (applied === 'deny') speakLocal('Denied' + about);
       else if (applied === 'always') speakLocal('Always allowed' + about);
       else if (applied === 'once') speakLocal((onceOnly ? 'This one can only be approved once. ' : '') + 'Approved once' + about);
-      else speakLocal('The station did not confirm your answer. Please try again.');
+      else speakLocal('The farm did not confirm your answer. Please try again.');
     }).catch(() => {
       if (!ownsFeedback()) return;
       // settled elsewhere meanwhile (timed out, answered on the card or the phone): say so, never leave the call silent
@@ -713,7 +713,7 @@ const VoiceLive = (() => {
       return true;
     }
     if (typeof Chat === 'undefined' || !Chat.sendOrQueue) {
-      setError('The signed-in Starnet agent is not ready yet.');
+      setError('The signed-in Homestead agent is not ready yet.');
       return true;
     }
     const result = Chat.sendOrQueue(value);
@@ -1235,7 +1235,7 @@ const VoiceLive = (() => {
     button.setAttribute('aria-label', on ? 'Stop Local Live hands-free voice' : 'Start Local Live hands-free voice');
     button.title = on
       ? 'Stop Local Live hands-free voice'
-      : 'Local Live hands-free voice — local speech with your active Starnet agent';
+      : 'Local Live hands-free voice — local speech with your active Homestead agent';
   }
 
   async function start(retry) {
@@ -1264,17 +1264,17 @@ const VoiceLive = (() => {
       $('live-voice-panel').hidden = false;
       setState('offline');
       const withheld = readiness.tokenWithheld;   // not a restart: a reload only re-runs the same check
-      caption('user', withheld ? 'StarNet could not confirm this browser is yours.'
-        : readiness.staleSession ? 'This page lost its connection when the station restarted.'
-        : 'Local Live could not reach the station.');
+      caption('user', withheld ? 'Homestead could not confirm this browser is yours.'
+        : readiness.staleSession ? 'This page lost its connection when the farm restarted.'
+        : 'Local Live could not reach the farm.');
       caption('agent', withheld ? 'Voice cannot start on this page.'
         : readiness.staleSession ? 'Reload this page to reconnect, then start Local Live again.'
-        : 'Confirm the station is running, then try again.');
+        : 'Confirm the farm is running, then try again.');
       if (withheld) setUnrecoverableError(withheld);
       else if (readiness.staleSession) {
-        setUnrecoverableError('The station restarted — reload this page to reconnect voice.');
+        setUnrecoverableError('The farm restarted — reload this page to reconnect voice.');
       } else {
-        setError('Local voice could not reach the station.');
+        setError('Local voice could not reach the farm.');
       }
       reflectButton(false);
       return;
@@ -1413,12 +1413,12 @@ const VoiceLive = (() => {
   function voiceInstructions() {
     const ctx = stationContext();
     const agent = ctx.agent;
-    const name = (agent && agent.name) || 'the station agent';
+    const name = (agent && agent.name) || 'the farm agent';
     const lines = [];
     // 1) IDENTITY — the agent's own composed prompt, verbatim. It already carries persona, role, dossier and
     //    crew clause, so the spoken agent and the typed agent are the same character rather than two.
     if (agent && agent.systemPrompt) lines.push(String(agent.systemPrompt));
-    lines.push('You are ' + name + ', speaking aloud to the Commander in StarNet. You are the SAME agent they type to — same memory, same work, same voice of character. Never describe yourself as a separate voice assistant or a control layer.');
+    lines.push('You are ' + name + ', speaking aloud to the Farmer in Homestead. You are the SAME agent they type to — same memory, same work, same voice of character. Never describe yourself as a separate voice assistant or a control layer.');
     /* 2) THE PERSONALITY IS THE POINT, AND SPEAKING IT ALOUD MUST NOT SAND IT DOWN.
        This block used to say "speak naturally and briefly, a sentence or two at a time", which quietly
        overrode the persona above and produced a flat, careful assistant no matter which archetype was
@@ -1431,10 +1431,10 @@ const VoiceLive = (() => {
       lines.push('That personality — ' + (persona.name || agent.personaId) + ' — is your ACTUAL speaking voice here, not a description of one. Deliver it out loud with the same register, vocabulary and attitude you would use in writing. Do not soften it, sanitise it, or default to a neutral assistant tone because this is speech.');
       lines.push('Honor the effective style, language preference and custom instructions in your composed personality; speaking aloud does not reset those settings.');
     }
-    lines.push('Speak in a natural spoken rhythm — the length a person would actually say out loud rather than a written paragraph. Let the Commander interrupt you at any moment and stop immediately when they do.');
+    lines.push('Speak in a natural spoken rhythm — the length a person would actually say out loud rather than a written paragraph. Let the Farmer interrupt you at any moment and stop immediately when they do.');
     // 3) THE STATION, as it is right now.
     if (ctx.crew.length) {
-      lines.push('The crew on this station: ' + ctx.crew.map(a => (a.name || a.id) + (a.role ? ' (' + a.role + ')' : '')).join('; ') + '.');
+      lines.push('The crew on this farm: ' + ctx.crew.map(a => (a.name || a.id) + (a.role ? ' (' + a.role + ')' : '')).join('; ') + '.');
     }
     if (ctx.streams.length) {
       lines.push('Open sessions: ' + ctx.streams.slice(0, 12).map(sessionName).join('; ') + '.');
@@ -1442,7 +1442,7 @@ const VoiceLive = (() => {
     if (ctx.activeWs) lines.push('The active session is "' + sessionName(ctx.activeWs) + '".');
     lines.push('Call get_starnet_status before answering any question about what is running, what is waiting for approval, or what the crew is doing — never guess or invent task state, tool results, approvals or files.');
     lines.push('For anything requiring research, code, file changes, tools or sustained work, call start_starnet_task rather than claiming you did it yourself. Afterwards confirm in one short sentence and note that the work is visible in the session.');
-    lines.push('Use interrupt_starnet_task only when the Commander clearly asks to stop or change direction.');
+    lines.push('Use interrupt_starnet_task only when the Farmer clearly asks to stop or change direction.');
     lines.push('Do not ask for credentials or read secrets aloud.');
     return lines.join('\n\n');
   }
@@ -1477,7 +1477,7 @@ const VoiceLive = (() => {
     if (name === 'get_starnet_status') {
       const snap = statusSnapshot();
       if (!snap || snap.active === null && !(snap.workstreams || []).length) {
-        return { ok: false, error: 'the station is still starting up — no workstreams are readable yet' };
+        return { ok: false, error: 'the farm is still starting up — no workstreams are readable yet' };
       }
       return { ok: true, ...snap };
     }

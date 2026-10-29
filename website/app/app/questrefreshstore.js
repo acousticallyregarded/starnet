@@ -157,7 +157,7 @@ const QuestRefreshStore = (() => {
       const res = await fetch('/api/quests/refresh/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
       const j = await res.json().catch(() => null);
       out = j && typeof j === 'object' ? { ok: !!j.ok, started: !!j.started, error: j.error || '' } : out;
-    } catch (_) { out = { ok: false, started: false, error: 'could not reach the station' }; }
+    } catch (_) { out = { ok: false, started: false, error: 'could not reach the farm' }; }
     finally { running = false; lastFetch = 0; await refetch(); }   // immediate: inFlight/ledger reflect the launch now
     if (out.started) watchSettle();   // and then follow it to the end, so the outcome lands without a re-open
     return out;

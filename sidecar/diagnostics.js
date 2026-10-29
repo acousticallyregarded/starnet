@@ -225,7 +225,7 @@
     function render(r) {
       const iso = (ts) => { try { return ts ? new Date(ts).toISOString() : ''; } catch (_) { return ''; } };
       const lines = [
-        '--- StarNet diagnostics ---',
+        '--- Homestead diagnostics ---',
         'App version:   ' + r.app,
         'Harness:       ' + r.harness,
         'Node:          ' + r.node,

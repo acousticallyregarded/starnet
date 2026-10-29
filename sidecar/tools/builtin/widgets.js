@@ -145,7 +145,7 @@
          max lengths this prose did not). What survives is what a per-field description structurally cannot
          say: what the instrument IS, the cross-turn freshness contract, the cross-field "only when the data
          has that shape" rule, and SKIP — which has no runtime guard behind it, so it stays spelled out. */
-      description: 'Publish or update a small named readout on the station’s widget rails — a live instrument the Commander can pin ' +
+      description: 'Publish or update a small named readout on the farm’s widget rails — a live instrument the Farmer can pin ' +
         'on screen (e.g. app revenue, top AI headlines, subscriber count). The display always carries YOUR name and the time you ' +
         'set it, so a stale figure is attributable to you: re-set the same id whenever you have a newer one (a routine is the ' +
         'natural driver), and setting an existing id overwrites it. Reach for tone/spark/progress only when the data genuinely ' +
@@ -228,14 +228,14 @@
           } else if (args.version != null || args.error) throw new Error('The configured widget no longer exists.');
           if (idx >= 0) { const next = list.slice(); next[idx] = rec; return next; }
           // the cap binds NEW ids only — updating an existing readout must always work
-          if (list.filter(w => w && !w.deleted).length >= MAX_WIDGETS) throw new Error('the station already has ' + MAX_WIDGETS + ' widgets — clear one (widget.set {id, clear:true}) before adding another');
+          if (list.filter(w => w && !w.deleted).length >= MAX_WIDGETS) throw new Error('the farm already has ' + MAX_WIDGETS + ' widgets — clear one (widget.set {id, clear:true}) before adding another');
           created = true;
           return list.concat([rec]);
         });
 
         return {
           content: args.error ? 'Recorded the refresh error for widget "' + id + '". Its last reading and timestamp are unchanged.' : (created ? 'Published' : 'Updated') + ' widget "' + rec.label + '" (' + id + '). ' +
-            'It shows your name and this timestamp; the Commander can pin it from the rail’s ＋ menu.',
+            'It shows your name and this timestamp; the Farmer can pin it from the rail’s ＋ menu.',
           summary: (created ? 'published ' : 'updated ') + id
         };
       }

@@ -657,11 +657,11 @@ const CloudSave = (() => {
     if (!safe) throw new Error('Could not save this window first, so nothing was restored and nothing was lost. Download this window’s save, or try again in a moment.');
     const r = await fetch(ENDPOINT + '/conflicts/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ file }) });
     const j = await r.json().catch(() => null);
-    if (!j || j.ok !== true) throw new Error((j && j.error) || 'The station could not restore that save.');
+    if (!j || j.ok !== true) throw new Error((j && j.error) || 'The farm could not restore that save.');
     // NOTHING CAME BACK (review 10-23 r2 #2): the station already holds everything in that copy that may come back (or it was
     // deleted or cleared on purpose). This window is not retired or reloaded and keeps its browser copy: a restore that
     // brought nothing back is never the moment this window's own work is dropped.
-    if (!(num(j.added) + num(j.extended) + num(j.copied))) throw new Error('Nothing was restored: the station already has every session in that save that can come back (a session deleted or cleared on purpose stays that way). This window was left as it is.');
+    if (!(num(j.added) + num(j.extended) + num(j.copied))) throw new Error('Nothing was restored: the farm already has every session in that save that can come back (a session deleted or cleared on purpose stays that way). This window was left as it is.');
     retired = true;
     if (timer) { clearTimeout(timer); timer = null; }
     if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }

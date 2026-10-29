@@ -48,11 +48,11 @@
 
     // one shape for every verb: bridge absent / page silent / page refused / page answered.
     async function ask(verb, args) {
-      if (!station) return { ok: false, error: 'this run has no station bridge — session actions need the live StarNet page' };
+      if (!station) return { ok: false, error: 'this run has no farm bridge — session actions need the live Homestead page' };
       let out;
       try { out = await station.request(verb, args || {}); }
       catch (e) { return { ok: false, error: String((e && e.message) || e) }; }
-      return out && out.ok ? { ok: true, result: out.result } : { ok: false, error: String((out && out.error) || 'the station did not answer') };
+      return out && out.ok ? { ok: true, result: out.result } : { ok: false, error: String((out && out.error) || 'the farm did not answer') };
     }
     const refuse = (error, summary) => ({ content: 'REFUSED: ' + error + ' — do not report this action as done.', summary: summary || 'refused' });
     // {from, to} when `next` is `prev` with ONE word replaced everywhere (a name swap), else null — the first differing word decides
@@ -66,7 +66,7 @@
 
     const listTool = {
       name: 'session.list', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'List the sessions (workstreams) open on this station: id, title, bound agent, and which one the Commander has focused. Use the TITLES when talking to the Commander and when passing `session` to team.dispatch or session.focus. Read this before creating a session so you never mint a duplicate title.',
+      description: 'List the sessions (workstreams) open on this farm: id, title, bound agent, and which one the Farmer has focused. Use the TITLES when talking to the Farmer and when passing `session` to team.dispatch or session.focus. Read this before creating a session so you never mint a duplicate title.',
       schema: { type: 'object', properties: {} },
       run: async (args, ctx) => {
         const out = await ask('station.sessions', {});
@@ -82,7 +82,7 @@
 
     const createTool = {
       name: 'session.create', capability: 'orchestrator', scope: 'write', requiresConsent: false,
-      description: 'Create a NEW named session (workstream) on the station — e.g. when the Commander says "make a session called research". Optionally bind it to a crew agentId, and pass focus:true only when the Commander asked to open/switch to it. Refuses a title that already exists (delegate into the existing one instead). After creating, you can run work in it by passing its title as `session` on a team.dispatch worker.',
+      description: 'Create a NEW named session (workstream) on the farm — e.g. when the Farmer says "make a session called research". Optionally bind it to a crew agentId, and pass focus:true only when the Farmer asked to open/switch to it. Refuses a title that already exists (delegate into the existing one instead). After creating, you can run work in it by passing its title as `session` on a team.dispatch worker.',
       schema: {
         type: 'object', required: ['title'], properties: {
           title: { type: 'string' },      // the name the Commander said, shown on the rail (≤80 chars)
@@ -101,7 +101,7 @@
 
     const peekTool = {
       name: 'session.peek', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'Read another session\'s recent conversation — who said what, including delegated work that landed there. ⛔ ALWAYS call this before answering any question about what another session or agent did ("what did the researcher do?", "did anything finish in research?"): your own thread does NOT contain other sessions\' turns, so answering from memory is guessing. Pass the session\'s title as the Commander says it (or an exact id); an unknown or ambiguous name is refused with the list of real ones.',
+      description: 'Read another session\'s recent conversation — who said what, including delegated work that landed there. ⛔ ALWAYS call this before answering any question about what another session or agent did ("what did the researcher do?", "did anything finish in research?"): your own thread does NOT contain other sessions\' turns, so answering from memory is guessing. Pass the session\'s title as the Farmer says it (or an exact id); an unknown or ambiguous name is refused with the list of real ones.',
       schema: {
         type: 'object', required: ['session'], properties: {
           session: { type: 'string' },
@@ -121,7 +121,7 @@
 
     const focusTool = {
       name: 'session.focus', capability: 'orchestrator', scope: 'write', requiresConsent: false,
-      description: 'Switch the Commander\'s focused session to an existing one, by the title they say (or an exact id) — e.g. "open the research session". The name must match exactly one session; an unknown or ambiguous name is refused with the list of real ones, so never guess — use session.list. This changes what the Commander is LOOKING at; use it only when they asked to switch.',
+      description: 'Switch the Farmer\'s focused session to an existing one, by the title they say (or an exact id) — e.g. "open the research session". The name must match exactly one session; an unknown or ambiguous name is refused with the list of real ones, so never guess — use session.list. This changes what the Farmer is LOOKING at; use it only when they asked to switch.',
       schema: { type: 'object', required: ['session'], properties: { session: { type: 'string' } } },
       run: async (args, ctx) => {
         const ref = String((args && args.session) || '').trim().slice(0, 80);
@@ -139,7 +139,7 @@
        instead of guessing from its own thread. No page → REFUSED, never an implied state. */
     const statusTool = {
       name: 'station.status', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'Read the live station snapshot: the Commander\'s active session and, per open session, whether it is busy and whether it waits on an approval. Call it before answering what the station or crew is doing or what waits on the Commander; never infer other sessions\' state from your own thread.',
+      description: 'Read the live farm snapshot: the Farmer\'s active session and, per open session, whether it is busy and whether it waits on an approval. Call it before answering what the farm or crew is doing or what waits on the Farmer; never infer other sessions\' state from your own thread.',
       schema: { type: 'object', properties: {} },
       run: async () => {
         const out = await ask('station.status', {});
@@ -152,7 +152,7 @@
 
     const taskListTool = {
       name: 'task.list', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'List the durable cards on the Commander\'s task board. Use this for requests about board cards or tasks; sessions are separate and come from session.list.',
+      description: 'List the durable cards on the Farmer\'s task board. Use this for requests about board cards or tasks; sessions are separate and come from session.list.',
       schema: { type: 'object', properties: {} },
       run: async () => {
         const out = await ask('station.tasks', {});
@@ -164,7 +164,7 @@
 
     const taskCreateTool = {
       name: 'task.create', capability: 'orchestrator', scope: 'write', requiresConsent: false,
-      description: 'Add one durable card to the Commander\'s task board when they say “add this to my board”, “make a task”, or equivalent. This does not start work and does not create a chat session. Repeating the same title returns the existing card instead of creating a duplicate.',
+      description: 'Add one durable card to the Farmer\'s task board when they say “add this to my board”, “make a task”, or equivalent. This does not start work and does not create a chat session. Repeating the same title returns the existing card instead of creating a duplicate.',
       schema: { type: 'object', required: ['title'], properties: { title: { type: 'string' }, agentId: { type: 'string' } } },
       run: async (args) => {
         const title = String((args && args.title) || '').trim().slice(0, 80);
@@ -178,7 +178,7 @@
 
     const taskManageTool = {
       name: 'task.manage', capability: 'orchestrator', scope: 'write', requiresConsent: true,
-      description: 'Change an EXISTING durable task-board card: move it between todo/active/shipped, rename it, assign it to a crew agent, archive/restore it, or remove it. Never call this to start work; use team.dispatch for delegation. `shipped` is allowed only when the Commander explicitly asks to mark/ship/complete that card. Destructive actions are consent-gated.',
+      description: 'Change an EXISTING durable task-board card: move it between todo/active/shipped, rename it, assign it to a crew agent, archive/restore it, or remove it. Never call this to start work; use team.dispatch for delegation. `shipped` is allowed only when the Farmer explicitly asks to mark/ship/complete that card. Destructive actions are consent-gated.',
       schema: {
         type: 'object', required: ['task', 'action'], properties: {
           task: { type: 'string' }, action: { type: 'string', enum: ['move', 'rename', 'assign', 'archive', 'restore', 'remove'] },
@@ -213,7 +213,7 @@
     const scanText = typeof deps.scanText === 'function' ? deps.scanText : null;
     const agentConfigureTool = {
       name: 'team.configure', capability: 'orchestrator', consentKey: 'team.configure', taintLocked: true, scope: 'write', requiresConsent: true,
-      description: 'Edit one existing crew member Dossier document, using the exact agentId and previousText from team.config. Preserve unrelated instructions in the replacement text. An empty text explicitly clears the document. Uses the Dossier save path; applies to the next run, not a currently running turn. Requires an open station page. Does not change the name (station.control agent.rename), skills, permissions, Bay briefs or layout. Never substitute notebook.write for this edit.',
+      description: 'Edit one existing crew member Dossier document, using the exact agentId and previousText from team.config. Preserve unrelated instructions in the replacement text. An empty text explicitly clears the document. Uses the Dossier save path; applies to the next run, not a currently running turn. Requires an open farm page. Does not change the name (station.control agent.rename), skills, permissions, Bay briefs or layout. Never substitute notebook.write for this edit.',
       schema: { type: 'object', additionalProperties: false, required: ['agentId', 'field', 'previousText', 'text'], properties: {
         agentId: { type: 'string' }, field: { type: 'string', enum: ['identity', 'purpose', 'manual', 'context'] },
         previousText: { type: 'string' }, text: { type: 'string', maxLength: 20000 }
@@ -226,13 +226,13 @@
         if (swap) {
           return refuse('this edit only swaps "' + swap.from + '" for "' + swap.to + '" inside the identity text, which does not rename the agent — '
             + 'its name is changed with station.control {"action": "agent.rename", "args": {"agent": "' + String(args.agentId || '') + '", "name": "' + swap.to + '"}} '
-            + '(tool.search "station control" if you do not have it)', 'a rename, not a persona edit');
+            + '(tool.search "farm control" if you do not have it)', 'a rename, not a persona edit');
         }
         if (scanText && args && typeof args.text === 'string') {
           let scan; try { scan = scanText(args.text); } catch (e) { scan = { ok: false, error: 'the instruction scan failed' }; }
           if (!scan || scan.ok !== true) {
             return refuse('the new ' + String(args.field || 'document') + ' text contains a pattern that tries to override instructions or leak credentials'
-              + (scan && scan.patternId ? ' (' + scan.patternId + ')' : '') + '. Tell the Commander what was blocked; they can edit the Dossier by hand', 'blocked by instruction scan');
+              + (scan && scan.patternId ? ' (' + scan.patternId + ')' : '') + '. Tell the Farmer what was blocked; they can edit the Dossier by hand', 'blocked by instruction scan');
           }
         }
         const out = await ask('station.update_agent', args || {});
@@ -363,7 +363,7 @@
     }
     const layoutTool = {
       name: 'station.layout', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'Read the station floor the way the Workflow panel shows it: whether routing is live (confirmed against the router) and whether automation is stopped (E-STOP); every assembly line with its status pill, its plain-English "how it runs" sentence, what starts it (schedules, channels, folder and webhook triggers — and any that are paused, with the reason), what is blocking it, its budget, and its numbers today; each step in run order with its Bay, room, agent and last run; Bays on no belt line; routing issues; rooms; and who holds which workstation. With `line` (a line name or lineId) it returns that one line in full: each Bay\'s exact brief (added to the agent\'s Dossier), its tools there, its hand-offs, loops and escalation lanes, and filter rules. ⛔ Call this before explaining, troubleshooting, or suggesting changes to Bays and assembly lines, and never answer those from memory. Quote its status and sentence as given, and when routing is not live or starts are paused, say so. Read-only: it cannot assign agents, edit briefs, or change the layout; the Commander does that in Build mode. Requires an open station page.',
+      description: 'Read the farm floor the way the Workflow panel shows it: whether routing is live (confirmed against the router) and whether automation is stopped (E-STOP); every assembly line with its status pill, its plain-English "how it runs" sentence, what starts it (schedules, channels, folder and webhook triggers — and any that are paused, with the reason), what is blocking it, its budget, and its numbers today; each step in run order with its Bay, room, agent and last run; Bays on no belt line; routing issues; rooms; and who holds which workstation. With `line` (a line name or lineId) it returns that one line in full: each Bay\'s exact brief (added to the agent\'s Dossier), its tools there, its hand-offs, loops and escalation lanes, and filter rules. ⛔ Call this before explaining, troubleshooting, or suggesting changes to Bays and assembly lines, and never answer those from memory. Quote its status and sentence as given, and when routing is not live or starts are paused, say so. Read-only: it cannot assign agents, edit briefs, or change the layout; the Farmer does that in Build mode. Requires an open farm page.',
       schema: { type: 'object', properties: { line: { type: 'string' } } },
       run: async (args, ctx) => {
         const line = String((args && args.line) || '').trim().slice(0, 80);
@@ -411,21 +411,21 @@
     const BUILDER = ['station.map', 'station.plan', 'station.build', 'station.make_prop', 'station.test_line', 'station.start_line'];
     const mapTool = {
       name: 'station.map', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'STATION BUILDER, step 1: see the station floor before you build on it. Every room with its position and size in tiles, its type, what it is joined to (through hallways, or open to it), its machines, furniture and lines, how much floor is clear, which sizes of new room fit on each side, the floor drawn in characters (a letter per room, + for a hallway; north is the top), and every hallway by name with what it joins (halls; one marked leadsNowhere leads to fewer than two rooms). '
-        + 'The room marked main is the one the station started from; the Commander may call it the bridge, the hub or the main room. '
-        + 'For your own design: { room: a name } details that room tile by tile (every piece with its id, type, place and size, and each machine\'s settings: agent, role, instructions, hand-off, budget, routes, loop and joiner rules, folder, bound service; its belts; its doorways; the room drawn); { catalog: true } lists every piece that can be placed (type, size, rules), room types, floors, walls, bay roles, lines and line edits; { look: a room name, or true for the whole station } shows you the station as it really renders (a picture, when you can see images): look after you build, judge it as a designer, and refit what is not right. Then plan with station.plan. Read-only; needs an open station page.',
+      description: 'FARM BUILDER, step 1: see the farm floor before you build on it. Every room with its position and size in tiles, its type, what it is joined to (through paths, or open to it), its machines, furniture and lines, how much floor is clear, which sizes of new room fit on each side, the floor drawn in characters (a letter per room, + for a path; north is the top), and every path by name with what it joins (halls; one marked leadsNowhere leads to fewer than two rooms). '
+        + 'The room marked main is the one the farm started from; the Farmer may call it the bridge, the hub or the main room. '
+        + 'For your own design: { room: a name } details that room tile by tile (every piece with its id, type, place and size, and each machine\'s settings: agent, role, instructions, hand-off, budget, routes, loop and joiner rules, folder, bound service; its belts; its doorways; the room drawn); { catalog: true } lists every piece that can be placed (type, size, rules), room types, floors, walls, bay roles, lines and line edits; { look: a room name, or true for the whole farm } shows you the farm as it really renders (a picture, when you can see images): look after you build, judge it as a designer, and refit what is not right. Then plan with station.plan. Read-only; needs an open farm page.',
       schema: { type: 'object', properties: { room: { type: 'string' }, catalog: { type: 'boolean' }, look: {} } },
       run: async (args) => {
         const a = args && typeof args === 'object' ? args : {}, q = {};
         if (a.look != null && a.look !== false && a.look !== '') {
-          const look = a.look === true || /^(true|station|all|everything|the station|whole|the whole station)$/i.test(String(a.look).trim()) ? true : String(a.look).slice(0, 60);
+          const look = a.look === true || /^(true|station|farm|all|everything|the station|the farm|whole|the whole station|the whole farm)$/i.test(String(a.look).trim()) ? true : String(a.look).slice(0, 60);
           const out = await ask('station.map', { look });
           if (!out.ok) return refuse(out.error);
           const v = out.result || {};
-          if (typeof v.data !== 'string' || !v.data || !/^image\/(webp|jpeg|png)$/.test(String(v.mime))) return refuse('The page sent no picture of ' + (look === true ? 'the station' : look) + '.');
+          if (typeof v.data !== 'string' || !v.data || !/^image\/(webp|jpeg|png)$/.test(String(v.mime))) return refuse('The page sent no picture of ' + (look === true ? 'the farm' : look) + '.');
           const note = 'A picture of ' + v.look + ' as it renders now (' + v.width + ' x ' + v.height + ' px' + (v.shows ? '; it shows tiles x ' + v.shows.x1 + '-' + v.shows.x2 + ', y ' + v.shows.y1 + '-' + v.shows.y2 + ' with the wall faces above, about ' + v.tilePx + ' px a tile' : '') + '). '
             + 'Judge it as a designer: balance, walkways, doorways clear, empty or crowded floor, pieces that clash. If you cannot see images, use station.map { room } for the same room tile by tile.'
-            + (Array.isArray(v.issues) ? (v.issues.length ? ' Issues StarNet sees in this room (fix every one): ' + v.issues.join(' ') : ' The checks StarNet runs (desk seats, what each seat faces) find nothing; judge the rest by eye.') : ' For detail (chairs, desks, what faces what), look at one room at a time: the whole station is for its shape.');
+            + (Array.isArray(v.issues) ? (v.issues.length ? ' Issues Homestead sees in this room (fix every one): ' + v.issues.join(' ') : ' The checks Homestead runs (desk seats, what each seat faces) find nothing; judge the rest by eye.') : ' For detail (chairs, desks, what faces what), look at one room at a time: the whole farm is for its shape.');
           return { content: note, summary: 'looked at ' + v.look, images: [{ mime: v.mime, data: v.data }], control: { revealTools: BUILDER } };
         }
         if (a.room != null) q.room = String(a.room).slice(0, 60);
@@ -438,7 +438,7 @@
       }
     };
     /* ONE PLANNER: the form of the request says what kind of change it is, and the page's own planner for that kind answers */
-    const PLAN_HOW = 'Send one form: { refit: [ edits ] } (your own design, on exact tiles), { layout: { pattern, rooms } } (a whole station), { rooms, hallways } (rooms where the Commander says), { line | shape | purpose } (one workflow line), { kit | preset } (a furnished room or a preset), { zones } (one room part by part), { restyle: { room, … } }, or an edit of what stands ({ remove }, { refurnish }, { clear }).';
+    const PLAN_HOW = 'Send one form: { refit: [ edits ] } (your own design, on exact tiles), { layout: { pattern, rooms } } (a whole farm), { rooms, paths } (rooms where the Farmer says), { line | shape | purpose } (one workflow line), { kit | preset } (a furnished room or a preset), { zones } (one room part by part), { restyle: { room, … } }, or an edit of what stands ({ remove }, { refurnish }, { clear }).';
     function planVerb(a) {
       const has = k => a[k] !== undefined && a[k] !== null;
       if (has('restyle')) return Object.keys(a).length === 1 ? { verb: 'station.plan_restyle', request: a.restyle } : { error: 'restyle goes on its own: { restyle: { room, type, floorStyle, floorMat, name } }.' };
@@ -463,28 +463,28 @@
     const planTool = {
       name: 'station.plan', capability: 'orchestrator', scope: 'read', requiresConsent: false,
       get description() {
-        return 'STATION BUILDER, step 2: plan a change to the station floor (rooms, furniture, conveyor and assembly lines). You are the station\'s designer: the Commander\'s words are the brief, and the design is yours to decide (where each room goes, its shape and size, how rooms join, where every piece stands and which way it faces), as freely as the Commander can in Refit mode. A plan is built on a copy and checked against the station\'s own rules (walls, doorways, what stands on what); nothing changes until station.build. Two ways to work, mixed freely: design it yourself, tile by tile, or use a shortcut and let StarNet place things. '
-          + 'RESHAPE THE WHOLE STATION (spread it out, a wider or better shape, rooms re-oriented, more hallways joining things up): { rearrange: "diamond" } re-lays every room where it stands, with everything in it (furniture, lines, desks, agents), on the diamond grid round the main room (wide by default; { rearrange: { shape: "tall" | "even", links: false } }), takes up every old hallway and lays clean ones, planted and lit, joining neighbouring rooms. Never reshape a station by moving rooms one by one and drawing corridors by hand: a moved room leaves its hallways behind, and a refit that leaves a hallway leading nowhere is refused. '
-          + 'DESIGN IT YOURSELF with a REFIT: { refit: [ edits ] }, the Commander\'s own Refit-mode tools on exact tiles, as many edits as the design needs (up to 1500 in one plan), applied in order, one approval, one undo. Read before you design: station.map (the floor), station.map { room } (every piece\'s id, type, place, size; belts; doorways; the room drawn) and station.map { catalog: true } (every piece type and size, room types, floors, walls, bay roles, lines, line edits). Tiles are world x, y (x east, y south; a piece\'s x, y is its top-left). Edits: '
+        return 'FARM BUILDER, step 2: plan a change to the farm floor (rooms, furniture, conveyor and assembly lines). You are the farm\'s designer: the Farmer\'s words are the brief, and the design is yours to decide (where each room goes, its shape and size, how rooms join, where every piece stands and which way it faces), as freely as the Farmer can in Refit mode. A plan is built on a copy and checked against the farm\'s own rules (walls, doorways, what stands on what); nothing changes until station.build. Two ways to work, mixed freely: design it yourself, tile by tile, or use a shortcut and let Homestead place things. '
+          + 'RESHAPE THE WHOLE FARM (spread it out, a wider or better shape, rooms re-oriented, more paths joining things up): { rearrange: "diamond" } re-lays every room where it stands, with everything in it (furniture, lines, desks, agents), on the diamond grid round the main room (wide by default; { rearrange: { shape: "tall" | "even", links: false } }), takes up every old path and lays clean ones, planted and lit, joining neighbouring rooms. Never reshape a farm by moving rooms one by one and drawing paths by hand: a moved room leaves its paths behind, and a refit that leaves a path leading nowhere is refused. '
+          + 'DESIGN IT YOURSELF with a REFIT: { refit: [ edits ] }, the Farmer\'s own Refit-mode tools on exact tiles, as many edits as the design needs (up to 1500 in one plan), applied in order, one approval, one undo. Read before you design: station.map (the floor), station.map { room } (every piece\'s id, type, place, size; belts; doorways; the room drawn) and station.map { catalog: true } (every piece type and size, room types, floors, walls, bay roles, lines, line edits). Tiles are world x, y (x east, y south; a piece\'s x, y is its top-left). Edits: '
           + '{ op: "room", name, kind, x, y, w, h } (or rects: [ {x, y, w, h}, … ] for an L or U; kind hab, bridge, lab, factory, quarters, storage) · { op: "hall", x, y, w, h } (one straight run, 1-3 wide; several make any route) · { op: "resize", room, x, y, w, h } · { op: "move", room, x, y } · { op: "delete", room | hall | prop } (a hall by the name station.map or a refusal gives it) · { op: "rename", room, name } · { op: "type", room, kind } · { op: "floor" | "walls" | "hull", room, style, mat } · { op: "paint", room, style, tiles: [[x, y], …] } · { op: "style", room, style } (furnish in a room style) · '
           + '{ op: "place", t, x, y, toward | r, m, as } (any piece or machine: intake, bay, filter, merger, splitter, joiner, loop, outbox; toward: the piece or tile it faces, and the builder turns it, so give every chair, sofa and seat toward its table, desk or screen (a seat set right beside a table or desk with no toward is turned to face it; a left/right pair such as recliner, which faces west, and recliner_r, east, takes toward too and the builder picks the one that faces that way); r 0 faces south, 1 west, 2 north, 3 east; m: 1 flips; as names it for later edits; a desk or any workstation draws its OWN chair when an agent works it, so never place a chair at a desk) · { op: "move", prop, x, y } · { op: "rotate", prop, toward | r } · { op: "mirror", prop } · { op: "delete", prop } · { op: "agent", prop, agent } · { op: "door", prop, state } · '
-          + '{ op: "belt", from: [x, y], to: [x, y] } (a straight run) · { op: "unbelt", tiles } · { op: "connect", from: prop, to: prop } (belts one machine into the next) · SET A LINE UP (everything the Workflow panel sets): { op: "role" | "brief" | "label", prop, role | text } (a step\'s role, its instructions, the line\'s name) · { op: "hands", prop: a bay, text } (what that step hands on) · { op: "budget", prop: any machine on the line, stages, perJob, perDay } (null = the default) · { op: "loop", prop: a loop, passes, until: approved | revise | code | research | general, done, escalate } (done, escalate: the side work leaves by) · { op: "wait", prop: a joiner, minutes } · { op: "swap", prop: a joiner or a merger } (a joiner waits for every branch, so the splitter copies to each; a merger takes them as they come, so the branches take turns) · { op: "routes", prop: a filter, routes: { code | research | general: side }, def } · { op: "folder", prop, project: one of the Commander\'s trusted projects, or null } · { op: "bind", prop: a connector portal or a plugin terminal, connector | plugin: its name } (its room\'s agents get that service\'s tools) · sides are north, east, south, west · { op: "stamp", line, x, y } (a shelf line at an exact spot) · { op: "edit", prop, edit, args } (the Workflow panel\'s own line edits on the line that prop is on: insertStep { from, to, role }, appendStep { after, role }, addBranch, addLoop, addSorter, addRoute, removeStep { id }, moveStep, tidy, addOutbox …). '
+          + '{ op: "belt", from: [x, y], to: [x, y] } (a straight run) · { op: "unbelt", tiles } · { op: "connect", from: prop, to: prop } (belts one machine into the next) · SET A LINE UP (everything the Workflow panel sets): { op: "role" | "brief" | "label", prop, role | text } (a step\'s role, its instructions, the line\'s name) · { op: "hands", prop: a bay, text } (what that step hands on) · { op: "budget", prop: any machine on the line, stages, perJob, perDay } (null = the default) · { op: "loop", prop: a loop, passes, until: approved | revise | code | research | general, done, escalate } (done, escalate: the side work leaves by) · { op: "wait", prop: a joiner, minutes } · { op: "swap", prop: a joiner or a merger } (a joiner waits for every branch, so the splitter copies to each; a merger takes them as they come, so the branches take turns) · { op: "routes", prop: a filter, routes: { code | research | general: side }, def } · { op: "folder", prop, project: one of the Farmer\'s trusted projects, or null } · { op: "bind", prop: a connector portal or a plugin terminal, connector | plugin: its name } (its room\'s agents get that service\'s tools) · sides are north, east, south, west · { op: "stamp", line, x, y } (a shelf line at an exact spot) · { op: "edit", prop, edit, args } (the Workflow panel\'s own line edits on the line that prop is on: insertStep { from, to, role }, appendStep { after, role }, addBranch, addLoop, addSorter, addRoute, removeStep { id }, moveStep, tidy, addOutbox …). '
           + 'prop is an id from station.map { room }, a name given with as, or a tile [x, y]; room is a name or an as. The first edit that fails refuses the plan and names it with Refit mode\'s reason: fix that edit and plan again. '
-          + 'A piece the catalog does not have: station.make_prop makes it with the Commander\'s StarNet credits; then place it by its id. '
+          + 'A piece the catalog does not have: station.make_prop makes it with the Farmer\'s StarNet credits; then place it by its id. '
           + 'LINE OPERATIONS: { op: "send", from: an OUTBOX, to: another line\'s INBOX | null } sets or clears SEND TO; connect OUTBOX to INBOX does the same, never a belt. Lay both lines before sending. It hands every finished job onward using the target line\'s own crew and budget. { op: "copy", line: a line name (or prop: any machine on it), x, y, turn: 0..3, as } copies the line near those tiles, with crew, settings and instructions; it does not copy its project folder, triggers or outward SEND TO. { op: "delete", line } removes the whole line; the plan names incoming SEND TOs that will stop. '
-          + 'LOOK at your work: after station.build, station.map { look: the room } shows it as it really renders, and station.map { room } lists the issues a designer would fix (a piece on a desk\'s seat, a seat turned away from its table): read them and fix every one. If it is not right yet (crowded, bare, lopsided, a doorway or walkway blocked, pieces that clash; for the whole station: hallways that overlap, run side by side, end in nothing or wander, rooms piled together or stranded), fix it; a design is finished when it looks finished. TEST a line you built or set up: station.test_line sends one real job down it and reads each step back; fix what went wrong and test again. station.start_line sets what starts it (a schedule, a folder, a webhook). A good station: every room reached by a hallway or open to a neighbour, doorways and walkways clear, each room furnished for what it is for, lines with room to run, nothing piled up. '
-          + 'SHORTCUTS, when StarNet should place things for you (quick, and right when the Commander just wants it done; refit the result by hand afterwards if you want it your way): ' + PLAN_HOW + ' '
-          + '1 LAYOUT, the way to a beautiful station: { "layout": { "pattern": "diamond" | "concourse", "rooms": [ { "name", "style", "size", "lines" } ] }, "replace": true? }. diamond (the usual one) = every room on an even grid all round the main room, each the bridge\'s size and a hallway apart, filled in diamond order (the four sides, then the corners and far sides, then the next ring out) so the station keeps its shape at any size, with a corridor loop round the bridge at its centre; big rooms (a conveyor hall, size giant) take the east and west wings; up to 40 rooms. To ADD rooms later, send a layout again with only the new rooms: they take the next free places of the same diamond, or go down the same concourse. concourse = a wide corridor from one side of the main room, rooms down both sides, a big room at the far end (up to 24; "side" picks the direction). '
-          + 'Each room is furnished wall to wall in its style (floor, walls, feature wall, centrepiece, plants) and the corridors are planted and lit. Room styles: ' + roomText() + '. A room given lines is a conveyor hall (works); a works room without lines is kept clear for lines to come. '
-          + 'replace: true lays the whole station out again around the main room: every other room is replaced, the main room, agents and conversations stay, and the old layout is backed up for RESTORE PREVIOUS. Use it when the Commander wants the station redone, or when there is no clear space round the main room. '
-          + '2 ROOMS where the Commander says: { "rooms": [ { name, style | zones | lines, size, beside, side, hallway, align, type } or { into: an existing room, style | zones | lines } ], "hallways": [ { from, to } ] } (straight, or round one corner when the rooms stand diagonally apart). size: small 12×8, medium 18×11, large 24×14, giant 36×20, or { w, h }. beside: a room name ("bridge" or "main" = the main room); side: north, south, east, west; hallway: true (default), false (open plan) or 2-8 long. With no beside or side, a new room takes the station\'s next free place (on the diamond grid, or down its concourse), at its size; a conveyor hall is giant unless sized.'
-          + '3 ONE LINE: { line | shape | purpose, where, beside, side, hallway, name, steps, dailyCap, tries }; with no where it goes into a conveyor hall that has room for it, else a room of its own on the grid, and lines sharing a room stand in rows with walkways between. LINES: ' + menuText() + '. shape = stages in order: a role ("RESEARCHER"), { together: [roles] }, { turns: [roles] }, { sort: { code: role, research: role } }, { review: true, tries: 3 }. steps (or a line\'s staff): [ { "step": 1, "agent": "lead", "instructions": "…" } ] (step = the step\'s NUMBER in run order), agent = a crew name or "lead"; "new" recruits a new specialist ONLY when the Commander asks for new crew (each gets a desk by its line); otherwise leave agent out and the card lists the step as still to do. '
-          + '4 { kit | preset, replace, where, name }: KITS ' + kitText() + '; PRESETS ' + presetText() + ' (replace: true swaps the whole station for the preset). '
+          + 'LOOK at your work: after station.build, station.map { look: the room } shows it as it really renders, and station.map { room } lists the issues a designer would fix (a piece on a desk\'s seat, a seat turned away from its table): read them and fix every one. If it is not right yet (crowded, bare, lopsided, a doorway or walkway blocked, pieces that clash; for the whole farm: paths that overlap, run side by side, end in nothing or wander, rooms piled together or stranded), fix it; a design is finished when it looks finished. TEST a line you built or set up: station.test_line sends one real job down it and reads each step back; fix what went wrong and test again. station.start_line sets what starts it (a schedule, a folder, a webhook). A good farm: every room reached by a path or open to a neighbour, doorways and walkways clear, each room furnished for what it is for, lines with room to run, nothing piled up. '
+          + 'SHORTCUTS, when Homestead should place things for you (quick, and right when the Farmer just wants it done; refit the result by hand afterwards if you want it your way): ' + PLAN_HOW + ' '
+          + '1 LAYOUT, the way to a beautiful farm: { "layout": { "pattern": "diamond" | "concourse", "rooms": [ { "name", "style", "size", "lines" } ] }, "replace": true? }. diamond (the usual one) = every room on an even grid all round the main room, each the bridge\'s size and a path apart, filled in diamond order (the four sides, then the corners and far sides, then the next ring out) so the farm keeps its shape at any size, with a path loop round the bridge at its centre; big rooms (a conveyor hall, size giant) take the east and west wings; up to 40 rooms. To ADD rooms later, send a layout again with only the new rooms: they take the next free places of the same diamond, or go down the same concourse. concourse = a wide path from one side of the main room, rooms down both sides, a big room at the far end (up to 24; "side" picks the direction). '
+          + 'Each room is furnished wall to wall in its style (floor, walls, feature wall, centrepiece, plants) and the paths are planted and lit. Room styles: ' + roomText() + '. A room given lines is a conveyor hall (works); a works room without lines is kept clear for lines to come. '
+          + 'replace: true lays the whole farm out again around the main room: every other room is replaced, the main room, agents and conversations stay, and the old layout is backed up for RESTORE PREVIOUS. Use it when the Farmer wants the farm redone, or when there is no clear space round the main room. '
+          + '2 ROOMS where the Farmer says: { "rooms": [ { name, style | zones | lines, size, beside, side, path, align, type } or { into: an existing room, style | zones | lines } ], "paths": [ { from, to } ] } (straight, or round one corner when the rooms stand diagonally apart). size: small 12×8, medium 18×11, large 24×14, giant 36×20, or { w, h }. beside: a room name ("bridge" or "main" = the main room); side: north, south, east, west; path: true (default), false (open plan) or 2-8 long. With no beside or side, a new room takes the farm\'s next free place (on the diamond grid, or down its concourse), at its size; a conveyor hall is giant unless sized.'
+          + '3 ONE LINE: { line | shape | purpose, where, beside, side, path, name, steps, dailyCap, tries }; with no where it goes into a conveyor hall that has room for it, else a room of its own on the grid, and lines sharing a room stand in rows with walkways between. LINES: ' + menuText() + '. shape = stages in order: a role ("RESEARCHER"), { together: [roles] }, { turns: [roles] }, { sort: { code: role, research: role } }, { review: true, tries: 3 }. steps (or a line\'s staff): [ { "step": 1, "agent": "lead", "instructions": "…" } ] (step = the step\'s NUMBER in run order), agent = a crew name or "lead"; "new" recruits a new specialist ONLY when the Farmer asks for new crew (each gets a desk by its line); otherwise leave agent out and the card lists the step as still to do. '
+          + '4 { kit | preset, replace, where, name }: KITS ' + kitText() + '; PRESETS ' + presetText() + ' (replace: true swaps the whole farm for the preset). '
           + '5 { zones: [ { area, style } | { area, line | purpose | shape, … } ], where, name, size, beside, side }: area left, right, back, front, back-left, back-right, front-left, front-right or whole; zone styles ' + styleText() + '. '
           + '6 { restyle: { room, type, floorStyle, floorMat, name } } changes a floor or a name only. '
-          + '7 EDIT what stands, one edit a plan: { add: { room, pieces: ["a tv", "three plants", "a sofa"] } } places named pieces (any catalog piece, or a prop the Commander made, by its name) against the walls or on the open floor, clear of doorways and lines; { remove: { room, pieces } } takes named pieces out ("all plants" too); { remove: { line, room? } } takes one workflow line out; { remove: a room or [rooms] } takes rooms out with everything in them and the hallways left joining nothing (agents keep a desk; the main room stays); { refurnish: { room, style, name } } clears a room\'s furniture and furnishes it in another style, floor and walls too ("turn the gym into a library"); { clear: a room } empties its furniture; { seat: { agent, room } } moves an agent\'s desk into a room; { move: { room, beside, side } } moves a room with everything in it; { staff: { line, steps: [ { step, agent, instructions } ] } } restaffs an existing line (agent "nobody" clears a step). To resize or reshape a room, refit it ({ op: "resize" }, or { op: "room" } with rects). '
+          + '7 EDIT what stands, one edit a plan: { add: { room, pieces: ["a tv", "three plants", "a sofa"] } } places named pieces (any catalog piece, or a prop the Farmer made, by its name) against the walls or on the open floor, clear of doorways and lines; { remove: { room, pieces } } takes named pieces out ("all plants" too); { remove: { line, room? } } takes one workflow line out; { remove: a room or [rooms] } takes rooms out with everything in them and the paths left joining nothing (agents keep a desk; the main room stays); { refurnish: { room, style, name } } clears a room\'s furniture and furnishes it in another style, floor and walls too ("turn the gym into a library"); { clear: a room } empties its furniture; { seat: { agent, room } } moves an agent\'s desk into a room; { move: { room, beside, side } } moves a room with everything in it; { staff: { line, steps: [ { step, agent, instructions } ] } } restaffs an existing line (agent "nobody" clears a step). To resize or reshape a room, refit it ({ op: "resize" }, or { op: "room" } with rects). '
           + '8 { undo: true } takes back the lead\'s own last build ("no, undo that"), only while nothing has changed since; repeat it to go back further. '
-          + 'It answers a planId and a plain summary: tell the Commander the summary, then call station.build with the planId. If it refuses it says why and what does fit: fix the request and plan again. Never give up after one refusal, and never say something was built that station.build did not report.';
+          + 'It answers a planId and a plain summary: tell the Farmer the summary, then call station.build with the planId. If it refuses it says why and what does fit: fix the request and plan again. Never give up after one refusal, and never say something was built that station.build did not report.';
       },
       // a step's NUMBER is typed so the harness's own argument check says it first; null on its other fields means "leave it out",
       // as the builder has always taken it (a model sends agent: null for a step nobody works yet)
@@ -506,7 +506,7 @@
         remember(p);
         const rooms = (p.rooms || []).map(r => r.name).join(', '), h = (p.hallways || []).length;
         const what = route.verb === 'station.plan_line' ? ((p.line && p.line.name) || 'a line') + (p.ready ? ' (ready once built)' : ' (' + ((p.blocking || []).length) + ' to do)')
-          : route.verb === 'station.plan_restyle' ? 'a restyle' : route.verb === 'station.plan_edit' ? 'an edit' : route.verb === 'station.plan_undo' ? 'an undo' : (rooms || 'a build') + (h ? ' + ' + h + ' hallway' + (h > 1 ? 's' : '') : '');
+          : route.verb === 'station.plan_restyle' ? 'a restyle' : route.verb === 'station.plan_edit' ? 'an edit' : route.verb === 'station.plan_undo' ? 'an undo' : (rooms || 'a build') + (h ? ' + ' + h + ' path' + (h > 1 ? 's' : '') : '');
         return { content: JSON.stringify(p), summary: 'planned ' + what, control: { revealTools: BUILDER } };
       }
     };
@@ -514,8 +514,8 @@
       name: 'station.build', capability: 'orchestrator', scope: 'write', requiresConsent: true,
       // briefs persist and every later run of those Bays obeys them: a run that read untrusted content may not write them
       taintLocked: true,
-      description: 'STATION BUILDER, step 3: build exactly what station.plan planned, by its planId, after the Commander approves. It lands as one step the Commander can take back with one UNDO in Build mode; '
-        + 'nothing already on the station is moved or removed except what the plan said (an edit names everything it moves or takes out; replace: true, a preset swap or a whole new layout, backs the old layout up for RESTORE PREVIOUS). It refuses if the plan expired (ten minutes), was already used, or the station changed since the plan: then plan again. Afterwards, report what it says is still missing, exactly.',
+      description: 'FARM BUILDER, step 3: build exactly what station.plan planned, by its planId, after the Farmer approves. It lands as one step the Farmer can take back with one UNDO in Build mode; '
+        + 'nothing already on the farm is moved or removed except what the plan said (an edit names everything it moves or takes out; replace: true, a preset swap or a whole new layout, backs the old layout up for RESTORE PREVIOUS). It refuses if the plan expired (ten minutes), was already used, or the farm changed since the plan: then plan again. Afterwards, report what it says is still missing, exactly.',
       schema: { type: 'object', properties: { planId: { type: 'string' } }, required: ['planId'] },
       run: async (args) => {
         const planId = String((args && args.planId) || '').trim().slice(0, 60);
@@ -524,7 +524,7 @@
         if (!out.ok) return refuse(out.error);
         planMemo.delete(planId);
         const r = out.result || {};
-        const what = (r.line && r.line.name) || (r.rooms || []).map(x => x.name).join(', ') || ((r.hallways || []).length ? 'a hallway' : r.where || 'the plan');
+        const what = (r.line && r.line.name) || (r.rooms || []).map(x => x.name).join(', ') || ((r.hallways || []).length ? 'a path' : r.where || 'the plan');
         /* DONE, said as DONE (rc walk 10-14, A3): the receipt tells the model the job is finished, so it reports and stops instead of
            reaching for more tools (the walk's lead, out of plans, made a loop nobody asked for). The receipt's own readiness decides
            the words: ready, or exactly what is still to do — never more than it proves. */
@@ -538,11 +538,11 @@
         /* only crew is missing (the third live re-run staffed a built line through guessed ids, a map, a plan and a second card):
            the one form that staffs a line by its own name and step numbers, for when the Commander said who works them */
         const short = lines.filter(l => (l.blocking || []).length), crewOnly = left.length && short.length && !(r.loose || []).length && short.every(l => (l.label || l.name) && l.blocking.every(b => /needs an agent/i.test(b)));
-        const staff = crewOnly ? ' If the Commander said who works those steps, staff ' + (short.length > 1 ? 'each line in its own plan' : 'them in one plan') + ': station.plan { "staff": { "line": ' + JSON.stringify(String(short[0].label || short[0].name)) + ', "steps": [ { "step": 1, "agent": "a crew name" } ] } }, then station.build; otherwise tell the Commander exactly that, and stop.' : '';
+        const staff = crewOnly ? ' If the Farmer said who works those steps, staff ' + (short.length > 1 ? 'each line in its own plan' : 'them in one plan') + ': station.plan { "staff": { "line": ' + JSON.stringify(String(short[0].label || short[0].name)) + ', "steps": [ { "step": 1, "agent": "a crew name" } ] } }, then station.build; otherwise tell the Farmer exactly that, and stop.' : '';
         // a refit that laid the line by hand fixes what it left; a design laid by hand keeps its one look (the planner's LOOK at your work)
-        const fix = r.kind === 'refit' ? ' Fix that with one more refit plan and build it; if you cannot, tell the Commander exactly what is left, and stop.' : ' Tell the Commander exactly that, and stop: build nothing else for this unless they ask.';
-        const look = r.handLaid ? 'You laid pieces by hand: look at the room once (station.map { look: the room }) and fix only what is wrong; then tell the Commander what was built in a sentence or two, and stop.'
-          : 'Tell the Commander what was built in a sentence or two, and stop: there is nothing left to build or check for this.';
+        const fix = r.kind === 'refit' ? ' Fix that with one more refit plan and build it; if you cannot, tell the Farmer exactly what is left, and stop.' : ' Tell the Farmer exactly that, and stop: build nothing else for this unless they ask.';
+        const look = r.handLaid ? 'You laid pieces by hand: look at the room once (station.map { look: the room }) and fix only what is wrong; then tell the Farmer what was built in a sentence or two, and stop.'
+          : 'Tell the Farmer what was built in a sentence or two, and stop: there is nothing left to build or check for this.';
         if (r.built) r.next = 'DONE: it is built' + (left.length ? '. Still to do before it runs: ' + left.join('; ').replace(/\.$/, '') + '.' + (staff || fix) : (lines.length ? ' and ready to run' : '') + '. ' + look);
         const ready = lines.length && !left.length;
         return { content: JSON.stringify(r), summary: 'built ' + what + (lines.length || left.length ? (ready ? ' · ready to run' : ' · ' + left.length + ' to do') : '') };
@@ -573,20 +573,20 @@
       name: 'station.make_prop', capability: 'orchestrator', scope: 'write', requiresConsent: true,
       // it spends the Commander's StarNet credits: a run that read untrusted content may not
       taintLocked: true, timeoutMs: PROP_WAIT_MS + 60000,
-      description: 'STATION BUILDER: make a NEW piece of furniture when no catalog piece is what the Commander wants (a hot-dog stand, a robot butler, a neon arcade sign), with the Commander\'s StarNet credits. StarNet\'s prop maker draws it in the station\'s own style; it joins the Commander\'s MADE BY YOU library and then places like any piece: station.plan { add: { room, pieces: ["its name"] } } or a refit { op: "place", t: "its id" }. '
-        + 'It costs StarNet credits (about $0.35 a prop; sideView: true adds about $0.30 for the side view it turns with), needs this station linked to StarNet credits, and asks the Commander first. Look in station.map { catalog: true } first: props already made show as yours, and cost nothing to place again. describe is the object in a few words (under 60 characters). It waits while the prop is drawn (a minute or two) and answers its name and id; if StarNet is still drawing when the wait ends, it says so and the prop appears in MADE BY YOU when it lands.',
+      description: 'FARM BUILDER: make a NEW piece of furniture when no catalog piece is what the Farmer wants (a hot-dog stand, a robot butler, a neon arcade sign), with the Farmer\'s StarNet credits. Homestead\'s prop maker draws it in the farm\'s own style; it joins the Farmer\'s MADE BY YOU library and then places like any piece: station.plan { add: { room, pieces: ["its name"] } } or a refit { op: "place", t: "its id" }. '
+        + 'It costs StarNet credits (about $0.35 a prop; sideView: true adds about $0.30 for the side view it turns with), needs this farm linked to StarNet credits, and asks the Farmer first. Look in station.map { catalog: true } first: props already made show as yours, and cost nothing to place again. describe is the object in a few words (under 60 characters). It waits while the prop is drawn (a minute or two) and answers its name and id; if Homestead is still drawing when the wait ends, it says so and the prop appears in MADE BY YOU when it lands.',
       schema: { type: 'object', properties: { describe: { type: 'string' }, sideView: { type: 'boolean' } }, required: ['describe'] },
       run: async (args, ctx) => {
-        if (!userProps) return refuse('Making props is not available on this station.');
+        if (!userProps) return refuse('Making props is not available on this farm.');
         const a = args && typeof args === 'object' ? args : {};
         const noun = String(a.describe == null ? '' : a.describe).replace(/\s+/g, ' ').trim();
         const signal = ctx && ctx.signal;
         const r = await userProps.start(noun);
-        if (!r || !r.ok) return refuse((r && r.message) || 'StarNet could not start that prop.');
+        if (!r || !r.ok) return refuse((r && r.message) || 'Homestead could not start that prop.');
         const left = { ticks: Math.ceil(PROP_WAIT_MS / PROP_TICK_MS) };
         const j = await waitJob(r.job.id, signal, left);
-        if (j.status === 'failed') return refuse('StarNet could not make "' + noun + '": ' + ((j.error && j.error.message) || 'it failed') + (Number(j.costUsd) > 0 ? ' (' + '$' + Number(j.costUsd).toFixed(2) + ' was spent on the tries)' : ''));
-        if (j.status !== 'done' || !j.propId) return { content: JSON.stringify({ made: false, stillDrawing: true, jobId: r.job.id, note: 'StarNet is still drawing it. It appears in the MADE BY YOU library when it lands; place it then by its name.' }), summary: 'still drawing ' + noun };
+        if (j.status === 'failed') return refuse('Homestead could not make "' + noun + '": ' + ((j.error && j.error.message) || 'it failed') + (Number(j.costUsd) > 0 ? ' (' + '$' + Number(j.costUsd).toFixed(2) + ' was spent on the tries)' : ''));
+        if (j.status !== 'done' || !j.propId) return { content: JSON.stringify({ made: false, stillDrawing: true, jobId: r.job.id, note: 'Homestead is still drawing it. It appears in the MADE BY YOU library when it lands; place it then by its name.' }), summary: 'still drawing ' + noun };
         const entry = (userProps.list() || []).find(p => p.id === j.propId) || { id: j.propId, label: noun.toUpperCase() };
         let cost = Number(j.costUsd) || Number(entry.costUsd) || 0, side = false, sideNote = null;
         if (a.sideView && entry.symmetric) sideNote = 'it is round, so it turns with its own front view (no side view needed)';
@@ -601,7 +601,7 @@
         const out = { made: true, id: entry.id, name: String(entry.label || '').toLowerCase(), footprint: entry.footprint || null, costUsd: Math.round(cost * 100) / 100, sideView: side, onPage: loaded,
           place: 'station.plan { add: { room, pieces: ["' + String(entry.label || '').toLowerCase() + '"] } } or a refit { op: "place", t: "' + entry.id + '", x, y' + (side ? ', r' : '') + ' }' };
         if (sideNote) out.sideNote = sideNote;
-        if (!loaded) out.note = 'The station page did not load it yet (is it open?). It is in MADE BY YOU; reopen the page, then place it.';
+        if (!loaded) out.note = 'The farm page did not load it yet (is it open?). It is in MADE BY YOU; reopen the page, then place it.';
         return { content: JSON.stringify(out), summary: 'made ' + out.name + ' ($' + out.costUsd.toFixed(2) + ')', control: { revealTools: BUILDER } };
       }
     };
@@ -618,11 +618,11 @@
       name: 'station.test_line', capability: 'orchestrator', scope: 'write', requiresConsent: true,
       // it runs the line's agents on a job the lead wrote: a run that read untrusted content may not start one
       taintLocked: true, timeoutMs: TEST_WAIT_MS + 60000,
-      description: 'STATION BUILDER: send one real test job down a workflow line and read what came of it: which steps ran and how each ended, what the line delivered, what it cost. It is the very job the Workflow panel\'s SEND A JOB sends (one at a time on the station), so it runs the line\'s agents, spends what they spend, and asks the Commander first. If its OUTBOX has SEND TO, the downstream line also runs the result at its own cost; the reported cost covers only the tested line. '
-        + 'line is the line\'s name (or the id of any machine on it, from station.map { room }); room helps when two lines share a name; job is the work to send, written the way a real job would arrive. Use it after you build or set a line up: if a step failed, went the wrong way or handed on the wrong thing, fix the line with a refit (brief, hands, routes, loop, budget …) and test again. It waits for the job (up to 20 minutes). A step refused a permission (a page fetch, a file write) needs the Commander\'s grant: say which agent needs what and how they grant it, never change an agent\'s approval or permissions yourself, and never reach around the station\'s controls (a shell, a browser debug port, the page itself) to get a job through.',
+      description: 'FARM BUILDER: send one real test job down a workflow line and read what came of it: which steps ran and how each ended, what the line delivered, what it cost. It is the very job the Workflow panel\'s SEND A JOB sends (one at a time on the farm), so it runs the line\'s agents, spends what they spend, and asks the Farmer first. If its OUTBOX has SEND TO, the downstream line also runs the result at its own cost; the reported cost covers only the tested line. '
+        + 'line is the line\'s name (or the id of any machine on it, from station.map { room }); room helps when two lines share a name; job is the work to send, written the way a real job would arrive. Use it after you build or set a line up: if a step failed, went the wrong way or handed on the wrong thing, fix the line with a refit (brief, hands, routes, loop, budget …) and test again. It waits for the job (up to 20 minutes). A step refused a permission (a page fetch, a file write) needs the Farmer\'s grant: say which agent needs what and how they grant it, never change an agent\'s approval or permissions yourself, and never reach around the farm\'s controls (a shell, a browser debug port, the page itself) to get a job through.',
       schema: { type: 'object', properties: { line: { type: 'string' }, job: { type: 'string' }, room: { type: 'string' } }, required: ['line', 'job'] },
       run: async (args, ctx) => {
-        if (!runLineJob) return refuse('Testing lines is not available on this station.');
+        if (!runLineJob) return refuse('Testing lines is not available on this farm.');
         const a = args && typeof args === 'object' ? args : {};
         const job = String(a.job == null ? '' : a.job).replace(/\r/g, '').trim();
         if (!job) return refuse('job is the work to send down the line, in a sentence or two, the way a real job would arrive.');
@@ -645,7 +645,7 @@
           steps: runs.map((x, i) => ({ step: i + 1, at: stepOf(x), ended: x.reason || 'unknown', usd: typeof x.usd === 'number' ? Math.round(x.usd * 1000) / 1000 : null })),
           // (GitHub #122) the route's own unapproved mark — a publisher after the loop leaves no LOOP note in what was said
           verdict: o.ok ? ((o.unapproved || /LOOP — exhausted/.test(said)) ? 'The job reached the OUTBOX, but its review loop ran out of passes without an approval: the reviewer never said VERDICT: approved. Read what it delivered below; tighten the step it reviews or the reviewer\'s brief, or allow more passes.' : 'The job reached the OUTBOX: read what it delivered below and judge whether the line did the job well.')
-            : o.stopped ? (o.stoppedBy === 'fault' ? 'The station hit an internal fault and stopped the job.' : 'The Commander stopped the job.') : String(o.error || 'The job did not finish').replace(/[.\s]*$/, '.') + ' Look at which step ended badly, fix the line, and test again.',
+            : o.stopped ? (o.stoppedBy === 'fault' ? 'The farm hit an internal fault and stopped the job.' : 'The Farmer stopped the job.') : String(o.error || 'The job did not finish').replace(/[.\s]*$/, '.') + ' Look at which step ended badly, fix the line, and test again.',
           jobId: o.jobId || null
         };
         // Only the durable job link proves that work was sent onward. A configured destination is not a running job.
@@ -689,12 +689,12 @@
       name: 'station.start_line', capability: 'orchestrator', scope: 'write', requiresConsent: true,
       // standing automation in the lead's words: a run that read untrusted content may not set one
       taintLocked: true, timeoutMs: 30000,
-      description: 'STATION BUILDER: set what starts a workflow line, the way its Workflow panel does. { line, schedule: "every weekday at 9am" (or a cron expression), tz, job } runs the whole line on that schedule, from its first step; '
-        + '{ line, folder: a folder path, job } starts it whenever a new file lands there (inside the folders the Commander allows; files already there never fire); { line, webhook: true, job } starts it whenever its webhook is called (the Commander takes its address and key from the line\'s Workflow panel; you never see the key); '
-        + '{ line, off: a trigger id } turns a folder or webhook trigger off (a schedule is a routine: routine.manage pauses or removes it). job is the work it sends down the line each time; maxPerHour caps a trigger. It runs the line\'s agents unattended, within the line\'s budget, so it asks the Commander first. station.layout shows what starts each line now. A line that starts on its own runs with the permissions its agents already have: if a test showed a step refused one, the Commander grants it, never you.',
+      description: 'FARM BUILDER: set what starts a workflow line, the way its Workflow panel does. { line, schedule: "every weekday at 9am" (or a cron expression), tz, job } runs the whole line on that schedule, from its first step; '
+        + '{ line, folder: a folder path, job } starts it whenever a new file lands there (inside the folders the Farmer allows; files already there never fire); { line, webhook: true, job } starts it whenever its webhook is called (the Farmer takes its address and key from the line\'s Workflow panel; you never see the key); '
+        + '{ line, off: a trigger id } turns a folder or webhook trigger off (a schedule is a routine: routine.manage pauses or removes it). job is the work it sends down the line each time; maxPerHour caps a trigger. It runs the line\'s agents unattended, within the line\'s budget, so it asks the Farmer first. station.layout shows what starts each line now. A line that starts on its own runs with the permissions its agents already have: if a test showed a step refused one, the Farmer grants it, never you.',
       schema: { type: 'object', properties: { line: { type: 'string' }, room: { type: 'string' }, schedule: { type: 'string' }, tz: { type: 'string' }, folder: { type: 'string' }, webhook: { type: 'boolean' }, job: { type: 'string' }, maxPerHour: { type: 'integer' }, off: { type: 'string' } }, required: ['line'] },
       run: async (args) => {
-        if (!startLine) return refuse('Starting lines is not available on this station.');
+        if (!startLine) return refuse('Starting lines is not available on this farm.');
         const a = args && typeof args === 'object' ? args : {};
         const kinds = START_KINDS.filter(k => a[k] !== undefined && a[k] !== null && a[k] !== false && a[k] !== '');
         if (kinds.length !== 1) return refuse('Say one start: { schedule }, { folder } or { webhook: true }, each with the job it sends, or { off: a trigger id }.');
@@ -709,9 +709,9 @@
           folder: a.folder != null ? String(a.folder).slice(0, 1024) : undefined, maxPerHour: a.maxPerHour, id: a.off != null ? String(a.off).slice(0, 60) : undefined }); }
         catch (e) { return refuse('The start could not be saved: ' + String((e && e.message) || e).slice(0, 200)); }
         if (!r || !r.ok) return refuse(String((r && r.error) || 'the start was not saved').replace(/[.\s]*$/, '.'));
-        const said = kind === 'schedule' ? 'The line ' + L.name + ' now runs ' + r.when + (r.halted ? ', but automation is stopped (E-STOP): nothing fires until the Commander resumes it' : r.armed ? '' : ', once the Commander turns the scheduler on') + '. Its routine is ' + r.id + ' (routine.manage pauses or removes it).'
+        const said = kind === 'schedule' ? 'The line ' + L.name + ' now runs ' + r.when + (r.halted ? ', but automation is stopped (E-STOP): nothing fires until the Farmer resumes it' : r.armed ? '' : ', once the Farmer turns the scheduler on') + '. Its routine is ' + r.id + ' (routine.manage pauses or removes it).'
           : kind === 'folder' ? 'The line ' + L.name + ' now starts whenever a new file lands in ' + r.path + ' (files already there never fire)' + (r.blockedBy ? '; it is waiting on: ' + r.blockedBy : '') + '. Its trigger is ' + r.id + '.'
-          : kind === 'webhook' ? 'The line ' + L.name + ' now starts whenever its webhook is called. Tell the Commander to open the line\'s Workflow panel and press NEW KEY on this trigger for its address and key (StarNet shows a key once, to the Commander only). Its trigger is ' + r.id + '.'
+          : kind === 'webhook' ? 'The line ' + L.name + ' now starts whenever its webhook is called. Tell the Farmer to open the line\'s Workflow panel and press NEW KEY on this trigger for its address and key (Homestead shows a key once, to the Farmer only). Its trigger is ' + r.id + '.'
           : 'The ' + (r.was || '') + ' trigger ' + r.id + ' on ' + L.name + ' is off.';
         return { content: JSON.stringify({ line: L.name, kind, id: r.id, said }), summary: kind === 'off' ? 'turned off a trigger on ' + L.name : L.name + ' starts ' + (kind === 'schedule' ? r.when : 'from a ' + kind), control: { revealTools: BUILDER } };
       }

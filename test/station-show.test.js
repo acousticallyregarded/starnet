@@ -120,7 +120,7 @@ function boot(opts) {
   for (const p of Places.PLACES) ok(t.description.indexOf(p.id + ' (' + p.words + ')') >= 0, 'the description names ' + p.id + ' in the UI\'s words');
 
   let env = boot(), r = await env.run({ place: 'deliverables' });
-  ok(/^OPEN on the Commander's screen: MY WORK › DELIVERABLES/.test(r.content), 'a window opens and the answer names it in UI words');
+  ok(/^OPEN on the Farmer's screen: MY WORK › DELIVERABLES/.test(r.content), 'a window opens and the answer names it in UI words');
   eq(env.calls, [['term', 'deliverables', undefined]], 'through showTerm, once');
 
   env = boot(); r = await env.run({ place: 'settings-spending' });
@@ -142,7 +142,7 @@ function boot(opts) {
   // org P01: NEEDS YOU heads the SESSIONS rail (not a window): App.showNeedsYou puts it in front, and a hidden rail is never reported open
   env = boot(); r = await env.run({ place: 'needs-you' });
   eq(env.calls, ['needs-you'], 'NEEDS YOU opens through App.showNeedsYou');
-  ok(/^OPEN on the Commander's screen: SESSIONS › NEEDS YOU/.test(r.content), 'and the answer names it in UI words');
+  ok(/^OPEN on the Farmer's screen: SESSIONS › NEEDS YOU/.test(r.content), 'and the answer names it in UI words');
   r = await boot({ railHidden: true }).run({ place: 'needs-you' });
   ok(/^REFUSED: SESSIONS › NEEDS YOU did not open/.test(r.content), 'a hidden rail (BUILD MODE) is never reported open');
   env = boot(); await env.run({ place: 'build-mode' });
@@ -158,24 +158,24 @@ function boot(opts) {
   for (const [why, o] of [['another session is focused', { active: 'ws2' }], ['the run is over', { idle: true }],
     ['a run with no origin (a routine, a phone turn)', { ctx: null }], ['a stale run id', { ctx: { streamId: 'ws1', runId: 'old' } }]]) {
     env = boot(o); r = await env.run({ place: 'settings' });
-    ok(/^REFUSED: the Commander is not looking at this conversation/.test(r.content) && !env.calls.length, 'refused, nothing opened: ' + why);
+    ok(/^REFUSED: the Farmer is not looking at this conversation/.test(r.content) && !env.calls.length, 'refused, nothing opened: ' + why);
   }
   // a watched run's FIRST call can overtake its own agent.run.start (two connections, no order): the page waits for
   // that confirmation instead of refusing the Commander's own run (station-show.e2e failed 1 in 10 on this, 2026-10-22)
   env = boot({ unconfirmed: true, confirm: 'run1' }); r = await env.run({ place: 'deliverables' });
-  ok(/^OPEN on the Commander's screen: MY WORK › DELIVERABLES/.test(r.content), 'a first call that beats its run.start still opens: ' + r.content.slice(0, 90));
+  ok(/^OPEN on the Farmer's screen: MY WORK › DELIVERABLES/.test(r.content), 'a first call that beats its run.start still opens: ' + r.content.slice(0, 90));
   eq([env.calls, env.bus.count('agent.run.start')], [[['term', 'deliverables', undefined]], 0], 'opened once, and the wait left no listener behind');
   env = boot({ unconfirmed: true, confirm: 'someone-else' }); r = await env.run({ place: 'settings' });
-  ok(/^REFUSED: the Commander is not looking at this conversation/.test(r.content) && !env.calls.length, 'the run that confirms is another run: still refused, nothing opened');
+  ok(/^REFUSED: the Farmer is not looking at this conversation/.test(r.content) && !env.calls.length, 'the run that confirms is another run: still refused, nothing opened');
   const t0 = Date.now(); env = boot({ unconfirmed: true }); r = await env.run({ place: 'settings' });
-  ok(/^REFUSED: the Commander is not looking at this conversation/.test(r.content) && !env.calls.length && env.bus.count('agent.run.start') === 0, 'a run that never confirms is refused, nothing opened, no listener left');
+  ok(/^REFUSED: the Farmer is not looking at this conversation/.test(r.content) && !env.calls.length && env.bus.count('agent.run.start') === 0, 'a run that never confirms is refused, nothing opened, no listener left');
   ok(Date.now() - t0 < 5000, 'and the wait is bounded inside the bridge deadline (' + (Date.now() - t0) + 'ms)');
   r = await boot({ noPage: true }).run({ place: 'settings' });
-  ok(/^REFUSED: this run has no StarNet page attached/.test(r.content), 'no page attached: an honest refusal');
+  ok(/^REFUSED: this run has no Homestead page attached/.test(r.content), 'no page attached: an honest refusal');
   r = await boot({ refuse: 'apps' }).run({ place: 'apps' });
   ok(/^REFUSED: APPS did not open .*no app exists yet/.test(r.content), 'a window that did not open is never reported open');
   r = await boot().run({ place: 'the moon' });
-  ok(/^REFUSED: there is no StarNet place/.test(r.content), 'an unknown place refuses');
+  ok(/^REFUSED: there is no Homestead place/.test(r.content), 'an unknown place refuses');
 
   console.log('station-show: OK (' + n + ' assertions)');
 })().catch(e => { console.error(e); process.exit(1); });

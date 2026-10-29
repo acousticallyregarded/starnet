@@ -66,7 +66,7 @@ function harness(opts) {
     A.eq(r.result.agentInfo.name, 'starnet', 'the agent identifies itself');
     A.eq(r.result.agentInfo.version, '9.9.9', 'and reports the real harness version, not a literal');
     A.eq(r.result.agentCapabilities.loadSession, true, 'loadSession is advertised');
-    A.eq(r.result.authMethods.length, 0, 'no auth methods are advertised (the station token already fences /api)');
+    A.eq(r.result.authMethods.length, 0, 'no auth methods are advertised (the farm token already fences /api)');
 
     /* CAPABILITIES MUST NOT OVER-CLAIM. This shipped as image:true in the first cut while the bridge could not
        forward an image at all — a client reads that as "this agent can see pictures", lets the user attach a
@@ -128,7 +128,7 @@ function harness(opts) {
 
     const tc = h.updates().find(u => u.sessionUpdate === 'tool_call');
     A.ok(tc, 'a tool call is announced to the editor');
-    A.eq(tc.toolCallId, 'c1', 'the ACP tool-call id is StarNet\'s callId, so updates correlate');
+    A.eq(tc.toolCallId, 'c1', 'the ACP tool-call id is Homestead\'s callId, so updates correlate');
     A.eq(tc.kind, 'read', 'fs.read is classified as a READ (the icon/scan-ability the editor keys on)');
     A.eq(tc.title, 'Read sidecar/loop.js', 'the title is human, not "fs.read"');
     A.eq(tc.status, 'in_progress', 'an announced call is in progress');
@@ -177,7 +177,7 @@ function harness(opts) {
     await new Promise(r => setTimeout(r, 20));   // the consent post is deliberately not awaited by the stream
 
     const req = h.requests.find(x => x.method === 'session/request_permission');
-    A.ok(req, 'the station consent prompt becomes a native editor permission request');
+    A.ok(req, 'the farm consent prompt becomes a native editor permission request');
     A.eq(req.params.sessionId, sid, 'the request names the session');
     A.eq(req.params.toolCall.title, 'Write notes.md', 'the card says what will happen in words');
     A.eq(req.params.toolCall.kind, 'edit', 'a write is an EDIT');
@@ -186,7 +186,7 @@ function harness(opts) {
     A.eq(req.params.options.map(o => o.kind).join(','), 'allow_once,allow_always,reject_once', 'and each carries its ACP kind so the editor styles it');
 
     const consent = h.posted.find(p => p[1] === '/api/consent');
-    A.ok(consent, 'the answer is posted back to the station');
+    A.ok(consent, 'the answer is posted back to the farm');
     A.eq(consent[2].promptId, 'p1', 'the answer targets the right prompt');
     A.eq(consent[2].runId, 'run-42', 'and carries the runId — /api/consent looks the finisher up by runId FIRST');
     A.eq(consent[2].decision, 'session', 'the chosen option maps straight through (optionIds ARE the decisions)');
@@ -425,7 +425,7 @@ function harness(opts) {
     /* The FOLDER-TRUST ask is not a model tool call — it is the station's "work in <root>?" gate, and because an
        ACP session sends its cwd as the project root it is very often the FIRST card a user ever sees. It read
        "path.trust" before this. */
-    A.eq(I.titleOf('path.trust', I.permArgs('C:/proj/thing')), 'Allow StarNet to work in C:/proj/thing',
+    A.eq(I.titleOf('path.trust', I.permArgs('C:/proj/thing')), 'Allow Homestead to work in C:/proj/thing',
       'the folder-trust card reads as a sentence, not as a tool id');
     A.eq(I.locationsOf(I.permArgs('C:/proj/thing'))[0].path, 'C:/proj/thing', 'and a Windows path still resolves as a location');
   }

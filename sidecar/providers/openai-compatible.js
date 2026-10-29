@@ -588,7 +588,7 @@
         if (stopped) return;
         const others = otherOllamaCalls(nativeBase, self);
         const note = ollamaNative.placementFacts(ps, body.model, promptTokens, server)
-          + (others.n ? ' · ' + others.n + ' other StarNet call' + (others.n === 1 ? '' : 's') + ' still open there'
+          + (others.n ? ' · ' + others.n + ' other Homestead call' + (others.n === 1 ? '' : 's') + ' still open there'
             + (others.background === others.n ? ' (background)' : others.background ? ' (' + others.background + ' background)' : '') : '');
         if (note !== last) { last = note; onWait({ phase: 'connect', note }); }
         arm(waitNoteMs * 3);
@@ -1105,7 +1105,7 @@
           && /invalid model|is not a valid model|model .*(does not exist|not found)/i.test(String(detail))) {
           const sent = String(body.model || '');
           if (routedIdHint && sent.indexOf('/') > 0) {
-            detail += ' — "' + sent + '" is a routed-catalog model id (vendor/model), but this provider calls the vendor API directly. Switch the provider in the model picker (STARNET or OPENROUTER for routed ids), or pick a model from this provider\'s own catalog.';
+            detail += ' — "' + sent + '" is a routed-catalog model id (vendor/model), but this provider calls the vendor API directly. Switch the provider in the model picker (HOMESTEAD or OPENROUTER for routed ids), or pick a model from this provider\'s own catalog.';
           } else if (!routedIdHint && sent && String(detail).indexOf(sent) < 0) {
             detail += ' — the endpoint did not accept the model id "' + sent + '"; check the exact id in your endpoint\'s model list.';
           }

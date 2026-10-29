@@ -554,7 +554,7 @@
     for (const e of (f.errors || [])) {
       if (!e || e.warn || onLine(e) || away[e.code]) continue;
       away[e.code] = true;
-      blocking.push({ what: 'routing is off for the whole station until this is fixed: ' + label(e.code), propId: e.propId || null });
+      blocking.push({ what: 'routing is off for the whole farm until this is fixed: ' + label(e.code), propId: e.propId || null });
     }
     const cyclic = !!flow.cyclic;
     if (!flow.trigger.propId) blocking.push({ what: 'add an INBOX', propId: null });
@@ -564,7 +564,7 @@
       const d = flow.docks[pid], nm = (f.stepName && f.stepName(pid)) || d.role, lbl = 'BAY ' + n + (nm ? ' (' + nm + ')' : '');
       if (!d.agentId) { blocking.push({ what: lbl + ' needs an agent', propId: pid }); continue; }
       // an id that is not on the crew still RUNS — on the station's default identity (runOnce identityFallback)
-      if (f.isCrew && !f.isCrew(d.agentId)) hints.push({ what: lbl + '\'s agent "' + d.agentId + '" is not on the crew: its runs use the station\'s default identity. Assign a crew agent', propId: pid });
+      if (f.isCrew && !f.isCrew(d.agentId)) hints.push({ what: lbl + '\'s agent "' + d.agentId + '" is not on the crew: its runs use the farm\'s default identity. Assign a crew agent', propId: pid });
       // PER BAY: a run gets the tools of the dock it runs at (router.stationFor(agentId, dockId))
       if (f.hasCompute && !f.hasCompute(d.agentId, pid)) blocking.push({ what: lbl + ' needs a workstation', propId: pid });
       if (f.briefOf && !f.briefOf(pid)) hints.push({ what: lbl + ' has no instructions', propId: pid });

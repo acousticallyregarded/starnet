@@ -63,7 +63,7 @@ function sandbox(opts) {
     let rejected = false, res = null;
     try { res = await s.api.setBaseUrl('http://localhost:1234/v1', 'custom'); } catch (_) { rejected = true; }
     A.eq(rejected, false, 'a failed desktop endpoint store never rejects');
-    A.ok(res && res.engine && res.engine.ok === false && /could not apply it to the station/.test(res.engine.error),
+    A.ok(res && res.engine && res.engine.ok === false && /could not apply it to the farm/.test(res.engine.error),
       'a failed desktop endpoint store resolves the failure in the { engine } shape SETTINGS warns on');
     A.eq(s.store.get('starnet.byok.baseUrl.custom'), 'http://localhost:1234/v1', 'the endpoint stays saved in this window');
     A.eq(s.invokes.length, 1, 'the desktop store was attempted once');

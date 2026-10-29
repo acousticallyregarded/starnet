@@ -63,7 +63,7 @@
       if (typeof w.fetch === 'function') {
         const orig = w.fetch;
         w.fetch = function (input, init) {
-          if (isApiUrl(input)) return Promise.reject(new Error('StarNet is erasing - station writes are frozen'));
+          if (isApiUrl(input)) return Promise.reject(new Error('Homestead is erasing - farm writes are frozen'));
           return orig.call(this, input, init);
         };
         undo.push(() => { w.fetch = orig; });
@@ -83,7 +83,7 @@
     opts = opts || {};
     const w = opts.win || root;
     const core = opts.core || tauriCore(w);
-    if (!core) throw new Error('ERASE EVERYTHING runs in the StarNet desktop app');
+    if (!core) throw new Error('ERASE EVERYTHING runs in the Homestead desktop app');
     // Best effort, BEFORE the freeze: end any orphaned station browser so its files are not held open (#61).
     try {
       if (typeof w.fetch === 'function') {
@@ -117,32 +117,32 @@
     const failed = Array.isArray(v.failed) ? v.failed : [];
     const kcFailed = Array.isArray(v.keychainFailed) ? v.keychainFailed : [];
     const lines = [];
-    lines.push('Deleted ' + removed.length + ' StarNet data location' + (removed.length === 1 ? '' : 's') + ' on this computer.');
-    if (failed.length) lines.push('Could NOT delete ' + failed.length + ': ' + failed.map(f => f.path + ' (' + f.error + ')').join('; ') + '. Quit StarNet and delete ' + (failed.length === 1 ? 'it' : 'them') + ' by hand.');
+    lines.push('Deleted ' + removed.length + ' Homestead data location' + (removed.length === 1 ? '' : 's') + ' on this computer.');
+    if (failed.length) lines.push('Could NOT delete ' + failed.length + ': ' + failed.map(f => f.path + ' (' + f.error + ')').join('; ') + '. Quit Homestead and delete ' + (failed.length === 1 ? 'it' : 'them') + ' by hand.');
     if (kcFailed.length) lines.push('Could NOT remove ' + kcFailed.length + ' saved credential' + (kcFailed.length === 1 ? '' : 's') + ' from the system keychain: ' + kcFailed.join('; ') + '.');
-    else lines.push('Removed StarNet\'s saved keys and tokens from the system keychain.');
+    else lines.push('Removed Homestead\'s saved keys and tokens from the system keychain.');
     if (v.autostartDisabled === false) lines.push('Launch at login could not be turned off; turn it off in your system settings.');
     lines.push(v.browserDataCleared === true ? 'Cleared this window\'s stored data.' : 'Could NOT clear this window\'s stored data' + (v.browserClearError ? ' (' + v.browserClearError + ')' : '') + '.');
     const complete = v.ok === true && v.browserDataCleared === true;
     const reloadSafe = v.browserDataCleared === true && v.listening === true;
-    if (v.listening !== true) lines.push('The fresh station did not start answering yet. Quit StarNet fully and open it again.');
+    if (v.listening !== true) lines.push('The fresh farm did not start answering yet. Quit Homestead fully and open it again.');
     return { complete, reloadSafe, lines };
   }
 
   /* ---- station browser reset ---- */
   function browserResetSummary(status, r) {
     r = r || {};
-    if (r.driving) return 'An agent is driving the station browser right now. Stop that run, then reset.';
-    if (status !== 200 && !r.sweep) return 'The browser was not reset: ' + (r.error || ('the station answered ' + status)) + '.';
+    if (r.driving) return 'An agent is driving the farm browser right now. Stop that run, then reset.';
+    if (status !== 200 && !r.sweep) return 'The browser was not reset: ' + (r.error || ('the farm answered ' + status)) + '.';
     const s = r.sweep;
-    const bits = [r.closed ? 'Closed the station browser.' : 'The station browser was not open.'];
+    const bits = [r.closed ? 'Closed the farm browser.' : 'The farm browser was not open.'];
     if (!s) bits.push('No orphan check ran.');
     else if (s.error) bits.push('Could not check for a leftover browser: ' + s.error + '.');
     else {
-      bits.push(s.found ? ('Ended ' + (s.killed || []).length + ' of ' + s.found + ' leftover StarNet browser process' + (s.found === 1 ? '' : 'es') + ' from an earlier session.') : 'No leftover StarNet browser was running.');
+      bits.push(s.found ? ('Ended ' + (s.killed || []).length + ' of ' + s.found + ' leftover Homestead browser process' + (s.found === 1 ? '' : 'es') + ' from an earlier session.') : 'No leftover Homestead browser was running.');
       if ((s.survivors || []).length) bits.push((s.survivors || []).length + ' could not be ended (pid ' + s.survivors.join(', ') + '). Restart your computer if pages still fail.');
       if (s.locks && (s.locks.removed || []).length) bits.push('Cleared its stale profile lock.');
-      if ((s.ours || []).length) bits.push('A browser StarNet is using right now was left running.');
+      if ((s.ours || []).length) bits.push('A browser Homestead is using right now was left running.');
     }
     if (r.ok) bits.push('Your saved sign-ins were kept. The next page you open starts a fresh browser.');
     return bits.join(' ');
@@ -161,16 +161,16 @@
   function mountBrowserReset(host) {
     if (!host || typeof document === 'undefined') return;
     const wrap = el('div', 'set-reset-browser');
-    wrap.appendChild(el('h4', 'ms-h', 'RESET STATION BROWSER'));
-    wrap.appendChild(el('p', 'set-about', 'Pages will not load, or agents report the browser is stuck? This closes the station browser, ends any copy an earlier StarNet session left running, and clears its stale locks. It never touches your own Chrome. Saved sign-ins are kept.'));
+    wrap.appendChild(el('h4', 'ms-h', 'RESET FARM BROWSER'));
+    wrap.appendChild(el('p', 'set-about', 'Pages will not load, or agents report the browser is stuck? This closes the farm browser, ends any copy an earlier Homestead session left running, and clears its stale locks. It never touches your own Chrome. Saved sign-ins are kept.'));
     const row = el('div', 'set-save');
-    const btn = el('button', 'bb sm', 'RESET STATION BROWSER'); btn.type = 'button'; btn.id = 'set-reset-browser';
+    const btn = el('button', 'bb sm', 'RESET FARM BROWSER'); btn.type = 'button'; btn.id = 'set-reset-browser';
     row.appendChild(btn); wrap.appendChild(row);
     const msg = el('p', 'set-about dim', ''); msg.id = 'set-reset-browser-msg'; msg.setAttribute('role', 'status');
     wrap.appendChild(msg);
     btn.addEventListener('click', async () => {
       sfx('click');
-      btn.disabled = true; msg.textContent = 'Resetting the station browser…';
+      btn.disabled = true; msg.textContent = 'Resetting the farm browser…';
       try {
         const r = await resetStationBrowser();
         msg.textContent = browserResetSummary(r.status, r.body);
@@ -187,11 +187,11 @@
     const wrap = el('div', 'set-erase');
     wrap.appendChild(el('h4', 'ms-h', 'ERASE EVERYTHING'));
     const about = el('p', 'set-about');
-    about.innerHTML = 'Deletes everything StarNet keeps on this computer and starts over at first run: your station, agents, chats, memory, routines and settings, saved browser sign-ins, files agents saved inside StarNet, logs, the voice-model download, StarNet\'s saved keys and tokens in the system keychain, and this window\'s stored data. <b>This cannot be undone.</b> Export a backup first if you might want it.';
+    about.innerHTML = 'Deletes everything Homestead keeps on this computer and starts over at first run: your farm, agents, chats, memory, routines and settings, saved browser sign-ins, files agents saved inside Homestead, logs, the voice-model download, Homestead\'s saved keys and tokens in the system keychain, and this window\'s stored data. <b>This cannot be undone.</b> Export a backup first if you might want it.';
     wrap.appendChild(about);
-    wrap.appendChild(el('p', 'set-about dim', 'Not touched: project folders you let agents work in, files exported to "StarNet deliverables", your Downloads folder, your StarNet account and its credits (this computer is unlinked from it), and the StarNet app itself (uninstall it separately).'));
+    wrap.appendChild(el('p', 'set-about dim', 'Not touched: project folders you let agents work in, files exported to "Homestead deliverables", your Downloads folder, your StarNet account and its credits (this computer is unlinked from it), and the Homestead app itself (uninstall it separately).'));
     if (!core) {
-      wrap.appendChild(el('p', 'set-about dim', 'ERASE EVERYTHING runs in the StarNet desktop app. Running StarNet from source? Stop it, then delete the workspaces folder it was started with (the repo\'s workspaces/ folder, or the path in SKYNET_WORKSPACES).'));
+      wrap.appendChild(el('p', 'set-about dim', 'ERASE EVERYTHING runs in the Homestead desktop app. Running Homestead from source? Stop it, then delete the workspaces folder it was started with (the repo\'s workspaces/ folder, or the path in SKYNET_WORKSPACES).'));
       host.appendChild(wrap);
       return;
     }
@@ -202,7 +202,7 @@
     row.appendChild(input); row.appendChild(btn); wrap.appendChild(row);
     const msg = el('p', 'set-about', ''); msg.id = 'set-erase-msg'; msg.setAttribute('role', 'status');
     wrap.appendChild(msg);
-    const reloadBtn = el('button', 'bb sm', 'OPEN THE FRESH STATION'); reloadBtn.type = 'button'; reloadBtn.hidden = true;
+    const reloadBtn = el('button', 'bb sm', 'OPEN THE FRESH FARM'); reloadBtn.type = 'button'; reloadBtn.hidden = true;
     reloadBtn.addEventListener('click', () => { try { location.reload(); } catch (_) {} });
     wrap.appendChild(reloadBtn);
     let busy = false;
@@ -211,13 +211,13 @@
     const run = async () => {
       if (busy || input.value.trim() !== CONFIRM_WORD) return;
       busy = true; sync(); input.disabled = true;
-      msg.textContent = 'Stopping StarNet and erasing… keep this window open.';
+      msg.textContent = 'Stopping Homestead and erasing… keep this window open.';
       try {
         const view = await eraseDesktop({ core });
         const sum = eraseSummary(view);
         msg.textContent = sum.lines.join(' ');
         if (sum.complete && sum.reloadSafe) {
-          msg.textContent += ' Opening the fresh station…';
+          msg.textContent += ' Opening the fresh farm…';
           setTimeout(() => { try { location.reload(); } catch (_) {} }, 1500);
         } else if (sum.reloadSafe) {
           reloadBtn.hidden = false;   // partial: let them read what remains, then go

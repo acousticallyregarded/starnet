@@ -32,7 +32,7 @@ function refuse(s) {
   A.ok(r && r.summary === 'untrusted-content-lockout' && /^BLOCKED: "/.test(r.content), 'still the same lockout (' + s.label + ')');
   return (r && r.content) || '';
 }
-const COULD_NOT = "StarNet could not verify this run's earlier context, so it is treated as outside content";
+const COULD_NOT = "Homestead could not verify this run's earlier context, so it is treated as outside content";
 const OFFER = 'a watched chat can ask to approve this exact call';
 
 // ---- the predicate agrees with the reasons the fail-closed paths actually latch ----
@@ -52,7 +52,7 @@ const OFFER = 'a watched chat can ask to approve this exact call';
 // ---- 1. a fail-closed replay says what is known: StarNet could not verify, so it is TREATED as outside content ----
 for (const reason of ['resumed run (taint unverifiable: run journal unreadable EBUSY)', 'replayed context (taint check failed)']) {
   const watched = refuse({ label: 'unverified, watched', own: reason, surface: 'interactive', prompt: ask });
-  A.ok(watched.indexOf(COULD_NOT) >= 0, 'unverified start: says StarNet could not verify (' + reason + ')');
+  A.ok(watched.indexOf(COULD_NOT) >= 0, 'unverified start: says Homestead could not verify (' + reason + ')');
   A.ok(watched.indexOf('(via ' + reason + ')') >= 0, 'and still names the exact reason for diagnostics');
   A.ok(watched.indexOf('started with outside content already in its context') < 0, 'never claims outside content WAS in the context');
   A.ok(watched.indexOf('could contain instructions from whoever wrote it') < 0, 'never describes an author of content nobody saw');
@@ -77,7 +77,7 @@ for (const reason of ['resumed run (taint unverifiable: run journal unreadable E
   A.ok(/handed over by lead-1/.test(worker) && /user attachment/.test(worker), 'the worker refusal still names the lead and the real source');
   A.ok(worker.indexOf(OFFER) < 0, 'a worker (autonomous, no prompt) is NOT offered "a watched chat can ask to approve this exact call"');
   A.ok(worker.indexOf('without that confirmation') < 0, 'and is not told to wait for a confirmation that never comes');
-  A.ok(/For the Commander: a new session whose history has no attachments or outside pages/.test(worker), 'the structural remedy remains, as the Commander\'s way forward');
+  A.ok(/For the Farmer: a new session whose history has no attachments or outside pages/.test(worker), 'the structural remedy remains, as the Farmer\'s way forward');
   A.ok(/report the withheld step plainly/.test(worker), 'the worker is still told to report the withheld step');
   // a connector (mcp:) call is forwarded to the lead's live prompt — there an approval IS possible, so it stays offered
   const connector = refuse({ label: 'worker connector', own: 'user attachment', handedIn: 'user attachment', o, tool: 'mcp.github.create_issue', surface: 'interactive', prompt: ask });
@@ -86,7 +86,7 @@ for (const reason of ['resumed run (taint unverifiable: run journal unreadable E
   const unv = 'resumed run (taint unverifiable: run journal unreadable ENOENT)';
   const handed = refuse({ label: 'worker unverified', own: unv, handedIn: unv, o });
   A.ok(/handed over by lead-1/.test(handed), 'an unverified hand-over still names the lead');
-  A.ok(/could not verify/.test(handed) && /treated as outside content/.test(handed), 'and says StarNet could not verify that context');
+  A.ok(/could not verify/.test(handed) && /treated as outside content/.test(handed), 'and says Homestead could not verify that context');
   A.ok(handed.indexOf('whose chat has outside content') < 0, 'never claims the lead\'s chat HAS outside content');
   A.ok(handed.indexOf(OFFER) < 0, 'and offers the worker no approval');
 }
@@ -96,8 +96,8 @@ for (const reason of ['resumed run (taint unverifiable: run journal unreadable E
 {
   const unv = 'resumed run (taint unverifiable: run journal unreadable EBUSY)';
   const resumed = refuse({ label: 'resume unverified', own: unv, handedIn: unv, o: { delegatedBy: 'lead-2', resumedTaint: unv } });
-  A.ok(/This run resumes a task whose original context StarNet could not verify, so it is treated as outside content/.test(resumed),
-    'a resumed task with an unverified stored taint says StarNet could not verify it: ' + resumed);
+  A.ok(/This run resumes a task whose original context Homestead could not verify, so it is treated as outside content/.test(resumed),
+    'a resumed task with an unverified stored taint says Homestead could not verify it: ' + resumed);
   A.ok(resumed.indexOf('(via ' + unv + ')') >= 0, 'and still names the exact reason for diagnostics');
   A.ok(resumed.indexOf('with outside content in its context') < 0, 'never claims the first chat HAD outside content');
   A.ok(/resuming it stays under the same lock from any session/.test(resumed), 'the lock still rides the stored task');
@@ -113,8 +113,8 @@ for (const reason of ['resumed run (taint unverifiable: run journal unreadable E
 {
   const relayed = 'worker output (tainted by resumed run (taint unverifiable: run journal unreadable EBUSY))';
   const lead = refuse({ label: 'relayed unverified', own: relayed, atStart: null, surface: 'interactive', prompt: ask });
-  A.ok(/This run read output from a run whose earlier context StarNet could not verify, so it is treated as outside content \(via worker output/.test(lead),
-    'relayed unverified output says StarNet could not verify that run: ' + lead);
+  A.ok(/This run read output from a run whose earlier context Homestead could not verify, so it is treated as outside content \(via worker output/.test(lead),
+    'relayed unverified output says Homestead could not verify that run: ' + lead);
   A.ok(lead.indexOf('has already read outside content') < 0, 'never claims this run read outside content');
   A.ok(lead.indexOf('could contain instructions from whoever wrote it') < 0, 'never describes an author of content nobody saw');
   A.ok(lead.indexOf(OFFER) >= 0, 'a watched lead keeps its one-call approval offer');

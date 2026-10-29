@@ -26,7 +26,7 @@ function makeStationIO(client) {
         req = http.request({ host: client.host, port: client.port, method: 'POST', path: '/api/run', headers: { Origin: client.base, 'Content-Type': 'application/json', 'Content-Length': payload.length, 'x-starnet-token': client.token(), Accept: 'application/x-ndjson' } }, res => {
           res.setEncoding('utf8');
           if (res.statusCode !== 200) {
-            let b = ''; res.on('data', d => { b += d; }); res.on('end', () => { error = 'the station refused the run (HTTP ' + res.statusCode + ')' + (b ? ': ' + b.slice(0, 160) : ''); finish(); });
+            let b = ''; res.on('data', d => { b += d; }); res.on('end', () => { error = 'the farm refused the run (HTTP ' + res.statusCode + ')' + (b ? ': ' + b.slice(0, 160) : ''); finish(); });
             return;
           }
           let buf = '';
@@ -45,7 +45,7 @@ function makeStationIO(client) {
           });
           res.on('end', finish); res.on('close', finish); res.on('error', e => { if (!error) error = String((e && e.message) || e); finish(); });
         });
-        req.on('error', e => { if (!error) error = 'the station did not answer: ' + ((e && e.message) || e); finish(); });
+        req.on('error', e => { if (!error) error = 'the farm did not answer: ' + ((e && e.message) || e); finish(); });
         req.end(payload);
       } catch (e) { error = String((e && e.message) || e); finish(); }
     });

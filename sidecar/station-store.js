@@ -11,15 +11,15 @@ function makeStationStore(o) {
   let routingPlan = null;
 
   function validateStationDoc(nextDoc) {
-    if (!nextDoc || typeof nextDoc !== 'object' || Array.isArray(nextDoc)) return { ok: false, error: 'station document required' };
-    if (nextDoc.schema && nextDoc.schema !== 'starnet.station') return { ok: false, error: 'unsupported station schema' };
-    if (!nextDoc.rooms || typeof nextDoc.rooms !== 'object' || Array.isArray(nextDoc.rooms)) return { ok: false, error: 'station rooms required' };
-    if (!Array.isArray(nextDoc.order) || nextDoc.order.length < 1) return { ok: false, error: 'station must contain at least one room' };
-    if (!Array.isArray(nextDoc.props)) return { ok: false, error: 'station props must be an array' };
+    if (!nextDoc || typeof nextDoc !== 'object' || Array.isArray(nextDoc)) return { ok: false, error: 'farm document required' };
+    if (nextDoc.schema && nextDoc.schema !== 'starnet.station') return { ok: false, error: 'unsupported farm schema' };
+    if (!nextDoc.rooms || typeof nextDoc.rooms !== 'object' || Array.isArray(nextDoc.rooms)) return { ok: false, error: 'farm rooms required' };
+    if (!Array.isArray(nextDoc.order) || nextDoc.order.length < 1) return { ok: false, error: 'farm must contain at least one room' };
+    if (!Array.isArray(nextDoc.props)) return { ok: false, error: 'farm props must be an array' };
     let parsed;
-    try { parsed = model.deserialize(nextDoc); } catch (e) { return { ok: false, error: (e && e.message) || 'station rejected' }; }
-    if (!parsed || typeof parsed.bayObjects !== 'function' || typeof parsed.serialize !== 'function') return { ok: false, error: 'station model unavailable' };
-    if (!parsed.rooms || !parsed.rooms().length) return { ok: false, error: 'station must contain at least one room' };
+    try { parsed = model.deserialize(nextDoc); } catch (e) { return { ok: false, error: (e && e.message) || 'farm rejected' }; }
+    if (!parsed || typeof parsed.bayObjects !== 'function' || typeof parsed.serialize !== 'function') return { ok: false, error: 'farm model unavailable' };
+    if (!parsed.rooms || !parsed.rooms().length) return { ok: false, error: 'farm must contain at least one room' };
     const plan = Pipeline.compileRoutingPlan(parsed.projectGeometry());
     return { ok: true, station: parsed, doc: parsed.serialize(), routingPlan: plan, routingOk: Pipeline.ok(plan) };
   }
@@ -35,7 +35,7 @@ function makeStationStore(o) {
 
   function setSaveDoc(saveDoc) {
     if (!saveDoc || typeof saveDoc !== 'object' || Array.isArray(saveDoc)) return { ok: false, error: 'save document required' };
-    if (!saveDoc.station || typeof saveDoc.station !== 'object' || Array.isArray(saveDoc.station)) return { ok: false, error: 'save document station required' };
+    if (!saveDoc.station || typeof saveDoc.station !== 'object' || Array.isArray(saveDoc.station)) return { ok: false, error: 'save document farm required' };
     return setStation(saveDoc.station);
   }
 

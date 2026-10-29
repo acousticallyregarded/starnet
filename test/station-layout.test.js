@@ -67,7 +67,7 @@ function creative(crew, desks) {
   const st = WorldModel.create(Templates.build('default', WorldModel, Sprites));
   const room = (name, kind, x, y, hall) => {
     A.ok(st.addRoom({ kind, name, rect: { x1: x, y1: y, x2: x + 17, y2: y + 10 } }).ok, 'fixture: room ' + name);
-    A.ok(st.placeHallway({ rect: hall }).ok, 'fixture: a hallway to ' + name);
+    A.ok(st.placeHallway({ rect: hall }).ok, 'fixture: a path to ' + name);
   };
   room('DESIGN STUDIO', 'lab', 0, -14, { x1: 7, y1: -3, x2: 10, y2: -1 });
   room('DRAFT & REVIEW', 'hab', 21, 0, { x1: 18, y1: 4, x2: 20, y2: 6 });
@@ -122,7 +122,7 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
     const before = JSON.stringify(st.serialize());
     const { out, r, calls } = await layout({ app: app(st, agents) });
     A.ok(!!r, 'the layout answers: ' + out.content.slice(0, 160));
-    A.eq(JSON.stringify(st.serialize()), before, 'reading the layout never mutates the station');
+    A.eq(JSON.stringify(st.serialize()), before, 'reading the layout never mutates the farm');
     A.ok(!calls.some(c => /\/api\/routing (POST|PUT)/.test(c)), 'and never posts a routing plan');
     A.eq(calls.filter(c => / GET$/.test(c)).sort(), ['/api/channels/status GET', '/api/cron GET', '/api/routing/triggers GET'], 'it reads exactly the three facts the Workflow panel reads');
     A.eq(out.summary, '"CREATIVE · DRAFT & REVIEW": READY TO RUN · routing live', 'a one-line floor: the summary names the line and its pill');
@@ -136,7 +136,7 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
     A.eq(L.budget, { maxHops: 6, maxUsdPerMessage: 2, maxUsdPerDay: null }, 'each line carries the runner\'s effective budget');
     A.eq(L.today, null, 'no numbers are claimed for a line the router reports nothing on');
     A.ok(/call station\.layout with line/.test(r.more), 'the overview says how to get one line in full');
-    A.ok(r.rooms.indexOf('DRAFT & REVIEW') >= 0 && r.rooms.length === 3, 'rooms by name, corridors left out: ' + JSON.stringify(r.rooms));
+    A.ok(r.rooms.indexOf('DRAFT & REVIEW') >= 0 && r.rooms.length === 3, 'rooms by name, paths left out: ' + JSON.stringify(r.rooms));
     A.eq(r.workstations.filter(w => w.type === 'desk').map(w => w.agent).sort(), ['Ada', 'Rex'], 'workstations name their holders');
     A.ok(!('loneBays' in r) && !('otherIssues' in r), 'nothing empty is sent');
   }
@@ -249,7 +249,7 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
     const a = app(st, []);
     const at = async (world, facts) => (await layout({ app: a, world, facts })).r.routing;
     const off = await at(liveWorld({ errors: [{ code: 'CYCLE' }], refusedHash: 'k1' }));
-    A.ok(off.state === 'off' && /OFF for the whole station/.test(off.note) && /LABEL:CYCLE/.test(off.note), 'a refused floor is off for the whole station: ' + off.note);
+    A.ok(off.state === 'off' && /OFF for the whole farm/.test(off.note) && /LABEL:CYCLE/.test(off.note), 'a refused floor is off for the whole farm: ' + off.note);
     A.eq((await at(liveWorld({ errors: [{ code: 'CYCLE' }], stale: true }))).state, 'unconfirmed', 'a FAILED post of a broken floor is unconfirmed — the router may still run the previous floor');
     A.eq((await at(liveWorld({ errors: [{ code: 'CYCLE' }], inflight: true }))).state, 'unconfirmed', 'so is one still in flight');
     A.eq((await at(liveWorld({ errors: [{ code: 'CYCLE' }] }))).state, 'off', 'blocking errors on the posted floor: off');
@@ -279,8 +279,8 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
     A.ok(plan.errors.some(e => e.code === 'CHAIN_CYCLE') && !Pipeline.ok(plan), 'fixture: a CHAIN_CYCLE elsewhere makes the router refuse the floor');
     const L = await detail({ app: app(s, []), world: liveWorld({ errors: plan.errors.filter(e => !e.warn), refusedHash: 'k1' }) }, 'SUPPORT');
     A.eq(L.ready, false, 'the healthy-looking line is NOT ready');
-    A.ok(/^routing is off for the whole station until this is fixed: LABEL:CHAIN_CYCLE$/.test(L.blocking[0]), 'its first blocker is the station-wide one: ' + JSON.stringify(L.blocking));
-    A.ok(/^1 TO FIX · ROUTING IS OFF FOR THE WHOLE STATION/.test(L.status), 'and the pill says so: ' + L.status);
+    A.ok(/^routing is off for the whole farm until this is fixed: LABEL:CHAIN_CYCLE$/.test(L.blocking[0]), 'its first blocker is the station-wide one: ' + JSON.stringify(L.blocking));
+    A.ok(/^1 TO FIX · ROUTING IS OFF FOR THE WHOLE FARM/.test(L.status), 'and the pill says so: ' + L.status);
   }
 
   /* ---- 11. a stray belt CYCLE: the loop is the finding, never "not connected" / "not fed" ---- */
@@ -294,7 +294,7 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
     const L = r.lines[0];
     A.ok(/^\[a belt LOOP on the floor stops all routing: break the circle, then this line can run\]/.test(L.howItRuns), 'the sentence names the loop: ' + L.howItRuns);
     A.ok(!L.blocking.some(b => /not connected/.test(b)), 'no Bay is called "not connected" on a guess: ' + JSON.stringify(L.blocking));
-    A.ok(/whole station until this is fixed: WHY:CYCLE/.test(L.blocking[0]), 'the loop is the first blocker, in the panel\'s fix words: ' + L.blocking[0]);
+    A.ok(/whole farm until this is fixed: WHY:CYCLE/.test(L.blocking[0]), 'the loop is the first blocker, in the panel\'s fix words: ' + L.blocking[0]);
     const cyc = (r.otherIssues || []).find(i => i.code === 'CYCLE');
     A.ok(cyc && cyc.blocking && cyc.fix === 'WHY:CYCLE' && !!cyc.room, 'the CYCLE is reported with its fix and WHERE it is: ' + JSON.stringify(cyc));
     A.ok(!JSON.stringify(r).includes('BAY_NOT_FED'), 'and no bay is shamed BAY_NOT_FED');
@@ -335,7 +335,7 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
     const agents = [{ id: 'reviewer', name: 'Rex' }];
     const r = (await layout({ app: app(st, agents) })).r;
     A.eq(r.lines[0].steps[0].agent, 'ghost1 (not on the crew)', 'the overview flags it');
-    A.ok(r.lines[0].hints.some(h => /BAY 1's agent "ghost1" is not on the crew: its runs use the station's default identity/.test(h)), 'and the hints say what that means');
+    A.ok(r.lines[0].hints.some(h => /BAY 1's agent "ghost1" is not on the crew: its runs use the farm's default identity/.test(h)), 'and the hints say what that means');
     const D = await detail({ app: app(st, agents) });
     A.eq(D.steps[0].agent, { agentId: 'ghost1', name: 'ghost1', onCrew: false }, 'the detail marks it off the crew');
   }
@@ -421,10 +421,10 @@ const detail = async (o, line) => (await layout(o, { line: line || 'draft & revi
   /* ---- 19. refusals are answers, never an empty success ---- */
   {
     const { st } = creative(['drafter', 'reviewer'], true);
-    A.ok(/^REFUSED: the station layout is not ready yet/.test((await layout({ app: { agents: () => [] } })).out.content), 'no station on the page');
+    A.ok(/^REFUSED: the farm layout is not ready yet/.test((await layout({ app: { agents: () => [] } })).out.content), 'no farm on the page');
     A.ok(/^REFUSED: workflow routing is not loaded/.test((await layout({ app: app(st, []), globals: { Pipeline: undefined } })).out.content), 'no compiler');
     A.ok(/^REFUSED: the workflow line reader is not loaded/.test((await layout({ app: app(st, []), globals: { WorkflowLine: undefined } })).out.content), 'no line reader');
-    A.ok(/^REFUSED: .*no station bridge/.test((await makeStationTools({}).layoutTool.run({})).content), 'no bridge');
+    A.ok(/^REFUSED: .*no farm bridge/.test((await makeStationTools({}).layoutTool.run({})).content), 'no bridge');
     const miss = (await layout({ app: app(st, []) }, { line: 'nope' })).out.content;
     A.ok(/^REFUSED: there is no line called "nope"\. Lines: CREATIVE · DRAFT & REVIEW \(/.test(miss), 'an unknown line is refused with the real names: ' + miss);
   }

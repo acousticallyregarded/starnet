@@ -62,14 +62,14 @@
       // impact 'none' STATED (2026-09-30): undeclared, the fail-closed classifier filed it as external-unknown, so a run that
       // had read the web stopped mid-task on an approval card just to NAME its work (or was denied in a routine).
       name: 'deliverable_note', capability: 'deliverable', scope: 'write', requiresConsent: false, impact: 'none', timeoutMs: 5000,
-      description: 'Name the work you produced in this task, so the Commander can find it later in DELIVERABLES. '
+      description: 'Name the work you produced in this task, so the Farmer can find it later in DELIVERABLES. '
         + 'Optional: call this ONCE, at the end, only when you actually created or changed files. Skip it when the user limits actions, says no further actions, or asks you to stop after the requested change. '
         + 'title: a short plain-English name for the thing you made (not a filename). '
         + 'summary: one sentence saying what it is, in the same plain language. '
         + 'kind: doc | data | page | patch | image | files. '
         + 'main: the path of the one file that IS the deliverable, if one of them is. '
         + 'Describe the work — do not judge it. Whether the run succeeded, what it cost, who worked on it and '
-        + 'which files exist are recorded by the station from the run itself; anything you say about those is ignored.',
+        + 'which files exist are recorded by the farm from the run itself; anything you say about those is ignored.',
       schema: { type: 'object', required: ['title'], properties: {
         title: { type: 'string' },
         summary: { type: 'string' },
@@ -87,7 +87,7 @@
         return {
           content: 'Recorded for the Deliverables library: "' + note.title + '" (' + note.kind + ').'
             + (note.summary ? ' Description: ' + note.summary : ' No description given.')
-            + ' The station will attach the real file list, status, cost and crew from this run.',
+            + ' The farm will attach the real file list, status, cost and crew from this run.',
           summary: note.title
         };
       }

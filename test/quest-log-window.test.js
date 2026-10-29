@@ -94,13 +94,13 @@ A.ok(/if \(out\.started\) watchSettle\(\)/.test(refresh), 'a started refresh is 
 A.ok(/finally \{ watching = false; poke\(\); \}/.test(refresh), 'the watch pokes on give-up too — the button always comes back');
 const buildFn = station.slice(station.indexOf('function buildQuests'), station.indexOf('function journeyHtml'));
 A.ok(!/setTimeout\([^)]*rerender\('quests'\)/.test(buildFn), 'the panel carries NO blind re-render timer (the stuck-REFRESHING… bug)');
-A.ok(/the station had nothing it could honestly ground/.test(station), 'a rejected cycle reads in plain language (the engine wording rides the tooltip)');
+A.ok(/the farm had nothing it could honestly ground/.test(station), 'a rejected cycle reads in plain language (the engine wording rides the tooltip)');
 
 /* ---- 3. a quest starts in its own session ---- */
 const stationFns = station.slice(station.indexOf('function questGoDest'), station.indexOf('function buildQuests'));
 A.ok(/return 'session'/.test(station) && !/GO ▸ task board/.test(station), 'work/ledger quests route to their OWN session — the TASK BOARD misroute is dead');
 A.ok(/function questOpenSession/.test(station) && /\.find\(s => s && !s\.archived && s\.title === title\)/.test(station), 'START QUEST is idempotent by title (a second click returns to the same conversation)');
-A.ok(/Chat\.prefill\(/.test(station.slice(station.indexOf('function questOpenSession'), station.indexOf('function questSessionTitle') + 4000)), 'a quest the Commander performs, a revisit, or a busy COMMS keeps the PREFILL path');
+A.ok(/Chat\.prefill\(/.test(station.slice(station.indexOf('function questOpenSession'), station.indexOf('function questSessionTitle') + 4000)), 'a quest the Farmer performs, a revisit, or a busy COMMS keeps the PREFILL path');
 { const qos = station.slice(station.indexOf('function questOpenSession'), station.indexOf('function questOpenSession') + 3000);
   A.ok(/const startsWork = !existing && q\.executionMode === 'agent' && Chat\.send && !\(Chat\.isBusy && Chat\.isBusy\(\)\)/.test(qos), 'START QUEST sends only for an AGENT quest, only into its brand-new session, only when COMMS is free'); }
 A.ok(/q\.agentId && String\(q\.agentId\)/.test(station), 'a ledger quest binds its OWN agent; agent-less kinds fall to the hero');
@@ -175,7 +175,7 @@ const built = Quests.build({ dossierDims: dims });
 const descs = built.filter(q => q.kind === 'dossier').map(q => q.desc);
 A.eq(descs.length, 4, 'one quest per dossier dimension');
 A.eq(new Set(descs.slice(0, 3)).size, 3, 'known dimensions carry DISTINCT explanations (nine identical sentences read as one wall)');
-A.ok(/every agent on the station will know this about you/.test(descs[3]), 'an unknown dimension keeps the honest generic line rather than an invented claim');
+A.ok(/every agent on the farm will know this about you/.test(descs[3]), 'an unknown dimension keeps the honest generic line rather than an invented claim');
 
 /* Execute the production journal renderer and its actual selection callbacks. The shell only models
    the two button collections; business state still comes through the real renderer's QuestStore seam. */
@@ -285,7 +285,7 @@ buttons['.q-mission'][0].click();
 A.ok(rendered.includes('First quest evidence'), 'returning to a quest restores its own evidence draft');
 ctx.JourneyStore = { status: () => ({ progression: { level: 7 } }) };
 ctx.buildQuests(body);
-A.ok(rendered.includes('<strong>7</strong><span>Commander'), 'journal level reads Commander progression, not crew XP or a fabricated score');
+A.ok(rendered.includes('<strong>7</strong><span>Commander'), 'journal level reads Farmer progression, not crew XP or a fabricated score');
 vm.runInContext(station.slice(station.indexOf('  function windowDirty(w)'), station.indexOf('  function requestCloseTerm')), ctx);
 const draftWindow = { querySelector: selector => selector === '.term-body' ? body : null };
 body._questDrafts.set('q:first', { evidence: 'Unsaved result', dirty: true });

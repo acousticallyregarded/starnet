@@ -46,7 +46,7 @@ const WORKER_ONLY = composeOffice({ surface: 'autonomous', lead: false });
   A.ok(Array.isArray(kit), 'CAP_REGISTRY has a builder object');
   A.eq(kit.map(g => g.tool), ['station.map', 'station.plan', 'station.build'], 'the lent builder is exactly map, plan and build');
   A.ok(kit.every(g => g.capId === 'orchestrator' && g.deferred === true), 'cut from the orchestrator capId (one TASK DELEGATION switch) and deferred like the lead\'s');
-  A.eq(kit.map(g => [g.scope, g.requiresConsent]), [['read', false], ['read', false], ['write', true]], 'map and plan change nothing; every build asks the Commander');
+  A.eq(kit.map(g => [g.scope, g.requiresConsent]), [['read', false], ['read', false], ['write', true]], 'map and plan change nothing; every build asks the Farmer');
   const orch = new Map(CAP_REGISTRY.orchestrator.map(g => [g.tool, g]));
   for (const g of kit) A.eq([g.scope, g.requiresConsent, g.network], [orch.get(g.tool).scope, orch.get(g.tool).requiresConsent, orch.get(g.tool).network], g.tool + ' carries the SAME rules the lead\'s copy does');
   // a worker holding the lent kit resolves it, deferred (found by tool_search "station builder")
@@ -81,7 +81,7 @@ const WORKER_ONLY = composeOffice({ surface: 'autonomous', lead: false });
   const out = JSON.parse((await t2.run({ workers: [{ agentId: 'builder', prompt: 'x', builder: true }, { agentId: 'scout', prompt: 'y' }] }, leadCtx(WORKER_ONLY))).content);
   const rows = Array.isArray(out) ? out : (out.results || out.workers || []);
   const refused = rows.find(r => r.agentId === 'builder');
-  A.ok(refused && refused.reason === 'error' && /builder:true needs the station builder in YOUR run/.test(refused.result), 'a lead that cannot build is refused the lend, by name: ' + JSON.stringify(refused));
+  A.ok(refused && refused.reason === 'error' && /builder:true needs the farm builder in YOUR run/.test(refused.result), 'a lead that cannot build is refused the lend, by name: ' + JSON.stringify(refused));
   A.eq(ro2.calls.map(c => c.agentId), ['scout'], 'the refused worker never ran; its sibling did');
   A.ok(ro2.calls.every(c => !types(c).includes('builder')), 'and nobody got a builder the lead did not hold');
   // builder: "yes" (not exactly true) lends nothing

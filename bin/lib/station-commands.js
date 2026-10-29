@@ -18,7 +18,7 @@ async function loadStation(client) {
   const [rt, snap, budget] = await Promise.all([
     client.request('GET', '/api/runtime/agent'), client.request('GET', '/api/state/snapshot'), client.request('GET', '/api/budget/status')
   ]);
-  if (!(rt.ok && rt.status === 200 && rt.json)) { const e = new Error('could not read the station roster (' + (rt.error || 'HTTP ' + rt.status) + ')'); e.exitCode = core.EXIT.STATION; throw e; }
+  if (!(rt.ok && rt.status === 200 && rt.json)) { const e = new Error('could not read the farm roster (' + (rt.error || 'HTTP ' + rt.status) + ')'); e.exitCode = core.EXIT.STATION; throw e; }
   model.setRoster(rt.json);
   const now = Date.now();
   if (snap.ok && snap.status === 200 && snap.json) model.applySnapshot(snap.json, now);
@@ -89,7 +89,7 @@ async function answerCommand(opts, station, io) {
     return core.EXIT.OK;
   }
   if (r.ok && r.json && r.json.gone) { io.err('that ask is no longer waiting (answered elsewhere, expired, or its run ended)\n'); return core.EXIT.NOTHING; }
-  io.err('starnet: the station did not take the answer (' + (r.error || 'HTTP ' + r.status) + ')\n');
+  io.err('starnet: the farm did not take the answer (' + (r.error || 'HTTP ' + r.status) + ')\n');
   return core.EXIT.RUN_FAILED;
 }
 
@@ -148,7 +148,7 @@ function watchCommand(opts, station, io) {
       const headers = { Accept: 'text/event-stream', Origin: client.base, 'x-starnet-token': client.token() };
       if (cursor) headers['Last-Event-ID'] = cursor;
       req = http.request({ host: client.host, port: client.port, method: 'GET', path: '/api/observe', headers }, res => {
-        if (res.statusCode === 404) { io.err('starnet: this station has no live feed (it predates GET /api/observe) — update the app\n'); res.resume(); return finish(core.EXIT.STATION); }
+        if (res.statusCode === 404) { io.err('starnet: this farm has no live feed (it predates GET /api/observe) — update the app\n'); res.resume(); return finish(core.EXIT.STATION); }
         if (res.statusCode !== 200) { res.resume(); return retry(); }
         failures = 0;
         res.setEncoding('utf8');
@@ -181,7 +181,7 @@ function watchCommand(opts, station, io) {
     };
     const retry = () => {
       if (stopped) return;
-      if (++failures > 15) { io.err('starnet: lost the station\n'); return finish(core.EXIT.STATION); }
+      if (++failures > 15) { io.err('starnet: lost the farm\n'); return finish(core.EXIT.STATION); }
       if (failures === 1 && !opts.json) io.err('· feed dropped, reconnecting…\n');
       setTimeout(connect, 2000);
     };
@@ -199,7 +199,7 @@ async function flowCommand(opts, station, io) {
   const now = Date.now();
   if (opts.args[0] === 'run') {
     const line = model.findLine(opts.args[1]);
-    if (!line) { io.err('starnet: no workflow named ' + JSON.stringify(opts.args[1]) + ' — ' + ([...model.state.lines.values()].map(l => l.name || l.lineId).join(', ') || 'none on this station') + '\n'); return core.EXIT.STATION; }
+    if (!line) { io.err('starnet: no workflow named ' + JSON.stringify(opts.args[1]) + ' — ' + ([...model.state.lines.values()].map(l => l.name || l.lineId).join(', ') || 'none on this farm') + '\n'); return core.EXIT.STATION; }
     const text = opts.args.slice(2).join(' ');
     if (!opts.json) io.err('▸ sending one job down ' + (line.name || line.lineId) + ' — waiting for it to deliver (ctrl+c stops waiting)\n');
     const r = await client.request('POST', '/api/routing/sample', { text, line: line.lineId }, { timeoutMs: 60 * 60 * 1000 });
@@ -211,7 +211,7 @@ async function flowCommand(opts, station, io) {
   }
   const flows = model.flows(now);
   if (opts.json) { io.out(JSON.stringify({ flows: flows.map(f => ({ lineId: f.lineId, name: f.name, state: f.state, runs: f.runs, shipped: f.shipped, lastJob: f.job ? { id: f.job.id, status: f.job.status, startedAt: f.job.startedAt, endedAt: f.job.endedAt, usd: f.job.usd } : null })) }) + '\n'); return core.EXIT.OK; }
-  if (!flows.length) { io.out('no workflows on this station yet — build a line in the app (INBOX → steps → OUTBOX)\n'); return core.EXIT.OK; }
+  if (!flows.length) { io.out('no workflows on this farm yet — build a line in the app (INBOX → steps → OUTBOX)\n'); return core.EXIT.OK; }
   io.out(pad('WORKFLOW', 24) + ' ' + pad('STATE', 12) + ' LAST JOB\n');
   for (const f of flows) io.out(pad(f.name, 24) + ' ' + pad(f.state, 12) + ' ' + f.text + (f.shipped ? ' · ' + f.shipped + ' shipped' : '') + '\n');
   return core.EXIT.OK;

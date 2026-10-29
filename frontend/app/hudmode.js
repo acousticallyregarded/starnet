@@ -231,7 +231,7 @@
     else if (feed.snapOk == null && !working) summary = { text: '…', tone: 'dim' };
     else if (waiting) summary = { text: waiting + ' NEED' + (waiting === 1 ? 'S' : '') + ' YOU', tone: 'ask' };
     else if (working) summary = { text: working + ' WORKING', tone: 'live' };
-    else summary = { text: 'STATION IDLE', tone: 'dim' };
+    else summary = { text: 'FARM IDLE', tone: 'dim' };
     return {
       summary,
       live: live.slice(0, LIVE_MAX),
@@ -257,7 +257,7 @@
   };
   const WORKER_END = {
     done: ['done', 'Completed'], interrupted: ['stopped', 'Stopped'], error: ['fault', 'Needs attention'],
-    stale: ['fault', 'Lost when the station restarted'], refused: ['fault', 'Refused']
+    stale: ['fault', 'Lost when the farm restarted'], refused: ['fault', 'Refused']
   };
 
   function oneLine(v, max) {
@@ -522,7 +522,7 @@
         receipt.textContent = kind === 'steer' ? 'Direction sent. The agent takes it before its next step.' : 'Stop requested.';
         if (kind === 'steer') input.value = '';
       } catch (e) {
-        receipt.textContent = (kind === 'steer' ? 'Direction not sent: ' : 'Stop not sent: ') + ((e && e.message) || 'the station did not answer') + '.';
+        receipt.textContent = (kind === 'steer' ? 'Direction not sent: ' : 'Stop not sent: ') + ((e && e.message) || 'the farm did not answer') + '.';
       } finally {
         card.pending = false;
         poll();
@@ -687,7 +687,7 @@
     open.setAttribute('aria-label', 'Open activity'); open.title = 'Click to open activity · drag to move';
     const box = el('section', 'hud-widget');
     box.id = 'hud-widget';
-    box.setAttribute('aria-label', 'StarNet HUD: your agents at work');
+    box.setAttribute('aria-label', 'Homestead HUD: your agents at work');
     box.setAttribute('data-tauri-drag-region', '');
     const rows = el('div', 'hud-wrows'); rows.setAttribute('data-tauri-drag-region', '');
     const more = el('button', 'hud-wmore'); more.type = 'button'; more.hidden = true;
@@ -741,7 +741,7 @@
       setText(v.name, tile.name);
       if (tile.color) v.name.style.color = tile.color; else v.name.style.removeProperty('color');
       setText(v.clock, down ? 'NO LINK' : tile.working ? fmtClock(t - tile.startedAt) : 'ALL QUIET');
-      setText(v.step, down ? 'The station is not answering' : tile.step);
+      setText(v.step, down ? 'The farm is not answering' : tile.step);
       v.node.setAttribute('aria-label', tile.name + (tile.working ? ' · ' + tile.step + ' · running ' + fmtClock(t - tile.startedAt) : ' · all quiet · ' + tile.step) + '. Watch');
       v.node.title = 'Watch ' + tile.name;
       const want = prev ? prev.nextSibling : w.rows.firstChild;
@@ -802,7 +802,7 @@
     // ACTIVITY: the project activity view, for the whole station
     const section = el('section', 'project-home hud-activity');
     section.id = 'hud-activity';
-    section.setAttribute('aria-label', 'All work on the station');
+    section.setAttribute('aria-label', 'All work on the farm');
     const notice = el('p', 'ph-notice'); notice.setAttribute('role', 'status');
     const empty = el('p', 'ph-empty', 'No work yet. Ask an agent something and it shows up here.');
     const list = el('div', 'ph-activity');
@@ -814,8 +814,8 @@
     const small = el('button', 'btn', 'AGENT CAM'); small.type = 'button'; small.id = 'hud-small';
     small.title = 'Shrink the HUD to the agent cam';
     const pin = el('button', 'btn', 'PIN'); pin.type = 'button'; pin.id = 'hud-pin'; pin.hidden = true;
-    const exitBtn = el('button', 'btn', 'STATION'); exitBtn.type = 'button'; exitBtn.id = 'hud-exit';
-    exitBtn.title = 'Back to the full station';
+    const exitBtn = el('button', 'btn', 'FARM'); exitBtn.type = 'button'; exitBtn.id = 'hud-exit';
+    exitBtn.title = 'Back to the full farm';
     ctl.append(view, small, pin, exitBtn);
     const right = h3.querySelector('.h3-right') || h3;
     right.appendChild(ctl);
@@ -833,7 +833,7 @@
     const items = S.lastItems || [];
     const busy = items.filter(x => x.state === 'live' || x.state === 'ask').length;
     setText(S.els.view, act ? 'CHAT' : ('ACTIVITY' + (busy ? ' · ' + busy : '')));
-    S.els.view.title = act ? 'Open the conversation' : 'See all the work on the station';
+    S.els.view.title = act ? 'Open the conversation' : 'See all the work on the farm';
     S.els.view.setAttribute('aria-pressed', 'false');
     S.els.pin.hidden = !S.desktop;
     setText(S.els.pin, S.pinned ? 'PINNED' : 'PIN');
@@ -849,7 +849,7 @@
     const sum = feedSummary(items, S.feed, S.histOk);
     doc.body.classList.toggle('hud-asking', sum.tone === 'ask');
     if (S.view === 'activity' && S.els.title) setText(S.els.title, '▮ ACTIVITY');
-    setText(S.els.notice, sum.text === 'NO LINK' ? 'The station is not answering. What is shown may be out of date.' : '');
+    setText(S.els.notice, sum.text === 'NO LINK' ? 'The farm is not answering. What is shown may be out of date.' : '');
     S.els.empty.hidden = items.length > 0 || S.feed.snapOk == null;
     const have = new Map(S.cards);
     let prev = null;

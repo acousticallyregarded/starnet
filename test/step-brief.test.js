@@ -17,7 +17,7 @@ const { makeRouter } = require('../sidecar/routing/router.js');
 const { makeChainRunner } = require('../sidecar/routing/chain.js');
 
 const BRIEF = 'Dig three primary sources and hand the writer a bulleted evidence pack.';
-const HDR = 'YOUR STANDING BRIEF FOR THIS STATION:';
+const HDR = 'YOUR STANDING BRIEF FOR THIS FARM:';
 
 (async () => {
 

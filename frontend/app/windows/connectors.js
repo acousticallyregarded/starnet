@@ -34,8 +34,8 @@
      today; a lock with no START FRESH and no fix of its own leaves the sidecar's message to speak. */
   function storageNextStep(storage) {
     const s = storage || {};
-    if (s.reason === 'busy') return s.canStartFresh ? '' : ' Restart StarNet to try again.';
-    if (s.reason === 'key-unavailable') return s.canStartFresh ? ' Use START FRESH only if you cannot unlock or repair the credential store.' : ' Unlock the credential store and restart StarNet.';
+    if (s.reason === 'busy') return s.canStartFresh ? '' : ' Restart Homestead to try again.';
+    if (s.reason === 'key-unavailable') return s.canStartFresh ? ' Use START FRESH only if you cannot unlock or repair the credential store.' : ' Unlock the credential store and restart Homestead.';
     return s.canStartFresh ? ' START FRESH sets the unreadable files aside and lets you sign in to each service again.' : '';
   }
   /* An open store's storage notes. `notice` is a store StarNet does not count as encrypted (fallback, or a seal not yet
@@ -79,7 +79,7 @@
         '<div id="sp-status" class="mc-url dim">checking…</div>' +
         '<details class="mc-add-fold" id="sp-setup-fold"><summary>Connect your Spotify</summary>' +
         '<p class="set-about">1. Make a free app at <span class="dim">developer.spotify.com/dashboard</span>.<br>2. Add the Redirect URI below to that app.<br>3. Paste the app’s Client ID here, then choose CONNECT SPOTIFY. ' +
-          '<span class="dim">StarNet never stores a client secret.</span></p>' +
+          '<span class="dim">Homestead never stores a client secret.</span></p>' +
         '<div class="mc-form">' +
           '<input id="sp-client" class="key-input" placeholder="Spotify Client ID" autocomplete="off" spellcheck="false" maxlength="64">' +
           '<div class="mc-url dim">Redirect URI: <code id="sp-redir">…</code></div>' +
@@ -231,7 +231,7 @@
         // 1PASSWORD: the same field takes a secret reference. Only the reference is saved; the sidecar reads the key with
         // the 1Password CLI when an agent needs it and keeps it in memory (sidecar/onepassword.js).
         '<div class="mc-hint">Keep keys in 1Password? Paste the field’s secret reference instead (in 1Password: the field’s menu → Copy Secret Reference). ' +
-          'StarNet saves only the reference and reads the key with the 1Password CLI (<code>op</code>) when an agent needs it.</div>' +
+          'Homestead saves only the reference and reads the key with the 1Password CLI (<code>op</code>) when an agent needs it.</div>' +
         // TRUTHFUL TELEMETRY: the key alone is not enough. The shell it is handed to only exists when a WORKBENCH
         // prop is placed (capability/office.js grants it nowhere by default), and workspace-process tools are not
         // projected onto unattended surfaces at all (inputpolicy.js), so a saved key is inert until both hold.
@@ -321,7 +321,7 @@
       '<div id="cu-status" class="set-about" role="status" aria-live="polite">Checking computer control…</div>' +
       '<div class="mc-acts" role="group" aria-label="Computer control backend">' +
       '<button type="button" class="bb sm" data-cu-backend="cua" data-tip="Finds buttons and fields by name, and can work in the background where Windows allows it. Install it first.">CUA · ACCESSIBILITY</button>' +
-      '<button type="button" class="bb sm" data-cu-backend="win32" data-tip="The Windows driver StarNet already has: nothing to install">WINDOWS · CLASSIC</button>' +
+      '<button type="button" class="bb sm" data-cu-backend="win32" data-tip="The Windows driver Homestead already has: nothing to install">WINDOWS · CLASSIC</button>' +
       '<button type="button" class="bb sm" data-cu-backend="off" data-tip="Agents cannot use the apps on your computer">OFF</button></div>' +
       '<div class="mc-acts"><button type="button" class="bb sm" id="cu-install">INSTALL CUA</button>' +
       '<button type="button" class="bb sm" id="cu-check">CHECK DRIVER</button></div>' +
@@ -340,8 +340,8 @@
       { id: 'mcp', label: 'CONNECTED', glyph: '⧉', desc: 'Everything you have connected: services and API keys. Add your own here too.', build: frag(
         '<div class="sec" id="ab-services"><span class="sec-l">SERVICES</span><span class="sec-r"></span><span class="sec-nd"></span></div>' + secMcp + secKeys) }
     ].concat(lanes.reduce((acc, l) => acc.concat(l.sections), []), [   // SKILL MARKET, SKILLS
-      { id: 'toolsets', label: 'TOOLS', glyph: '▤', desc: 'The tools built into StarNet, like web, files and terminal. Each switch turns a tool on or off for every agent; CHECK WITH ME and LET IT WORK obey the switches, FULL POWER overrides them.', build: frag(secToolsets + secComputer) },
-      { id: 'extensions', label: 'EXTENSIONS', glyph: '⌥', desc: 'Advanced: run your own scripts and plugins inside StarNet.', build: frag(secExt) }
+      { id: 'toolsets', label: 'TOOLS', glyph: '▤', desc: 'The tools built into Homestead, like web, files and terminal. Each switch turns a tool on or off for every agent; CHECK WITH ME and LET IT WORK obey the switches, FULL POWER overrides them.', build: frag(secToolsets + secComputer) },
+      { id: 'extensions', label: 'EXTENSIONS', glyph: '⌥', desc: 'Advanced: run your own scripts and plugins inside Homestead.', build: frag(secExt) }
     ]), {
       search: true,
       searchLabel: 'Search abilities',
@@ -434,7 +434,7 @@
         const j = await r.json().catch(() => ({}));
         if (!r.ok) { extSay((j && j.error) || ('request failed (' + r.status + ')'), true); return false; }
         return true;
-      } catch (e) { extSay('could not reach the station: ' + ((e && e.message) || e), true); return false; }
+      } catch (e) { extSay('could not reach the farm: ' + ((e && e.message) || e), true); return false; }
       finally { if (btn) { btn.disabled = false; btn.classList.remove('busy'); } }
     }
 
@@ -470,8 +470,8 @@
       const host = typeof PluginHost !== 'undefined' ? PluginHost : null;
       const term = host && host.terminalOf ? host.terminalOf(p.id) : null;
       return '<div class="mc-hint">Tools: ' + tools.map(t => '<code>' + esc(t) + '</code>').join(' ') + '<br>' +
-        (term ? 'Its terminal stands in the station: agents in that room can use these. Each call asks you first unless you choose Always or Full access.'
-          : 'No terminal in the station yet, so no agent can use these. <button class="bb xs" data-ext="plugin-place" data-id="' + esc(p.id) + '">PLACE TERMINAL</button>') +
+        (term ? 'Its terminal stands on the farm: agents in that room can use these. Each call asks you first unless you choose Always or Full access.'
+          : 'No terminal on the farm yet, so no agent can use these. <button class="bb xs" data-ext="plugin-place" data-id="' + esc(p.id) + '">PLACE TERMINAL</button>') +
         '</div>';
     }
     // A plugin's windows (plugin.json `screens`), openable only while it is approved and live.
@@ -562,7 +562,7 @@
           '<p class="mc-hint">Folder: <code>' + esc(p.id) + '</code> · Version ' + esc(p.version || '0') +
           '<br>Open its folder to edit the code. Starters use <code>index.js</code> and <code>ui/index.html</code>.</p>' +
           (p.active ? extFindings(p.findings) : (p.hasCode === false
-            ? '<p class="mc-hint">Window-only plugin: its pages run sandboxed inside their windows, with no access to your station or computer.</p>'
+            ? '<p class="mc-hint">Window-only plugin: its pages run sandboxed inside their windows, with no access to your farm or computer.</p>'
             : '<p class="mc-hint">Enabling loads this code with your computer’s permissions.</p>')) +
           '<div class="mc-acts"><button class="bb xs" data-ext="plugin-where" data-id="' + esc(p.id) + '">COPY FOLDER PATH</button>' +
           '<button class="bb xs danger" data-ext-remove="' + esc(p.id) + '">DELETE PLUGIN</button></div>' +
@@ -645,7 +645,7 @@
         if (ok) { openAfter = newId; done = 'Plugin created and its window opened. Find its code under Details & code.'; id.value = ''; nm.value = ''; ds.value = ''; pluginIdEdited = false; extEditor('', false); }
       }
       else if (kind === 'plugin-where') {
-        if (!extPluginDir) { extSay('the station has not reported a plugins folder yet', true); return; }
+        if (!extPluginDir) { extSay('the farm has not reported a plugins folder yet', true); return; }
         const path = extPluginDir + (btn.dataset.id ? '/' + btn.dataset.id : '');
         try { await navigator.clipboard.writeText(path); extSay('Path copied to your clipboard.'); }
         catch (_) { extSay(path); }   // no clipboard permission — show it rather than fail silently
@@ -787,7 +787,7 @@
     const tsAgentEl = body.querySelector('#ts-agent');
     const tsAuthorityEl = body.querySelector('#ts-authority');
     const agents = H.present || [];
-    tsAgentEl.innerHTML = agents.map(a => '<option value="' + esc(a.id) + '">' + esc(a.name || a.id) + '</option>').join('') || '<option value="">Station defaults</option>';
+    tsAgentEl.innerHTML = agents.map(a => '<option value="' + esc(a.id) + '">' + esc(a.name || a.id) + '</option>').join('') || '<option value="">Farm defaults</option>';
     // ORG P21: open on the same agent the skills lane in this console shows (sent from a dossier, or the dossier's own)
     const openOn = typeof H.skillsAgentId === 'function' ? H.skillsAgentId() : (agents[H.sel] && agents[H.sel].id);
     if (openOn && agents.some(a => a.id === openOn)) tsAgentEl.value = openOn; else if (agents[H.sel]) tsAgentEl.value = agents[H.sel].id;
@@ -803,7 +803,7 @@
       const who = '<b>' + esc(a.name) + '</b>';
       let html;
       if (a.unrestricted) {
-        const from = a.source === 'environment' ? 'StarNet was started in full-access mode'
+        const from = a.source === 'environment' ? 'Homestead was started in full-access mode'
           : a.source === 'station' ? 'FULL POWER is on for every agent in SETTINGS › PERMISSIONS' : 'set in its dossier, CONFIG › ACCESS';
         html = who + ' is on <b>FULL POWER</b>: it never asks first and can use your whole computer. The switches below do not limit it <span class="dim">(' + esc(from) + ')</span>.';
       } else if (P && P.approval === 'ask') {
@@ -1006,7 +1006,7 @@
         '<details class="mc-inspect"><summary>' + (detail ? 'Error &amp; connection details' : 'Connection details') + (c.tools && c.tools.length ? ' · ' + c.tools.length + ' tools' : '') + '</summary>' +
           '<div class="mc-hint">Service ID: <code>' + esc(c.id) + '</code></div>' +
           '<div class="mc-url dim">' + where + timeout + '</div>' +
-          '<div class="mc-hint">' + (c.account && c.account.email ? '' : 'Account identity: not verified by StarNet. ') + 'Browser logins are separate from this connection.</div>' +
+          '<div class="mc-hint">' + (c.account && c.account.email ? '' : 'Account identity: not verified by Homestead. ') + 'Browser logins are separate from this connection.</div>' +
           detail + tools +
         '</details>' +
         '<div class="mc-acts">' +
@@ -1062,7 +1062,7 @@
                 let r = null;
                 try { r = await Harness.api.post('/api/connectors/storage/start-fresh', { confirm: true }); } catch (_) {}
                 if (r && r.ok) { sfx('ok'); notify(startFreshKeptText(r.j)); }
-                else { sfx('bad'); notify('START FRESH failed: ' + ((r && r.j && r.j.error) || 'the station did not answer')); }
+                else { sfx('bad'); notify('START FRESH failed: ' + ((r && r.j && r.j.error) || 'the farm did not answer')); }
                 refresh();
               }
             });
@@ -1086,7 +1086,7 @@
         const overview = body.querySelector('#mc-overview');
         overview.textContent = 'Service status unavailable'; overview.hidden = false;
         body.querySelector('#mc-notices').textContent = '';
-        listEl.innerHTML = '<div class="mc-detail">Could not read connections. Retry when the station is available.</div>';
+        listEl.innerHTML = '<div class="mc-detail">Could not read connections. Retry when the farm is available.</div>';
       }
     }
     const postJSON = (path, payload) => fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -1111,7 +1111,7 @@
     // the one honest sentence for a failed read: offline vs the station refusing/erroring.
     const readFailLine = (res, offlineMsg) => res.offline
       ? '<div class="mc-detail">' + esc(offlineMsg) + '</div>'
-      : '<div class="mc-detail">couldn\'t read this from the station' + (res.status ? ' (HTTP ' + res.status + ')' : '') + ' — it is running, so this is not a start-it problem. Retry, and check the station log if it persists.</div>';
+      : '<div class="mc-detail">couldn\'t read this from the farm' + (res.status ? ' (HTTP ' + res.status + ')' : '') + ' — it is running, so this is not a start-it problem. Retry, and check the farm log if it persists.</div>';
     async function removeConnector(id, btn) {
       if (btn) btn.disabled = true;
       try {
@@ -1283,7 +1283,7 @@
         ? ['', 'manual setup', 'var(--gold)']
         : e.appPassword ? ['', 'app password', 'var(--gold)']
         : (e.signInAvailable === false ? ['', e.releaseDeferred ? 'deferred' : 'sign-in unavailable', 'var(--gold)'] : (CC_CHIP[e.authType] || CC_CHIP.none));
-      const origin = e.googleApi ? '<span class="cc-badge cc-official" title="StarNet connector using Google’s APIs">STARNET · GOOGLE API</span>' : e.platformApi
+      const origin = e.googleApi ? '<span class="cc-badge cc-official" title="Homestead connector using Google’s APIs">HOMESTEAD · GOOGLE API</span>' : e.platformApi
         ? (e.apiVia ? '<span class="cc-badge cc-community" title="this vendor publishes no API of its own">via ' + esc(e.apiVia) + '</span>'
                     : '<span class="cc-badge cc-official" title="first-party REST API documented by the vendor">✓ official API</span>')
         : (e.official ? '<span class="cc-badge cc-official" title="first-party server, run by the vendor">✓ official</span>'
@@ -1308,18 +1308,18 @@
         : '<code>Authorization: Bearer &hellip;</code>';
       const keyField = e.appPassword
         ? '<div class="cc-key cc-apppw" style="display:none"><div class="mc-hint">1. Turn on 2-Step Verification for your Google account. <a href="https://myaccount.google.com/signinoptions/two-step-verification" target="_blank" rel="noopener">2-Step Verification ↗</a>' +
-            '<br>2. Create an app password (any name, for example StarNet). <a href="' + esc(e.homepage || 'https://myaccount.google.com/apppasswords') + '" target="_blank" rel="noopener">Create app password ↗</a>' +
+            '<br>2. Create an app password (any name, for example Homestead). <a href="' + esc(e.homepage || 'https://myaccount.google.com/apppasswords') + '" target="_blank" rel="noopener">Create app password ↗</a>' +
             '<br>3. Enter your Gmail address and the 16-letter app password, then choose CONNECT.</div>' +
             '<input type="text" inputmode="email" class="key-input" data-cc-addr="' + esc(cardId) + '" aria-label="Gmail address" placeholder="you@gmail.com" autocomplete="off" spellcheck="false">' +
             '<input type="password" class="key-input" data-cc-key="' + esc(cardId) + '" aria-label="Google app password" placeholder="16-letter app password" autocomplete="off" spellcheck="false">' +
-            '<div class="mc-hint">This uses an app password, not Google sign-in. StarNet talks to Gmail directly from this computer (IMAP and SMTP); the password is saved with your other connector credentials on this computer and never shown again.' +
+            '<div class="mc-hint">This uses an app password, not Google sign-in. Homestead talks to Gmail directly from this computer (IMAP and SMTP); the password is saved with your other connector credentials on this computer and never shown again.' +
             ' Mail read through this connection is never sent to StarNet Managed. On a work or school account, an administrator can turn app passwords off. Remove the connection or revoke the app password in your Google account at any time.</div></div>'
         : (e.authType === 'apikey' || e.deviceFlow) && !e.platformApi
         ? '<div class="cc-key" style="display:none"><div class="mc-hint">1. Open your ' + esc(e.name) + ' account and create an API key or token. ' + (e.homepage ? '<a href="' + esc(e.homepage) + '" target="_blank" rel="noopener">Open ' + esc(e.name) + ' ↗</a>' : '') + '<br>2. Paste it below, then choose CONNECT.</div><input type="password" class="key-input" data-cc-key="' + esc(cardId) + '" aria-label="' + esc(e.name) + ' API key or token" placeholder="' + esc(e.name) + ' API key / token" autocomplete="off" spellcheck="false">' +
             '<div class="mc-hint">Stored locally by the sidecar, sent as ' + keyDelivery + ', never displayed again.</div></div>'
         : '';
       const clientField = e.googleApi && e.signInAvailable === false
-        ? '<div class="mc-hint">' + esc(e.signInMessage || 'Google sign-in is not available in this build. StarNet needs to finish enabling it. No account setup is required from you.') + '</div>' : '';
+        ? '<div class="mc-hint">' + esc(e.signInMessage || 'Google sign-in is not available in this build. Homestead needs to finish enabling it. No account setup is required from you.') + '</div>' : '';
       const home = e.homepage ? ' <a class="cc-home dim" href="' + esc(e.homepage) + '" target="_blank" rel="noopener">site ↗</a>' : '';
       // data-search: the console search box (stationui.js doFilter) matches textContent + this attribute, so a
       // Commander typing "google drive" reaches the Google Workspace card even though those words are only in
@@ -1609,8 +1609,8 @@
       notice.setAttribute('aria-label', 'Sign in with GitHub');
       notice.style.cssText = 'position:fixed;inset:0;margin:auto;width:min(520px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;padding:24px;background:#17140e;color:var(--ph,#ddbd83);border:1px solid var(--gold,#ac853e);z-index:10000;box-shadow:0 0 0 100vmax #0009';
       notice.innerHTML = '<strong>CONNECT GITHUB</strong><p>1. Copy this code: <code style="font-size:20px;user-select:all">' + esc(device.userCode) + '</code> <button class="bb sm" data-device-copy>COPY CODE</button></p>' +
-        '<p>2. Open GitHub, enter the code, and approve StarNet’s repository and organization access.</p>' +
-        '<p>3. Return here. StarNet will check and save your connection on this device.</p>' +
+        '<p>2. Open GitHub, enter the code, and approve Homestead’s repository and organization access.</p>' +
+        '<p>3. Return here. Homestead will check and save your connection on this device.</p>' +
         '<div class="mc-acts"><button class="bb sm" data-device-open>OPEN GITHUB</button><button class="bb sm" data-device-cancel>CANCEL</button></div><p data-device-status role="status"></p>';
       document.body.appendChild(notice); notice.showModal();
       notice.addEventListener('cancel', ev => { ev.preventDefault(); ccCancelSignIn(id); });
@@ -1623,7 +1623,7 @@
       const open = async () => {
         const result = await openSignIn(device.url);
         if (!result.opened) progress('Could not open GitHub. Allow pop-ups and choose OPEN GITHUB.');
-        else { ccPendingWin.set(id, result.win || null); progress('Waiting for you to enter the code and approve StarNet in GitHub…'); }
+        else { ccPendingWin.set(id, result.win || null); progress('Waiting for you to enter the code and approve Homestead in GitHub…'); }
       };
       notice.querySelector('[data-device-open]').addEventListener('click', open);
       notice.querySelector('[data-device-cancel]').addEventListener('click', () => ccCancelSignIn(id));
@@ -1861,14 +1861,14 @@
       if (!name) { kyMsgEl.textContent = 'give the platform a name first'; sfx('bad'); kyNameEl.focus(); return; }
       if (!key) { kyMsgEl.textContent = 'paste the API key'; sfx('bad'); kyKeyEl.focus(); return; }
       // the sidecar reads a reference before it answers: say so, since 1Password may be asking for approval right now
-      if (kyIsRef(key)) kyMsgEl.textContent = 'reading from 1Password — approve StarNet in the 1Password app if it asks…';
+      if (kyIsRef(key)) kyMsgEl.textContent = 'reading from 1Password — approve Homestead in the 1Password app if it asks…';
       try {
         // a non-JSON refusal parses to {} — without the r.ok check that {} reads as "saved".
         // A body that carries `key` is a structured verdict (saved:false = live-this-session,
         // handled below) even on a 500, so only a key-less answer is a refusal.
         const r = await postJSON('/api/servicekeys', { name, key, docsUrl });
         const j = await r.json().catch(() => ({}));
-        if (!j.key && (!r.ok || j.error)) { kyMsgEl.textContent = '✕ ' + (j.error || ('the station refused (HTTP ' + r.status + ') — the key was NOT saved')); sfx('bad'); return; }
+        if (!j.key && (!r.ok || j.error)) { kyMsgEl.textContent = '✕ ' + (j.error || ('the farm refused (HTTP ' + r.status + ') — the key was NOT saved')); sfx('bad'); return; }
         // saved:false still means LIVE this session — surface the persistence truth instead of a flat "saved".
         // A 1Password reference is saved even when the read failed; the message says which happened.
         const opUnread = !!(j.key && j.key.source === '1password' && !j.key.refReady);
@@ -1892,7 +1892,7 @@
         try {
           const r = await postJSON('/api/servicekeys/remove', { id });
           const j = await r.json().catch(() => ({}));
-          if (!r.ok || (j.error && !j.ok)) { kyMsgEl.classList.remove('ok'); kyMsgEl.textContent = '✕ ' + (j.error || ('the station refused (HTTP ' + r.status + ') — the key was NOT removed')); sfx('bad'); }
+          if (!r.ok || (j.error && !j.ok)) { kyMsgEl.classList.remove('ok'); kyMsgEl.textContent = '✕ ' + (j.error || ('the farm refused (HTTP ' + r.status + ') — the key was NOT removed')); sfx('bad'); }
           else { sfx('tick'); notify('Key removed'); }
         } catch (_) { kyMsgEl.classList.remove('ok'); kyMsgEl.textContent = '✕ could not reach the sidecar — the key was NOT removed'; sfx('bad'); }
         ccRefresh(); kyRefresh();
@@ -1915,7 +1915,7 @@
           // box truthful to the live state and surface the persistence gap instead of reverting.
           sfx('bad'); notify('⚠ the switch is live for this session, but saving to disk failed — it may not survive a restart', 'warn');
         }
-        else if (!r.ok || (j.error && !j.ok)) { cb.checked = !cb.checked; sfx('bad'); notify('✕ ' + (j.error || ('the station refused (HTTP ' + r.status + ') — nothing changed'))); }
+        else if (!r.ok || (j.error && !j.ok)) { cb.checked = !cb.checked; sfx('bad'); notify('✕ ' + (j.error || ('the farm refused (HTTP ' + r.status + ') — nothing changed'))); }
         else sfx('tick');
       } catch (_) { cb.checked = !cb.checked; sfx('bad'); }
       cb.disabled = false;
@@ -2000,14 +2000,14 @@
       try {
         const out = await Harness.api.post('/api/spotify/disconnect');
         if (!out.ok || !out.j || out.j.ok === false) {
-          const why = (out.j && out.j.error) || 'the station did not confirm the change';
+          const why = (out.j && out.j.error) || 'the farm did not confirm the change';
           msgEl.textContent = '✕ ' + why;
           notify('Spotify was NOT disconnected', 'warn'); sfx('bad');
           return;
         }
         clearInterval(pollTimer); msgEl.textContent = 'disconnected'; notify('Spotify disconnected'); sfx('click');
       } catch (_) {
-        msgEl.textContent = '✕ could not reach the station — Spotify was not disconnected';
+        msgEl.textContent = '✕ could not reach the farm — Spotify was not disconnected';
         notify('Spotify was NOT disconnected', 'warn'); sfx('bad');
       } finally {
         disconnectBtn.disabled = false;

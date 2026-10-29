@@ -28,7 +28,7 @@
   // prompt-informing, never gate-opening; only their typed words are 'stated'.
   const QUESTIONS = [
     { dim: 'identity',
-      pre: 'let me actually get to know my Commander — not just take orders from a silhouette.',
+      pre: 'let me actually get to know my Farmer — not just take orders from a silhouette.',
       ask: 'what does a typical day look like for you? what do you spend most of your time doing?',
       chips: [{ label: 'skip', value: '', skip: true }] },
 

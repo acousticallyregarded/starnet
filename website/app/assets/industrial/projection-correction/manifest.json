@@ -7,8 +7,8 @@
       "views": {
         "s": {
           "image": "industrial_locker.png",
-          "sourceWidth": 292,
-          "sourceHeight": 300,
+          "sourceWidth": 672,
+          "sourceHeight": 960,
           "footprint": {
             "w": 2,
             "h": 1
@@ -23,7 +23,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9933333333333333
+            "y": 1
           },
           "effects": false
         }
@@ -33,8 +33,8 @@
       "views": {
         "s": {
           "image": "industrial_drawerbank.png",
-          "sourceWidth": 521,
-          "sourceHeight": 205,
+          "sourceWidth": 1008,
+          "sourceHeight": 344,
           "footprint": {
             "w": 3,
             "h": 1
@@ -49,7 +49,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9853658536585366
+            "y": 1
           },
           "effects": false
         }
@@ -59,8 +59,8 @@
       "views": {
         "s": {
           "image": "industrial_supplycart.png",
-          "sourceWidth": 319,
-          "sourceHeight": 281,
+          "sourceWidth": 616,
+          "sourceHeight": 768,
           "footprint": {
             "w": 2,
             "h": 1
@@ -75,7 +75,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9893238434163701
+            "y": 1
           },
           "effects": false
         }
@@ -85,8 +85,8 @@
       "views": {
         "s": {
           "image": "industrial_toolcaddy.png",
-          "sourceWidth": 248,
-          "sourceHeight": 208,
+          "sourceWidth": 280,
+          "sourceHeight": 248,
           "footprint": {
             "w": 1,
             "h": 1
@@ -101,7 +101,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9855769230769231
+            "y": 1
           },
           "effects": false
         }
@@ -111,8 +111,8 @@
       "views": {
         "s": {
           "image": "industrial_planter.png",
-          "sourceWidth": 401,
-          "sourceHeight": 278,
+          "sourceWidth": 728,
+          "sourceHeight": 448,
           "footprint": {
             "w": 2,
             "h": 1
@@ -127,7 +127,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.987410071942446
+            "y": 1
           },
           "effects": false
         }
@@ -137,8 +137,8 @@
       "views": {
         "s": {
           "image": "industrial_partition.png",
-          "sourceWidth": 529,
-          "sourceHeight": 286,
+          "sourceWidth": 1008,
+          "sourceHeight": 680,
           "footprint": {
             "w": 3,
             "h": 1
@@ -153,14 +153,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9895104895104895
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "industrial_partition-w.png",
-          "sourceWidth": 177,
-          "sourceHeight": 575,
+          "sourceWidth": 432,
+          "sourceHeight": 1096,
           "footprint": {
             "w": 1,
             "h": 3
@@ -175,14 +175,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9982608695652174
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "industrial_partition-e.png",
-          "sourceWidth": 135,
-          "sourceHeight": 607,
+          "sourceWidth": 224,
+          "sourceHeight": 568,
           "footprint": {
             "w": 1,
             "h": 3
@@ -197,7 +197,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9950576606260296
+            "y": 1
           },
           "effects": false
         }
@@ -207,8 +207,8 @@
       "views": {
         "s": {
           "image": "industrial_bench.png",
-          "sourceWidth": 1328,
-          "sourceHeight": 441,
+          "sourceWidth": 1008,
+          "sourceHeight": 304,
           "footprint": {
             "w": 3,
             "h": 1
@@ -223,7 +223,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9920634920634921
+            "y": 1
           },
           "effects": false
         }
@@ -233,8 +233,8 @@
       "views": {
         "s": {
           "image": "industrial_roundtable.png",
-          "sourceWidth": 419,
-          "sourceHeight": 295,
+          "sourceWidth": 672,
+          "sourceHeight": 624,
           "footprint": {
             "w": 2,
             "h": 1
@@ -270,7 +270,7 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.988135593220339
+            "y": 1
           },
           "effects": false
         }
@@ -280,8 +280,8 @@
       "views": {
         "s": {
           "image": "industrial_servicecab.png",
-          "sourceWidth": 166,
-          "sourceHeight": 444,
+          "sourceWidth": 336,
+          "sourceHeight": 728,
           "footprint": {
             "w": 1,
             "h": 2
@@ -296,7 +296,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9932432432432432
+            "y": 1
           },
           "effects": false
         }
@@ -306,8 +306,8 @@
       "views": {
         "s": {
           "image": "industrial_wallpanel.png",
-          "sourceWidth": 294,
-          "sourceHeight": 252,
+          "sourceWidth": 672,
+          "sourceHeight": 640,
           "footprint": {
             "w": 2,
             "h": 1
@@ -322,7 +322,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9880952380952381
+            "y": 1
           },
           "effects": false
         }
@@ -332,8 +332,8 @@
       "views": {
         "s": {
           "image": "industrial_floorvent.png",
-          "sourceWidth": 423,
-          "sourceHeight": 173,
+          "sourceWidth": 616,
+          "sourceHeight": 368,
           "footprint": {
             "w": 2,
             "h": 1
@@ -348,7 +348,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9826589595375722
+            "y": 1
           },
           "effects": false
         }
@@ -358,8 +358,8 @@
       "views": {
         "s": {
           "image": "industrial_cabletray.png",
-          "sourceWidth": 1133,
-          "sourceHeight": 178,
+          "sourceWidth": 1008,
+          "sourceHeight": 376,
           "footprint": {
             "w": 3,
             "h": 1
@@ -374,7 +374,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9831460674157303
+            "y": 1
           },
           "effects": false
         }
@@ -384,8 +384,8 @@
       "views": {
         "s": {
           "image": "desk.png",
-          "sourceWidth": 1207,
-          "sourceHeight": 804,
+          "sourceWidth": 1064,
+          "sourceHeight": 976,
           "footprint": {
             "w": 3,
             "h": 1
@@ -401,14 +401,14 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9987562189054726
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "desk-w.png",
-          "sourceWidth": 128,
-          "sourceHeight": 190,
+          "sourceWidth": 504,
+          "sourceHeight": 552,
           "footprint": {
             "w": 1,
             "h": 3
@@ -422,12 +422,16 @@
           "mode": "approved",
           "exposure": 1,
           "embeddedSeat": true,
-          "screenPower": "occupied"
+          "screenPower": "occupied",
+          "contact": {
+            "x": 0.5,
+            "y": 1
+          }
         },
         "n": {
           "image": "desk-n.png",
-          "sourceWidth": 597,
-          "sourceHeight": 469,
+          "sourceWidth": 1120,
+          "sourceHeight": 1008,
           "footprint": {
             "w": 3,
             "h": 1
@@ -443,14 +447,14 @@
           "embeddedSeat": true,
           "contact": {
             "x": 0.5,
-            "y": 0.997867803837953
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "desk-e.png",
-          "sourceWidth": 138,
-          "sourceHeight": 190,
+          "sourceWidth": 504,
+          "sourceHeight": 552,
           "footprint": {
             "w": 1,
             "h": 3
@@ -464,7 +468,11 @@
           "mode": "approved",
           "exposure": 1,
           "embeddedSeat": true,
-          "screenPower": "occupied"
+          "screenPower": "occupied",
+          "contact": {
+            "x": 0.5,
+            "y": 1
+          }
         }
       }
     },
@@ -472,8 +480,8 @@
       "views": {
         "s": {
           "image": "desk2.png",
-          "sourceWidth": 687,
-          "sourceHeight": 423,
+          "sourceWidth": 1064,
+          "sourceHeight": 592,
           "footprint": {
             "w": 3,
             "h": 1
@@ -489,14 +497,14 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9929078014184397
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "desk2-w.png",
-          "sourceWidth": 146,
-          "sourceHeight": 186,
+          "sourceWidth": 504,
+          "sourceHeight": 464,
           "footprint": {
             "w": 1,
             "h": 3
@@ -510,12 +518,16 @@
           "mode": "approved",
           "exposure": 1,
           "embeddedSeat": true,
-          "screenPower": "occupied"
+          "screenPower": "occupied",
+          "contact": {
+            "x": 0.5,
+            "y": 1
+          }
         },
         "n": {
           "image": "desk2-n.png",
-          "sourceWidth": 679,
-          "sourceHeight": 411,
+          "sourceWidth": 1120,
+          "sourceHeight": 648,
           "footprint": {
             "w": 3,
             "h": 1
@@ -531,14 +543,14 @@
           "embeddedSeat": true,
           "contact": {
             "x": 0.5,
-            "y": 0.9927007299270073
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "desk2-e.png",
-          "sourceWidth": 218,
-          "sourceHeight": 529,
+          "sourceWidth": 504,
+          "sourceHeight": 464,
           "footprint": {
             "w": 1,
             "h": 3
@@ -555,7 +567,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.994328922495274
+            "y": 1
           },
           "effects": false
         }
@@ -565,8 +577,8 @@
       "views": {
         "s": {
           "image": "console.png",
-          "sourceWidth": 1009,
-          "sourceHeight": 833,
+          "sourceWidth": 784,
+          "sourceHeight": 680,
           "footprint": {
             "w": 2,
             "h": 1
@@ -582,7 +594,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9963985594237695
+            "y": 1
           },
           "effects": false
         }
@@ -592,8 +604,8 @@
       "views": {
         "s": {
           "image": "consoleL.png",
-          "sourceWidth": 1308,
-          "sourceHeight": 719,
+          "sourceWidth": 1120,
+          "sourceHeight": 672,
           "footprint": {
             "w": 3,
             "h": 1
@@ -609,7 +621,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9958275382475661
+            "y": 1
           },
           "effects": false
         }
@@ -619,8 +631,8 @@
       "views": {
         "s": {
           "image": "pixelrig.png",
-          "sourceWidth": 403,
-          "sourceHeight": 338,
+          "sourceWidth": 840,
+          "sourceHeight": 1376,
           "footprint": {
             "w": 2,
             "h": 1
@@ -636,7 +648,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9911242603550295
+            "y": 1
           },
           "effects": false
         }
@@ -646,8 +658,8 @@
       "views": {
         "s": {
           "image": "bench.png",
-          "sourceWidth": 1534,
-          "sourceHeight": 673,
+          "sourceWidth": 1512,
+          "sourceHeight": 904,
           "footprint": {
             "w": 4,
             "h": 1
@@ -663,7 +675,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9955423476968797
+            "y": 1
           },
           "effects": false
         }
@@ -673,8 +685,8 @@
       "views": {
         "s": {
           "image": "workbench.png",
-          "sourceWidth": 1515,
-          "sourceHeight": 909,
+          "sourceWidth": 840,
+          "sourceHeight": 520,
           "footprint": {
             "w": 2,
             "h": 1
@@ -690,7 +702,7 @@
           "activity": "fired",
           "contact": {
             "x": 0.5,
-            "y": 0.9988998899889989
+            "y": 1
           },
           "effects": false
         }
@@ -700,8 +712,8 @@
       "views": {
         "s": {
           "image": "intake.png",
-          "sourceWidth": 1214,
-          "sourceHeight": 976,
+          "sourceWidth": 840,
+          "sourceHeight": 840,
           "footprint": {
             "w": 2,
             "h": 2
@@ -717,7 +729,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9989754098360656
+            "y": 1
           },
           "effects": false
         }
@@ -727,8 +739,8 @@
       "views": {
         "s": {
           "image": "bay.png",
-          "sourceWidth": 418,
-          "sourceHeight": 396,
+          "sourceWidth": 840,
+          "sourceHeight": 904,
           "footprint": {
             "w": 2,
             "h": 2
@@ -744,7 +756,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9949494949494949
+            "y": 1
           },
           "effects": false
         }
@@ -754,8 +766,8 @@
       "views": {
         "s": {
           "image": "filter.png",
-          "sourceWidth": 294,
-          "sourceHeight": 331,
+          "sourceWidth": 392,
+          "sourceHeight": 408,
           "footprint": {
             "w": 1,
             "h": 1
@@ -770,7 +782,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9909365558912386
+            "y": 1
           },
           "effects": false
         }
@@ -780,8 +792,8 @@
       "views": {
         "s": {
           "image": "merger.png",
-          "sourceWidth": 363,
-          "sourceHeight": 213,
+          "sourceWidth": 448,
+          "sourceHeight": 360,
           "footprint": {
             "w": 1,
             "h": 1
@@ -797,7 +809,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9906103286384976
+            "y": 1
           },
           "effects": false
         }
@@ -807,8 +819,8 @@
       "views": {
         "s": {
           "image": "splitter.png",
-          "sourceWidth": 323,
-          "sourceHeight": 212,
+          "sourceWidth": 424,
+          "sourceHeight": 320,
           "footprint": {
             "w": 1,
             "h": 1
@@ -824,7 +836,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9858490566037735
+            "y": 1
           },
           "effects": false
         }
@@ -834,8 +846,8 @@
       "views": {
         "s": {
           "image": "joiner.png",
-          "sourceWidth": 354,
-          "sourceHeight": 225,
+          "sourceWidth": 448,
+          "sourceHeight": 368,
           "footprint": {
             "w": 1,
             "h": 1
@@ -851,7 +863,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9866666666666667
+            "y": 1
           },
           "effects": false
         }
@@ -861,8 +873,8 @@
       "views": {
         "s": {
           "image": "loop.png",
-          "sourceWidth": 288,
-          "sourceHeight": 345,
+          "sourceWidth": 424,
+          "sourceHeight": 464,
           "footprint": {
             "w": 1,
             "h": 1
@@ -878,7 +890,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.991304347826087
+            "y": 1
           },
           "effects": false
         }
@@ -888,8 +900,8 @@
       "views": {
         "s": {
           "image": "outbox.png",
-          "sourceWidth": 1206,
-          "sourceHeight": 1014,
+          "sourceWidth": 840,
+          "sourceHeight": 832,
           "footprint": {
             "w": 2,
             "h": 2
@@ -905,7 +917,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9990138067061144
+            "y": 1
           },
           "effects": false
         }
@@ -915,8 +927,8 @@
       "views": {
         "s": {
           "image": "connector_portal.png",
-          "sourceWidth": 924,
-          "sourceHeight": 1626,
+          "sourceWidth": 480,
+          "sourceHeight": 576,
           "footprint": {
             "w": 1,
             "h": 2
@@ -933,7 +945,7 @@
           "activity": "fired",
           "contact": {
             "x": 0.5,
-            "y": 0.9981549815498155
+            "y": 1
           },
           "effects": false
         }
@@ -943,8 +955,8 @@
       "views": {
         "s": {
           "image": "comms_dish.png",
-          "sourceWidth": 777,
-          "sourceHeight": 1039,
+          "sourceWidth": 560,
+          "sourceHeight": 1128,
           "footprint": {
             "w": 2,
             "h": 2
@@ -960,7 +972,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9990375360923965
+            "y": 1
           },
           "effects": false
         }
@@ -970,8 +982,8 @@
       "views": {
         "s": {
           "image": "comms_uplink.png",
-          "sourceWidth": 244,
-          "sourceHeight": 496,
+          "sourceWidth": 536,
+          "sourceHeight": 1208,
           "footprint": {
             "w": 2,
             "h": 2
@@ -987,7 +999,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9939516129032258
+            "y": 1
           },
           "effects": false
         }
@@ -997,8 +1009,8 @@
       "views": {
         "s": {
           "image": "comms_beacon.png",
-          "sourceWidth": 272,
-          "sourceHeight": 344,
+          "sourceWidth": 480,
+          "sourceHeight": 1576,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1014,7 +1026,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9912790697674418
+            "y": 1
           },
           "effects": false
         }
@@ -1024,8 +1036,8 @@
       "views": {
         "s": {
           "image": "war_intelcab.png",
-          "sourceWidth": 950,
-          "sourceHeight": 930,
+          "sourceWidth": 480,
+          "sourceHeight": 624,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1051,8 +1063,8 @@
       "views": {
         "s": {
           "image": "safe.png",
-          "sourceWidth": 203,
-          "sourceHeight": 361,
+          "sourceWidth": 504,
+          "sourceHeight": 736,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1067,7 +1079,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9916897506925207
+            "y": 1
           },
           "effects": false
         }
@@ -1077,8 +1089,8 @@
       "views": {
         "s": {
           "image": "vault.png",
-          "sourceWidth": 459,
-          "sourceHeight": 259,
+          "sourceWidth": 1232,
+          "sourceHeight": 872,
           "footprint": {
             "w": 3,
             "h": 2
@@ -1093,7 +1105,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9884169884169884
+            "y": 1
           },
           "effects": false
         }
@@ -1103,8 +1115,8 @@
       "views": {
         "s": {
           "image": "rack.png",
-          "sourceWidth": 342,
-          "sourceHeight": 306,
+          "sourceWidth": 816,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1120,7 +1132,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9901960784313726
+            "y": 1
           },
           "effects": false
         }
@@ -1130,8 +1142,8 @@
       "views": {
         "s": {
           "image": "shelf.png",
-          "sourceWidth": 529,
-          "sourceHeight": 252,
+          "sourceWidth": 1488,
+          "sourceHeight": 704,
           "footprint": {
             "w": 4,
             "h": 1
@@ -1146,7 +1158,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9880952380952381
+            "y": 1
           },
           "effects": false
         }
@@ -1156,8 +1168,8 @@
       "views": {
         "s": {
           "image": "core.png",
-          "sourceWidth": 209,
-          "sourceHeight": 448,
+          "sourceWidth": 480,
+          "sourceHeight": 1280,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1173,7 +1185,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9933035714285714
+            "y": 1
           },
           "effects": false
         }
@@ -1183,8 +1195,8 @@
       "views": {
         "s": {
           "image": "gigs_servercart.png",
-          "sourceWidth": 1071,
-          "sourceHeight": 1004,
+          "sourceWidth": 448,
+          "sourceHeight": 560,
           "footprint": {
             "w": 1,
             "h": 1
@@ -1199,7 +1211,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.999003984063745
+            "y": 1
           },
           "effects": false
         }
@@ -1209,8 +1221,8 @@
       "views": {
         "s": {
           "image": "bridge_relaystack.png",
-          "sourceWidth": 293,
-          "sourceHeight": 599,
+          "sourceWidth": 480,
+          "sourceHeight": 1080,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1226,7 +1238,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.994991652754591
+            "y": 1
           },
           "effects": false
         }
@@ -1236,8 +1248,8 @@
       "views": {
         "s": {
           "image": "studio.png",
-          "sourceWidth": 1422,
-          "sourceHeight": 856,
+          "sourceWidth": 816,
+          "sourceHeight": 840,
           "footprint": {
             "w": 2,
             "h": 2
@@ -1252,7 +1264,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9988317757009346
+            "y": 1
           },
           "effects": false
         }
@@ -1262,8 +1274,8 @@
       "views": {
         "s": {
           "image": "airlock.png",
-          "sourceWidth": 218,
-          "sourceHeight": 215,
+          "sourceWidth": 392,
+          "sourceHeight": 544,
           "footprint": {
             "w": 1,
             "h": 1
@@ -1279,7 +1291,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.986046511627907
+            "y": 1
           },
           "effects": false
         }
@@ -1289,8 +1301,8 @@
       "views": {
         "s": {
           "image": "missionboard.png",
-          "sourceWidth": 393,
-          "sourceHeight": 229,
+          "sourceWidth": 1064,
+          "sourceHeight": 728,
           "footprint": {
             "w": 3,
             "h": 1
@@ -1305,7 +1317,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9868995633187773
+            "y": 1
           },
           "effects": false
         }
@@ -1315,8 +1327,8 @@
       "views": {
         "s": {
           "image": "trophycase.png",
-          "sourceWidth": 307,
-          "sourceHeight": 345,
+          "sourceWidth": 728,
+          "sourceHeight": 816,
           "footprint": {
             "w": 2,
             "h": 2
@@ -1331,7 +1343,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9927536231884058
+            "y": 1
           },
           "effects": false
         }
@@ -1341,8 +1353,8 @@
       "views": {
         "s": {
           "image": "bridge_consolebank.png",
-          "sourceWidth": 702,
-          "sourceHeight": 218,
+          "sourceWidth": 3024,
+          "sourceHeight": 1352,
           "footprint": {
             "w": 9,
             "h": 1
@@ -1358,7 +1370,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9862385321100917
+            "y": 1
           },
           "effects": false
         }
@@ -1368,8 +1380,8 @@
       "views": {
         "s": {
           "image": "bridge_tacticaltable.png",
-          "sourceWidth": 1614,
-          "sourceHeight": 825,
+          "sourceWidth": 1400,
+          "sourceHeight": 656,
           "footprint": {
             "w": 5,
             "h": 3
@@ -1385,7 +1397,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9987878787878788
+            "y": 1
           },
           "effects": false
         }
@@ -1395,8 +1407,8 @@
       "views": {
         "s": {
           "image": "bridge_equipmentbay.png",
-          "sourceWidth": 1597,
-          "sourceHeight": 559,
+          "sourceWidth": 1344,
+          "sourceHeight": 608,
           "footprint": {
             "w": 4,
             "h": 1
@@ -1411,7 +1423,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9946332737030411
+            "y": 1
           },
           "effects": false
         }
@@ -1421,8 +1433,8 @@
       "views": {
         "s": {
           "image": "bridge_deckperimeter.png",
-          "sourceWidth": 1558,
-          "sourceHeight": 980,
+          "sourceWidth": 4032,
+          "sourceHeight": 2368,
           "footprint": {
             "w": 12,
             "h": 8
@@ -1437,7 +1449,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9989795918367347
+            "y": 1
           },
           "effects": false
         }
@@ -1447,8 +1459,8 @@
       "views": {
         "s": {
           "image": "bigscreen.png",
-          "sourceWidth": 638,
-          "sourceHeight": 167,
+          "sourceWidth": 2744,
+          "sourceHeight": 936,
           "footprint": {
             "w": 8,
             "h": 1
@@ -1464,7 +1476,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9820359281437125
+            "y": 1
           },
           "effects": false
         }
@@ -1474,8 +1486,8 @@
       "views": {
         "s": {
           "image": "holotable.png",
-          "sourceWidth": 1488,
-          "sourceHeight": 810,
+          "sourceWidth": 1400,
+          "sourceHeight": 904,
           "footprint": {
             "w": 4,
             "h": 2
@@ -1491,7 +1503,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9962962962962963
+            "y": 1
           },
           "effects": false
         }
@@ -1501,8 +1513,8 @@
       "views": {
         "s": {
           "image": "screens.png",
-          "sourceWidth": 343,
-          "sourceHeight": 306,
+          "sourceWidth": 728,
+          "sourceHeight": 736,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1518,7 +1530,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9934640522875817
+            "y": 1
           },
           "effects": false
         }
@@ -1528,8 +1540,8 @@
       "views": {
         "s": {
           "image": "tank.png",
-          "sourceWidth": 368,
-          "sourceHeight": 326,
+          "sourceWidth": 760,
+          "sourceHeight": 1496,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1544,7 +1556,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9938650306748467
+            "y": 1
           },
           "effects": false
         }
@@ -1554,8 +1566,8 @@
       "views": {
         "s": {
           "image": "whiteboard.png",
-          "sourceWidth": 555,
-          "sourceHeight": 247,
+          "sourceWidth": 1400,
+          "sourceHeight": 648,
           "footprint": {
             "w": 4,
             "h": 1
@@ -1570,7 +1582,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9878542510121457
+            "y": 1
           },
           "effects": false
         }
@@ -1580,8 +1592,8 @@
       "views": {
         "s": {
           "image": "ticker.png",
-          "sourceWidth": 477,
-          "sourceHeight": 214,
+          "sourceWidth": 1400,
+          "sourceHeight": 800,
           "footprint": {
             "w": 4,
             "h": 1
@@ -1597,7 +1609,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.985981308411215
+            "y": 1
           },
           "effects": false
         }
@@ -1607,8 +1619,8 @@
       "views": {
         "s": {
           "image": "chartwall.png",
-          "sourceWidth": 477,
-          "sourceHeight": 232,
+          "sourceWidth": 1064,
+          "sourceHeight": 592,
           "footprint": {
             "w": 3,
             "h": 1
@@ -1624,7 +1636,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9870689655172413
+            "y": 1
           },
           "effects": false
         }
@@ -1634,8 +1646,8 @@
       "views": {
         "s": {
           "image": "wartable.png",
-          "sourceWidth": 1981,
-          "sourceHeight": 703,
+          "sourceWidth": 1848,
+          "sourceHeight": 1120,
           "footprint": {
             "w": 5,
             "h": 2
@@ -1650,7 +1662,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9971550497866287
+            "y": 1
           },
           "effects": false
         }
@@ -1660,8 +1672,8 @@
       "views": {
         "s": {
           "image": "calwall.png",
-          "sourceWidth": 737,
-          "sourceHeight": 205,
+          "sourceWidth": 2072,
+          "sourceHeight": 1384,
           "footprint": {
             "w": 6,
             "h": 1
@@ -1676,7 +1688,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9902439024390244
+            "y": 1
           },
           "effects": false
         }
@@ -1686,8 +1698,8 @@
       "views": {
         "s": {
           "image": "bridge_tacscreen.png",
-          "sourceWidth": 340,
-          "sourceHeight": 269,
+          "sourceWidth": 728,
+          "sourceHeight": 752,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1703,7 +1715,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9888475836431226
+            "y": 1
           },
           "effects": false
         }
@@ -1713,8 +1725,8 @@
       "views": {
         "s": {
           "image": "bridge_dispatch_pylon.png",
-          "sourceWidth": 302,
-          "sourceHeight": 573,
+          "sourceWidth": 536,
+          "sourceHeight": 840,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1729,7 +1741,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9947643979057592
+            "y": 1
           },
           "effects": false
         }
@@ -1739,8 +1751,8 @@
       "views": {
         "s": {
           "image": "bridge_orderqueue.png",
-          "sourceWidth": 405,
-          "sourceHeight": 335,
+          "sourceWidth": 784,
+          "sourceHeight": 696,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1755,7 +1767,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.991044776119403
+            "y": 1
           },
           "effects": false
         }
@@ -1765,8 +1777,8 @@
       "views": {
         "s": {
           "image": "war_pivotpanel.png",
-          "sourceWidth": 509,
-          "sourceHeight": 351,
+          "sourceWidth": 728,
+          "sourceHeight": 712,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1781,7 +1793,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9914529914529915
+            "y": 1
           },
           "effects": false
         }
@@ -1791,8 +1803,8 @@
       "views": {
         "s": {
           "image": "war_threatcore.png",
-          "sourceWidth": 200,
-          "sourceHeight": 388,
+          "sourceWidth": 504,
+          "sourceHeight": 840,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1807,7 +1819,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9922680412371134
+            "y": 1
           },
           "effects": false
         }
@@ -1817,8 +1829,8 @@
       "views": {
         "s": {
           "image": "fabricator.png",
-          "sourceWidth": 420,
-          "sourceHeight": 274,
+          "sourceWidth": 1232,
+          "sourceHeight": 936,
           "footprint": {
             "w": 3,
             "h": 2
@@ -1834,7 +1846,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9927007299270073
+            "y": 1
           },
           "effects": false
         }
@@ -1844,8 +1856,8 @@
       "views": {
         "s": {
           "image": "vat.png",
-          "sourceWidth": 382,
-          "sourceHeight": 278,
+          "sourceWidth": 1152,
+          "sourceHeight": 928,
           "footprint": {
             "w": 3,
             "h": 2
@@ -1861,7 +1873,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9892086330935251
+            "y": 1
           },
           "effects": false
         }
@@ -1871,8 +1883,8 @@
       "views": {
         "s": {
           "image": "easel.png",
-          "sourceWidth": 649,
-          "sourceHeight": 748,
+          "sourceWidth": 952,
+          "sourceHeight": 1048,
           "footprint": {
             "w": 3,
             "h": 2
@@ -1887,7 +1899,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9953208556149733
+            "y": 1
           },
           "effects": false
         }
@@ -1897,8 +1909,8 @@
       "views": {
         "s": {
           "image": "tube.png",
-          "sourceWidth": 340,
-          "sourceHeight": 200,
+          "sourceWidth": 728,
+          "sourceHeight": 400,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1914,7 +1926,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.985
+            "y": 1
           },
           "effects": false
         }
@@ -1924,8 +1936,8 @@
       "views": {
         "s": {
           "image": "research_corelens.png",
-          "sourceWidth": 272,
-          "sourceHeight": 363,
+          "sourceWidth": 560,
+          "sourceHeight": 656,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1941,7 +1953,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9917355371900827
+            "y": 1
           },
           "effects": false
         }
@@ -1951,8 +1963,8 @@
       "views": {
         "s": {
           "image": "research_trendpillar.png",
-          "sourceWidth": 272,
-          "sourceHeight": 362,
+          "sourceWidth": 560,
+          "sourceHeight": 1112,
           "footprint": {
             "w": 1,
             "h": 2
@@ -1968,7 +1980,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9917127071823204
+            "y": 1
           },
           "effects": false
         }
@@ -1978,8 +1990,8 @@
       "views": {
         "s": {
           "image": "research_samplecart.png",
-          "sourceWidth": 650,
-          "sourceHeight": 459,
+          "sourceWidth": 784,
+          "sourceHeight": 568,
           "footprint": {
             "w": 2,
             "h": 1
@@ -1994,7 +2006,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9956427015250545
+            "y": 1
           },
           "effects": false
         }
@@ -2004,8 +2016,8 @@
       "views": {
         "s": {
           "image": "research_papers.png",
-          "sourceWidth": 433,
-          "sourceHeight": 241,
+          "sourceWidth": 560,
+          "sourceHeight": 480,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2020,7 +2032,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9875518672199171
+            "y": 1
           },
           "effects": false
         }
@@ -2030,8 +2042,8 @@
       "views": {
         "s": {
           "image": "etsy_threadrack.png",
-          "sourceWidth": 406,
-          "sourceHeight": 314,
+          "sourceWidth": 728,
+          "sourceHeight": 480,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2046,7 +2058,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9936305732484076
+            "y": 1
           },
           "effects": false
         }
@@ -2056,8 +2068,8 @@
       "views": {
         "s": {
           "image": "etsy_dyevat.png",
-          "sourceWidth": 368,
-          "sourceHeight": 308,
+          "sourceWidth": 816,
+          "sourceHeight": 744,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2072,7 +2084,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9902597402597403
+            "y": 1
           },
           "effects": false
         }
@@ -2082,8 +2094,8 @@
       "views": {
         "s": {
           "image": "etsy_kiln.png",
-          "sourceWidth": 324,
-          "sourceHeight": 374,
+          "sourceWidth": 840,
+          "sourceHeight": 1008,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2098,7 +2110,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9919786096256684
+            "y": 1
           },
           "effects": false
         }
@@ -2108,8 +2120,8 @@
       "views": {
         "s": {
           "image": "etsy_packbot.png",
-          "sourceWidth": 270,
-          "sourceHeight": 358,
+          "sourceWidth": 840,
+          "sourceHeight": 784,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2125,7 +2137,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9916201117318436
+            "y": 1
           },
           "effects": false
         }
@@ -2135,8 +2147,8 @@
       "views": {
         "s": {
           "image": "rackV.png",
-          "sourceWidth": 182,
-          "sourceHeight": 453,
+          "sourceWidth": 392,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2152,7 +2164,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9933774834437086
+            "y": 1
           },
           "effects": false
         }
@@ -2162,8 +2174,8 @@
       "views": {
         "s": {
           "image": "crate.png",
-          "sourceWidth": 631,
-          "sourceHeight": 463,
+          "sourceWidth": 728,
+          "sourceHeight": 512,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2188,8 +2200,8 @@
       "views": {
         "s": {
           "image": "boxes.png",
-          "sourceWidth": 314,
-          "sourceHeight": 193,
+          "sourceWidth": 672,
+          "sourceHeight": 496,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2204,7 +2216,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9844559585492227
+            "y": 1
           },
           "effects": false
         }
@@ -2214,8 +2226,8 @@
       "views": {
         "s": {
           "image": "goldcrate.png",
-          "sourceWidth": 312,
-          "sourceHeight": 225,
+          "sourceWidth": 728,
+          "sourceHeight": 504,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2230,7 +2242,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9866666666666667
+            "y": 1
           },
           "effects": false
         }
@@ -2240,8 +2252,8 @@
       "views": {
         "s": {
           "image": "gigs_partsbin.png",
-          "sourceWidth": 312,
-          "sourceHeight": 211,
+          "sourceWidth": 728,
+          "sourceHeight": 448,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2256,7 +2268,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.985781990521327
+            "y": 1
           },
           "effects": false
         }
@@ -2266,8 +2278,8 @@
       "views": {
         "s": {
           "image": "treasury_coinsorter.png",
-          "sourceWidth": 578,
-          "sourceHeight": 317,
+          "sourceWidth": 728,
+          "sourceHeight": 592,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2282,7 +2294,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9936908517350158
+            "y": 1
           },
           "effects": false
         }
@@ -2292,8 +2304,8 @@
       "views": {
         "s": {
           "image": "treasury_token_furnace.png",
-          "sourceWidth": 197,
-          "sourceHeight": 437,
+          "sourceWidth": 392,
+          "sourceHeight": 560,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2308,7 +2320,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9931350114416476
+            "y": 1
           },
           "effects": false
         }
@@ -2318,8 +2330,8 @@
       "views": {
         "s": {
           "image": "commswall.png",
-          "sourceWidth": 646,
-          "sourceHeight": 199,
+          "sourceWidth": 2072,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 6,
             "h": 1
@@ -2335,7 +2347,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9849246231155779
+            "y": 1
           },
           "effects": false
         }
@@ -2345,8 +2357,8 @@
       "views": {
         "s": {
           "image": "comms_inbox.png",
-          "sourceWidth": 457,
-          "sourceHeight": 297,
+          "sourceWidth": 840,
+          "sourceHeight": 1240,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2361,7 +2373,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9865319865319865
+            "y": 1
           },
           "effects": false
         }
@@ -2371,8 +2383,8 @@
       "views": {
         "s": {
           "image": "gigs_thumbwall.png",
-          "sourceWidth": 372,
-          "sourceHeight": 222,
+          "sourceWidth": 728,
+          "sourceHeight": 560,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2388,7 +2400,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9864864864864865
+            "y": 1
           },
           "effects": false
         }
@@ -2398,8 +2410,8 @@
       "views": {
         "s": {
           "image": "gigs_amp.png",
-          "sourceWidth": 225,
-          "sourceHeight": 281,
+          "sourceWidth": 448,
+          "sourceHeight": 528,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2414,7 +2426,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9893238434163701
+            "y": 1
           },
           "effects": false
         }
@@ -2424,8 +2436,8 @@
       "views": {
         "s": {
           "image": "pub_publishpress.png",
-          "sourceWidth": 435,
-          "sourceHeight": 401,
+          "sourceWidth": 840,
+          "sourceHeight": 808,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2441,7 +2453,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9950124688279302
+            "y": 1
           },
           "effects": false
         }
@@ -2451,8 +2463,8 @@
       "views": {
         "s": {
           "image": "pub_outboundchute.png",
-          "sourceWidth": 428,
-          "sourceHeight": 650,
+          "sourceWidth": 504,
+          "sourceHeight": 928,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2468,7 +2480,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9953846153846154
+            "y": 1
           },
           "effects": false
         }
@@ -2478,8 +2490,8 @@
       "views": {
         "s": {
           "image": "pub_mailpod.png",
-          "sourceWidth": 727,
-          "sourceHeight": 513,
+          "sourceWidth": 872,
+          "sourceHeight": 1328,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2495,7 +2507,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9941520467836257
+            "y": 1
           },
           "effects": false
         }
@@ -2505,8 +2517,8 @@
       "views": {
         "s": {
           "image": "arc_indexwall.png",
-          "sourceWidth": 532,
-          "sourceHeight": 234,
+          "sourceWidth": 1400,
+          "sourceHeight": 808,
           "footprint": {
             "w": 4,
             "h": 1
@@ -2521,7 +2533,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9871794871794872
+            "y": 1
           },
           "effects": false
         }
@@ -2531,8 +2543,8 @@
       "views": {
         "s": {
           "image": "arc_microfiche.png",
-          "sourceWidth": 338,
-          "sourceHeight": 277,
+          "sourceWidth": 840,
+          "sourceHeight": 936,
           "footprint": {
             "w": 2,
             "h": 1
@@ -2547,7 +2559,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9927797833935018
+            "y": 1
           },
           "effects": false
         }
@@ -2557,8 +2569,8 @@
       "views": {
         "s": {
           "image": "djbooth.png",
-          "sourceWidth": 849,
-          "sourceHeight": 507,
+          "sourceWidth": 1400,
+          "sourceHeight": 1256,
           "footprint": {
             "w": 4,
             "h": 2
@@ -2573,7 +2585,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9930966469428008
+            "y": 1
           },
           "effects": false
         }
@@ -2583,8 +2595,8 @@
       "views": {
         "s": {
           "image": "speaker.png",
-          "sourceWidth": 231,
-          "sourceHeight": 352,
+          "sourceWidth": 280,
+          "sourceHeight": 432,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2599,7 +2611,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9900568181818182
+            "y": 1
           },
           "effects": false
         }
@@ -2609,8 +2621,8 @@
       "views": {
         "s": {
           "image": "bar.png",
-          "sourceWidth": 974,
-          "sourceHeight": 499,
+          "sourceWidth": 1400,
+          "sourceHeight": 920,
           "footprint": {
             "w": 4,
             "h": 1
@@ -2626,7 +2638,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9929859719438878
+            "y": 1
           },
           "effects": false
         }
@@ -2636,8 +2648,8 @@
       "views": {
         "s": {
           "image": "tv.png",
-          "sourceWidth": 287,
-          "sourceHeight": 216,
+          "sourceWidth": 1064,
+          "sourceHeight": 872,
           "footprint": {
             "w": 3,
             "h": 1
@@ -2653,7 +2665,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9907407407407407
+            "y": 1
           },
           "effects": false
         }
@@ -2663,8 +2675,8 @@
       "views": {
         "s": {
           "image": "couch.png",
-          "sourceWidth": 1859,
-          "sourceHeight": 682,
+          "sourceWidth": 1736,
+          "sourceHeight": 840,
           "footprint": {
             "w": 5,
             "h": 1
@@ -2679,7 +2691,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9970674486803519
+            "y": 1
           },
           "effects": false,
           "seatLift": 6
@@ -2690,8 +2702,8 @@
       "views": {
         "s": {
           "image": "arcade.png",
-          "sourceWidth": 143,
-          "sourceHeight": 326,
+          "sourceWidth": 392,
+          "sourceHeight": 968,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2706,7 +2718,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.99079754601227
+            "y": 1
           },
           "effects": false
         }
@@ -2716,8 +2728,8 @@
       "views": {
         "s": {
           "image": "arcade2.png",
-          "sourceWidth": 143,
-          "sourceHeight": 326,
+          "sourceWidth": 392,
+          "sourceHeight": 544,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2732,7 +2744,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.99079754601227
+            "y": 1
           },
           "effects": false
         }
@@ -2742,8 +2754,8 @@
       "views": {
         "s": {
           "image": "jukebox.png",
-          "sourceWidth": 287,
-          "sourceHeight": 383,
+          "sourceWidth": 504,
+          "sourceHeight": 752,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2760,7 +2772,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9921671018276762
+            "y": 1
           },
           "effects": false
         }
@@ -2770,8 +2782,8 @@
       "views": {
         "s": {
           "image": "bunk.png",
-          "sourceWidth": 1139,
-          "sourceHeight": 1188,
+          "sourceWidth": 672,
+          "sourceHeight": 696,
           "footprint": {
             "w": 2,
             "h": 2
@@ -2786,7 +2798,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9970538720538721
+            "y": 1
           },
           "effects": false
         }
@@ -2796,8 +2808,8 @@
       "views": {
         "s": {
           "image": "quarters_pooltable.png",
-          "sourceWidth": 348,
-          "sourceHeight": 239,
+          "sourceWidth": 1400,
+          "sourceHeight": 568,
           "footprint": {
             "w": 4,
             "h": 2
@@ -2812,7 +2824,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9916317991631799
+            "y": 1
           },
           "effects": false
         }
@@ -2822,8 +2834,8 @@
       "views": {
         "s": {
           "image": "quarters_vending.png",
-          "sourceWidth": 289,
-          "sourceHeight": 465,
+          "sourceWidth": 480,
+          "sourceHeight": 656,
           "footprint": {
             "w": 1,
             "h": 2
@@ -2839,7 +2851,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9956989247311828
+            "y": 1
           },
           "effects": false
         }
@@ -2849,8 +2861,8 @@
       "views": {
         "s": {
           "image": "quarters_lockerbank.png",
-          "sourceWidth": 558,
-          "sourceHeight": 495,
+          "sourceWidth": 1064,
+          "sourceHeight": 904,
           "footprint": {
             "w": 3,
             "h": 1
@@ -2865,7 +2877,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9929292929292929
+            "y": 1
           },
           "effects": false
         }
@@ -2875,8 +2887,8 @@
       "views": {
         "s": {
           "image": "quarters_minifridge.png",
-          "sourceWidth": 198,
-          "sourceHeight": 328,
+          "sourceWidth": 312,
+          "sourceHeight": 496,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2892,7 +2904,7 @@
           "activity": "work",
           "contact": {
             "x": 0.5,
-            "y": 0.9939024390243902
+            "y": 1
           },
           "effects": false
         }
@@ -2902,8 +2914,8 @@
       "views": {
         "s": {
           "image": "coffee.png",
-          "sourceWidth": 214,
-          "sourceHeight": 313,
+          "sourceWidth": 200,
+          "sourceHeight": 304,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2918,7 +2930,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9904153354632588
+            "y": 1
           },
           "effects": false
         }
@@ -2928,8 +2940,8 @@
       "views": {
         "s": {
           "image": "plant.png",
-          "sourceWidth": 640,
-          "sourceHeight": 1412,
+          "sourceWidth": 280,
+          "sourceHeight": 632,
           "footprint": {
             "w": 1,
             "h": 1
@@ -2944,7 +2956,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9975212464589235
+            "y": 1
           },
           "effects": false
         }
@@ -2954,8 +2966,8 @@
       "views": {
         "s": {
           "image": "rug.png",
-          "sourceWidth": 350,
-          "sourceHeight": 228,
+          "sourceWidth": 1400,
+          "sourceHeight": 776,
           "footprint": {
             "w": 4,
             "h": 3
@@ -2970,7 +2982,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9868421052631579
+            "y": 1
           },
           "effects": false
         }
@@ -2980,8 +2992,8 @@
       "views": {
         "s": {
           "image": "rug_small.png",
-          "sourceWidth": 248,
-          "sourceHeight": 228,
+          "sourceWidth": 1008,
+          "sourceHeight": 704,
           "footprint": {
             "w": 3,
             "h": 3
@@ -2996,7 +3008,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9868421052631579
+            "y": 1
           },
           "effects": false
         }
@@ -3006,8 +3018,8 @@
       "views": {
         "s": {
           "image": "rug_large.png",
-          "sourceWidth": 556,
-          "sourceHeight": 535,
+          "sourceWidth": 1680,
+          "sourceHeight": 2312,
           "footprint": {
             "w": 5,
             "h": 5
@@ -3022,7 +3034,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.994392523364486
+            "y": 1
           },
           "effects": false
         }
@@ -3032,8 +3044,8 @@
       "views": {
         "s": {
           "image": "treasury_pnl_holo.png",
-          "sourceWidth": 322,
-          "sourceHeight": 174,
+          "sourceWidth": 280,
+          "sourceHeight": 144,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3048,7 +3060,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9885057471264368
+            "y": 1
           },
           "effects": false
         }
@@ -3058,8 +3070,8 @@
       "views": {
         "s": {
           "image": "arc_floorlight.png",
-          "sourceWidth": 175,
-          "sourceHeight": 175,
+          "sourceWidth": 280,
+          "sourceHeight": 1168,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3074,7 +3086,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9942857142857143
+            "y": 1
           },
           "effects": false
         }
@@ -3084,8 +3096,8 @@
       "views": {
         "s": {
           "image": "arc_ladder.png",
-          "sourceWidth": 331,
-          "sourceHeight": 506,
+          "sourceWidth": 392,
+          "sourceHeight": 672,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3100,7 +3112,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9940711462450593
+            "y": 1
           },
           "effects": false
         }
@@ -3110,8 +3122,8 @@
       "views": {
         "s": {
           "image": "stool.png",
-          "sourceWidth": 400,
-          "sourceHeight": 454,
+          "sourceWidth": 280,
+          "sourceHeight": 288,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3126,7 +3138,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9922907488986784
+            "y": 1
           },
           "effects": false
         }
@@ -3136,8 +3148,8 @@
       "views": {
         "s": {
           "image": "chair.png",
-          "sourceWidth": 457,
-          "sourceHeight": 683,
+          "sourceWidth": 336,
+          "sourceHeight": 616,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3152,14 +3164,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9985358711566618
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "chair-w.png",
-          "sourceWidth": 107,
-          "sourceHeight": 172,
+          "sourceWidth": 280,
+          "sourceHeight": 512,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3171,12 +3183,16 @@
             "height": 16.0748
           },
           "mode": "approved",
-          "exposure": 1
+          "exposure": 1,
+          "contact": {
+            "x": 0.5,
+            "y": 1
+          }
         },
         "n": {
           "image": "chair-n.png",
-          "sourceWidth": 111,
-          "sourceHeight": 167,
+          "sourceWidth": 336,
+          "sourceHeight": 632,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3188,12 +3204,16 @@
             "height": 18.0541
           },
           "mode": "approved",
-          "exposure": 1
+          "exposure": 1,
+          "contact": {
+            "x": 0.5,
+            "y": 1
+          }
         },
         "e": {
           "image": "chair-e.png",
-          "sourceWidth": 108,
-          "sourceHeight": 171,
+          "sourceWidth": 280,
+          "sourceHeight": 512,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3205,7 +3225,11 @@
             "height": 15.8333
           },
           "mode": "approved",
-          "exposure": 1
+          "exposure": 1,
+          "contact": {
+            "x": 0.5,
+            "y": 1
+          }
         }
       }
     },
@@ -3213,8 +3237,8 @@
       "views": {
         "s": {
           "image": "sidetable.png",
-          "sourceWidth": 236,
-          "sourceHeight": 311,
+          "sourceWidth": 336,
+          "sourceHeight": 632,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3250,7 +3274,7 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9919614147909968
+            "y": 1
           },
           "effects": false
         }
@@ -3260,8 +3284,8 @@
       "views": {
         "s": {
           "image": "lowtable.png",
-          "sourceWidth": 521,
-          "sourceHeight": 214,
+          "sourceWidth": 1064,
+          "sourceHeight": 464,
           "footprint": {
             "w": 3,
             "h": 1
@@ -3297,14 +3321,14 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.985981308411215
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "lowtable-e.png",
-          "sourceWidth": 163,
-          "sourceHeight": 304,
+          "sourceWidth": 448,
+          "sourceHeight": 688,
           "footprint": {
             "w": 1,
             "h": 3
@@ -3340,7 +3364,7 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9901315789473685
+            "y": 1
           },
           "effects": false
         }
@@ -3350,8 +3374,8 @@
       "views": {
         "s": {
           "image": "glasstable.png",
-          "sourceWidth": 548,
-          "sourceHeight": 216,
+          "sourceWidth": 1008,
+          "sourceHeight": 312,
           "footprint": {
             "w": 3,
             "h": 1
@@ -3387,14 +3411,14 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9861111111111112
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "glasstable-e.png",
-          "sourceWidth": 449,
-          "sourceHeight": 1325,
+          "sourceWidth": 336,
+          "sourceHeight": 408,
           "footprint": {
             "w": 1,
             "h": 3
@@ -3430,7 +3454,7 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9977358490566037
+            "y": 1
           },
           "effects": false
         }
@@ -3440,8 +3464,8 @@
       "views": {
         "s": {
           "image": "dinertable.png",
-          "sourceWidth": 1237,
-          "sourceHeight": 737,
+          "sourceWidth": 1064,
+          "sourceHeight": 616,
           "footprint": {
             "w": 3,
             "h": 2
@@ -3456,14 +3480,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9952510176390773
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "dinertable-e.png",
-          "sourceWidth": 447,
-          "sourceHeight": 679,
+          "sourceWidth": 728,
+          "sourceHeight": 1520,
           "footprint": {
             "w": 2,
             "h": 3
@@ -3478,7 +3502,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9948453608247423
+            "y": 1
           },
           "effects": false
         }
@@ -3488,8 +3512,8 @@
       "views": {
         "s": {
           "image": "guitar.png",
-          "sourceWidth": 218,
-          "sourceHeight": 444,
+          "sourceWidth": 392,
+          "sourceHeight": 1048,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3504,7 +3528,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9921171171171171
+            "y": 1
           },
           "effects": false
         }
@@ -3514,8 +3538,8 @@
       "views": {
         "s": {
           "image": "booth.png",
-          "sourceWidth": 333,
-          "sourceHeight": 295,
+          "sourceWidth": 672,
+          "sourceHeight": 520,
           "footprint": {
             "w": 2,
             "h": 1
@@ -3530,14 +3554,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.988135593220339
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "booth-w.png",
-          "sourceWidth": 289,
-          "sourceHeight": 646,
+          "sourceWidth": 336,
+          "sourceHeight": 768,
           "footprint": {
             "w": 1,
             "h": 2
@@ -3552,14 +3576,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9945820433436533
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "booth-e.png",
-          "sourceWidth": 696,
-          "sourceHeight": 1789,
+          "sourceWidth": 336,
+          "sourceHeight": 768,
           "footprint": {
             "w": 1,
             "h": 2
@@ -3574,7 +3598,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9980435997764114
+            "y": 1
           },
           "effects": false
         }
@@ -3584,8 +3608,8 @@
       "views": {
         "s": {
           "image": "dinerchair.png",
-          "sourceWidth": 167,
-          "sourceHeight": 311,
+          "sourceWidth": 312,
+          "sourceHeight": 592,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3600,14 +3624,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9887459807073955
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "dinerchair-w.png",
-          "sourceWidth": 226,
-          "sourceHeight": 359,
+          "sourceWidth": 312,
+          "sourceHeight": 576,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3622,14 +3646,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9902506963788301
+            "y": 1
           },
           "effects": false
         },
         "n": {
           "image": "dinerchair-n.png",
-          "sourceWidth": 218,
-          "sourceHeight": 300,
+          "sourceWidth": 312,
+          "sourceHeight": 520,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3644,14 +3668,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9883333333333333
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "dinerchair-e.png",
-          "sourceWidth": 227,
-          "sourceHeight": 359,
+          "sourceWidth": 312,
+          "sourceHeight": 576,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3666,7 +3690,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9902506963788301
+            "y": 1
           },
           "effects": false
         }
@@ -3676,8 +3700,8 @@
       "views": {
         "s": {
           "image": "podchair.png",
-          "sourceWidth": 237,
-          "sourceHeight": 323,
+          "sourceWidth": 280,
+          "sourceHeight": 408,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3692,14 +3716,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9891640866873065
+            "y": 1
           },
           "effects": false
         },
         "w": {
           "image": "podchair-w.png",
-          "sourceWidth": 262,
-          "sourceHeight": 384,
+          "sourceWidth": 312,
+          "sourceHeight": 472,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3714,14 +3738,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9908854166666666
+            "y": 1
           },
           "effects": false
         },
         "n": {
           "image": "podchair-n.png",
-          "sourceWidth": 356,
-          "sourceHeight": 650,
+          "sourceWidth": 280,
+          "sourceHeight": 344,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3736,14 +3760,14 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9961538461538462
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "podchair-e.png",
-          "sourceWidth": 262,
-          "sourceHeight": 386,
+          "sourceWidth": 312,
+          "sourceHeight": 472,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3758,7 +3782,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9909326424870466
+            "y": 1
           },
           "effects": false
         }
@@ -3768,8 +3792,8 @@
       "views": {
         "s": {
           "image": "loungetable.png",
-          "sourceWidth": 426,
-          "sourceHeight": 212,
+          "sourceWidth": 672,
+          "sourceHeight": 384,
           "footprint": {
             "w": 2,
             "h": 1
@@ -3805,14 +3829,14 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9858490566037735
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "loungetable-e.png",
-          "sourceWidth": 190,
-          "sourceHeight": 264,
+          "sourceWidth": 392,
+          "sourceHeight": 600,
           "footprint": {
             "w": 1,
             "h": 2
@@ -3848,7 +3872,7 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9886363636363636
+            "y": 1
           },
           "effects": false
         }
@@ -3858,8 +3882,8 @@
       "views": {
         "s": {
           "image": "longtable.png",
-          "sourceWidth": 1738,
-          "sourceHeight": 658,
+          "sourceWidth": 1064,
+          "sourceHeight": 312,
           "footprint": {
             "w": 3,
             "h": 1
@@ -3895,14 +3919,14 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9969604863221885
+            "y": 1
           },
           "effects": false
         },
         "e": {
           "image": "longtable-e.png",
-          "sourceWidth": 179,
-          "sourceHeight": 380,
+          "sourceWidth": 448,
+          "sourceHeight": 704,
           "footprint": {
             "w": 1,
             "h": 3
@@ -3938,7 +3962,7 @@
           },
           "contact": {
             "x": 0.5,
-            "y": 0.9921052631578947
+            "y": 1
           },
           "effects": false
         }
@@ -3948,8 +3972,8 @@
       "views": {
         "s": {
           "image": "lavalamp.png",
-          "sourceWidth": 282,
-          "sourceHeight": 658,
+          "sourceWidth": 224,
+          "sourceHeight": 392,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3964,7 +3988,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9946808510638298
+            "y": 1
           },
           "effects": false
         }
@@ -3974,8 +3998,8 @@
       "views": {
         "s": {
           "image": "crt_pile.png",
-          "sourceWidth": 205,
-          "sourceHeight": 309,
+          "sourceWidth": 336,
+          "sourceHeight": 424,
           "footprint": {
             "w": 1,
             "h": 1
@@ -3991,7 +4015,7 @@
           "screenPower": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9902912621359223
+            "y": 1
           },
           "effects": false
         }
@@ -4001,8 +4025,8 @@
       "views": {
         "s": {
           "image": "cablerun.png",
-          "sourceWidth": 1135,
-          "sourceHeight": 250,
+          "sourceWidth": 672,
+          "sourceHeight": 208,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4017,7 +4041,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.992
+            "y": 1
           },
           "effects": false
         }
@@ -4027,8 +4051,8 @@
       "views": {
         "s": {
           "image": "hazardpad.png",
-          "sourceWidth": 413,
-          "sourceHeight": 177,
+          "sourceWidth": 616,
+          "sourceHeight": 280,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4043,7 +4067,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9830508474576272
+            "y": 1
           },
           "effects": false
         }
@@ -4053,8 +4077,8 @@
       "views": {
         "s": {
           "image": "tallplant.png",
-          "sourceWidth": 227,
-          "sourceHeight": 435,
+          "sourceWidth": 368,
+          "sourceHeight": 824,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4069,7 +4093,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9942528735632183
+            "y": 1
           },
           "effects": false
         }
@@ -4079,8 +4103,8 @@
       "views": {
         "s": {
           "image": "terrarium.png",
-          "sourceWidth": 227,
-          "sourceHeight": 367,
+          "sourceWidth": 312,
+          "sourceHeight": 520,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4095,7 +4119,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9904632152588556
+            "y": 1
           },
           "effects": false
         }
@@ -4105,8 +4129,8 @@
       "views": {
         "s": {
           "image": "holopet.png",
-          "sourceWidth": 436,
-          "sourceHeight": 1295,
+          "sourceWidth": 168,
+          "sourceHeight": 504,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4121,7 +4145,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9972972972972973
+            "y": 1
           },
           "effects": false
         }
@@ -4131,8 +4155,8 @@
       "views": {
         "s": {
           "image": "plasmaglobe.png",
-          "sourceWidth": 312,
-          "sourceHeight": 656,
+          "sourceWidth": 256,
+          "sourceHeight": 488,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4147,7 +4171,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9946646341463414
+            "y": 1
           },
           "effects": false
         }
@@ -4157,8 +4181,8 @@
       "views": {
         "s": {
           "image": "gachapon.png",
-          "sourceWidth": 200,
-          "sourceHeight": 316,
+          "sourceWidth": 312,
+          "sourceHeight": 616,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4173,7 +4197,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9889240506329114
+            "y": 1
           },
           "effects": false
         }
@@ -4183,8 +4207,8 @@
       "views": {
         "s": {
           "image": "monstera.png",
-          "sourceWidth": 345,
-          "sourceHeight": 377,
+          "sourceWidth": 336,
+          "sourceHeight": 312,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4199,7 +4223,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9907161803713528
+            "y": 1
           },
           "effects": false
         }
@@ -4209,8 +4233,8 @@
       "views": {
         "s": {
           "image": "mug.png",
-          "sourceWidth": 571,
-          "sourceHeight": 520,
+          "sourceWidth": 128,
+          "sourceHeight": 128,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4225,7 +4249,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9932692307692308
+            "y": 1
           },
           "effects": false
         }
@@ -4235,8 +4259,8 @@
       "views": {
         "s": {
           "image": "bookstack.png",
-          "sourceWidth": 298,
-          "sourceHeight": 260,
+          "sourceWidth": 336,
+          "sourceHeight": 336,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4251,7 +4275,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9903846153846154
+            "y": 1
           },
           "effects": false
         }
@@ -4261,8 +4285,8 @@
       "views": {
         "s": {
           "image": "desklamp.png",
-          "sourceWidth": 363,
-          "sourceHeight": 252,
+          "sourceWidth": 336,
+          "sourceHeight": 312,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4277,7 +4301,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9861111111111112
+            "y": 1
           },
           "effects": false
         }
@@ -4287,8 +4311,8 @@
       "views": {
         "s": {
           "image": "radio.png",
-          "sourceWidth": 668,
-          "sourceHeight": 547,
+          "sourceWidth": 280,
+          "sourceHeight": 200,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4304,7 +4328,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.993601462522852
+            "y": 1
           },
           "effects": false
         }
@@ -4314,8 +4338,8 @@
       "views": {
         "s": {
           "image": "toolbox.png",
-          "sourceWidth": 1275,
-          "sourceHeight": 669,
+          "sourceWidth": 280,
+          "sourceHeight": 200,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4330,7 +4354,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9985052316890882
+            "y": 1
           },
           "effects": false
         }
@@ -4340,8 +4364,8 @@
       "views": {
         "s": {
           "image": "figurine.png",
-          "sourceWidth": 231,
-          "sourceHeight": 277,
+          "sourceWidth": 280,
+          "sourceHeight": 408,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4356,7 +4380,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9873646209386282
+            "y": 1
           },
           "effects": false
         }
@@ -4366,8 +4390,8 @@
       "views": {
         "s": {
           "image": "deskterminal.png",
-          "sourceWidth": 247,
-          "sourceHeight": 243,
+          "sourceWidth": 336,
+          "sourceHeight": 376,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4383,7 +4407,7 @@
           "screenPower": "occupied",
           "contact": {
             "x": 0.5,
-            "y": 0.9876543209876543
+            "y": 1
           },
           "effects": false
         }
@@ -4393,8 +4417,8 @@
       "views": {
         "s": {
           "image": "modelship.png",
-          "sourceWidth": 447,
-          "sourceHeight": 225,
+          "sourceWidth": 560,
+          "sourceHeight": 272,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4410,7 +4434,7 @@
           "activity": "ambient",
           "contact": {
             "x": 0.5,
-            "y": 0.9844444444444445
+            "y": 1
           },
           "effects": false
         }
@@ -4420,8 +4444,8 @@
       "views": {
         "s": {
           "image": "steamvent.png",
-          "sourceWidth": 845,
-          "sourceHeight": 473,
+          "sourceWidth": 336,
+          "sourceHeight": 280,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4436,7 +4460,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9936575052854123
+            "y": 1
           },
           "effects": false
         }
@@ -4446,8 +4470,8 @@
       "views": {
         "s": {
           "image": "fishtank.png",
-          "sourceWidth": 1065,
-          "sourceHeight": 809,
+          "sourceWidth": 728,
+          "sourceHeight": 424,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4462,7 +4486,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9962917181705809
+            "y": 1
           },
           "effects": false
         }
@@ -4472,8 +4496,8 @@
       "views": {
         "s": {
           "image": "pokertable.png",
-          "sourceWidth": 457,
-          "sourceHeight": 283,
+          "sourceWidth": 1400,
+          "sourceHeight": 1232,
           "footprint": {
             "w": 4,
             "h": 2
@@ -4488,7 +4512,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9876325088339223
+            "y": 1
           },
           "effects": false
         }
@@ -4498,8 +4522,8 @@
       "views": {
         "s": {
           "image": "bookshelf.png",
-          "sourceWidth": 1125,
-          "sourceHeight": 944,
+          "sourceWidth": 728,
+          "sourceHeight": 792,
           "footprint": {
             "w": 2,
             "h": 1
@@ -4514,7 +4538,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.996822033898305
+            "y": 1
           },
           "effects": false
         }
@@ -4524,8 +4548,8 @@
       "views": {
         "s": {
           "image": "beanbag.png",
-          "sourceWidth": 322,
-          "sourceHeight": 273,
+          "sourceWidth": 392,
+          "sourceHeight": 352,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4540,7 +4564,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9871794871794872
+            "y": 1
           },
           "effects": false
         }
@@ -4550,8 +4574,8 @@
       "views": {
         "s": {
           "image": "pinball.png",
-          "sourceWidth": 336,
-          "sourceHeight": 567,
+          "sourceWidth": 448,
+          "sourceHeight": 664,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4566,7 +4590,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9938271604938271
+            "y": 1
           },
           "effects": false
         }
@@ -4576,8 +4600,8 @@
       "views": {
         "s": {
           "image": "cryopod.png",
-          "sourceWidth": 194,
-          "sourceHeight": 456,
+          "sourceWidth": 336,
+          "sourceHeight": 592,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4592,7 +4616,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.993421052631579
+            "y": 1
           },
           "effects": false
         }
@@ -4602,8 +4626,8 @@
       "views": {
         "s": {
           "image": "incubator.png",
-          "sourceWidth": 193,
-          "sourceHeight": 477,
+          "sourceWidth": 392,
+          "sourceHeight": 1040,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4618,7 +4642,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9937106918238994
+            "y": 1
           },
           "effects": false
         }
@@ -4628,8 +4652,8 @@
       "views": {
         "s": {
           "image": "telescope.png",
-          "sourceWidth": 326,
-          "sourceHeight": 372,
+          "sourceWidth": 536,
+          "sourceHeight": 736,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4644,7 +4668,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9919354838709677
+            "y": 1
           },
           "effects": false
         }
@@ -4654,8 +4678,8 @@
       "views": {
         "s": {
           "image": "telescope_r.png",
-          "sourceWidth": 312,
-          "sourceHeight": 374,
+          "sourceWidth": 536,
+          "sourceHeight": 736,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4670,7 +4694,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9919786096256684
+            "y": 1
           },
           "effects": false
         }
@@ -4680,8 +4704,8 @@
       "views": {
         "s": {
           "image": "camerarig.png",
-          "sourceWidth": 199,
-          "sourceHeight": 339,
+          "sourceWidth": 424,
+          "sourceHeight": 960,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4696,7 +4720,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9941002949852508
+            "y": 1
           },
           "effects": false
         }
@@ -4706,8 +4730,8 @@
       "views": {
         "s": {
           "image": "camerarig_r.png",
-          "sourceWidth": 202,
-          "sourceHeight": 339,
+          "sourceWidth": 424,
+          "sourceHeight": 960,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4722,7 +4746,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9941002949852508
+            "y": 1
           },
           "effects": false
         }
@@ -4732,8 +4756,8 @@
       "views": {
         "s": {
           "image": "weaponrack.png",
-          "sourceWidth": 553,
-          "sourceHeight": 384,
+          "sourceWidth": 952,
+          "sourceHeight": 824,
           "footprint": {
             "w": 3,
             "h": 1
@@ -4748,7 +4772,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9908854166666666
+            "y": 1
           },
           "effects": false
         }
@@ -4758,8 +4782,8 @@
       "views": {
         "s": {
           "image": "weaponrack_r.png",
-          "sourceWidth": 1126,
-          "sourceHeight": 722,
+          "sourceWidth": 952,
+          "sourceHeight": 824,
           "footprint": {
             "w": 3,
             "h": 1
@@ -4774,7 +4798,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9951523545706371
+            "y": 1
           },
           "effects": false
         }
@@ -4784,8 +4808,8 @@
       "views": {
         "s": {
           "image": "punchbag.png",
-          "sourceWidth": 172,
-          "sourceHeight": 416,
+          "sourceWidth": 336,
+          "sourceHeight": 568,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4800,7 +4824,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9915865384615384
+            "y": 1
           },
           "effects": false
         }
@@ -4810,8 +4834,8 @@
       "views": {
         "s": {
           "image": "punchbag_r.png",
-          "sourceWidth": 171,
-          "sourceHeight": 417,
+          "sourceWidth": 336,
+          "sourceHeight": 568,
           "footprint": {
             "w": 1,
             "h": 2
@@ -4826,7 +4850,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9916067146282974
+            "y": 1
           },
           "effects": false
         }
@@ -4836,8 +4860,8 @@
       "views": {
         "s": {
           "image": "benchpress.png",
-          "sourceWidth": 587,
-          "sourceHeight": 344,
+          "sourceWidth": 1008,
+          "sourceHeight": 752,
           "footprint": {
             "w": 3,
             "h": 1
@@ -4852,7 +4876,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9898255813953488
+            "y": 1
           },
           "effects": false
         }
@@ -4862,8 +4886,8 @@
       "views": {
         "s": {
           "image": "benchpress_r.png",
-          "sourceWidth": 1572,
-          "sourceHeight": 865,
+          "sourceWidth": 1008,
+          "sourceHeight": 752,
           "footprint": {
             "w": 3,
             "h": 1
@@ -4878,7 +4902,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9959537572254336
+            "y": 1
           },
           "effects": false
         }
@@ -4888,8 +4912,8 @@
       "views": {
         "s": {
           "image": "recliner.png",
-          "sourceWidth": 232,
-          "sourceHeight": 258,
+          "sourceWidth": 480,
+          "sourceHeight": 584,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4904,7 +4928,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9883720930232558
+            "y": 1
           },
           "effects": false
         }
@@ -4914,8 +4938,8 @@
       "views": {
         "s": {
           "image": "recliner_r.png",
-          "sourceWidth": 232,
-          "sourceHeight": 259,
+          "sourceWidth": 480,
+          "sourceHeight": 584,
           "footprint": {
             "w": 1,
             "h": 1
@@ -4930,7 +4954,7 @@
           "exposure": 1,
           "contact": {
             "x": 0.5,
-            "y": 0.9884169884169884
+            "y": 1
           },
           "effects": false
         }

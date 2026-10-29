@@ -200,10 +200,10 @@ async function settled(p) { let v, done = false; p.then(x => { v = x; done = tru
     reg.register({ name: 'team_dispatch', requiresConsent: true, scope: 'execute', capability: 'orchestrator', schema: { type: 'object' }, run: async () => { ran = true; return 'ran'; } });
     const d = await reg.dispatch({ name: 'team_dispatch', args: {}, id: 'c2' }, { canRun: () => true, canUse: () => ({ ok: true }), agentId: 'a', room: 'office', consent: async () => no });
     A.ok(!ran && d.summary === 'denied', 'a denied call never runs and stays terminal');
-    A.ok(/^consent denied for team_dispatch: the Commander said no on the approval card, so it was NOT run\./.test(d.content), 'it says who said no: ' + d.content);
-    A.ok(/If you mention it, say it to them as "you" \("you declined …"\)\./.test(d.content) && !/the Commander declined/i.test(d.content), 'and how to say it to them (second person), never planting the third-person words: ' + d.content);
+    A.ok(/^consent denied for team_dispatch: the Farmer said no on the approval card, so it was NOT run\./.test(d.content), 'it says who said no: ' + d.content);
+    A.ok(/If you mention it, say it to them as "you" \("you declined …"\)\./.test(d.content) && !/the Farmer declined/i.test(d.content), 'and how to say it to them (second person), never planting the third-person words: ' + d.content);
     const other = await reg.dispatch({ name: 'team_dispatch', args: {}, id: 'c3' }, { canRun: () => true, canUse: () => ({ ok: true }), agentId: 'a', room: 'office', consent: async () => ({ allow: false, reason: 'no consent channel — interactive prompt not wired' }) });
-    A.ok(/consent denied for team_dispatch: no consent channel/.test(other.content) && !/said no/.test(other.content), 'a refusal nobody gave keeps its own reason (never "the Commander said no")');
+    A.ok(/consent denied for team_dispatch: no consent channel/.test(other.content) && !/said no/.test(other.content), 'a refusal nobody gave keeps its own reason (never "the Farmer said no")');
   }
 
   /* A WITHDRAWN ASK IS NOT A NO (review 10-14): an ask whose run stopped (abort) or that was never shown resolves with the

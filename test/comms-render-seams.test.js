@@ -51,7 +51,7 @@ const { makeStationControlTools } = require('../sidecar/tools/builtin/station-co
   {
     global.TaskIntent = TaskIntent;
     const D = require('../frontend/app/deskscreen.js');
-    const gateBody = 'ERROR: Task Brief gate: nothing ran. Settle the Task Brief with brief_proceed, or ask the one material question with brief_ask, before consequential work, then make this same call again. This is a routine step: the Commander sees your brief as its own card, so make the brief call with no text before it and never mention the gate.';
+    const gateBody = 'ERROR: Task Brief gate: nothing ran. Settle the Task Brief with brief_proceed, or ask the one material question with brief_ask, before consequential work, then make this same call again. This is a routine step: the Farmer sees your brief as its own card, so make the brief call with no text before it and never mention the gate.';
     const rows = [
       { role: 'assistant', toolCalls: JSON.stringify([{ id: 'w1', function: { name: 'fs_write', arguments: '{"path":"a.md","content":"hello"}' } }]) },
       { role: 'tool', toolCallId: 'w1', content: gateBody },
@@ -90,7 +90,7 @@ const { makeStationControlTools } = require('../sidecar/tools/builtin/station-co
   makeStationControlTools({ station: { request: async () => ({ ok: true }) }, route: async () => ({ status: 200, json: { ok: true } }), surface: 'interactive' }).register(reg);
   const ctl = reg.get('station.control'), unsettled = { status: 'ready' };
   for (const action of ['group.add', 'group.configure', 'session.rename', 'session.pin', 'session.archive', 'look.set', 'estop.engage']) {
-    A.eq(Policy.canMutate(unsettled, ctl, { args: { action, args: {} } }).ok, true, 'station.control ' + action + ' (station setup) is never held behind the Task Brief');
+    A.eq(Policy.canMutate(unsettled, ctl, { args: { action, args: {} } }).ok, true, 'station.control ' + action + ' (farm setup) is never held behind the Task Brief');
   }
   A.eq(Policy.canMutate(unsettled, ctl, { args: { setting: 'group.add', members: ['copywriter'] } }).ok, true, 'the exemption reads the call the way the tool does (action named as setting, args flat)');
   // only SETUP is exempt: a destructive or deliverable-shaping setting still waits for the brief (rc review 2026-10-14)
@@ -149,7 +149,7 @@ const { makeStationControlTools } = require('../sidecar/tools/builtin/station-co
   A.eq(lines.map(l => l.textContent), ['↳ fs_write · 54ms · denied', '↳ fs_read · 3ms · failed'], 'the run\'s history says "denied" for the Deny and "failed" only for the real error');
   A.eq(lines.map(l => l.className), ['rt-tool denied', 'rt-tool err'], 'and only the real error is drawn red');
 
-  A.ok(/c\.reason === 'denied'\) return errResult\('consent denied for ' \+ call\.name \+ ': the Commander said no on the approval card[^\n]*'denied'\);/.test(read('sidecar/tools/registry.js')), 'the summary it keys on is the consent broker\'s own answer to a Deny on the card');
+  A.ok(/c\.reason === 'denied'\) return errResult\('consent denied for ' \+ call\.name \+ ': the Farmer said no on the approval card[^\n]*'denied'\);/.test(read('sidecar/tools/registry.js')), 'the summary it keys on is the consent broker\'s own answer to a Deny on the card');
   A.ok(/\.tool-chip\.denied \.tc-glyph,\s*\n\.tool-chip\.denied \.tc-stat \{ color: var\(--ph-dim\); \}/.test(read('frontend/css/comms.css')) && /\.tool-chip \.tc-d-res\.denied \{ color: var\(--ph-dim\); \}/.test(read('frontend/css/comms.css')), 'the denied chip is plain dim phosphor (no red)');
 }
 
@@ -304,7 +304,7 @@ const { makeStationControlTools } = require('../sidecar/tools/builtin/station-co
     const chip = id => body.querySelectorAll('.tool-chip').find(c => c.dataset.callId === id);
     chip('c1').classList.toggle('open');
     ctx.renderFlow(body, 'Look:\n\nWrite: done', steps, null, null, true);
-    A.ok(chip('c1') && chip('c1').has('open'), 'the chip the Commander opened is still open after the draft re-renders');
+    A.ok(chip('c1') && chip('c1').has('open'), 'the chip the Farmer opened is still open after the draft re-renders');
     A.eq(chip('c1').querySelector('.tc-head').attrs['aria-expanded'], 'true', 'and its disclosure says so');
     A.ok(!chip('c2').has('open'), 'a chip they did not open stays closed');
   }
@@ -354,7 +354,7 @@ const { makeStationControlTools } = require('../sidecar/tools/builtin/station-co
       t.ctx.noteDeliveryLanding();
       await p;
       A.ok(t.log.close >= 1, 'a delivery landing while the panel is open closes it, so the delivery shows');
-      A.eq(t.log.decline + t.log.recDecline, 0, 'stepping aside is not the Commander declining (no decline, no learning signal)');
+      A.eq(t.log.decline + t.log.recDecline, 0, 'stepping aside is not the Farmer declining (no decline, no learning signal)');
       A.eq(t.log.finished, 1, 'the beat slot is released');
       A.eq(t.log.firing.at(-1), false, 'and the arc lane is released');
     }
@@ -363,7 +363,7 @@ const { makeStationControlTools } = require('../sidecar/tools/builtin/station-co
       const t = mk();
       const p = t.ctx.offerArc('manual:1');
       await tick(); t.ctx.noteDeliveryLanding(); t.aux(); await tick(); t.say(); await tick(); await tick();
-      A.eq(t.log.open, 1, 'a panel the Commander asked for still opens');
+      A.eq(t.log.open, 1, 'a panel the Farmer asked for still opens');
       t.ctx.noteDeliveryLanding(); await tick();
       A.eq(t.log.close, 0, 'and stays open until they answer it');
       void p;

@@ -86,7 +86,7 @@ const brief = { id: 'current-brief', source: 'interactive', status: 'ready', age
   A.eq(c.runsAll, 1, 'one run-history copy per task turn (was 4)');
   A.eq(c.transcriptAll, 1, 'one transcript copy per task turn (was 3)');
   A.ok(notice && notice.count === 4, 'the repeat-work notice is still found from the shared snapshot');
-  A.ok(/The Commander has now asked/.test(ctx), 'and it reaches the composed context');
+  A.ok(/The Farmer has now asked/.test(ctx), 'and it reaches the composed context');
   // the same turn with SEPARATE copies (no shared snapshot) yields the identical notice + context
   const sep = host();
   const n2 = sep.api.standingWorkNotice(brief, 'agent', { projectRoot: PROJECT });
@@ -112,7 +112,7 @@ const brief = { id: 'current-brief', source: 'interactive', status: 'ready', age
   A.eq(api.stationEpoch(), 4242, 'and again');
   A.eq(c.saveReads, 1, 'the save is parsed once while its stamp holds');
   stamp = 's2'; save.doc = { agent: { createdAt: 9001 } };
-  A.eq(api.stationEpoch(), 9001, 'a moved stamp (a save, a new station) re-reads at once');
+  A.eq(api.stationEpoch(), 9001, 'a moved stamp (a save, a new farm) re-reads at once');
   A.eq(c.saveReads, 2, 'with exactly one more parse');
   stamp = ''; save.doc = { agent: { createdAt: 7 } };
   api.stationEpoch(); api.stationEpoch();
@@ -166,9 +166,9 @@ const brief = { id: 'current-brief', source: 'interactive', status: 'ready', age
       const p0 = parses; epochs.push(api.stationEpoch()); turnParses += parses - p0;
       A.eq((await persist(4242)).out.ok, true, 'the desk persists the finished reply before the next turn (' + turn + ')');
     }
-    A.eq(epochs, [4242, 4242, 4242, 4242, 4242, 4242], 'every turn reads the saved station generation');
+    A.eq(epochs, [4242, 4242, 4242, 4242, 4242, 4242], 'every turn reads the saved farm generation');
     A.eq(turnParses, 0, '6 task turns with a desk save between each parse the save 0 times (the stamp-only memo parsed it every turn)');
-    A.eq((await persist(9001)).out.ok, true, 'a save of a new station generation lands');
+    A.eq((await persist(9001)).out.ok, true, 'a save of a new farm generation lands');
     const p1 = parses;
     A.eq(api.stationEpoch(), 9001, 'and the very next turn reads it');
     A.eq(parses - p1, 0, 'from the doc the save already held');

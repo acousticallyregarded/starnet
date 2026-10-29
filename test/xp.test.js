@@ -43,7 +43,7 @@ A.eq(Xp.xpForLevel(2), 50, 'L2 = 50');
 A.eq(Xp.xpForLevel(3), 150, 'L3 = 150');
 A.eq(Xp.xpForLevel(5), 500, 'L5 = 500');
 A.eq(Xp.xpForLevel(10), 2250, 'L10 = 2250');
-A.eq(Xp.xpForLevel(28), 18900, 'L28 = 18900 (the long-haul station number)');
+A.eq(Xp.xpForLevel(28), 18900, 'L28 = 18900 (the long-haul farm number)');
 
 A.eq(Xp.levelForXp(0), 1, '0 xp -> L1');
 A.eq(Xp.levelForXp(49), 1, 'just below L2 -> L1');
@@ -388,8 +388,8 @@ A.eq(Xp.practice([sk({ useCount: 1 })]).count, 1, 'a procedure the model actuall
 
 // each exclusion is a claim we refuse to make.
 A.eq(Xp.practice([sk({ useCount: 9, withheld: true })]).count, 0, 'a WITHHELD skill was never handed to the model — it cannot be known');
-A.eq(Xp.practice([sk({ useCount: 9, withheld: true })]).withheld, 1, '…and the withheld one is surfaced so the Commander can act on it');
-A.eq(Xp.practice([sk({ useCount: 9, createdBy: 'user' })]).count, 0, 'a skill the COMMANDER wrote is given, not learned');
+A.eq(Xp.practice([sk({ useCount: 9, withheld: true })]).withheld, 1, '…and the withheld one is surfaced so the Farmer can act on it');
+A.eq(Xp.practice([sk({ useCount: 9, createdBy: 'user' })]).count, 0, 'a skill the FARMER wrote is given, not learned');
 A.eq(Xp.practice([sk({ useCount: 9, createdBy: 'user' })]).given, 1, '…counted separately, never folded in');
 A.eq(Xp.practice([sk({ useCount: 9, state: 'archived' })]).count, 0, 'a retired procedure is not carried knowledge');
 A.eq(Xp.practice([sk({ useCount: 9, state: 'stale' })]).count, 1, 'a STALE skill is still in force (only archived is retired)');
@@ -529,8 +529,8 @@ A.eq(Xp.credential(fiveDone(['done', 'done', 'done', 'done'])).tier, null, 'four
 const c5 = Xp.credential(fiveDone(['done', 'done', 'done', 'done', 'done']));
 A.eq(c5.tier, 5, 'the first experience tier lands at 5 shipped tasks');
 A.ok(/5\+ tasks shipped/.test(c5.text), 'the tier is published as a THRESHOLD, never a live count');
-A.eq(c5.confBand, null, 'an unrated agent claims no Commander rating');
-A.ok(!/Commander rating/.test(c5.text), '…and the phrase is absent entirely, not empty');
+A.eq(c5.confBand, null, 'an unrated agent claims no Farmer rating');
+A.ok(!/Farmer rating/.test(c5.text), '…and the phrase is absent entirely, not empty');
 A.eq(c5.relBand, 'dependable', 'five clean runs DO calibrate the harness-observed finish rate');
 A.ok(/finish rate: DEPENDABLE/.test(c5.text), 'the finish rate is published once MIN_RUNS attributable runs exist');
 
@@ -538,9 +538,9 @@ A.ok(/finish rate: DEPENDABLE/.test(c5.text), 'the finish rate is published once
 let rated = fiveDone(['done', 'done', 'done', 'done', 'done']);
 for (let i = 0; i < 3; i++) rated = Xp.applyEvent(rated, { name: 'memory.feedback', payload: { agentId: 'a', id: 'm' + i, delta: 2, reason: 'work_great' } }).stats;
 const cRated = Xp.credential(rated);
-A.ok(/Commander rating: /.test(cRated.text), 'a rated agent publishes the Commander rating');
+A.ok(/Farmer rating: /.test(cRated.text), 'a rated agent publishes the Farmer rating');
 A.ok(/finish rate: /.test(cRated.text), '…alongside the separately-sourced finish rate');
-A.ok(cRated.text.indexOf('Commander rating') < cRated.text.indexOf('finish rate'), 'what you said is listed before what the station saw');
+A.ok(cRated.text.indexOf('Farmer rating') < cRated.text.indexOf('finish rate'), 'what you said is listed before what the farm saw');
 
 /* THE CHURN GUARD — this is what makes the credential safe to publish into a briefing. Ordinary work must not
    move the key; only a tier crossing or a band flip may. If this goes red, S3 re-POSTs the whole roster

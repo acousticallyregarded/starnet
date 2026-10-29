@@ -38,9 +38,9 @@ X.stripLegacySoloClause(legacy);
 A.eq(legacy.docs.identity, fresh, 'migrated identity is BYTE-EQUAL to a fresh baseIdentity (rename default-detection preserved)');
 X.stripLegacySoloClause(legacy);
 A.eq(legacy.docs.identity, fresh, 'migration is idempotent (second pass is a no-op)');
-const reworded = { docs: { identity: 'You are ULTRA, hand-authored by the Commander.' } };
+const reworded = { docs: { identity: 'You are ULTRA, hand-authored by the Farmer.' } };
 X.stripLegacySoloClause(reworded);
-A.eq(reworded.docs.identity, 'You are ULTRA, hand-authored by the Commander.', 'a Commander-reworded identity is never touched');
+A.eq(reworded.docs.identity, 'You are ULTRA, hand-authored by the Farmer.', 'a Commander-reworded identity is never touched');
 X.stripLegacySoloClause({});   // no docs at all
 A.ok(true, 'migration tolerates a doc-less agent');
 
@@ -49,7 +49,7 @@ A.ok(/function rosterClause\(a\) \{/.test(appjs), 'rosterClause exists');
 A.ok(/a\.role !== 'orchestrator'\) return ''/.test(appjs), 'rosterClause is orchestrator-only (specialist prompts unchanged)');
 A.ok(/function composeSystemPrompt\(a\) \{[\s\S]{0,400}p \+= rosterClause\(a\);/.test(appjs), 'composeSystemPrompt folds the crew posture in right after identity');
 A.ok(/YOUR CREW: none yet/.test(appjs), 'solo posture stays truthful (only-agent claim now lives where it is derived fresh)');
-A.ok(/When you run as the station\\'s lead/.test(appjs), 'the crew clause is LEAD-conditional (the same base prompt runs the hero as a dispatched worker with no delegation tools)');
+A.ok(/When you run as the farm\\'s lead/.test(appjs), 'the crew clause is LEAD-conditional (the same base prompt runs the hero as a dispatched worker with no delegation tools)');
 
 // ---- D. the cached-systemPrompt trap: every roster-change point recomposes the orchestrators ----
 A.ok(/function recomposeOrchestrators\(\) \{/.test(appjs), 'recomposeOrchestrators exists');

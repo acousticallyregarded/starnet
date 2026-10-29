@@ -17,7 +17,7 @@ const ctx = vm.createContext({ console, module: { exports: {} }, localStorage: {
 vm.runInContext(rd('frontend/app/systems.js'), ctx, { filename: 'systems.js' });
 const Systems = ctx.module.exports;
 Systems.init({ epoch: 'fresh-1', fresh: true, crewCount: () => 1 });
-A.ok(Systems.staged() && !Systems.isOnline('automate') && !Systems.isOnline('stepin'), 'fixture: a fresh station starts with AUTOMATE and STEP-IN hidden');
+A.ok(Systems.staged() && !Systems.isOnline('automate') && !Systems.isOnline('stepin'), 'fixture: a fresh farm starts with AUTOMATE and STEP-IN hidden');
 A.ok(Systems.isOnline('recruit') && Systems.isOnline('connect'), 'org P10: RECRUIT and CONNECT are online on day one');
 
 // the exact lines the awakening and the tour speak
@@ -54,7 +54,7 @@ A.ok(typeof Dialogue.say === 'function' && typeof Dialogue.node === 'function', 
   A.ok(!/Commission one from RECRUITMENT/.test(ui), 'no empty state names RECRUITMENT');
   // the staged note: ONE helper, printed in FIRST MISSION, CREW, LINES and HELP
   A.eq((tut.match(/\+ stagedNote\(\)/g) || []).length, 4, 'the staged-dock note prints in FIRST MISSION, CREW, LINES and HELP');
-  A.eq((tut.match(/Your dock adds buttons as you use the station/g) || []).length, 1, 'one sentence, one place');
+  A.eq((tut.match(/Your dock adds buttons as you use the farm/g) || []).length, 1, 'one sentence, one place');
   // an existing staged station picks up the new start flags on its next load
   const st = new Map();
   const c2 = vm.createContext({ console, module: { exports: {} }, localStorage: { getItem: k => (st.has(k) ? st.get(k) : null), setItem: (k, v) => st.set(k, String(v)), removeItem: k => st.delete(k) } });
@@ -64,7 +64,7 @@ A.ok(typeof Dialogue.say === 'function' && typeof Dialogue.node === 'function', 
   const keyName = Array.from(st.keys())[0];
   const saved = JSON.parse(st.get(keyName)); saved.online = saved.online.filter(id => id !== 'recruit' && id !== 'connect'); st.set(keyName, JSON.stringify(saved));
   S2.init({ epoch: 'old-1', fresh: false, crewCount: () => 1 });
-  A.ok(S2.staged() && S2.isOnline('recruit') && S2.isOnline('connect'), 'a staged station saved before P10 gets RECRUIT and CONNECT on its next load');
+  A.ok(S2.staged() && S2.isOnline('recruit') && S2.isOnline('connect'), 'a staged farm saved before P10 gets RECRUIT and CONNECT on its next load');
 }
 
 A.report('dialogue-doorlaw.test');

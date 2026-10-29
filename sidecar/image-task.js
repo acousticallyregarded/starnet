@@ -39,7 +39,7 @@
   function agentModelBlocker(providerId, model) {
     if (!isImageModel(providerId, model)) return null;
     return 'Model unavailable for agent chat: "' + String(model || '').trim()
-      + '" generates images and does not support StarNet\'s streaming, tool-calling agent wire. '
+      + '" generates images and does not support Homestead\'s streaming, tool-calling agent wire. '
       + 'Choose a text model in COMMS; for image requests that agent will use the placed STUDIO with your OpenAI API key. No provider request was sent.';
   }
 
@@ -99,8 +99,8 @@
       const managed = ['starnet', 'starnet-cloud', 'managed'].includes(String(input.providerId || '').toLowerCase());
       return 'Image task blocked: ' + (managed ? 'the StarNet credits connection is unavailable for ' : 'no media connection is configured for ')
         + label(input.providerId, input.model) + '. Open SETTINGS and ' + (managed
-          ? 'relink this station to your StarNet account'
-          : 'sign in to ChatGPT, connect an OpenAI or OpenRouter API key for image generation, or link this station to your StarNet account')
+          ? 'relink this farm to your StarNet account'
+          : 'sign in to ChatGPT, connect an OpenAI or OpenRouter API key for image generation, or link this farm to your StarNet account')
         + ', then retry. No image artifact was produced.';
     }
     return null;

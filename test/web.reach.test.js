@@ -124,8 +124,8 @@ function stubFetch(routes) {
     const { r } = reader(() => ({ status: 200, title: 'Article', text: 'Browser-rendered body text.' }));
     const { fetchTool } = makeWebTools({ fetchImpl: stubFetch([['walled.example', { status: 403 }]]), lookup: null, reader: r });
     const res = await fetchTool.run({ url: 'https://walled.example/story' }, {});
-    A.ok(/Browser-rendered body text/.test(res.content), 'the walled page was read through the station browser');
-    A.ok(/read via the station browser after http 403/.test(res.content), 'the provenance label says the browser read it (truthful telemetry)');
+    A.ok(/Browser-rendered body text/.test(res.content), 'the walled page was read through the farm browser');
+    A.ok(/read via the farm browser after http 403/.test(res.content), 'the provenance label says the browser read it (truthful telemetry)');
     A.ok(/chars via browser$/.test(res.summary), 'the summary names the browser source');
   }
 
@@ -154,7 +154,7 @@ function stubFetch(routes) {
     const res = await fetchTool.run({ url: 'https://walled.example/story' }, {});
     A.eq(res.summary, 'site declined (403)', 'still a calm site-declined answer');
     A.ok(/browser also tried/.test(res.content) && /verification wall/.test(res.content),
-      'the answer records that the station browser escalated and met a verification wall');
+      'the answer records that the farm browser escalated and met a verification wall');
   }
 
   // ---- J. search: throttled scrape chain falls through to the reader BEFORE the paid fallback ----
@@ -225,7 +225,7 @@ function stubFetch(routes) {
     const w = makeWebTools({ fetchImpl: stubFetch(THROTTLED.concat([OR_HIT])), lookup: null, reader: r, openrouter: { apiKey: 'k', model: 'm' } });
     const res = await w.searchTool.run({ query: 'q' }, {});
     A.ok(/via openrouter/.test(res.summary), 'N: the search still answers through the next rung: ' + res.summary);
-    A.ok(/station browser could not start/.test(res.summary) && /station browser could not start/.test(res.content), 'N: and says the station browser could not start: ' + res.summary);
+    A.ok(/farm browser could not start/.test(res.summary) && /farm browser could not start/.test(res.content), 'N: and says the farm browser could not start: ' + res.summary);
   }
   {
     // a browser stuck starting: the rung gives up within its budget when OpenRouter can still answer
@@ -235,10 +235,10 @@ function stubFetch(routes) {
     const t0 = Date.now();
     const res = await w.searchTool.run({ query: 'q' }, {});
     A.ok(Date.now() - t0 < 3000 && /via openrouter/.test(res.summary), 'O: a browser that does not answer in time is passed over: ' + res.summary);
-    A.ok(/station browser was not ready within/.test(res.summary), 'O: and the answer says so: ' + res.summary);
+    A.ok(/farm browser was not ready within/.test(res.summary), 'O: and the answer says so: ' + res.summary);
     const t1 = Date.now();
     const again = await w.searchTool.run({ query: 'q2' }, {});
-    A.ok(Date.now() - t1 < 6000 && made === 1 && /station browser is still starting/.test(again.summary), 'O: the next search does not queue behind the stuck browser (the engines keep their polite spacing): ' + again.summary + ' ms=' + (Date.now() - t1) + ' made=' + made);
+    A.ok(Date.now() - t1 < 6000 && made === 1 && /farm browser is still starting/.test(again.summary), 'O: the next search does not queue behind the stuck browser (the engines keep their polite spacing): ' + again.summary + ' ms=' + (Date.now() - t1) + ' made=' + made);
   }
   {
     // with no later rung the reader keeps its full time: a slow-but-healthy browser still answers
@@ -270,16 +270,16 @@ function stubFetch(routes) {
     const r = makeWebReader({ makeDriver: () => deadDriver(), idleMs: 3600000 });
     const w = makeWebTools({ fetchImpl: stubFetch(THROTTLED), lookup: null, reader: r });
     const res = await w.searchTool.run({ query: 'q' }, {});
-    A.ok(/station browser could not start/.test(res.summary) && !/throttled/.test(res.summary), 'R: the summary names the dead browser: ' + res.summary);
-    A.ok(/station browser could not start/.test(res.content) && !/not a malfunction/.test(res.content), 'R: the content says so too, and does not call it a non-fault: ' + res.content);
+    A.ok(/farm browser could not start/.test(res.summary) && !/throttled/.test(res.summary), 'R: the summary names the dead browser: ' + res.summary);
+    A.ok(/farm browser could not start/.test(res.content) && !/not a malfunction/.test(res.content), 'R: the content says so too, and does not call it a non-fault: ' + res.content);
     const again = await w.searchTool.run({ query: 'q2' }, {});
-    A.ok(/station browser could not start/.test(again.summary), 'R: a later search during the cooldown says so at once: ' + again.summary);
+    A.ok(/farm browser could not start/.test(again.summary), 'R: a later search during the cooldown says so at once: ' + again.summary);
   }
   {
     /* S: the reader never reads ambient time (lint-determinism): the station's ONE reader gets the real clock from the
        composition root, so its launch cooldown really ends in production; with no clock injected it never measures as over. */
     const host = require('fs').readFileSync(require('path').join(__dirname, '..', 'sidecar', 'index.js'), 'utf8');
-    A.ok(/const stationWebReader = makeWebReader\(\{ env: process\.env, now: \(\) => Date\.now\(\) \}\);/.test(host), 'S: the host injects the real clock into the station web reader');
+    A.ok(/const stationWebReader = makeWebReader\(\{ env: process\.env, now: \(\) => Date\.now\(\) \}\);/.test(host), 'S: the host injects the real clock into the farm web reader');
     const r = makeWebReader({ makeDriver: () => ({ navigate: async () => { throw new Error('browser unavailable: could not attach to Chromium'); },
       lastResponse: () => null, evalPublic: async () => ({ value: [] }), getText: async () => '', close: async () => {} }), idleMs: 3600000 });
     await r.search('q');

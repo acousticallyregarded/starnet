@@ -42,7 +42,7 @@ const resolvedTools = (capIds, tools) => ({
   const fullPower = summarizeCapabilities(
     resolvedTools(['web', 'cabinet', 'workbench'], ['web_search', 'fs.read', 'shell.exec', 'computer.use', 'desktop.open']),
     { surface: 'autonomous', unrestrictedHost: true });
-  A.ok(/FULL POWER is active: the Commander authorized the whole local computer/.test(fullPower),
+  A.ok(/FULL POWER is active: the Farmer authorized the whole local computer/.test(fullPower),
     'Full Power is stated at the final authoritative prompt seam');
   A.ok(/arbitrary local host commands and host paths/.test(fullPower) && /physical screen\/input/.test(fullPower),
     'Full Power names general host execution and the actually projected native desktop tools');
@@ -61,7 +61,7 @@ const resolvedTools = (capIds, tools) => ({
   // the ordinary unattended warning or impossible floor-placement advice.
   const owner = summarizeCapabilities(resolvedWith(), { surface: 'autonomous', ownerTrusted: true });
   A.ok(/authenticated owner Telegram session/.test(owner), 'owner DM: names the actual trusted remote-control posture');
-  A.ok(!/UNATTENDED run/.test(owner), 'owner DM: does not falsely describe the Commander as unattended automation');
+  A.ok(!/UNATTENDED run/.test(owner), 'owner DM: does not falsely describe the Farmer as unattended automation');
   A.ok(!/place a DISH|place an INTEL CAB|place a WORKBENCH/.test(owner), 'owner DM: never suggests inaccessible floor placement');
 
   // 5) no surface specified -> behaves as interactive (emits the note)
@@ -130,7 +130,7 @@ const resolvedTools = (capIds, tools) => ({
   // never as "You CAN" on a reply with nothing to call; the missing-power advice stays (it is still true).
   const webToolless = summarizeCapabilities(resolvedWith('web'), { surface: 'interactive', toolless: true });
   A.ok(!/You CAN:/.test(webToolless), 'toolless: no "You CAN" claim on a turn with no tools attached');
-  A.ok(/Your station grants:.*search\/fetch the web/.test(webToolless), 'toolless: the station grant is still stated');
+  A.ok(/Your farm grants:.*search\/fetch the web/.test(webToolless), 'toolless: the farm grant is still stated');
   A.ok(/NONE of these tools are attached to THIS reply/.test(webToolless), 'toolless: says plainly that nothing is attached to this reply');
   A.ok(/never claim you searched, fetched, browsed/.test(webToolless), 'toolless: forbids claiming tool work this reply');
   A.ok(/You do NOT have:/.test(webToolless) && /place an INTEL CAB/.test(webToolless), 'toolless: the missing-power placement advice stays');

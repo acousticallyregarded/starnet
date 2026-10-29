@@ -123,10 +123,10 @@ function execRefusal(name, ctx) {
   const cmd = '/' + String(name || 'command');
   if (c.chatType === 'group') {
     return cmd + ' is one of your shell commands, and those never run in a group: the output would be posted to everyone here. '
-      + (c.ownerDmExec ? 'Send it to me in our DM instead.' : 'Run it from the StarNet desktop app instead.');
+      + (c.ownerDmExec ? 'Send it to me in our DM instead.' : 'Run it from the Homestead desktop app instead.');
   }
-  if (c.ownerDmExec) return cmd + ' is one of your shell commands and could not run here. Run it from the StarNet desktop app.';
-  return cmd + ' is one of your shell commands. Over messaging those only run in your DM with the station\'s Telegram bot; here, run it from the StarNet desktop app.';
+  if (c.ownerDmExec) return cmd + ' is one of your shell commands and could not run here. Run it from the Homestead desktop app.';
+  return cmd + ' is one of your shell commands. Over messaging those only run in your DM with the farm\'s Telegram bot; here, run it from the Homestead desktop app.';
 }
 
 module.exports = { makeUserCommands, menuEntries, execRefusal, NAME_RE, MAX_COMMANDS, MAX_CMD_LEN };

@@ -51,7 +51,7 @@ function makeSigninStore(deps) {
   }
   function forget() {
     if (anyLive()) return { ok: false, error: 'an agent is waiting on you in this browser right now - hand it back or cancel first' };
-    if (isBusy()) return { ok: false, error: 'a run is using the station browser right now - try again when it finishes' };
+    if (isBusy()) return { ok: false, error: 'a run is using the farm browser right now - try again when it finishes' };
     try { fs.rmSync(dir, { recursive: true, force: true }); }
     catch (e) { return { ok: false, error: 'could not remove the saved browser profile: ' + ((e && e.message) || e) }; }
     let gone = true; try { gone = !fs.existsSync(dir); } catch (e) { failNote('signins.gone', e); }
@@ -128,7 +128,7 @@ function makeHandoffRoutes(deps) {
 function nudgeLine(view, agentName) {
   const who = String(agentName || view.agentId || 'An agent').toUpperCase();
   const why = { login: 'sign in', '2fa': 'enter a sign-in code', captcha: 'get past a human check', payment: 'confirm a payment', other: 'help with a page' }[view.reason] || 'help with a page';
-  return who + ' is waiting for you to ' + why + (view.where ? ' at ' + view.where : '') + '. Open StarNet > STEP-IN to take its browser.' + (view.note ? ' (' + String(view.note).slice(0, 160) + ')' : '');
+  return who + ' is waiting for you to ' + why + (view.where ? ' at ' + view.where : '') + '. Open Homestead > STEP-IN to take its browser.' + (view.note ? ' (' + String(view.note).slice(0, 160) + ')' : '');
 }
 
 module.exports = { makeHandoffRoutes, makeSigninStore, nudgeLine, LIST_FILE };

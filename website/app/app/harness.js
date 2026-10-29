@@ -313,7 +313,7 @@ const Harness = (() => {
      the next page life marks it handled at boot (bootNotices), so a reload never leaves it in the bell, unread. */
   const STALE_KEY = 'station-restarted';
   // "keeps trying" only where it is true: a page served by the sidecar re-reads '/' on every refused call; a desktop page never does
-  const staleLine = () => 'The station restarted and this page has not picked up its new key yet. '
+  const staleLine = () => 'The farm restarted and this page has not picked up its new key yet. '
     + (!DESKTOP && !(typeof window !== 'undefined' && window.__STARNET_API__) ? 'It keeps trying on its own; reload this page to reconnect now.' : 'Reload this page to reconnect.');
   function reloadThisPage() {
     const door = typeof Friendly !== 'undefined' && Friendly.actionButton ? Friendly.actionButton({ action: 'reload' }) : null;
@@ -345,9 +345,9 @@ const Harness = (() => {
       : r === 'other-user' ? 'the connection belongs to another account'
       : r === 'unsupported-platform' ? 'this system can’t run the ownership check'
       : 'the ownership check did not pass';
-    return 'StarNet could not confirm this browser runs as your own user account (' + why + '), so it won’t take commands from this page. '
+    return 'Homestead could not confirm this browser runs as your own user account (' + why + '), so it won’t take commands from this page. '
       + (withheldRetryable(r) ? 'Reload this page to run the check again. If it keeps failing, open' : 'Open')
-      + ' StarNet from the desktop app, or if this is your own browser, restart StarNet with STARNET_TRUST_LOCAL_PEERS=1.';
+      + ' Homestead from the desktop app, or if this is your own browser, restart Homestead with STARNET_TRUST_LOCAL_PEERS=1.';
   }
   // Shown ONCE per page life — at boot (init) or on the first refused call, whichever comes first — and kept in
   // NOTIFICATIONS as one alert (key folds a repeat after a reload), because it outlives a toast's few seconds. A page
@@ -388,11 +388,11 @@ const Harness = (() => {
       if (tokenWithheld) {   // the re-run ownership check passed: not a restart, and the withheld alert is now handled
         tokenWithheld = '';
         stationUI('settleNotifs', ['token-withheld']);
-        stationNotify('The ownership check passed on retry — this page can drive the station now.', 'good');
+        stationNotify('The ownership check passed on retry — this page can drive the farm now.', 'good');
         return;
       }
       stationUI('settleNotifs', [STALE_KEY]);   // the "has not picked up its new key" alert is handled now
-      stationNotify('The station service restarted — this page reconnected on its own.', 'good', { key: STALE_KEY });
+      stationNotify('The farm service restarted — this page reconnected on its own.', 'good', { key: STALE_KEY });
     },
     onStale: () => {
       if (tokenWithheld) { noteTokenWithheld(); return; }   // not a restart: say why the key was kept, never "restarted"
@@ -686,14 +686,14 @@ const Harness = (() => {
       } else {
         retry = r.status >= 500;
         out = { ok: false, error: j.error ? String(j.error) : removing
-          ? 'the station refused to delete its copy of this connection (HTTP ' + r.status + ') — routines and other unattended runs keep using it until a retry succeeds'
-          : 'the station refused to keep a copy for routines (HTTP ' + r.status + ') — chat in this browser still works' };
+          ? 'the farm refused to delete its copy of this connection (HTTP ' + r.status + ') — routines and other unattended runs keep using it until a retry succeeds'
+          : 'the farm refused to keep a copy for routines (HTTP ' + r.status + ') — chat in this browser still works' };
       }
     } catch (_) {
       retry = true;
       out = { ok: false, error: removing
-        ? 'the station could not be reached to delete its copy of this connection — routines and other unattended runs keep using it until a retry succeeds'
-        : 'the station could not be reached to keep a copy for routines — chat in this browser still works' };
+        ? 'the farm could not be reached to delete its copy of this connection — routines and other unattended runs keep using it until a retry succeeds'
+        : 'the farm could not be reached to keep a copy for routines — chat in this browser still works' };
     }
     if (!out.ok) {
       if (retry) { setEngineSyncState(p, { rev: state.rev, pending: true }); out.error += ENGINE_RETRY_NOTE; }
@@ -752,7 +752,7 @@ const Harness = (() => {
     desktopEndpointsHeld().forEach((baseUrl, provider) => {
       jobs.push(Promise.resolve().then(() => invoke('harness_store_provider_key', { provider, baseUrl }))
         .then(() => ({ provider, ok: true }), e => {
-          console.warn('[harness] ' + provider + ': could not hand the station its endpoint: ' + ((e && e.message) || e));
+          console.warn('[harness] ' + provider + ': could not hand the farm its endpoint: ' + ((e && e.message) || e));
           return { provider, ok: false };
         }));
     });
@@ -784,12 +784,12 @@ const Harness = (() => {
     // a page the station KEPT its key from refuses every key save with 'forbidden token' too — that is not a restart
     // (review threads-backend-05). The typeof guard keeps this pure when a test lifts it on its own.
     const withheld = typeof tokenWithheld === 'string' && tokenWithheld;
-    const hint = /forbidden origin/.test(t) ? ' — this page’s address doesn’t match the station; open StarNet at the exact address you forward to it'
-      : /forbidden host/.test(t) ? ' — StarNet answers only on localhost / 127.0.0.1; reach it through a port forward, not a hostname'
-      : /forbidden token/.test(t) && withheld ? ' — this browser was not verified as running under your own user account, so the station kept its key from this page (see the notice)'
-      : /forbidden token/.test(t) ? ' — the station restarted since this page loaded; reload the page'
+    const hint = /forbidden origin/.test(t) ? ' — this page’s address doesn’t match the farm; open Homestead at the exact address you forward to it'
+      : /forbidden host/.test(t) ? ' — Homestead answers only on localhost / 127.0.0.1; reach it through a port forward, not a hostname'
+      : /forbidden token/.test(t) && withheld ? ' — this browser was not verified as running under your own user account, so the farm kept its key from this page (see the notice)'
+      : /forbidden token/.test(t) ? ' — the farm restarted since this page loaded; reload the page'
       : '';
-    return 'the station refused the key check (HTTP ' + status + (t && !/^[{<]/.test(t) ? ' ' + t : '') + ')' + hint;
+    return 'the farm refused the key check (HTTP ' + status + (t && !/^[{<]/.test(t) ? ' ' + t : '') + ')' + hint;
   }
   // the key check's failure in words a first-time user can act on: an unreachable or overloaded PROVIDER is not a
   // key problem, and "fetch failed (ECONNREFUSED)" / "credential probe HTTP 503" say nothing to a beginner. Same
@@ -848,7 +848,7 @@ const Harness = (() => {
   // got the endpoint. setBaseUrl still never rejects; it resolves the failure in the { engine } shape warnIfStationLacksKey reads.
   function desktopEndpointFailed(p, e) {
     console.warn('[harness] ' + p + ': desktop endpoint store failed: ' + ((e && e.message) || e));
-    return { engine: { ok: false, error: 'the endpoint change is saved in this window, but the desktop could not apply it to the station — retry ✎ ENDPOINT URL before running' } };
+    return { engine: { ok: false, error: 'the endpoint change is saved in this window, but the desktop could not apply it to the farm — retry ✎ ENDPOINT URL before running' } };
   }
   const setBaseUrl = (u, provider) => {
     selectionRevision++;
@@ -1053,7 +1053,7 @@ const Harness = (() => {
     const credentialSaved = hasStoredCredential(p);
     const endpointConfigured = p === 'ollama' || p === 'claude-cli' || (p === 'custom' && !!baseUrl);
     const selected = p === getProv();
-    const fallback = { provider: p, credentialSaved, endpointConfigured, reachable: false, catalogAvailable: false, credentialVerified: false, selected, error: 'station unreachable' };
+    const fallback = { provider: p, credentialSaved, endpointConfigured, reachable: false, catalogAvailable: false, credentialVerified: false, selected, error: 'farm unreachable' };
     if (p === 'custom' && !endpointConfigured) return Object.assign({}, fallback, { error: 'endpoint not configured' });
     try {
       const r = await fetch('/api/providers/probe', {
@@ -1156,7 +1156,7 @@ const Harness = (() => {
       s.dead = true;
       if (s.readyTimer) { clearTimeout(s.readyTimer); s.readyTimer = null; }
       if (cur === s) { cur = null; clearIdle(); }
-      try { s.reject(err || new Error('the station closed the run stream')); } catch (_) {}
+      try { s.reject(err || new Error('the farm closed the run stream')); } catch (_) {}
       const sinks = [...s.sinks.values()];
       s.sinks.clear();
       for (const sink of sinks) { if (err) sink.fail(err); else sink.close(); }
@@ -1208,7 +1208,7 @@ const Harness = (() => {
         s.readyTimer = null;
         if (s.id || s.dead) return;
         skipUntil = Date.now() + SKIP_MS;
-        lost(s, new Error('the station\'s run stream did not open in time'));
+        lost(s, new Error('the farm\'s run stream did not open in time'));
       }, READY_MS);
       (async () => {
         let res;
@@ -1291,7 +1291,7 @@ const Harness = (() => {
     } catch (e) {
       if (shared) shared.abandon();   // the POST may have reached the station: withdraw it (an abort already did)
       const failed = Promise.reject(e); failed.catch(() => {});
-      return { ok: false, status: 0, j: { error: 'the station could not be reached: ' + ((e && e.message) || e) }, done: failed };
+      return { ok: false, status: 0, j: { error: 'the farm could not be reached: ' + ((e && e.message) || e) }, done: failed };
     }
     if (!res.ok) {
       if (shared) shared.drop();
@@ -1620,7 +1620,7 @@ const Harness = (() => {
     if (!runId) return { ok: false, error: 'no run id' };
     try {
       const r = await fetch('/api/cancel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ runId }) });
-      if (!r.ok) return { ok: false, error: 'the station refused the stop (http ' + r.status + ')', status: r.status };
+      if (!r.ok) return { ok: false, error: 'the farm refused the stop (http ' + r.status + ')', status: r.status };
       // ADDITIVE (2026-10-14): the station says whether a live run was there to stop. Passed on only when it says so —
       // a body that is not JSON is still a confirmed stop, it just proves nothing more.
       let said = null;
@@ -1668,8 +1668,8 @@ const Harness = (() => {
       const r = await fetch('/api/consent/args?runId=' + encodeURIComponent(runId) + '&promptId=' + encodeURIComponent(promptId), { cache: 'no-store' });
       const j = await r.json().catch(() => null);
       if (r.ok && j && j.ok && typeof j.args === 'string') return j;
-      return { ok: false, gone: r.status === 404, error: (j && j.error) || ('the station refused the request (http ' + r.status + ')') };
-    } catch (e) { return { ok: false, error: 'The station could not be reached: ' + ((e && e.message) || String(e)) }; }
+      return { ok: false, gone: r.status === 404, error: (j && j.error) || ('the farm refused the request (http ' + r.status + ')') };
+    } catch (e) { return { ok: false, error: 'The farm could not be reached: ' + ((e && e.message) || String(e)) }; }
   }
 
   // EL-11 FIX 1c: attest to the sidecar that a live permission.prompt is now RENDERED to a human (the active
@@ -1682,7 +1682,7 @@ const Harness = (() => {
     if (!runId || !promptId) return { ok: false, error: 'no run/prompt id' };
     try {
       const r = await fetch('/api/consent/ack', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ runId, promptId }) });
-      if (!r.ok) return { ok: false, error: 'the station refused the ack (http ' + r.status + ')', status: r.status };
+      if (!r.ok) return { ok: false, error: 'the farm refused the ack (http ' + r.status + ')', status: r.status };
       return { ok: true };
     } catch (e) { return { ok: false, error: (e && e.message) || String(e), transport: true }; }
   }
@@ -1829,7 +1829,7 @@ const Harness = (() => {
       const j = await r.json().catch(() => null);
       if (r.ok) return j || { ok: true };
       return { ok: false, error: (j && j.error) || 'could not record that decision' };
-    } catch (e) { return { ok: false, error: 'the station did not answer' }; }
+    } catch (e) { return { ok: false, error: 'the farm did not answer' }; }
   }
   async function skillExchangePost(path, body) {
     try {
@@ -1839,7 +1839,7 @@ const Harness = (() => {
       const j = await r.json().catch(() => null);
       if (r.ok) return j || { ok: true };
       return { ok: false, error: (j && j.error) || 'the skill exchange refused that request' };
-    } catch (e) { return { ok: false, error: 'the station did not answer' }; }
+    } catch (e) { return { ok: false, error: 'the farm did not answer' }; }
   }
   function skillExchangeInspect(url) { return skillExchangePost('inspect', { url }); }
   function skillExchangeRegistry(o) { return skillExchangePost('registry', o); }
@@ -1847,7 +1847,7 @@ const Harness = (() => {
   async function skillExchangeRegistries(o) {
     if (o) return skillExchangePost('registries', o);
     try { const r = await fetch('/api/skill-exchange/registries', { cache: 'no-store' }); return r.ok ? await r.json() : { ok: false }; }
-    catch (_) { return { ok: false, error: 'the station did not answer' }; }
+    catch (_) { return { ok: false, error: 'the farm did not answer' }; }
   }
   function skillExchangeImport(envelope) { return skillExchangePost('import', { envelope }); }
   function skillExchangeInstall(o) { return skillExchangePost('install', o); }
@@ -1917,7 +1917,7 @@ const Harness = (() => {
             return init ? { ok: r.ok, status: r.status, j } : j;
           }),
           new Promise((_, reject) => { deadline = setTimeout(() => {
-            reject(new Error(init ? 'The station did not confirm this change. Check its state before retrying.' : 'The station took too long to respond. Please retry.'));
+            reject(new Error(init ? 'The farm did not confirm this change. Check its state before retrying.' : 'The farm took too long to respond. Please retry.'));
             abort();
           }, (options && options.timeoutMs > 0) ? options.timeoutMs : init ? 60000 : 15000); })
         ]);
@@ -2011,7 +2011,7 @@ const Harness = (() => {
     finally { if (timer) clearTimeout(timer); }
     const core = tauriCoreNow();
     if (!reason && state !== 'ok' && core) {
-      try { const g = await core.invoke('starnet_sidecar_status'); if (g && g.halted && g.reason) reason = 'station service halted: ' + String(g.reason); } catch (_) {}
+      try { const g = await core.invoke('starnet_sidecar_status'); if (g && g.halted && g.reason) reason = 'farm service halted: ' + String(g.reason); } catch (_) {}
     }
     return { state, reason };
   }

@@ -23,7 +23,7 @@ const env = C.buildExport({
   fallback: ['a/one', 'b/two'],
   autonomy: { initiative: 'wait', reach: 'sandbox' },
   roster: [{ agentId: 'lead', name: 'Lead', model: 'x/y', provider: 'openrouter', role: 'boss', system: 'SECRET PROMPT' }],
-  dossier: 'the commander block',
+  dossier: 'the farmer block',
   permissions: ['cabinet:write', 'shell.exec:*'],
   connectors: [{
     id: 'gh', transport: 'http', url: 'https://mcp.example/api?token=SEKRET#FRAGMENT_SECRET',
@@ -45,7 +45,7 @@ eq(env.exportedAt, 123, 'exportedAt stamped from injected clock');
 eq(env.app, 'StarNet', 'app name stamped');
 eq(env.sections.budget.perRun, 2, 'budget section carried');
 eq(env.sections.fallback.models.length, 2, 'fallback chain carried as {models}');
-eq(env.sections.dossier.block, 'the commander block', 'dossier carried');
+eq(env.sections.dossier.block, 'the farmer block', 'dossier carried');
 eq(env.sections.permissions.allow.length, 2, 'permission grants carried');
 
 // roster carries metadata only — NO raw system prompt, just a hasSystem marker
@@ -128,7 +128,7 @@ eq(bigChain.sections.fallback.models.length, 8, 'the fallback chain is capped at
 // ---- forward-tolerance: unknown sections dropped (noted), newer schema accepted with a note ----
 const fwd = C.parseImport({ starnetExport: 99, sections: { budget: { perRun: 1 }, futureThing: { x: 1 } } });
 ok(fwd.ok, 'a newer-schema file still imports what we understand');
-ok(fwd.notes.some(x => /newer StarNet/.test(x)), 'a newer schema is noted');
+ok(fwd.notes.some(x => /newer Homestead/.test(x)), 'a newer schema is noted');
 ok(fwd.notes.some(x => /futureThing/.test(x)), 'an unknown section is noted, not fatal');
 eq(fwd.sections.futureThing, undefined, 'the unknown section is not applied');
 eq(fwd.sections.budget.perRun, 1, 'the known section still applies alongside the unknown one');

@@ -622,7 +622,7 @@
   function assertSafeUrl(raw) {
     let u;
     try { u = new URL(raw); } catch (e) { throw hostRefusal('invalid URL: ' + raw, 'invalid URL'); }
-    if (u.protocol === 'file:') throw hostRefusal('only http(s) URLs are allowed. To check a file you saved, fs_read it; the Commander opens it from its deliverable card.', 'not a web address (file://)');
+    if (u.protocol === 'file:') throw hostRefusal('only http(s) URLs are allowed. To check a file you saved, fs_read it; the Farmer opens it from its deliverable card.', 'not a web address (file://)');
     if (u.protocol !== 'http:' && u.protocol !== 'https:') throw hostRefusal('only http(s) URLs are allowed', 'not a web address');
     const h = hostOf(u);
     const numericHost = /^\d+$/.test(h) || /^0x[0-9a-f]+$/i.test(h);
@@ -674,10 +674,10 @@
     const host = String((r && r.host) || 'the site');
     const priv = /resolves to private address (\S+)/.exec(reason);
     if (priv) {
-      return { code: 'NETWORK_REFUSED', text: 'StarNet\'s browser safety check refused it: this computer\'s DNS answered ' + priv[1] + ' for ' + host +
+      return { code: 'NETWORK_REFUSED', text: 'Homestead\'s browser safety check refused it: this computer\'s DNS answered ' + priv[1] + ' for ' + host +
         ', a private or blocked address. That answer usually comes from a DNS filter (Pi-hole, AdGuard, NextDNS, router parental controls), ' +
         'a VPN, a security app or the hosts file on this computer. A browser using its own secure DNS can still open the site, so it may work there. ' +
-        'StarNet\'s browser uses no outside proxy, VPN or gateway: it connects from this computer. Fix or allow ' + host + ' in that DNS filter.' };
+        'Homestead\'s browser uses no outside proxy, VPN or gateway: it connects from this computer. Fix or allow ' + host + ' in that DNS filter.' };
     }
     if (/ENOTFOUND|EAI_AGAIN|ESERVFAIL|ETIMEOUT|ECONNREFUSED.*53|getaddrinfo|no verified DNS address/i.test(reason)) {
       return { code: 'NAVIGATION_FAILED', text: 'this computer could not look up ' + host + ' (' + reason + '). Its DNS did not answer for that name; ' +
@@ -685,9 +685,9 @@
     }
     if (r && r.code === 'DIAL_FAILED') {
       return { code: 'NAVIGATION_FAILED', text: reason + ' from this computer: the address was found but did not answer. A firewall, VPN or security app ' +
-        'may be blocking StarNet\'s connection to ' + host + '.' };
+        'may be blocking Homestead\'s connection to ' + host + '.' };
     }
-    return { code: 'NETWORK_REFUSED', text: 'StarNet\'s browser safety check refused it: ' + reason };
+    return { code: 'NETWORK_REFUSED', text: 'Homestead\'s browser safety check refused it: ' + reason };
   }
   // Separate from assertSafeUrl: public browsing retains its SSRF boundary. Only the workbench-
   // scoped browser.test_navigate tool may use this validator, and only for an agent's local dev UI.
@@ -1299,9 +1299,9 @@
       } catch (e) { failNote('browser.orphans.held', e); return false; }
     }
     function profileHeldError(cause) {
-      const err = new Error('The station browser could not start: another process is holding the station browser\'s profile — '
-        + 'open SETTINGS › BROWSER › RESET STATION BROWSER, or end any chrome.exe that StarNet started (one started as '
-        + 'administrator can\'t be closed by StarNet), then try again');
+      const err = new Error('The farm browser could not start: another process is holding the farm browser\'s profile — '
+        + 'open SETTINGS › BROWSER › RESET FARM BROWSER, or end any chrome.exe that Homestead started (one started as '
+        + 'administrator can\'t be closed by Homestead), then try again');
       err.code = 'BROWSER_PROFILE_HELD';
       err.cause = cause;
       return err;
@@ -1311,9 +1311,9 @@
       if (attachPort !== null || !deps.profileIsPersistent || heldFallback || !handedOff || !persistentHeld()) throw lastErr;
       try { heldFallbackDir = FS.mkdtempSync(P.join(OS.tmpdir(), 'starnet-browser-' + process.pid + '-held-')); }
       catch (e) { failNote('browser.profile-held-fallback', e); heldFailure = profileHeldError(lastErr); throw heldFailure; }
-      heldFallback = 'Saved sign-ins are not available this session: another process is holding the station browser profile, '
+      heldFallback = 'Saved sign-ins are not available this session: another process is holding the farm browser profile, '
         + 'so this browser started on a temporary profile.';
-      failNote('browser.profile-held-fallback', new Error('another process is holding the station browser profile ' + profileDir
+      failNote('browser.profile-held-fallback', new Error('another process is holding the farm browser profile ' + profileDir
         + ': relaunching ONCE on a temporary profile, without saved sign-ins (' + String((lastErr && lastErr.message) || lastErr) + ')'));
       profileDir = heldFallbackDir;
       activePortFile = P.join(profileDir, 'DevToolsActivePort');
@@ -1872,7 +1872,7 @@
         const viaProxy = /ERR_PROXY|ERR_TUNNEL_CONNECTION_FAILED|ERR_MANDATORY_PROXY/i.test(navError);
         if (viaProxy && attachPort === null) proxyFailed = true;   // alive() turns false: the session starts a fresh browser + proxy
         const err = new Error('could not load ' + host + ': ' + navError + (viaProxy
-          ? ' - the station browser network proxy is not answering' + (attachPort === null ? '; StarNet is restarting the browser' : ' (this browser was started by an earlier StarNet session: run browser.reset)')
+          ? ' - the farm browser network proxy is not answering' + (attachPort === null ? '; Homestead is restarting the browser' : ' (this browser was started by an earlier Homestead session: run browser.reset)')
           : ''));
         err.code = viaProxy ? 'STATION_PROXY_DOWN' : 'NAVIGATION_FAILED';
         err.navigationError = navError;
@@ -2887,7 +2887,7 @@
       // false` truthfully) rather than erroring or closing the browser the Commander is using. Against another RUN the
       // old rule stands: wait, then refuse — two runs never silently swap account identity.
       if (deps.persistentProfile && !attachedToUserBrowser && typeof deps.persistentProfile.fallback === 'function' && deps.persistentProfile.fallback()) return { profileIsPersistent: false };
-      if (deps.persistentProfile && !attachedToUserBrowser) throw new Error('the station browser profile is in use by another agent run — retry after it finishes; saved logins were not replaced');
+      if (deps.persistentProfile && !attachedToUserBrowser) throw new Error('the farm browser profile is in use by another agent run — retry after it finishes; saved logins were not replaced');
       return { profileIsPersistent: false };
     }
     async function waitForProfile(signal) {
@@ -2900,7 +2900,7 @@
         if (acquirePersistent()) return;
         if (typeof deps.persistentProfile.fallback === 'function' && deps.persistentProfile.fallback()) return;   // profileDeps goes temporary
         if (!reported && typeof deps.onProfileWait === 'function') { deps.onProfileWait(true); reported = true; }
-        if (elapsed >= limit) throw new Error('the station browser profile is in use by another agent run — retry after it finishes; saved logins were not replaced');
+        if (elapsed >= limit) throw new Error('the farm browser profile is in use by another agent run — retry after it finishes; saved logins were not replaced');
         await new Promise((resolve, reject) => {
           const done = () => { if (signal) signal.removeEventListener('abort', cancel); resolve(); };
           const timer = setTimeout(done, 100);
@@ -3235,7 +3235,7 @@
          destinations (data:, file:, javascript:, chrome:, custom app schemes) are still refused as unsafe redirects. */
       if (finalUrl && /^about:blank(?:[?#]|$)/i.test(String(finalUrl))) {
         const blank = new Error('could not load ' + u.host + ': the page never loaded (the browser is still on about:blank). '
-          + 'The site may have refused the connection, or the station browser lost its network; try again, or run browser.reset');
+          + 'The site may have refused the connection, or the farm browser lost its network; try again, or run browser.reset');
         blank.revealTools = ['browser.reset'];   // deferred: the hint must make it callable
         throw blank;
       }
@@ -3357,7 +3357,7 @@
        how sites treat THEM, in ways that outlast the agent's attention. The station browser exists for
        exactly this kind of reshaping. */
     async function intercept(kinds) {
-      if (attachedToUserBrowser) throw new Error('browser.intercept is refused while attached to your own Chrome — your real browser is not the station\'s to reconfigure. Detach first, or use the station browser.');
+      if (attachedToUserBrowser) throw new Error('browser.intercept is refused while attached to your own Chrome — your real browser is not the farm\'s to reconfigure. Detach first, or use the farm browser.');
       // Validated HERE so a bad kind fails loudly on every driver, including injected test drivers.
       const list = (Array.isArray(kinds) ? kinds : []).map(k => String(k || '').trim().toLowerCase()).filter(Boolean);
       const bad = list.filter(k => !INTERCEPT_TYPES[k]);
@@ -3365,7 +3365,7 @@
       return driverFn(ensureDriver(), 'intercept')(Array.from(new Set(list)));
     }
     async function emulate(opts) {
-      if (attachedToUserBrowser) throw new Error('browser.emulate is refused while attached to your own Chrome — spoofing device, language or timezone inside your real signed-in browser is not the station\'s to do. Detach first, or use the station browser.');
+      if (attachedToUserBrowser) throw new Error('browser.emulate is refused while attached to your own Chrome — spoofing device, language or timezone inside your real signed-in browser is not the farm\'s to do. Detach first, or use the farm browser.');
       const out = await driverFn(ensureDriver(), 'emulate')(opts || null);
       version++;   // metric/UA changes relay the page: refs from the previous layout are meaningless
       return out;
@@ -3383,7 +3383,7 @@
     async function attach(port) {
       // The station browser is the one the Commander and the agents share: it never becomes some other Chrome
       // (an agent once attached it to a debugging port it found on the machine — another tool's browser).
-      if (deps.noAttach === true) throw new Error('browser.attach is not available here: this is the station browser you share with the Commander. Use browser.navigate in it instead.');
+      if (deps.noAttach === true) throw new Error('browser.attach is not available here: this is the farm browser you share with the Farmer. Use browser.navigate in it instead.');
       const p = Number(port);
       if (!Number.isInteger(p) || p < 1 || p > 65535) throw new Error('browser.attach: port must be an integer 1-65535');
       // Probing BEFORE the relaunch means a wrong port reports "nothing is listening" while the run still
@@ -3412,7 +3412,7 @@
         }
         return { ok: true, browser: String(v.Browser || 'Chrome'), port: port };
       } catch (e) {
-        return { ok: false, error: 'browser.attach: nothing is listening on 127.0.0.1:' + port + '. Use browser.login for a saved StarNet session. Advanced attachment requires Chrome launched with --remote-debugging-port=' + port + ' and a separate --user-data-dir; current Chrome does not expose its default profile this way.' };
+        return { ok: false, error: 'browser.attach: nothing is listening on 127.0.0.1:' + port + '. Use browser.login for a saved Homestead session. Advanced attachment requires Chrome launched with --remote-debugging-port=' + port + ' and a separate --user-data-dir; current Chrome does not expose its default profile this way.' };
       }
     }
     /* RESET (#61): the supported way out of a wedged station browser - what an agent used to try with a shell kill
@@ -3448,7 +3448,7 @@
       driver = null; driverHeaded = null;
       attachedToUserBrowser = false; attachedUserPort = null;
       version++; navEpoch++;
-      return 'Detached from your Chrome on port ' + port + '. It is still running and untouched; later browser actions use the station browser again.';
+      return 'Detached from your Chrome on port ' + port + '. It is still running and untouched; later browser actions use the farm browser again.';
     }
     /* THE GATE. Refuse page eval whenever this run is driving the PERSISTENT profile, because that
        profile carries the Commander's real logged-in sessions (browser.login put them there). On the
@@ -3459,10 +3459,10 @@
          browser holds EVERY login they have — bank, email, employer SSO. The existing law is "eval is
          dangerous WHERE THE CREDENTIALS ARE", and this is where they all are. */
       if (attachedToUserBrowser) return { ok: false, reason: 'this run is attached to your own Chrome' };
-      if (leaseHeld) return { ok: false, reason: 'this run is using the signed-in station profile' };
+      if (leaseHeld) return { ok: false, reason: 'this run is using the signed-in farm profile' };
       const d = driver;
       if (d && typeof d.usingPersistentProfile === 'function' && d.usingPersistentProfile()) {
-        return { ok: false, reason: 'this run is using the signed-in station profile' };
+        return { ok: false, reason: 'this run is using the signed-in farm profile' };
       }
       return { ok: true };
     }
@@ -3569,7 +3569,7 @@
     async function login(url, signal) {
       const attended = deps.attendedLogin;
       if (!attended || typeof attended.prompt !== 'function') {
-        throw new Error('browser.login needs a watched COMMS session — an unattended run cannot open a login window for the Commander');
+        throw new Error('browser.login needs a watched COMMS session — an unattended run cannot open a login window for the Farmer');
       }
       if (deps.stationLogin !== true && (headlessRequested(deps.env) || deps.headless === true)) {
         throw new Error('browser.login unavailable: this host pins the browser headless (STARNET_BROWSER_HEADLESS)');
@@ -3639,9 +3639,9 @@
     let frozenBy = null;
     function handoffSurface() {
       const d = driver;
-      if (!d || (typeof d.alive === 'function' && !d.alive())) throw new Error('no browser page is open — navigate to the page that needs the Commander first');
+      if (!d || (typeof d.alive === 'function' && !d.alive())) throw new Error('no browser page is open — navigate to the page that needs the Farmer first');
       for (const fn of ['streamStart', 'streamStop', 'humanInput', 'pageInfo']) {
-        if (typeof d[fn] !== 'function') throw new Error('this browser cannot be handed to the Commander (driver has no ' + fn + ')');
+        if (typeof d[fn] !== 'function') throw new Error('this browser cannot be handed to the Farmer (driver has no ' + fn + ')');
       }
       // A sign-in lasts past this run only on the durable station profile (the leased one) — say which, truthfully.
       // …and a driver the HELD profile moved to a temporary one remembers nothing, lease or not
@@ -3774,11 +3774,11 @@
        never decides for the agent: a login box in a page header is not a reason to stop a research task. */
     const canHandOff = !!(deps.handoff && typeof deps.handoff.request === 'function');
     function stepInHint(reason) {
-      return canHandOff ? ' STEP-IN: you may not solve this yourself - call browser.need_human {reason:"' + reason + '"} to hand this browser to the Commander, and continue when they hand it back.' : '';
+      return canHandOff ? ' STEP-IN: you may not solve this yourself - call browser.need_human {reason:"' + reason + '"} to hand this browser to the Farmer, and continue when they hand it back.' : '';
     }
     function authHint(status) {
       if (!canHandOff || !status || !status.authWall) return '';
-      return ' This page shows ' + (status.authSignal || 'a sign-in field') + '. You never type the Commander\'s credentials or codes: if the task needs this account, call browser.need_human {reason:"' + status.authWall + '"} so they can do it in this same browser; otherwise carry on without signing in.';
+      return ' This page shows ' + (status.authSignal || 'a sign-in field') + '. You never type the Farmer\'s credentials or codes: if the task needs this account, call browser.need_human {reason:"' + status.authWall + '"} so they can do it in this same browser; otherwise carry on without signing in.';
     }
     const tools = [
       Object.assign(read('browser.navigate', 'Navigate the AGENT-CONTROLLED browser to a public http(s) URL. HEADLESS in ordinary agent runs: it never opens a window or uses the user\'s input. Private, loopback, intranet, and unsafe redirects remain refused; use browser.test_navigate for a local dev server.', { type: 'object', required: ['url'], properties: navProps },
@@ -3791,7 +3791,7 @@
             try { host = new URL(url).host; } catch (e) { failNote('browser.load-fail.host', e); }
             const http = describeResponse(session.lastResponse && session.lastResponse());
             return {
-              content: 'Browser reached a human-verification wall at ' + host + http.text + '. This is not page content. If the Commander is available, use browser.attach for their own Chrome or browser.login when sign-in is required; otherwise report the wall plainly.' + stepInHint('captcha'),
+              content: 'Browser reached a human-verification wall at ' + host + http.text + '. This is not page content. If the Farmer is available, use browser.attach for their own Chrome or browser.login when sign-in is required; otherwise report the wall plainly.' + stepInHint('captcha'),
               summary: 'verification wall' + http.summary
             };
           }
@@ -3846,7 +3846,7 @@
          this file drives a browser the station owns; this one drives the Commander's, where every account
          they have is already signed in. The consent card is the only place a human sees that difference
          before it happens, so `false` is never passed for the consent flag here. */
-      exec('browser.attach', 'Attach to an explicitly prepared Chrome debugging session. Prefer browser.login for guided sign-in with a reusable StarNet profile. Advanced attachment requires --remote-debugging-port=<port> and a separate --user-data-dir; current Chrome refuses debugging its default profile. Only accounts signed into that separate profile are available. Use this when a task needs a real logged-in session that browser.login cannot supply. browser.eval stays refused while attached. browser.detach lets go without closing their browser.',
+      exec('browser.attach', 'Attach to an explicitly prepared Chrome debugging session. Prefer browser.login for guided sign-in with a reusable Homestead profile. Advanced attachment requires --remote-debugging-port=<port> and a separate --user-data-dir; current Chrome refuses debugging its default profile. Only accounts signed into that separate profile are available. Use this when a task needs a real logged-in session that browser.login cannot supply. browser.eval stays refused while attached. browser.detach lets go without closing their browser.',
         { type: 'object', required: ['port'], properties: { port: { type: 'number' } } },
         async a => {
           const r = await session.attach(a.port);
@@ -3856,19 +3856,19 @@
             summary: 'attached to your Chrome'
           };
         }),
-      exec('browser.detach', 'Stop driving the Commander\'s own Chrome and go back to the station browser. Their browser keeps running and every tab stays open — this only lets go of it.', { type: 'object', properties: {} },
+      exec('browser.detach', 'Stop driving the Farmer\'s own Chrome and go back to the farm browser. Their browser keeps running and every tab stays open — this only lets go of it.', { type: 'object', properties: {} },
         async () => ({ content: await session.detach(), summary: 'detached' }), false),
       // #61: the supported recovery when the browser is wedged (navigations fail with proxy/connection errors, a new
       // browser "exited before CDP ownership", the profile is locked). An agent never needs a shell kill for this.
-      exec('browser.reset', 'Recover a stuck station browser: closes the browser this run started (and its network proxy), ends any ORPHANED StarNet browser left running on the station profile by an earlier StarNet process, and clears that profile\'s stale locks. Use it when pages fail with proxy or connection errors, or a new browser exits before it can be controlled. Never touches the Commander\'s own Chrome. Saved sign-ins are kept. The next browser call starts fresh.', { type: 'object', properties: {} },
+      exec('browser.reset', 'Recover a stuck farm browser: closes the browser this run started (and its network proxy), ends any ORPHANED Homestead browser left running on the farm profile by an earlier Homestead process, and clears that profile\'s stale locks. Use it when pages fail with proxy or connection errors, or a new browser exits before it can be controlled. Never touches the Farmer\'s own Chrome. Saved sign-ins are kept. The next browser call starts fresh.', { type: 'object', properties: {} },
         async () => {
           if (typeof session.reset !== 'function') return { content: 'browser.reset is not available for this browser.', summary: 'reset unavailable' };
           const r = await session.reset();
-          if (r.attached) return { content: 'This run is attached to the Commander\'s own Chrome, which StarNet never closes. Use browser.detach to let go of it.', summary: 'attached: not reset' };
+          if (r.attached) return { content: 'This run is attached to the Farmer\'s own Chrome, which Homestead never closes. Use browser.detach to let go of it.', summary: 'attached: not reset' };
           const parts = [r.closedOwn ? 'Closed this run\'s browser and its network proxy.' : (r.closeError ? 'Could not close this run\'s browser: ' + r.closeError + '.' : 'This run had no browser open.')];
-          parts.push(r.sweep ? 'Station profile: ' + Orphans.describeSweep(r.sweep) + '.' : 'No station profile sweep was available here.');
+          parts.push(r.sweep ? 'Farm profile: ' + Orphans.describeSweep(r.sweep) + '.' : 'No farm profile sweep was available here.');
           const clean = !r.closeError && (!r.sweep || r.sweep.ok);
-          parts.push(clean ? 'The next browser call starts a fresh browser.' : 'The browser may still be stuck: the Commander can use Settings > BROWSER > RESET STATION BROWSER, or restart StarNet.');
+          parts.push(clean ? 'The next browser call starts a fresh browser.' : 'The browser may still be stuck: the Farmer can use Settings > BROWSER > RESET FARM BROWSER, or restart Homestead.');
           return { content: parts.join(' '), summary: clean ? 'browser reset' : 'browser reset incomplete' };
         }, false),
       read('browser.find', 'Find visible elements in the current viewport by text and/or role, and get refs you can click or type into. Prefer this over browser.snapshot on a busy viewport: snapshot lists the first 80 interactive elements, while this scans up to 200 and returns only what matches. It does not scan below the fold or inside closed menus; scroll or open the menu and try again. Refs from earlier snapshots expire, same as after any snapshot.',
@@ -3995,7 +3995,7 @@
           if (r.shadow) lines.push('shadow DOM controls: ' + (r.shadow.length ? r.shadow.map(x => x.tag + (x.type ? '[' + x.type + ']' : '') + ' "' + x.text + '"').join(', ') : '(none)'));
           return { content: lines.join('\n'), summary: 'inspected ' + r.tag };
         }),
-      exec('browser.eval', 'Run a JavaScript expression in the CURRENT page and get its value back as JSON. Refused while the browser is using your signed-in station profile, because page script there could read the cookies and storage of accounts you are logged into - browser.inspect and browser.get_text work everywhere and cover most of what this is for.', { type: 'object', required: ['expression'], properties: { expression: { type: 'string' } } },
+      exec('browser.eval', 'Run a JavaScript expression in the CURRENT page and get its value back as JSON. Refused while the browser is using your signed-in farm profile, because page script there could read the cookies and storage of accounts you are logged into - browser.inspect and browser.get_text work everywhere and cover most of what this is for.', { type: 'object', required: ['expression'], properties: { expression: { type: 'string' } } },
         async a => {
           const r = await session.evalPublic(a.expression);
           if (r && r.ok === false) return { content: 'The expression threw: ' + r.error, summary: 'eval threw' };
@@ -4030,7 +4030,7 @@
           const challenge = await session.challengeStatus();
           if (challenge && challenge.challenged) {
             return {
-              content: 'The current page is a human-verification wall, not readable page content. Use browser.attach for the Commander\'s own Chrome or browser.login when sign-in is required; otherwise report the wall plainly.' + stepInHint('captcha'),
+              content: 'The current page is a human-verification wall, not readable page content. Use browser.attach for the Farmer\'s own Chrome or browser.login when sign-in is required; otherwise report the wall plainly.' + stepInHint('captcha'),
               summary: 'verification wall'
             };
           }
@@ -4042,13 +4042,13 @@
       // job of this bound is to stop a wedged flow from pinning the run forever.
       {
         name: 'browser.login', capability: 'web', impact: 'synthetic-browser', scope: 'execute', requiresConsent: false, timeoutMs: 60 * 60 * 1000,
-        description: 'Ask the Commander to open a VISIBLE browser window and log in to a site THEMSELVES (their password is typed into real Chrome — it never passes through you; never ask for credentials in chat). Blocks until they finish, then returns to headless mode. Verify the signed-in account on the page after Done; confirmation alone does not prove authentication. Cookies persist in the station browser profile, so future runs stay signed in. Use only when a site genuinely requires login; works only in a watched COMMS session.',
+        description: 'Ask the Farmer to open a VISIBLE browser window and log in to a site THEMSELVES (their password is typed into real Chrome — it never passes through you; never ask for credentials in chat). Blocks until they finish, then returns to headless mode. Verify the signed-in account on the page after Done; confirmation alone does not prove authentication. Cookies persist in the farm browser profile, so future runs stay signed in. Use only when a site genuinely requires login; works only in a watched COMMS session.',
         schema: { type: 'object', required: ['url'], properties: { url: { type: 'string' } } },
         run: async (a, ctx) => {
           const r = await session.login(a.url, ctx && ctx.signal);
-          if (r.status === 'declined') return { content: 'Commander declined to open a login window for ' + r.host + '. Continue without authentication and say what is blocked.', summary: 'login declined' };
-          if (r.status === 'unconfirmed') return { content: 'Login window for ' + r.host + ' closed without a Done confirmation. Any cookies the site set were saved to the station profile; verify with browser.navigate whether you are signed in before relying on it.', summary: 'login unconfirmed' };
-          return { content: 'Commander finished logging in at ' + r.host + (r.station ? '. You are on the same page in the same shared browser, signed in on its saved profile.' : '. The browser is back in headless research mode.') + ' Done is a human confirmation, not authentication proof: use browser.navigate to verify the account and access before continuing.', summary: 'login done' };
+          if (r.status === 'declined') return { content: 'Farmer declined to open a login window for ' + r.host + '. Continue without authentication and say what is blocked.', summary: 'login declined' };
+          if (r.status === 'unconfirmed') return { content: 'Login window for ' + r.host + ' closed without a Done confirmation. Any cookies the site set were saved to the farm profile; verify with browser.navigate whether you are signed in before relying on it.', summary: 'login unconfirmed' };
+          return { content: 'Farmer finished logging in at ' + r.host + (r.station ? '. You are on the same page in the same shared browser, signed in on its saved profile.' : '. The browser is back in headless research mode.') + ' Done is a human confirmation, not authentication proof: use browser.navigate to verify the account and access before continuing.', summary: 'login done' };
         }
       },
       /* STEP-IN (2026-09-29): the agent hands its OWN live browser to the Commander and waits. Scope 'read' is the
@@ -4060,7 +4060,7 @@
         name: 'browser.need_human', capability: 'web', impact: 'synthetic-browser', scope: 'read', requiresConsent: false, timeoutMs: 61 * 60 * 1000,
         // Kept short on purpose: every word here is sent on every turn (test/payload.budget.test.js). The rest of the
         // contract — open the page first, the 30-minute wait — is in the tool's own replies.
-        description: 'A page needs a human (sign-in, 2FA, CAPTCHA, payment): hand THIS browser to the Commander; continue when they hand it back. Never type their credentials or solve CAPTCHAs.',
+        description: 'A page needs a human (sign-in, 2FA, CAPTCHA, payment): hand THIS browser to the Farmer; continue when they hand it back. Never type their credentials or solve CAPTCHAs.',
         schema: { type: 'object', required: ['reason', 'note'], properties: {
           reason: { type: 'string', enum: HandoffReasons },
           note: { type: 'string' }
@@ -4068,11 +4068,11 @@
         run: async (a, ctx) => {
           const host = deps.handoff;
           if (!host || typeof host.request !== 'function') {
-            return { content: 'STEP-IN is not available in this run, so the Commander cannot take this browser. Report plainly what the page needs from them (sign-in, verification) and what you could not do.', summary: 'no handoff host' };
+            return { content: 'STEP-IN is not available in this run, so the Farmer cannot take this browser. Report plainly what the page needs from them (sign-in, verification) and what you could not do.', summary: 'no handoff host' };
           }
           const surface = session.handoffSurface();
           const at = await surface.pageInfo();
-          if (!at.url || /^about:/i.test(at.url)) throw new Error('no page is open to hand over - navigate to the page that needs the Commander first');
+          if (!at.url || /^about:/i.test(at.url)) throw new Error('no page is open to hand over - navigate to the page that needs the Farmer first');
           const handle = host.request({ reason: a && a.reason, note: a && a.note, url: at.url, title: at.title, remembered: surface.remembered, surface, signal: ctx && ctx.signal });
           session.freeze(handle.id);
           let outcome;
@@ -4082,20 +4082,20 @@
             let now = { url: '', title: '' };
             try { now = await surface.pageInfo(); } catch (e) { failNote('browser.handoff-page-info', e); }
             const kept = surface.remembered
-              ? ' Their sign-in is kept in the station browser profile, so later runs start signed in.'
+              ? ' Their sign-in is kept in the farm browser profile, so later runs start signed in.'
               : ' This run uses a temporary browser profile, so the sign-in lasts only for this run.';
             return {
-              content: 'The Commander finished and handed the browser back (handoff ' + outcome.id + '). It is now at ' + (now.url || 'an unknown page') + '.'
+              content: 'The Farmer finished and handed the browser back (handoff ' + outcome.id + '). It is now at ' + (now.url || 'an unknown page') + '.'
                 + (now.title ? ' ' + fenceExternal('Page title: ' + now.title, 'page title from the controlled browser') : '')
                 + ' Every element ref from before the handoff is gone: take a fresh browser.snapshot (browser.test_snapshot on a local test page) before acting. Handing back is a human confirmation, not proof of authentication - check the page shows the signed-in account.' + kept,
               summary: 'handed back'
             };
           }
           if (outcome.state === 'cancelled') {
-            return { content: 'The Commander could not complete this step (they pressed CAN\'T DO IT on handoff ' + outcome.id + '). Do not retry the same wall. Take another route, or report exactly what is blocked.', summary: 'human could not' };
+            return { content: 'The Farmer could not complete this step (they pressed CAN\'T DO IT on handoff ' + outcome.id + '). Do not retry the same wall. Take another route, or report exactly what is blocked.', summary: 'human could not' };
           }
           if (outcome.state === 'expired') {
-            return { content: 'Nobody took the browser within 30 minutes, so handoff ' + outcome.id + ' expired. Do not try to get around the wall. Report plainly that the page needs the Commander and what you could not finish.', summary: 'handoff expired' };
+            return { content: 'Nobody took the browser within 30 minutes, so handoff ' + outcome.id + ' expired. Do not try to get around the wall. Report plainly that the page needs the Farmer and what you could not finish.', summary: 'handoff expired' };
           }
           return { content: 'The run was stopped while waiting on handoff ' + outcome.id + '.', summary: 'handoff ' + outcome.state };
         }
@@ -4154,7 +4154,7 @@
           }
           return { content: 'PDF saved to ' + doc.rel + ' (' + (doc.bytes / 1024).toFixed(0) + ' KB).\nView: ' + doc.viewer, summary: 'pdf → ' + doc.rel };
         }),
-      exec('browser.intercept', 'Block heavy resource types (image, media, font, stylesheet) in the station browser to make text research faster and cheaper — pages load without downloading what you were never going to read. Pass kinds:[] to turn blocking off. Blocked requests appear in browser.network as ERR_BLOCKED_BY_CLIENT, so nothing is hidden. Blocking "stylesheet" can change layout and hide elements — use it only for pure text scraping. Refused while attached to the Commander\'s own Chrome.', { type: 'object', required: ['kinds'], properties: { kinds: { type: 'array', items: { type: 'string', enum: ['image', 'media', 'font', 'stylesheet'] } } } },
+      exec('browser.intercept', 'Block heavy resource types (image, media, font, stylesheet) in the farm browser to make text research faster and cheaper — pages load without downloading what you were never going to read. Pass kinds:[] to turn blocking off. Blocked requests appear in browser.network as ERR_BLOCKED_BY_CLIENT, so nothing is hidden. Blocking "stylesheet" can change layout and hide elements — use it only for pure text scraping. Refused while attached to the Farmer\'s own Chrome.', { type: 'object', required: ['kinds'], properties: { kinds: { type: 'array', items: { type: 'string', enum: ['image', 'media', 'font', 'stylesheet'] } } } },
         async a => {
           const active = await session.intercept(a.kinds);
           return {
@@ -4162,7 +4162,7 @@
             summary: active.length ? 'blocking ' + active.join(',') : 'blocking off'
           };
         }, false),
-      exec('browser.emulate', 'Emulate a device, user agent, language, or timezone in the station browser — for checking a mobile layout, a localized page, or time-dependent rendering. Pass device (iphone | pixel | ipad) for a one-call phone/tablet profile (metrics + touch + matching user agent), or set userAgent / locale (e.g. "de-DE") / timezone (e.g. "Europe/Berlin") individually. Pass reset:true to clear every override. Refs from earlier snapshots expire — take a fresh browser.snapshot. Refused while attached to the Commander\'s own Chrome.', { type: 'object', properties: { device: { type: 'string', enum: ['iphone', 'pixel', 'ipad'] }, userAgent: { type: 'string' }, locale: { type: 'string' }, timezone: { type: 'string' }, reset: { type: 'boolean' } } },
+      exec('browser.emulate', 'Emulate a device, user agent, language, or timezone in the farm browser — for checking a mobile layout, a localized page, or time-dependent rendering. Pass device (iphone | pixel | ipad) for a one-call phone/tablet profile (metrics + touch + matching user agent), or set userAgent / locale (e.g. "de-DE") / timezone (e.g. "Europe/Berlin") individually. Pass reset:true to clear every override. Refs from earlier snapshots expire — take a fresh browser.snapshot. Refused while attached to the Farmer\'s own Chrome.', { type: 'object', properties: { device: { type: 'string', enum: ['iphone', 'pixel', 'ipad'] }, userAgent: { type: 'string' }, locale: { type: 'string' }, timezone: { type: 'string' }, reset: { type: 'boolean' } } },
         async a => {
           a = a || {};
           if (a.reset === true) {
@@ -4212,7 +4212,7 @@
       const run = tool.run;
       tool.run = async (args, ctx) => {
         const held = typeof session.frozen === 'function' ? session.frozen() : null;
-        if (held) throw new Error('FROZEN: the Commander holds this browser (' + (/^sign-in/.test(String(held)) ? String(held) : 'STEP-IN handoff ' + held) + '). No browser tool may read or drive the page until they hand it back.');
+        if (held) throw new Error('FROZEN: the Farmer holds this browser (' + (/^sign-in/.test(String(held)) ? String(held) : 'STEP-IN handoff ' + held) + '). No browser tool may read or drive the page until they hand it back.');
         return run(args, ctx);
       };
     }

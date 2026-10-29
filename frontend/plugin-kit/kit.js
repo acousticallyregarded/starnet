@@ -36,7 +36,7 @@
   const TIMEOUT = { 'backend.call': 45000 };
 
   function call(method, args) {
-    if (!parentWin || parentWin === window) return Promise.reject(new Error('this page is not open in a StarNet window'));
+    if (!parentWin || parentWin === window) return Promise.reject(new Error('this page is not open in a Homestead window'));
     const id = ++seq;
     return new Promise((resolve, reject) => {
       pending.set(id, { resolve, reject });
@@ -44,7 +44,7 @@
       // instead. '*' is the only target an opaque origin can name; nothing sent here is secret.
       parentWin.postMessage({ __sn: 1, n: NONCE, id, m: String(method), a: args === undefined ? null : args }, '*');
       setTimeout(() => {
-        if (pending.has(id)) { pending.delete(id); reject(new Error('the station did not answer ' + method)); }
+        if (pending.has(id)) { pending.delete(id); reject(new Error('the farm did not answer ' + method)); }
       }, TIMEOUT[method] || 15000);
     });
   }

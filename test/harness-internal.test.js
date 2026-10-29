@@ -57,7 +57,7 @@ A.ok(src.includes('getKey(provider)') || /const\s+getKey\s*=\s*provider\s*=>/.te
 // (a) the auto-resume branch decides eligibility, then enters WITHOUT awaiting the catalog — listModels() is
 //     kicked in the background (not `await`ed) right before resumeInto(). This is the exact shape of the fix.
 A.ok(/const\s+canResume\s*=[\s\S]{0,400}if\s*\(\s*canResume\s*\)\s*\{[\s\S]{0,260}Harness\.listModels\(\)[\s\S]{0,200}resumeInto\(saved\)/.test(app),
-  'auto-resume enters the station and warms the catalog in the background (no inline await before the floor)');
+  'auto-resume enters the farm and warms the catalog in the background (no inline await before the floor)');
 // the background warm must NOT be awaited (that would re-introduce the hang). Assert the resume branch has no
 // `await Harness.listModels()` — the awaited call only survives on the RESUME-connect recovery path below it.
 {
@@ -78,7 +78,7 @@ A.ok(/change strategy instead of retrying the same bad path/.test(sidecar), 'wor
 A.ok(/Inspect before editing with fs_search\/fs_list\/fs_read/.test(sidecar), 'work discipline requires inspection before editing');
 // FILES BEFORE THE SHELL (2026-10-25, gpt-5.6-luna on v0.14.0 read a named project with dir / Select-String / type): reading
 // is routed to the file tools, and that rule comes BEFORE the shell cwd rule (it used to open the block)
-A.ok(/Read, list and search files with fs_read \/ fs_list \/ fs_search, full paths the Commander names included/.test(sidecar), 'work discipline routes file reads to the file tools, full paths included');
+A.ok(/Read, list and search files with fs_read \/ fs_list \/ fs_search, full paths the Farmer names included/.test(sidecar), 'work discipline routes file reads to the file tools, full paths included');
 A.ok(/not shell_exec \(dir, type, cat, Get-Content, Select-String\): the shell is for running tests, builds, git and scripts/.test(sidecar), 'work discipline keeps the shell for running things');
 A.ok(sidecar.indexOf('Read, list and search files with fs_read') >= 0 && sidecar.indexOf('Read, list and search files with fs_read') < sidecar.indexOf('anchor shell_exec.cwd to that exact folder'), 'the file-tools rule comes before the shell cwd rule');
 A.ok(/anchor shell_exec\.cwd to that exact folder as given \(never a guessed Bash-style \/c path\)/.test(sidecar), 'the cwd rule still forbids guessed Bash-style /c paths');
@@ -95,10 +95,10 @@ A.ok(/Final reports must name changed files, verification commands\/results/.tes
 // escalation. This is the block that stops "open the app on the user's screen and type into it".
 A.ok(/const\s+taskDoctrineNote\s*=/.test(sidecar), 'sidecar builds a dedicated task-doctrine prompt block');
 A.ok(/QUIETEST path that achieves the goal/.test(sidecar), 'task doctrine ranks tools quietest-first');
-A.ok(/ONLY when the Commander explicitly asked to see it on their screen or every quieter path failed/.test(sidecar), 'task doctrine demotes the visible screen to last resort');
+A.ok(/ONLY when the Farmer explicitly asked to see it on their screen or every quieter path failed/.test(sidecar), 'task doctrine demotes the visible screen to last resort');
 A.ok(/immediately continue down this ladder with the next safe, already-authorized route/.test(sidecar), 'task doctrine automatically continues after a dedicated integration is unavailable');
-A.ok(/Do not ask merely because the fallback is louder/.test(sidecar), 'task doctrine does not hand safe fallback selection back to the Commander');
-A.ok(/Ask only when that next route itself needs Commander authentication, exact consent, or a genuinely material choice/.test(sidecar), 'task doctrine preserves only irreducible human boundaries');
+A.ok(/Do not ask merely because the fallback is louder/.test(sidecar), 'task doctrine does not hand safe fallback selection back to the Farmer');
+A.ok(/Ask only when that next route itself needs Farmer authentication, exact consent, or a genuinely material choice/.test(sidecar), 'task doctrine preserves only irreducible human boundaries');
 A.ok(!/ask before using a louder path/.test(sidecar), 'the old cross-domain hand-back instruction is gone');
 A.ok(/VERIFY it took effect with a read-back tool/.test(sidecar), 'task doctrine requires outcome verification for world-changing actions');
 A.ok(/never a description, a plan, or a promise of future action/.test(sidecar), 'task doctrine defines the deliverable as a proven outcome');

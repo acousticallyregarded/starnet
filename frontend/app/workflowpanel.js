@@ -369,7 +369,7 @@ const WorkflowPanel = (() => {
     // (GitHub #122) the server's other proven reason: a review loop used all its passes without approving this job
     const unapproved = mine.shippedWhy === 'unapproved';
     const tip = NOT_SHIPPED_RULE + (unapproved ? 'Its review loop used all its passes without an approval, and SHIPPED never counts unapproved work'
-      : textOnly ? 'No step of this job had a tool succeed or saved a file — it answered in text' : 'The station holds no SHIPPED receipt for this job')
+      : textOnly ? 'No step of this job had a tool succeed or saved a file — it answered in text' : 'The farm holds no SHIPPED receipt for this job')
       + ': it is delivered (the result is below), just not counted there';
     return ' · <span class="wf-noship" data-tip="' + esc(tip) + '">' + (unapproved ? 'unapproved: ' : textOnly ? 'a text answer: ' : '') + 'not counted in SHIPPED</span>';
   }
@@ -379,7 +379,7 @@ const WorkflowPanel = (() => {
     // SHIPPED UNKNOWN (runtime audit 2026-10-12): the shipment history could not be read — the count is unknown, never 0
     /* (runtime repair 2026-10-12) a job that ships meanwhile is held in memory and counted once the history reads again — not across a
        restart, so the tip says so instead of promising the whole number back; N+ = a lower bound (line-stats shippedAtLeast) */
-    if (k === 'SHIPPED' && v === '?') return 'SHIPPED\nunknown right now: the saved shipment history can\'t be read. RUNS, FAILED and $ TODAY still count. Jobs that ship meanwhile are counted once it can be read again, unless the station restarts first';
+    if (k === 'SHIPPED' && v === '?') return 'SHIPPED\nunknown right now: the saved shipment history can\'t be read. RUNS, FAILED and $ TODAY still count. Jobs that ship meanwhile are counted once it can be read again, unless the farm restarts first';
     if (k === 'SHIPPED' && /\+$/.test(String(v))) return 'SHIPPED\nat least this many: some jobs that shipped today have no saved record (more than the history keeps, or they shipped while it could not be read), so the real number is higher';
     if (k === 'RUNS') return 'RUNS\nevery time a step of this line ran today: one job through a 3-step line is 3 runs';
     if (k === 'SHIPPED') return 'SHIPPED\nrecorded jobs that reached the OUTBOX after a tool succeeded or a file was saved. Earlier deliveries without a saved shipment record are not included. Text-only answers still reach the OUTBOX, but do not count here, and neither does work a review loop sent on without an approval';
@@ -661,7 +661,7 @@ const WorkflowPanel = (() => {
      A step, a branch (COPY TO EACH / TAKE TURNS), a review loop, a sorter, a removal, a move, an OUTBOX, TIDY LINE: each is ONE
      edit of the line's graph, laid out by the engine and written back in one UNDO slot (H.lineEdit → LineEdit). A button whose
      edit could only fail is shown OFF with the reason as its tip — never a click that ends in an error. */
-  const canEdit = (op, id, args) => (H && H.canLineEdit) ? (H.canLineEdit(op, id, args) || { ok: false }) : { ok: false, msg: 'this station cannot edit lines' };
+  const canEdit = (op, id, args) => (H && H.canLineEdit) ? (H.canLineEdit(op, id, args) || { ok: false }) : { ok: false, msg: 'this farm cannot edit lines' };
   const EDIT_DONE = { insertStep: 'step added', appendStep: 'step added', addBranch: 'branch added', addLoop: 'review added', addSorter: 'sorter added',
     removeStep: 'step removed', removeLoop: 'review removed', moveStep: 'step moved', tidy: 'line tidied', addOutbox: 'OUTBOX added', wrapLine: 'line made',
     addArm: 'branch added', removeArm: 'branch removed', addRoute: 'route added', removeSorter: 'sorter removed' };
@@ -1073,7 +1073,7 @@ const WorkflowPanel = (() => {
     const incomingNames = incoming.map(s => { const st = H.station(); return (st && st.lineName ? st.lineName(s.fromLine) : null) || 'another line'; });
     // a schedule SAVED for this line while scheduling is off is not "nothing wired" (2026-09-28 retest) — the switch is right above
     const feedTxt = incomingNames.length ? '✓ FED — ' + [...new Set(incomingNames)].join(' / ') + ' sends its finished work here.' : !feed.known ? 'Checking what feeds this floor…' : feed.fed ? '✓ FED — a channel, an armed routine, a watched folder or a webhook is wired to drop work on this floor.'
-      : (tr.offSchedules || []).length ? 'SCHEDULE OFF — this line’s schedule is saved, but scheduling is off for the whole station, so nothing starts it yet. Turn it on above.'
+      : (tr.offSchedules || []).length ? 'SCHEDULE OFF — this line’s schedule is saved, but scheduling is off for the whole farm, so nothing starts it yet. Turn it on above.'
       : 'NO FEED — nothing is wired to drop work on this floor yet.';
     const dockChip = d => '<button type="button" class="bb sm trg-dock' + (d.propId === S.trgDock ? ' active' : '') + '" data-dock="' + esc(d.propId) + '" data-aid="' + esc(d.agentId) + '">' + thumb(d.agentId, 16, 20, 'wf-ithumb') + esc(dockLabel(f, d.propId)) + '</button>';   // the BAY, not just the agent: one agent may crew several (sweep 2026-09-25)
     const dockHint = pid => { const order = docks.map(d => d.propId), i = order.indexOf(pid); if (i <= 0) return 'starts at the first step — the whole line runs, ' + docks.length + ' step' + (docks.length === 1 ? '' : 's');
@@ -1082,7 +1082,7 @@ const WorkflowPanel = (() => {
     const LC = (typeof Pipeline !== 'undefined' && Pipeline.LINE_LIMIT_CEILINGS) || { maxHops: 24, maxUsdPerMessage: 50, maxUsdPerDay: 500 };
     const lim0 = (p.limits && typeof p.limits === 'object') ? p.limits : {};
     const limVal = k => (typeof lim0[k] === 'number' && isFinite(lim0[k]) && lim0[k] > 0) ? String(lim0[k]) : '';
-    const lbDefaultNote = 'blank = station default · ceilings ' + LC.maxHops + ' stages / $' + LC.maxUsdPerMessage + ' / $' + LC.maxUsdPerDay + ' a day, never above the global pool — saved on Enter / blur';
+    const lbDefaultNote = 'blank = farm default · ceilings ' + LC.maxHops + ' stages / $' + LC.maxUsdPerMessage + ' / $' + LC.maxUsdPerDay + ' a day, never above the global pool — saved on Enter / blur';
     const limField = (id, k, label, ph, step) => '<label class="refit-field lb-field" for="' + id + '">' + label
       + '<input id="' + id + '" class="refit-num lb-num" type="number" min="0" step="' + step + '" data-k="' + k + '" placeholder="' + esc(ph) + '" value="' + esc(limVal(k)) + '" /></label>';
     /* SEND IT A JOB (2026-09-30, issue #28: "I still haven't figured out how to add a new work item to an INBOX"): the INBOX card
@@ -1100,7 +1100,7 @@ const WorkflowPanel = (() => {
         '<button type="button" class="bb sm' + (S.trgOpen ? ' active' : '') + '" id="trg-new" aria-expanded="' + S.trgOpen + '" aria-controls="trg-form">⊕ ADD A SCHEDULE</button><button type="button" class="bb sm" id="trg-auto">MANAGE</button>')
       + '<div class="trg-list" id="wf-routines">' + rtRows + '</div>'
       + (S.cron && !armed && routines.some(r => r.startsLine && r.enabled !== false)
-        ? '<div class="wf-warnline trg-armline">Scheduling is ' + (S.cron.halted ? 'STOPPED' : 'OFF') + ' for the whole station, so ' + (routines.filter(r => r.startsLine).length === 1 ? 'this schedule' : 'these schedules') + ' will not run. <button type="button" class="bb sm refit-primary" id="trg-arm">▶ TURN SCHEDULING ON</button></div>' : '')
+        ? '<div class="wf-warnline trg-armline">Scheduling is ' + (S.cron.halted ? 'STOPPED' : 'OFF') + ' for the whole farm, so ' + (routines.filter(r => r.startsLine).length === 1 ? 'this schedule' : 'these schedules') + ' will not run. <button type="button" class="bb sm refit-primary" id="trg-arm">▶ TURN SCHEDULING ON</button></div>' : '')
       + '<div id="trg-form" class="trg-form"' + (S.trgOpen ? '' : ' hidden') + '>'
         + '<label class="trg-form-k" for="trg-prompt">What task should start each run?</label>'
         // (2026-09-30) a schedule's task starts as the job this line was last sent — "do that every morning" is one click
@@ -1116,7 +1116,7 @@ const WorkflowPanel = (() => {
            never lifted from here. One SAVE SCHEDULE key — the help line says which of the three this save will do (GET /api/cron armSet). */
         + ((S.cron && !S.cron.enabled && !S.cron.halted)
           ? '<div class="wf-help dim">' + (S.cron.armSet ? 'Scheduling is off — you turned it off. Saving keeps it off; press ▶ TURN SCHEDULING ON when you want it to run.'
-            : 'Scheduling is off. Saving turns it on for the whole station, so every saved schedule runs at its time.') + '</div>'
+            : 'Scheduling is off. Saving turns it on for the whole farm, so every saved schedule runs at its time.') + '</div>'
           : (S.cron && S.cron.halted) ? '<div class="wf-help dim">Scheduling is stopped (E-STOP). Saving keeps it stopped — turn scheduling on in AUTOMATE › SCHEDULES.</div>' : '')
         + '<div class="wf-row"><button type="button" class="bb sm refit-primary" id="trg-create"' + (docks.length ? '' : ' disabled') + '>▸ SAVE SCHEDULE</button><button type="button" class="bb sm" id="trg-cancel">CANCEL</button></div>'
         + '</div><div class="wf-help trg-msg' + (S.trgMsg && S.trgMsg.bad ? ' bad' : '') + '" id="trg-msg"' + (S.trgMsg ? '' : ' hidden') + '>' + esc(S.trgMsg ? S.trgMsg.t : '') + '</div></div>'
@@ -1150,8 +1150,8 @@ const WorkflowPanel = (() => {
       if (lbNote) lbNote.textContent = (res.clamped && res.clamped.length) ? 'clamped to the ceiling — ' + res.clamped.map(x => lbName(x.split('>')[0])).join(', ') + ' (the numbers shown are the ones in force)' : lbDefaultNote;
       if (next === lbSaved) return;
       lbSaved = next; H.sfx('click');
-      if (lbNote) lbNote.textContent = (res.limits ? '✓ line budget saved · ' : '✓ cleared — station defaults · ') + lbNote.textContent;
-      H.flashTip(res.limits ? 'line budget saved' : 'line budget cleared — station defaults', true);
+      if (lbNote) lbNote.textContent = (res.limits ? '✓ line budget saved · ' : '✓ cleared — farm defaults · ') + lbNote.textContent;
+      H.flashTip(res.limits ? 'line budget saved' : 'line budget cleared — farm defaults', true);
     };
     el._saveLimits = saveLimits;
     for (const n of lbNums) {
@@ -1197,7 +1197,7 @@ const WorkflowPanel = (() => {
     $$('.wf-proj').forEach(b => b.onclick = () => {
       if (b.disabled || b.getAttribute('aria-pressed') === 'true') return;
       const st = H.station();
-      const res = typeof st.setPropProject === 'function' ? st.setPropProject(p.id, b.dataset.root || '') : { ok: false, message: 'this station model cannot save a project' };
+      const res = typeof st.setPropProject === 'function' ? st.setPropProject(p.id, b.dataset.root || '') : { ok: false, message: 'this farm model cannot save a project' };
       S.projectMsg = { id: p.id, t: res && res.ok ? 'Working folder saved for all workflow stages. Existing tool permissions still apply.' : ((res && (res.msg || res.message)) || 'Could not save the project.') };
       H.sfx(res && res.ok ? 'click' : 'bad');
       H.layoutChanged();
@@ -1284,7 +1284,7 @@ const WorkflowPanel = (() => {
       if (rv) html += '<div class="lt-reveal" role="status"><div class="trg-form-k">YOUR KEY — SHOWN ONCE</div>'
         + '<code class="lt-code lt-key">' + esc(rv.secret) + '</code>'
         + '<div class="wf-row"><button type="button" class="bb sm refit-primary" data-lt-copy="' + esc(rv.secret) + '">COPY KEY</button><button type="button" class="bb sm" id="lt-reveal-done">I SAVED IT</button></div>'
-        + '<p class="wf-help">Send it as the <b>X-StarNet-Hook-Key</b> header (or <b>Authorization: Bearer …</b>, or <b>?key=</b> on the URL). StarNet keeps only a fingerprint of it: once this box closes it cannot be shown again. Lost it? Make a new key.</p></div>';
+        + '<p class="wf-help">Send it as the <b>X-StarNet-Hook-Key</b> header (or <b>Authorization: Bearer …</b>, or <b>?key=</b> on the URL). Homestead keeps only a fingerprint of it: once this box closes it cannot be shown again. Lost it? Make a new key.</p></div>';
     }
     html += '<div class="wf-row lt-acts"><button type="button" class="bb sm" data-lt-act="toggle">' + (t.enabled ? 'PAUSE' : 'RESUME') + '</button>'
       + '<button type="button" class="bb sm" data-lt-act="edit">EDIT</button>'
@@ -1477,7 +1477,7 @@ const WorkflowPanel = (() => {
           : armedNow ? '✓ schedule saved — fires at ' + nameOf(agentId)
           : cur.halted ? '✓ saved — scheduling is stopped (E-STOP), so it will not run until you turn scheduling on in AUTOMATE › SCHEDULES'
           : offByChoice ? '✓ saved — scheduling is off (you turned it off), so it will not run: press ▶ TURN SCHEDULING ON above'
-          : '✓ saved — scheduling is off for the whole station, so it will not run until you turn it on (above)', !saved.enabled || !armedNow);
+          : '✓ saved — scheduling is off for the whole farm, so it will not run until you turn it on (above)', !saved.enabled || !armedNow);
         paint(true);
       }).catch(() => refuse('save not confirmed — check AUTOMATION before retrying'));
     };
@@ -1541,7 +1541,7 @@ const WorkflowPanel = (() => {
       if (next === gateSaved) return;
       gateSaved = next; H.sfx('click');
       const said = isJoiner
-        ? (res.timeoutMin ? '✓ saved — waits ' + res.timeoutMin + ' min, then releases partial' : '✓ saved — station default (10 min), then releases partial')
+        ? (res.timeoutMin ? '✓ saved — waits ' + res.timeoutMin + ' min, then releases partial' : '✓ saved — farm default (10 min), then releases partial')
         : '✓ saved — ' + H.loopRuleTxt(res.when, res.maxIter || loopMaxDef) + (res.done ? ' DONE on ' + res.done + '.' : '');
       if (isJoiner && jnNote) jnNote.textContent = said;
       if (isLoop && loopNote) loopNote.textContent = said;
@@ -1876,7 +1876,7 @@ const WorkflowPanel = (() => {
         if (!turns) return done({ err: 'this step’s reply could not be read' });
         const said = turns.filter(m => m && m.role === 'assistant' && String(m.content || '').trim() && String(m.content).trim() !== '[SILENT]');
         done({ output: said.length ? String(said[said.length - 1].content) : '' });
-      }, () => done({ err: 'this step’s reply could not be read — is the station running?' }));
+      }, () => done({ err: 'this step’s reply could not be read — is the farm running?' }));
   }
   function readJobSteps() {
     const sr = H.sampleState ? H.sampleState() : null, c = comp();
@@ -2038,14 +2038,14 @@ const WorkflowPanel = (() => {
      was, applied?}], usd, model, error }. */
   function notRightHTML(mine, f) {
     const fx = S.fix && S.fix.stamp === mine.stamp ? S.fix : null, asking = !!(fx && fx.state === 'asking');
-    let h = '<div class="wf-notright"><div class="wf-from"><span>✎ NEEDS CHANGES</span><span class="src">say what’s wrong: the station suggests exact changes</span></div>'
+    let h = '<div class="wf-notright"><div class="wf-from"><span>✎ NEEDS CHANGES</span><span class="src">say what’s wrong: the farm suggests exact changes</span></div>'
       + '<textarea id="wf-nr-in" class="wf-io" rows="2" maxlength="1200" aria-label="What is wrong with the result" placeholder="e.g. too long, no sources, the wrong tone, it missed the main point">' + esc(fx ? fx.complaint : (S.fixDraft || '')) + '</textarea>'
       + '<div class="wf-row"><button type="button" class="bb sm refit-primary" id="wf-nr-go"' + (asking ? ' disabled' : '') + '>' + (asking ? 'THINKING…' : 'SUGGEST CHANGES') + '</button></div>';
     if (fx && fx.state === 'error') h += '<div class="wf-warnline">✕ ' + esc(fx.error) + '</div>';
     if (fx && fx.state === 'done') {
       h += (fx.diagnosis ? '<p class="wf-help">' + esc(fx.diagnosis) + '</p>' : '') + fx.fixes.map((x, i) => fixCardHTML(x, i, f)).join('')
         + '<div class="wf-row"><button type="button" class="bb sm' + (fx.fixes.some(fixInUse) ? ' refit-primary' : '') + '" id="wf-nr-again">↻ SEND IT AGAIN</button></div>'
-        + '<p class="wf-help dim">Suggested by ' + esc(fx.model || 'the station’s model') + (fx.usd ? ' · $' + (+fx.usd).toFixed(4) : '') + '. Nothing changes until you use a fix, and UNDO takes it back.</p>';
+        + '<p class="wf-help dim">Suggested by ' + esc(fx.model || 'the farm’s model') + (fx.usd ? ' · $' + (+fx.usd).toFixed(4) : '') + '. Nothing changes until you use a fix, and UNDO takes it back.</p>';
     }
     return h + '</div>';
   }
@@ -2076,9 +2076,9 @@ const WorkflowPanel = (() => {
         S.fix = Object.assign(S.fix, { state: 'done', diagnosis: j.diagnosis || '', usd: j.usd || 0, model: j.model || '',
           fixes: (j.fixes || []).map(x => Object.assign({}, x, { was: (prop(x.dockId) || {}).brief || '' })) });
         H.sfx('chime');
-      } else { S.fix = Object.assign(S.fix, { state: 'error', error: (j && j.error) || ('the station refused (HTTP ' + status + ')') }); H.sfx('bad'); }
+      } else { S.fix = Object.assign(S.fix, { state: 'error', error: (j && j.error) || ('the farm refused (HTTP ' + status + ')') }); H.sfx('bad'); }
       paint(false);
-    }, () => { if (S.fix && S.fix.stamp === mine.stamp) { S.fix = Object.assign(S.fix, { state: 'error', error: 'the station could not be reached' }); paint(false); } });
+    }, () => { if (S.fix && S.fix.stamp === mine.stamp) { S.fix = Object.assign(S.fix, { state: 'error', error: 'the farm could not be reached' }); paint(false); } });
   }
   function useFix(i) {
     const x = S.fix && S.fix.fixes[i]; if (!x || fixInUse(x)) return;
@@ -2134,9 +2134,9 @@ const WorkflowPanel = (() => {
       if (fm.stored === true) { H.flashTip('the crew learned this style · UNDO takes it back', true); return true; }
       if (fm.reason === 'nothing to learn') { H.flashTip('kept for this step — the crew already keeps this style', true); return false; }
       if (fm.reason === 'personalization-paused') H.flashTip('kept for this step — learning is paused, so the rest of the crew will not learn this style', false);
-      else H.flashTip('kept for this step, but the crew did not learn the style: ' + (fm.reason || 'the station did not say why'), false);
+      else H.flashTip('kept for this step, but the crew did not learn the style: ' + (fm.reason || 'the farm did not say why'), false);
       return false;
-    }, () => { H.flashTip('kept for this step — the crew could not learn the style (is the station running?)', false); return false; });
+    }, () => { H.flashTip('kept for this step — the crew could not learn the style (is the farm running?)', false); return false; });
     S.tasteKept = { stamp: mine.stamp, runId, sent };
   }
   function unkeepTasteIfUndone(mine) {
@@ -2171,7 +2171,7 @@ const WorkflowPanel = (() => {
     if (again) again.onclick = () => { const cc = comp(); if (!cc) return; H.sfx('click'); S.fixDraft = ''; liveSeen = false; S.prevJob = { text: mine.text, output: mine.output, stamp: mine.stamp }; H.runSample(cc, { text: mine.text || (S.testJob[S.lineKey] || '').trim() || undefined, onUpdate: jobUpdate }); startLive(); };
   }
   function stepTestUnavailable() {
-    if (S.seam !== true) return 'this station cannot pause a line between steps — SEND A REAL JOB runs it end to end';
+    if (S.seam !== true) return 'this farm cannot pause a line between steps — SEND A REAL JOB runs it end to end';
     return typeof Pipeline !== 'undefined' && Pipeline.stepTestRefusal ? Pipeline.stepTestRefusal(H.plan(), S.lineKey) : null;
   }
   function testModeNow() {

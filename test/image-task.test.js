@@ -53,7 +53,7 @@ A.eq(direct.keySource, 'run', 'the route records that the run key authorized gen
 const directOpenAI = ImageTask.resolveRoute({ providerId: 'openai', runKey: 'run-openai-key', providerBaseUrl: 'https://api.openai.com/v1/' });
 A.eq(directOpenAI, { ok: true, provider: 'openai', protocol: 'openai-images', key: 'run-openai-key', baseUrl: 'https://api.openai.com/v1', keySource: 'run' }, 'an OpenAI run keeps its key and selects the Images API transport');
 const borrowed = ImageTask.resolveRoute({ providerId: 'gemini', runKey: 'gemini-key', stationOpenRouterKey: 'station-or-key' });
-A.eq(borrowed.key, 'station-or-key', 'a non-OpenRouter run uses the separately connected station OpenRouter key');
+A.eq(borrowed.key, 'station-or-key', 'a non-OpenRouter run uses the separately connected farm OpenRouter key');
 A.eq(borrowed.keySource, 'station', 'the route never relabels the configured provider key');
 const managedInput = { providerId: 'starnet', runKey: 'untrusted-request-key', providerBaseUrl: 'https://wrong.example/v1', managedKey: 'device-token', managedBaseUrl: 'https://account.starnetos.com/v1/' };
 const managed = ImageTask.resolveRoute(managedInput);
@@ -69,7 +69,7 @@ A.eq(impossible.ok, false, 'a Gemini key alone is not treated as an OpenRouter S
 A.eq(impossible.code, 'media-route-required', 'the incompatible credential path has an exact blocker code');
 const borrowedOpenAI = ImageTask.resolveRoute({ providerId: 'gemini', runKey: 'gemini-key', stationOpenAIKey: 'station-openai-key', stationOpenAIBaseUrl: 'https://api.openai.com/v1' });
 A.eq(borrowedOpenAI.provider, 'openai', 'a text run can use a separately connected OpenAI key for STUDIO generation');
-A.eq(borrowedOpenAI.protocol, 'openai-images', 'the station OpenAI route selects the dedicated Images API');
+A.eq(borrowedOpenAI.protocol, 'openai-images', 'the farm OpenAI route selects the dedicated Images API');
 
 // The ChatGPT sign-in is a keyless STUDIO route: first for a run on the plan, last resort for any other text run,
 // never for a StarNet-credits run.
@@ -87,7 +87,7 @@ A.ok(/Open BUILD MODE, place a STUDIO/.test(noGear), 'missing gear names the exa
 const disabled = ImageTask.admissionBlocker({ hasStudio: true, studioEnabled: false, route: direct });
 A.ok(/MEDIA STUDIO is disabled/.test(disabled) && /ABILITIES > TOOLSETS/.test(disabled), 'disabled STUDIO names the exact toolset action instead of asking for another prop');
 const noRoute = ImageTask.admissionBlocker({ hasStudio: true, studioEnabled: true, route: impossible, providerId: 'gemini', model: 'gemini-2.5-pro' });
-A.ok(/gemini \/ gemini-2\.5-pro/.test(noRoute) && /link this station/.test(noRoute), 'incompatible model/key path names both the configured route and exact fix');
+A.ok(/gemini \/ gemini-2\.5-pro/.test(noRoute) && /link this farm/.test(noRoute), 'incompatible model/key path names both the configured route and exact fix');
 A.eq(ImageTask.admissionBlocker({ hasStudio: true, studioEnabled: true, route: direct }), null, 'a placed, enabled STUDIO plus compatible credential is admitted');
 
 // Completion is artifact-backed. Successful prose, successful unrelated tools, or a generic file

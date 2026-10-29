@@ -58,7 +58,7 @@ console.log = log; console.info = log; console.warn = log; console.error = log;
 function request(op, args) {
   const id = ++seq;
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => { if (pending.has(id)) { pending.delete(id); reject(new Error('the station did not answer ' + op)); } }, 15000);
+    const timer = setTimeout(() => { if (pending.has(id)) { pending.delete(id); reject(new Error('the farm did not answer ' + op)); } }, 15000);
     pending.set(id, { resolve, reject, timer });
     send({ t: 'req', id, op, args });
   });

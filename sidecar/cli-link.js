@@ -15,7 +15,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const MARK = '# added by StarNet: the `starnet` terminal command';
+const MARK = '# added by Homestead: the `starnet` terminal command';
 const OURS = /StarNet[^/]*\.app\/Contents\/Resources\/bin\/starnet$/;
 const PROFILES = ['.zprofile', '.zshrc', '.zlogin', '.bash_profile', '.bashrc', '.profile'];
 
@@ -34,7 +34,7 @@ function planCliLink(o) {
   const cur = o.readlink(link);
   if (cur === target) { /* already ours, and current */ }
   else if (cur !== null && OURS.test(cur)) actions.push({ do: 'relink', dir, link, target, was: cur });   // the app moved
-  else if (cur !== null || o.exists(link)) return { skip: link + ' already exists and is not StarNet\'s — left alone' };
+  else if (cur !== null || o.exists(link)) return { skip: link + ' already exists and is not Homestead\'s — left alone' };
   else actions.push({ do: 'link', dir, link, target });
   // the folder on PATH: a login shell that reads any profile mentioning ~/.local/bin already has it
   const mentions = PROFILES.some(f => { const t = o.readText(path.posix.join(o.home, f)); return t !== null && /\.local\/bin/.test(t); });

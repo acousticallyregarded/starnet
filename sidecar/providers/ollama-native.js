@@ -278,7 +278,7 @@
       : 'fully on the GPU';
     return server + ' had ' + id + ' loaded ' + where + (ctx ? ' at a ' + Math.round(ctx / 1024) + 'k window' : '')
       + ' but sent no response to' + prompt + '. '
-      + (!vram || (size && vram < size) ? 'A model running on the CPU reads StarNet task prompts slowly; a smaller model, or one that fits the GPU, answers sooner.' : '');
+      + (!vram || (size && vram < size) ? 'A model running on the CPU reads Homestead task prompts slowly; a smaller model, or one that fits the GPU, answers sooner.' : '');
   }
 
   /* THE SAME EVIDENCE AS ONE SHORT LINE, while a request is still unanswered (#99). Ollama sends no headers until its

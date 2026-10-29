@@ -8,8 +8,9 @@ const WorldRenderer = (() => {
   const GENERATION = 'II';
   // Live-compared industrial finish: deep mids, readable cool/warm equipment,
   // crisp materials, and restrained tube texture without a lifted-black veil.
-  const PHOSPHOR = Object.freeze({ scan: .10, pitch: 1, fade: 0, curve: .04, vig: .16,
-    over: 1.08, dust: .35, aberr: 0, grain: .26, bloom: 0, sharpen: .28, film: .38 });   // restored pre-key-light film (Andrew 09-23)
+  // the farm is in daylight: no dark density film, a whisper of vignette, scanlines and grain (was film .38, vig .16, grain .26, scan .10)
+  const PHOSPHOR = Object.freeze({ scan: .05, pitch: 1, fade: 0, curve: .04, vig: .06,
+    over: 1.08, dust: .35, aberr: 0, grain: .1, bloom: 0, sharpen: .28, film: 0 });
   // Five-tap local contrast, bounded by the existing neighbourhood. Flat light
   // gradients stay quiet; no bright/dark ringing is introduced beyond an edge.
   const DETAIL_GLSL = `
@@ -76,13 +77,13 @@ const WorldRenderer = (() => {
   function cameraReadout(input) {
     const {geo, viewport, subject, linked, paused} = input || {};
     const state = paused ? 'paused' : linked ? 'live' : 'offline';
-    let place = 'STATION VIEW';
+    let place = 'FARM VIEW';
     if (geo && viewport) {
       const x = subject ? subject.px : viewport.x + viewport.w / 2;
       const y = subject ? subject.py : viewport.y + viewport.h / 2;
       const T = geo.TILE || 12, tx = Math.floor(x / T), ty = Math.floor(y / T);
       const id = tx >= 0 && ty >= 0 && tx < geo.COLS && ty < geo.ROWS ? geo.zoneGrid[ty * geo.COLS + tx] : null;
-      if (!subject && viewport.w >= geo.W * .8) place = 'STATION OVERVIEW';
+      if (!subject && viewport.w >= geo.W * .8) place = 'FARM OVERVIEW';
       else if (id != null && typeof geo.nameOf === 'function') place = geo.nameOf(id) || place;
       if (subject && subject.name) place += ' · ' + subject.name;
     }

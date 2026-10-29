@@ -114,14 +114,14 @@ const HELP = [
   ['ctrl+click', 'opens a link, or a file an agent wrote'],
   ['/stop', 'stop the shown agent\'s runs'],
   ['/retry', 'send your last message again'],
-  ['/status', 'the agent, its model, its folder, the station'],
+  ['/status', 'the agent, its model, its folder, the farm'],
   ['/skills', 'its skills · run one: /<skill> <task>'],
   ['/usage  /tools', 'spend · what it can call'],
   ['/routine', 'scheduled routines: list, create, pause'],
   ['/cron  on · off', 'the routines scheduler: its state, arm it'],
   ['/away', 'work it builds on its own away shift'],
   ['/flow [run name text]', 'list workflows · send one job down one'],
-  ['/version', 'the CLI and the station'],
+  ['/version', 'the CLI and the farm'],
   ['/theme [name]', 'colors: red amber green blue purple white'],
   ['/help  ctrl+c', 'this list · quit']
 ];
@@ -252,7 +252,7 @@ function render(model, ui, size, now) {
   } else {
     // the one-line mark, the counts on it; NOW and FLOWS under it only when they have something to say
     let x = 0;
-    'STARNET'.split('').forEach((ch, i) => { x = g.put(x, 0, ch, 'logo b'); if (i < 6) x = g.put(x, 0, ' ', ''); });
+    'HOMESTEAD'.split('').forEach((ch, i) => { x = g.put(x, 0, ch, 'logo b'); if (i < 8) x = g.put(x, 0, ' ', ''); });
     const xc = putCounts(0, x + 3);
     if (!narrow && xc - x > 30) g.put(x + 3, 0, trunc(ui.stationLabel || '', xc - x - 6), 'dim');
     y = 1;
@@ -368,7 +368,7 @@ function render(model, ui, size, now) {
   else if (page === 'crew') drawCrewPage(g, model, rows, focusRow, ui, iy0, paneBot, ix0, ix1, now, hit);
   else if (page === 'work') drawWorkPage(g, flows, focusRow, ui, iy0, paneBot, ix0, ix1, now, hit);
   else if (wk) drawWake(g, wk, iy0, paneBot, ix0, ix1, ui, now);
-  else if (!focusRow) g.put(ix0, iy0, trunc(head.feed === 'connecting' ? 'connecting to the station…' : 'no agents on this station yet', ix1 - ix0 + 1), 'dim');
+  else if (!focusRow) g.put(ix0, iy0, trunc(head.feed === 'connecting' ? 'connecting to the farm…' : 'no agents on this farm yet', ix1 - ix0 + 1), 'dim');
   else drawPane(g, focusRow ? model.logOf(focusRow.id) : [], focusRow, iy0, paneBot, ix0, ix1, ui, now, hit);
   if (card.length) drawCard(g, card, cardTop, ix0, cw, blink, hit);
   areas.comms = { x0: cx0, x1: cx1 + 1, y0: top, y1: bot + 1 };
@@ -449,7 +449,7 @@ function render(model, ui, size, now) {
       ? (wk.ask ? ((wk.ask.options || []).length ? '1-' + wk.ask.options.length + ' pick · ' : '') + (wk.ask.custom ? 'or type your own + enter · ' : '') + 'ctrl+c pauses setup'
         : wk.typing ? 'any key shows the rest' : 'ctrl+c pauses setup')
       : slash ? 'tab completes /' + slash.items[slash.sel].name + ' · enter runs it · ↑ ↓ pick · esc hides this'
-      : slashCommandOf(ui) ? (c => '/' + c.name + (c.argsHint ? ' ' + c.argsHint : '') + ' — ' + c.desc + (c.here === false ? ' (only in the StarNet app)' : ''))(slashCommandOf(ui))
+      : slashCommandOf(ui) ? (c => '/' + c.name + (c.argsHint ? ' ' + c.argsHint : '') + ' — ' + c.desc + (c.here === false ? ' (only in the Homestead app)' : ''))(slashCommandOf(ui))
       : menuRow ? 'o open chat · m model · n new chat · h history' + (menuAgent.runs && menuAgent.runs.size ? ' · s stop' : '') + ' · esc close'
       : front
       ? (front.question ? (front.question.options.length ? '1-' + front.question.options.length + ' pick · ' : '') + 'type an answer + enter · esc clears' : 'y allow once · ' + (canAlways(front) ? 'a always · ' : '') + 'n deny · v ' + (front.view ? 'hide' : 'view') + ' · ' + (narrow ? 'tab agent' : 'tab next agent'))
@@ -470,7 +470,7 @@ const AGENT_ROWS = 9;   // the titled rule above it + its 8-row scene
 // ---- THE PAGES: STAT, CREW and WORK, each the whole COMMS frame (SKILLS is the /skills list; COMMS the conversation) ----
 const PAGES = ['stat', 'crew', 'work'];
 const PAGE_HINT = {
-  stat: 'the station: its level, spend, crew and work',
+  stat: 'the farm: its level, spend, crew and work',
   crew: 'click an agent to open its chat · right-click one for its menu',
   work: 'click a workflow to send it a job'
 };
@@ -507,16 +507,16 @@ function drawStatPage(g, ui, head, rows, flows, top, bot, x0, x1, hit) {
     L.push({ label: 'LEVEL', segs: [[' LV ' + st.level + ' ', 'ink b hifill'], ['  ', ''], ['▌'.repeat(lit), 'ph'], ['▌'.repeat(10 - lit), 'rule'], ['  XP ' + st.inLevel + '/' + st.span, 'hi'], ['  · ' + st.toNext + ' XP to level ' + (st.level + 1), 'dim']] });
     L.push({ label: '', segs: [[st.lifetimeXp + ' XP in all · ' + st.tasksDone + ' task' + (st.tasksDone === 1 ? '' : 's') + ' shipped', 'fg']] });
     L.push({ label: 'CONFIDENCE', segs: [[st.known ? st.confLabel + ' · ' + st.band : 'calibrating', st.known ? 'hi' : 'dim'], ['  · ▲ ' + st.positiveFeedback + '  ▼ ' + st.negativeFeedback + ' rated', 'dim']] });
-  } else L.push({ label: 'LEVEL', segs: [['not recorded on this station yet', 'dim']] });
+  } else L.push({ label: 'LEVEL', segs: [['not recorded on this farm yet', 'dim']] });
   L.push(null);
   L.push({ label: 'SPEND', segs: [[costText(head.cost), 'hi']].concat(head.cost && head.cost.cap ? [['  · capped at $' + head.cost.cap.toFixed(2) + ' a day', 'dim']] : []) });
   L.push({ label: 'CREW', act: { t: 'page', page: 'crew' }, segs: [[rows.length + ' agent' + (rows.length === 1 ? '' : 's'), 'hi'], ['  · ' + head.working + ' working · ' + head.needs + ' need' + (head.needs === 1 ? 's' : '') + ' you', 'dim']] });
   const running = flows.filter(f => f.state === 'running').length, shipped = flows.reduce((n, f) => n + (Number(f.shipped) || 0), 0);
   L.push({ label: 'WORK', act: { t: 'page', page: 'work' }, segs: [[flows.length + ' workflow' + (flows.length === 1 ? '' : 's'), 'hi'], ['  · ' + running + ' running · ' + shipped + ' shipped', 'dim']] });
-  L.push({ label: 'STATION', segs: [[ui.stationLabel || '', 'fg']] });
+  L.push({ label: 'FARM', segs: [[ui.stationLabel || '', 'fg']] });
   L.push(null);
   const u = ui.pageData && ui.pageData.usage;
-  if (!u || u.loading) L.push({ label: 'USAGE', segs: [['reading the station ledger…', 'dim']] });
+  if (!u || u.loading) L.push({ label: 'USAGE', segs: [['reading the farm ledger…', 'dim']] });
   else if (u.error) L.push({ label: 'USAGE', segs: [[u.error, 'am']] });
   else labelled(L, 'USAGE', (u.title ? [u.title] : []).concat(u.lines || []), 'fg', w);
   drawPageRows(g, L, ui, top, bot, x0, x1, hit);
@@ -882,8 +882,8 @@ function drawWake(g, w, top, bot, x0, x1, ui, now) {
     const all = [...String(e.text)];
     const n = e.full ? all.length : Math.min(all.length, Math.floor(Math.max(0, now - e.born) * (e.cps || 44) / 1000));
     const shown = all.slice(0, n).join('') + (n < all.length ? '▍' : '');
-    const tc = e.bad ? 'bad' : e.you ? (e.skip ? 'dim' : 'hi') : e.who === 'STARNET' ? 'fg' : 'hi';
-    const lc = e.you ? 'hi b' : e.who === 'STARNET' ? 'dim b' : 'ph b';
+    const tc = e.bad ? 'bad' : e.you ? (e.skip ? 'dim' : 'hi') : e.who === 'HOMESTEAD' ? 'fg' : 'hi';
+    const lc = e.you ? 'hi b' : e.who === 'HOMESTEAD' ? 'dim b' : 'ph b';
     wrap(shown || ' ', tw).forEach((ln, j) => rows.push({ label: newBlock && !j ? e.who : '', lc, segs: [[ln, tc]] }));
   });
   if (w.note) rows.push({ label: '', segs: [[spin(now, ui.still) + ' ' + w.note, w.noteStyle || 'dim']] });

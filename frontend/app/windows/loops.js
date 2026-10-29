@@ -305,7 +305,7 @@
             // The E-STOP lift is a SAFETY claim: a refused request left the durable halt engaged while the station
             // said "loops resumed". Only a 2xx proves the stand-down was lifted (refresh() re-reads it either way).
             try { const r = await post('/api/loops/control', { action: 'unhalt' }); notify(r.ok ? 'loops resumed' : 'could NOT resume — the emergency stop is still engaged', r.ok ? 'good' : 'warn'); }
-            catch (_) { notify('could not reach the station — loops are still stopped', 'warn'); }
+            catch (_) { notify('could not reach the farm — loops are still stopped', 'warn'); }
             refresh();
           });
         } else if (loops.length) {
@@ -424,7 +424,7 @@
               verdict === 'approved' ? 'good' : 'warn');
             if (r && r.undoNote) notify(r.undoNote, 'warn');
           }
-        } catch (_) { notify('could not reach the station', 'warn'); sfx('bad'); }
+        } catch (_) { notify('could not reach the farm', 'warn'); sfx('bad'); }
         finally {
           pendingVerdicts.delete(verdictKey); ++refreshGeneration;
           listEl.querySelectorAll('.mc-row').forEach(el => {
@@ -444,7 +444,7 @@
         // announce a delete the sidecar refused, with the still-present row re-drawn underneath it by refresh().
         sfx('bad');
         try { const r = await post('/api/loops/remove', { id }); notify(r.ok ? 'loop deleted' : 'could not delete this loop', r.ok ? 'good' : 'warn'); }
-        catch (_) { notify('could not reach the station — the loop was not deleted', 'warn'); }
+        catch (_) { notify('could not reach the farm — the loop was not deleted', 'warn'); }
         refresh(); return;
       }
       if (act === 'pause' || act === 'resume') {
@@ -464,7 +464,7 @@
             new Promise((_, reject) => { deadline = setTimeout(() => { reject(new Error('No acknowledgement received. Refresh the loop state before retrying.')); controller.abort(); }, 15000); })
           ]);
           notify(act === 'pause' ? 'loop paused' : 'loop resumed', 'good');
-        } catch (error) { notify(error.message || 'could not reach the station', 'warn'); sfx('bad'); }
+        } catch (error) { notify(error.message || 'could not reach the farm', 'warn'); sfx('bad'); }
         finally {
           clearTimeout(deadline); ++refreshGeneration;
           pendingControls.delete(id);
@@ -569,7 +569,7 @@
               if (r && r.ok && r.cmd) {
                 checkEl.value = r.cmd;
                 rowEl.className = 'lp-checkline';
-                rowEl.innerHTML = 'After each pass the station will run <code>' + esc(r.cmd) + '</code> ' +
+                rowEl.innerHTML = 'After each pass the farm will run <code>' + esc(r.cmd) + '</code> ' +
                   '<span class="dim">— ' + esc(r.why) + '.</span> ' +
                   '<button type="button" class="lp-link" id="lp-checkedit">change</button>';
                 const ed = rowEl.querySelector('#lp-checkedit');
@@ -587,7 +587,7 @@
           rowEl.className = 'lp-checkline';
           rowEl.innerHTML = '<label class="mc-lbl">What command checks this project? <span style="color:var(--bad)">*</span>' +
             '<input id="lp-checktext" class="key-input" placeholder="npm test" value="' + esc(current || '') + '" autocomplete="off">' +
-            '<span class="dim">' + esc(why || 'the station runs it after each pass to know when the loop is done') + '</span></label>';
+            '<span class="dim">' + esc(why || 'the farm runs it after each pass to know when the loop is done') + '</span></label>';
           const inp = rowEl.querySelector('#lp-checktext');
           inp.addEventListener('input', () => { checkEl.value = inp.value; gate(); });
           inp.focus();
@@ -669,7 +669,7 @@
         try {
           const b = await (await post('/api/projects/bless', { path: extra.workdir, surface: 'interactive' })).json();
           if (!b || !b.ok) { msgEl.innerHTML = '<span style="color:var(--bad)">✕ ' + esc((b && b.reason) || 'that folder could not be approved') + '</span>'; sfx('bad'); releaseStart(); return; }
-        } catch (_) { msgEl.innerHTML = '<span style="color:var(--bad)">✕ could not reach the station</span>'; sfx('bad'); releaseStart(); return; }
+        } catch (_) { msgEl.innerHTML = '<span style="color:var(--bad)">✕ could not reach the farm</span>'; sfx('bad'); releaseStart(); return; }
       }
 
       /* THE CHECK PRE-FLIGHT, now automatic. It used to be a TEST button, which asked the user to know to
@@ -711,7 +711,7 @@
         consoleSection['automation'] = 'loops';
         const tab = body.querySelector('#con-tab-automation-loops'); if (tab) tab.click();
         refresh();
-      } catch (e) { msgEl.innerHTML = '<span style="color:var(--bad)">✕ ' + esc((e && e.message) || 'could not reach the station') + '</span>'; sfx('bad'); }
+      } catch (e) { msgEl.innerHTML = '<span style="color:var(--bad)">✕ ' + esc((e && e.message) || 'could not reach the farm') + '</span>'; sfx('bad'); }
       releaseStart();
     }
     body.querySelector('#lp-create').addEventListener('click', createLoop);

@@ -34,13 +34,13 @@ const Intake = (() => {
     onLeave = opts.onLeave || null;
     idx = 0; accepting = false; running = true;
     // typed while a question is still being typed out: hand it back to the composer, never into the void
-    Chat.beginInterview(text => { if (!accepting && String(text == null ? '' : text).trim() && Chat.prefill) { Chat.prefill(text); return; } answer(text, text, false); }, { placeholder: 'tell the station about yourself… (or “skip”)', status: 'getting to know you…' });
+    Chat.beginInterview(text => { if (!accepting && String(text == null ? '' : text).trim() && Chat.prefill) { Chat.prefill(text); return; } answer(text, text, false); }, { placeholder: 'tell the farm about yourself… (or “skip”)', status: 'getting to know you…' });
     // ESCAPE HATCH (Andrew ask): the interview hijacks COMMS, so the Commander must be able to walk away from the
     // WHOLE thing — not just skip one question at a time. Esc leaves; a "✕ leave interview" chip sits on every
     // question (see ask()). Capture-phase so it wins over any other Esc listener while the interview owns the moment.
     escHandler = e => { if (e.key === 'Escape' && running) { e.preventDefault(); e.stopPropagation(); leave(); } };
     document.addEventListener('keydown', escHandler, true);
-    type([{ text: 'one second, Commander — let me actually get to know you. this shapes how every agent here works for you. answer or tap, “skip” anything — or press Esc to leave the interview.', cps: 48, holdAfter: 250 }], () => setTimeout(ask, 450));
+    type([{ text: 'one second, Farmer — let me actually get to know you. this shapes how every agent here works for you. answer or tap, “skip” anything — or press Esc to leave the interview.', cps: 48, holdAfter: 250 }], () => setTimeout(ask, 450));
     return true;
   }
 
@@ -105,7 +105,7 @@ const Intake = (() => {
     detachEsc();
     if (Chat.endInterview) Chat.endInterview();
     sfx('close');
-    type([{ text: 'no problem — we’ll leave it there. i kept whatever you did tell me; refine any of it in the COMMANDER dossier whenever.', cps: 48 }], () => {});
+    type([{ text: 'no problem — we’ll leave it there. i kept whatever you did tell me; refine any of it in the FARMER dossier whenever.', cps: 48 }], () => {});
     if (onLeave) { try { onLeave(); } catch (_) {} }
   }
 
@@ -116,7 +116,7 @@ const Intake = (() => {
     if (Chat.endInterview) Chat.endInterview();
     // CLOSING SIGNAL: name the end explicitly and hand the COMMS input back — the interview hijacked it, so
     // "talk to me normally now" tells the Commander the field is theirs again (the exit signal the audit flagged).
-    type([{ text: 'that’s everything — talk to me normally now. i know you a little better, and so does every agent on the station. refine any of it in the COMMANDER dossier whenever.', cps: 48 }], () => {});
+    type([{ text: 'that’s everything — talk to me normally now. i know you a little better, and so does every agent on the farm. refine any of it in the FARMER dossier whenever.', cps: 48 }], () => {});
     if (onDone) { try { onDone(); } catch (_) {} }
   }
 

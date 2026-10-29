@@ -408,7 +408,7 @@
     const LL = layoutModule();
     if (!LL) return fail('NO_ENGINE', 'the layout engine is not loaded');
     if (!OPS[op]) return fail('BAD_OP', 'no such edit');
-    if (!station || typeof station.lineGraph !== 'function') return fail('NO_STATION', 'this station cannot edit lines');
+    if (!station || typeof station.lineGraph !== 'function') return fail('NO_STATION', 'this farm cannot edit lines');
     const g = station.lineGraph(op === 'newLine' ? null : propId);
     if (!g || !g.ok) return g || fail('NOT_LINKED', 'this line cannot be edited here');
     const e = OPS[op](clone(g.graph), args || {}, opts || {});
@@ -497,7 +497,7 @@
   function placeBlueprint(station, bpId, near, opts) {
     const LL = layoutModule();
     if (!LL) return fail('NO_ENGINE', 'the layout engine is not loaded');
-    if (!station || typeof station.blueprintGraph !== 'function') return fail('NO_STATION', 'this station cannot lay out lines');
+    if (!station || typeof station.blueprintGraph !== 'function') return fail('NO_STATION', 'this farm cannot lay out lines');
     const b = station.blueprintGraph(bpId, opts && opts.stamp);
     if (!b || !b.ok) return b || fail('NOT_FOUND', 'no such line');
     const g = station.lineGraph(null);
@@ -514,7 +514,7 @@
   function layoutGraphNear(station, graph, near) {
     const LL = layoutModule();
     if (!LL) return fail('NO_ENGINE', 'the layout engine is not loaded');
-    if (!station || typeof station.lineGraph !== 'function' || !graph) return fail('NO_STATION', 'this station cannot lay out lines');
+    if (!station || typeof station.lineGraph !== 'function' || !graph) return fail('NO_STATION', 'this farm cannot lay out lines');
     const g = station.lineGraph(null);
     if (!g || !g.ok) return g || fail('NOT_LINKED', 'this floor does not build by links');
     const L = layoutNear(LL, graph, g.floor, near, 12);

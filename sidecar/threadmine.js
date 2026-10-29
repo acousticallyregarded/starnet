@@ -89,20 +89,20 @@
       if (c) userTurns.push(c);
     }
     const prompt =
-      'Read this conversation. Find CONCRETE WORK the Commander explicitly wanted but that was never acted on ' +
+      'Read this conversation. Find CONCRETE WORK the Farmer explicitly wanted but that was never acted on ' +
       'here — a "thread" a colleague could genuinely pick up later (a tool they asked for, a project they ' +
       'described wanting built, a follow-up left hanging).\n' +
       'THE BAR: a thread is a real, actionable piece of work with a clear deliverable. Before listing anything, ' +
-      'apply this test: if the Commander were later asked "you floated this idea — keep the thread?", would the ' +
+      'apply this test: if the Farmer were later asked "you floated this idea — keep the thread?", would the ' +
       'question seem ridiculous to them? If yes, it is NOT a thread.\n' +
       'NEVER list: jokes, banter, hype, or trash-talk (e.g. "I\'m gonna throw some real chaos at you" is banter, ' +
       'not an idea); emotional or rhetorical remarks; vague intentions with no concrete subject; compliments or ' +
       'complaints; meta-comments about you or this conversation; hypotheticals raised only to make a point; ' +
-      'anything already done here; or your own suggestions — only work the COMMANDER asked for or described wanting.\n' +
+      'anything already done here; or your own suggestions — only work the FARMER asked for or described wanting.\n' +
       'For EACH thread reply EXACTLY:\nTHREAD: <short title of the work>\n' +
-      'QUOTE: <verbatim words the Commander used — copy word-for-word from the text; never paraphrase or invent>\n' +
+      'QUOTE: <verbatim words the Farmer used — copy word-for-word from the text; never paraphrase or invent>\n' +
       'DO: <the concrete first deliverable someone could produce for it>\n' +
-      'CONFIDENCE: <high | medium | low — that the Commander would genuinely want this picked up>\n' +
+      'CONFIDENCE: <high | medium | low — that the Farmer would genuinely want this picked up>\n' +
       'List at most 2, best first. Most conversations contain NO real threads — when in doubt, reply NONE.\n' +
       /* ALREADY-TRACKED RIDES THE PROMPT (2026-08-05). mine() has always held a fingerprint map of every live
          thread and every permanently-declined one — and used it ONLY to drop candidates after the reply landed.

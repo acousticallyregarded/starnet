@@ -577,7 +577,7 @@
        PAID OpenRouter search. A browser that could not start is named in the answer (webreader holds it down a while). */
     const READER_RUNG_MS = Number.isFinite(deps.readerBudgetMs) ? Math.max(1, deps.readerBudgetMs) : 15000;
     let readerStarting = null;   // a reader search still running after its rung passed it over
-    const readerDown = () => { try { const a = reader && reader.available(); return a && !a.ok && a.launchFailed ? String(a.reason || 'the station browser could not start') : ''; } catch (_) { return ''; } };
+    const readerDown = () => { try { const a = reader && reader.available(); return a && !a.ok && a.launchFailed ? String(a.reason || 'the farm browser could not start') : ''; } catch (_) { return ''; } };
     // start(onLaunched) -> the reader's search promise; resolves LATE when the browser has not STARTED within ms
     function readerWithin(start, ms) {
       let timer = null, up = false, giveUp = null;
@@ -693,15 +693,15 @@
         const starting = !down && !!readerStarting && laterRung;
         if (down || starting || readerReady()) chain.push(['browser', async () => {
           if (down) { browserNote = down; throw new Error(down); }
-          if (starting) { browserNote = 'the station browser is still starting'; throw new Error(browserNote); }
+          if (starting) { browserNote = 'the farm browser is still starting'; throw new Error(browserNote); }
           const r = laterRung
             ? await readerWithin(onLaunched => reader.search(query, { signal: parent, onLaunched }), READER_RUNG_MS)
             : await reader.search(query, { signal: parent });
           if (r === LATE) {
-            browserNote = 'the station browser was not ready within ' + (READER_RUNG_MS >= 1000 ? Math.round(READER_RUNG_MS / 1000) + ' s' : READER_RUNG_MS + ' ms');
+            browserNote = 'the farm browser was not ready within ' + (READER_RUNG_MS >= 1000 ? Math.round(READER_RUNG_MS / 1000) + ' s' : READER_RUNG_MS + ' ms');
             throw new Error(browserNote);
           }
-          if (r && r.launchFailed) { browserNote = String(r.reason || 'the station browser could not start'); throw new Error(browserNote); }
+          if (r && r.launchFailed) { browserNote = String(r.reason || 'the farm browser could not start'); throw new Error(browserNote); }
           return (r && r.results) || [];
         }]);
       }
@@ -911,7 +911,7 @@
             content: 'No results this time — the keyless engines declined (' + (e.__errors || []).filter(x => !/^browser:/.test(x)).join('; ') + '), and ' +
                      e.__browserNote + ', so it could not search past them. Do not immediately repeat the same search: ' +
                      'use sources already gathered, web_fetch a known URL directly, or finish and state the evidence ' +
-                     'limitation (name the station browser problem to the Commander).',
+                     'limitation (name the farm browser problem to the Farmer).',
             summary: 'no results · ' + e.__browserNote
           };
           if (e && e.__allFailed && !e.__unreachable) return {
@@ -938,7 +938,7 @@
       name: 'web_fetch', capability: 'web', scope: 'read', requiresConsent: false,
       timeoutMs: FETCH_TIMEOUT_MS + 20000 + (reader ? 45000 : 0),   // the reader rung needs Chrome boot + nav + settle
       description: 'Fetch a web page by URL and return its main text content (cleaned). Use after web_search to read a result. ' +
-        'Bot-blocked and JavaScript-only pages are automatically retried through the station\'s own browser, so one call is enough. ' +
+        'Bot-blocked and JavaScript-only pages are automatically retried through the farm\'s own browser, so one call is enough. ' +
         'If a page still cannot be read (dead link, site outage, verification wall) the result says so — that is information about the site, not a tool failure; use a different source rather than retrying the same URL.',
       schema: { type: 'object', required: ['url'], properties: { url: { type: 'string' } } },
       run: async (args, ctx) => {
@@ -959,14 +959,14 @@
             if (r && r.ok) {
               const text = clamp(r.text, FETCH_MAX_CHARS);
               return {
-                content: fenceExternal(text, 'page text from ' + (r.url || args.url) + ' (read via the station browser' + (s ? ' after http ' + s : '') + ')'),
-                fullContent: text === r.text ? undefined : fenceExternal(r.text, 'page text from ' + (r.url || args.url) + ' (read via the station browser' + (s ? ' after http ' + s : '') + ')'),
+                content: fenceExternal(text, 'page text from ' + (r.url || args.url) + ' (read via the farm browser' + (s ? ' after http ' + s : '') + ')'),
+                fullContent: text === r.text ? undefined : fenceExternal(r.text, 'page text from ' + (r.url || args.url) + ' (read via the farm browser' + (s ? ' after http ' + s : '') + ')'),
                 summary: text.length + ' chars via browser'
               };
             }
             const soft2 = softFetchAnswer(e, args.url);
             if (soft2) return {
-              content: soft2.content + ' (The station\'s own browser also tried and was refused'
+              content: soft2.content + ' (The farm\'s own browser also tried and was refused'
                 + (r && r.reason === 'challenge' ? ' — the site is holding a verification wall' : '') + '.)',
               summary: soft2.summary
             };
@@ -1111,14 +1111,14 @@
     // One refusal per resolver verdict, shared by ${KEY} headers and the auth descriptor.
     function keyRefusal(r, name) {
       if (r.reason === 'unattended') return 'this run is unattended and "' + r.name + '" is not approved for unattended use — approve it in CONNECT › ABILITIES › CONNECTED › API KEYS, or run this while watching';
-      if (r.reason === 'unresolved') return '"' + r.name + '" is kept in 1Password and could not be read (' + String(r.detail || 'not read yet') + ') — ask the Commander to unlock 1Password, then try again. Do not ask for the key itself';
+      if (r.reason === 'unresolved') return '"' + r.name + '" is kept in 1Password and could not be read (' + String(r.detail || 'not read yet') + ') — ask the Farmer to unlock 1Password, then try again. Do not ask for the key itself';
       // A MODEL-PROVIDER key is never handed to a tool and KEYS refuses to store one, so pointing at KEYS here sent
       // agents to ask the Commander for "access" nobody can grant (2026-09-28: OpenRouter was already connected;
       // the agent wanted the raw key to chase a transparent background image_generate could not make yet).
-      if (r.reason === 'reserved') return name + ' is a model-provider key: StarNet never hands provider keys to tools and API KEYS cannot store one, so do not ask the Commander for it. Use the built-in tools that already ride the station\'s connection instead: image_generate for images (transparent:true for a transparent background) and image_analyze to look at one.';
+      if (r.reason === 'reserved') return name + ' is a model-provider key: Homestead never hands provider keys to tools and API KEYS cannot store one, so do not ask the Farmer for it. Use the built-in tools that already ride the farm\'s connection instead: image_generate for images (transparent:true for a transparent background) and image_analyze to look at one.';
       // A key pasted into chat is saved with keys.save (advertised only on a run whose Commander's messages hold one),
       // so the fix names that route too — "add it in KEYS" alone sent agents asking for "a new key" (2026-10-25).
-      return 'no enabled service key provides ' + name + ' — if the Commander pasted the key into this chat, save it with keys.save first; '
+      return 'no enabled service key provides ' + name + ' — if the Farmer pasted the key into this chat, save it with keys.save first; '
         + 'otherwise ask them to paste it here, or add it in CONNECT › ABILITIES › CONNECTED › API KEYS';
     }
 

@@ -154,7 +154,7 @@ A.eq(cascadeWhiteSpace(['cmsg', 'body']).value, 'pre-wrap', 'cascade sanity: COM
   A.ok(/<a class="md-file" href="#" data-md-path="out\/notes\.md">/.test(renderMarkdown('[notes](out/notes.md)')) && /<a href="https:\/\/x\.com\/a\.png"/.test(renderMarkdown('[web](https://x.com/a.png)')),
     'a non-image file stays a file link; a web image stays a web link');
   // …and the agent is told how: every typed COMMS turn says ![caption](path) shows the picture (a spoken turn keeps the voice rules alone)
-  A.ok(/\+ \(willSpeak \? '' : ' To show the Commander an image file[^']*!\[short caption\]\(path\)/.test(chatSrc), 'a typed COMMS turn tells the agent how to show an image');
+  A.ok(/\+ \(willSpeak \? '' : ' To show the Farmer an image file[^']*!\[short caption\]\(path\)/.test(chatSrc), 'a typed COMMS turn tells the agent how to show an image');
   for (const bad of ['/api/file?agent=nova&path=..%2F..%2Fsecret.png', '/api/file?agent=nova&path=%2Fetc%2Fx.png', '/api/file?agent=a%22b&path=x.png', '/api/file?path=x.png', '/api/files?agent=nova&path=x.png'])
     A.ok(!/md-img/.test(renderMarkdown('![x](' + bad + ')')), 'an escaping, absolute, agentless or foreign address stays a label: ' + bad);
   A.ok(/data-md-agent/.test(extract('hydrateFileRefs')) && /workspaceFileRefs\(n\.getAttribute\('data-md-agent'\)/.test(extract('hydrateFileRefs')), 'hydrateFileRefs resolves such a ref in the agent it names');
@@ -253,7 +253,7 @@ A.eq(cascadeWhiteSpace(['cmsg', 'body']).value, 'pre-wrap', 'cascade sanity: COM
   pending++;
   const wfcss = rd('frontend/css/workflow-panel.css');
   A.ok(/\.wf-md \.md-pre \{[^}]*white-space: pre;/.test(wfcss) && /\.wf-md \.md-copy \{[^}]*position: absolute;/.test(wfcss) && /\.wf-md \.md-table th, \.wf-md \.md-table td/.test(wfcss), 'code blocks keep their lines, the copy key sits on the block, tables are ruled (wf-md)');
-  A.ok(/\.wf-md \.md-code \{ font-family: inherit;/.test(wfcss), 'a code span keeps the station face (live: it fell back to the browser monospace, bigger than its line)');
+  A.ok(/\.wf-md \.md-code \{ font-family: inherit;/.test(wfcss), 'a code span keeps the farm face (live: it fell back to the browser monospace, bigger than its line)');
   A.ok(/\.wf-md \.md-i \{ font-style: italic; \}/.test(wfcss), 'an *italic* the one renderer draws outside COMMS slants there too (COMMS: .cmsg .body .md-i)');
 }
 

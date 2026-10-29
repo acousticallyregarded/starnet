@@ -69,12 +69,12 @@ function sandbox(opts) {
     const s = sandbox({ storage: { 'starnet.byok.keyPool.openrouter': '["alt-1"]' } });
     const r = await s.api.setKey('sk-or-v1-page', 'openrouter');
     A.eq(s.store.get('starnet.byok.key.openrouter'), 'sk-or-v1-page', 'the key is saved in this browser first (chat works either way)');
-    A.eq(s.posts.length, 1, 'one hand-over to the station');
+    A.eq(s.posts.length, 1, 'one hand-over to the farm');
     A.eq(s.posts[0].url, '/api/providers/engine-key', 'through the token-gated engine-key route (the page fetch wrapper adds the launch token)');
     A.eq(s.posts[0].body, { provider: 'openrouter', key: 'sk-or-v1-page', keyPool: ['alt-1'], baseUrl: '' }, 'the FULL config: key + backups + endpoint (an explicit save carries no boot mark)');
-    A.eq(r && r.engine && r.engine.ok, true, 'setKey resolves with the station\'s answer');
+    A.eq(r && r.engine && r.engine.ok, true, 'setKey resolves with the farm\'s answer');
     A.eq(r.engine.keySource, 'station', 'presence only: where unattended runs get the key');
-    A.eq(s.sync('openrouter'), { rev: 'rev1', pending: false }, 'the page remembers the station revision it proved');
+    A.eq(s.sync('openrouter'), { rev: 'rev1', pending: false }, 'the page remembers the farm revision it proved');
   }
   /* ---- REMOVE: the empty config clears the station copy ---- */
   {
@@ -87,20 +87,20 @@ function sandbox(opts) {
     const s = sandbox({ storage: { 'starnet.byok.key.openrouter': 'sk-or-v1-page' } });
     const pool = await s.api.setKeyPool(['b1', 'b2'], 'openrouter');
     A.eq(pool && pool.count, 2, 'setKeyPool resolves the stored count…');
-    A.eq(pool.engine && pool.engine.ok, true, '…and the station\'s answer, so SETTINGS can warn when routines lack the backups');
-    A.eq(s.posts[0].body.keyPool, ['b1', 'b2'], 'a backup-pool change reaches the station with the key');
+    A.eq(pool.engine && pool.engine.ok, true, '…and the farm\'s answer, so SETTINGS can warn when routines lack the backups');
+    A.eq(s.posts[0].body.keyPool, ['b1', 'b2'], 'a backup-pool change reaches the farm with the key');
   }
   /* ---- never rejects; a refusal or a dead station is a truthful warning ---- */
   {
-    const refused = sandbox({ status: 500, body: { ok: false, error: 'the station could not save this OpenRouter setting to disk — chat still works' } });
+    const refused = sandbox({ status: 500, body: { ok: false, error: 'the farm could not save this OpenRouter setting to disk — chat still works' } });
     const r = await refused.api.setKey('sk-or-v1-page', 'openrouter');
-    A.ok(r.engine.ok === false && r.engine.error.indexOf('the station could not save this OpenRouter setting to disk — chat still works') === 0, 'the station\'s own refusal reaches the caller verbatim: ' + r.engine.error);
+    A.ok(r.engine.ok === false && r.engine.error.indexOf('the farm could not save this OpenRouter setting to disk — chat still works') === 0, 'the farm\'s own refusal reaches the caller verbatim: ' + r.engine.error);
     A.ok(/this page retries the next time it loads$/.test(r.engine.error), '…and says the page will retry it');
     A.eq(refused.sync('openrouter'), { rev: '', pending: true }, 'a failed save is remembered as pending');
     A.ok(refused.warns.length === 1 && refused.warns[0].indexOf('sk-or-v1-page') < 0, 'logged once, never with the key');
     const dead = sandbox({ fetchThrows: true });
     const d = await dead.api.setKey('sk-or-v1-page', 'openrouter');
-    A.ok(d.engine.ok === false && /could not be reached/.test(d.engine.error) && /chat in this browser still works/.test(d.engine.error), 'an unreachable station resolves an honest error, never a rejection');
+    A.ok(d.engine.ok === false && /could not be reached/.test(d.engine.error) && /chat in this browser still works/.test(d.engine.error), 'an unreachable farm resolves an honest error, never a rejection');
     const bare = sandbox({ status: 403, body: { nope: true } });
     const x = await bare.api.syncEngineKey('openrouter');
     A.ok(x.ok === false && /HTTP 403/.test(x.error), 'a bare 403 names the refusal: ' + x.error);
@@ -108,7 +108,7 @@ function sandbox(opts) {
   }
   /* ---- a failed REMOVE says the station KEEPS the key, and is retried at the next boot ---- */
   {
-    const REMOVE_500 = 'the station could not delete its copy of this OpenRouter connection (its log has the reason) — routines and other unattended runs will KEEP using it until a retry succeeds';
+    const REMOVE_500 = 'the farm could not delete its copy of this OpenRouter connection (its log has the reason) — routines and other unattended runs will KEEP using it until a retry succeeds';
     let phase = 'fail';
     const s = sandbox({
       storage: { 'starnet.byok.key.openrouter': 'sk-or-v1-leaked', [SYNC + 'openrouter']: JSON.stringify({ rev: 'r7', pending: false }) },
@@ -116,20 +116,20 @@ function sandbox(opts) {
     });
     const r = await s.api.setKey('', 'openrouter');
     A.eq(s.store.get('starnet.byok.key.openrouter'), '', 'this browser forgot its key');
-    A.ok(r.engine.ok === false && r.engine.error.indexOf(REMOVE_500) === 0, 'the warning is the station\'s REMOVE wording: ' + r.engine.error);
+    A.ok(r.engine.ok === false && r.engine.error.indexOf(REMOVE_500) === 0, 'the warning is the farm\'s REMOVE wording: ' + r.engine.error);
     A.ok(!/chat in this browser still works/.test(r.engine.error), 'never "chat still works" after a REMOVE (this browser has no key any more)');
     A.eq(s.sync('openrouter'), { rev: 'r7', pending: true }, 'the failed REMOVE is pending, with the revision it was meant to delete');
     phase = 'ok';
     await s.api.syncEngineKeysOnBoot();
     const retry = s.posts[s.posts.length - 1].body;
-    A.eq(retry, { provider: 'openrouter', key: '', keyPool: [], baseUrl: '', boot: true, ifRev: 'r7' }, 'the next boot retries the REMOVE — only if the station still holds what this page meant to delete');
+    A.eq(retry, { provider: 'openrouter', key: '', keyPool: [], baseUrl: '', boot: true, ifRev: 'r7' }, 'the next boot retries the REMOVE — only if the farm still holds what this page meant to delete');
     A.eq(s.sync('openrouter'), { rev: 'r8', pending: false }, 'confirmed: no longer pending');
     const before = s.posts.length;
     await s.api.syncEngineKeysOnBoot();
     A.eq(s.posts.length, before, 'once confirmed, a boot sends nothing for a provider this page holds nothing for');
     const deadRm = sandbox({ fetchThrows: true, storage: { 'starnet.byok.key.openrouter': 'sk-or-v1-x' } });
     const dr = await deadRm.api.setKey('', 'openrouter');
-    A.ok(/could not be reached to delete its copy/.test(dr.engine.error) && /keep using it/.test(dr.engine.error) && !/chat in this browser still works/.test(dr.engine.error), 'an unreachable station during REMOVE says routines keep the key: ' + dr.engine.error);
+    A.ok(/could not be reached to delete its copy/.test(dr.engine.error) && /keep using it/.test(dr.engine.error) && !/chat in this browser still works/.test(dr.engine.error), 'an unreachable farm during REMOVE says routines keep the key: ' + dr.engine.error);
   }
   /* ---- desktop / dev / sign-in providers never send a key ---- */
   {
@@ -176,21 +176,21 @@ function sandbox(opts) {
   /* ---- wiring the sandbox can't see ---- */
   const initBody = harness.slice(harness.indexOf('async function init()'), harness.indexOf('function normalizeProviderId'));
   A.ok(/if \(!DESKTOP\) \{ syncEngineKeysOnBoot\(\); return; \}/.test(initBody), 'init() hands the saved configs over once per page boot, without awaiting it');
-  A.ok(/const stored = await Promise\.resolve\(setKey\(candidate, p\)\);[\s\S]{0,200}engine: stored\.engine/.test(harness), 'validateAndSetKey passes the station\'s answer to SETTINGS');
-  A.ok(/writeScoped\(LS\.baseUrl, p, u \|\| ''\);[\s\S]{0,300}return syncEngineKey\(p\)\.then\(engine => \(\{ engine \}\)\);/.test(harness), 'an endpoint saved in the browser reaches the station, and resolves its answer');
+  A.ok(/const stored = await Promise\.resolve\(setKey\(candidate, p\)\);[\s\S]{0,200}engine: stored\.engine/.test(harness), 'validateAndSetKey passes the farm\'s answer to SETTINGS');
+  A.ok(/writeScoped\(LS\.baseUrl, p, u \|\| ''\);[\s\S]{0,300}return syncEngineKey\(p\)\.then\(engine => \(\{ engine \}\)\);/.test(harness), 'an endpoint saved in the browser reaches the farm, and resolves its answer');
   const station = read('frontend', 'app', 'stationui.js');
-  A.ok(/function warnIfStationLacksKey\(res\) \{[\s\S]{0,200}e\.ok === false && e\.error\) notify\('⚠ ' \+ e\.error, 'warn', undefined, \{ key: 'engine-key' \}\)/.test(station), 'SETTINGS shows the station\'s refusal as a warning (one toast slot)');
+  A.ok(/function warnIfStationLacksKey\(res\) \{[\s\S]{0,200}e\.ok === false && e\.error\) notify\('⚠ ' \+ e\.error, 'warn', undefined, \{ key: 'engine-key' \}\)/.test(station), 'SETTINGS shows the farm\'s refusal as a warning (one toast slot)');
   A.eq((station.match(/warnIfStationLacksKey\(res\);/g) || []).length, 6, 'beside each key save (add, edit, inline), the backup pool, the endpoint editor and the CUSTOM endpoint add (GitHub #113)');
   A.ok(/Promise\.resolve\(h\.setKey\('', row\.provider\)\)\.then\(warnIfStationLacksKey\)/.test(station), 'after REMOVE');
   A.ok(/Promise\.resolve\(h\.setBaseUrl\('', 'custom'\)\)\.then\(warnIfStationLacksKey\)/.test(station), 'and after the keyless CUSTOM endpoint REMOVE');
   A.ok(/const count = \(res && typeof res === 'object'\) \? Number\(res\.count\) \|\| 0 : res;/.test(station), 'the backup-pool toast reads the count out of { count, engine }');
-  A.ok(/'stored in this browser and on this station, so routines can use it'/.test(station) && /keyStoreClause\(res\)/.test(station) && !/keyStoreClause\(\)/.test(station),
-    'a key the station proved it holds is never described as "stored locally in this browser" only');
+  A.ok(/'stored in this browser and on this farm, so routines can use it'/.test(station) && /keyStoreClause\(res\)/.test(station) && !/keyStoreClause\(\)/.test(station),
+    'a key the farm proved it holds is never described as "stored locally in this browser" only');
   A.ok(/notify, warnIfStationLacksKey, settleNotifs,/.test(station), 'StationUI exports the warning for onboarding');
   const app = read('frontend', 'app', 'app.js');
   A.ok(/if \(Harness\.setBaseUrl\) warnStation\(await Harness\.setBaseUrl\(baseUrl, pickedProvider\)\);/.test(app)
     && /if \(key\) warnStation\(await \(Harness\.validateAndSetKey \? Harness\.validateAndSetKey\(key, pickedProvider, model\)/.test(app),
-    'onboarding (the first connect) shows the same warning when the station could not keep the key');
+    'onboarding (the first connect) shows the same warning when the farm could not keep the key');
 
   A.report('engine-key-sync.test');
 })().catch(e => { console.error(e); process.exit(1); });

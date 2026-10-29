@@ -215,7 +215,7 @@ function makeIdempotencyLedger(deps) {
         + 'so it MAY ALREADY HAVE TAKEN EFFECT. The host did NOT send it again. Verify first: use a read/list/get/search tool of the '
         + (entry && entry.connector ? '"' + entry.connector + '" ' : '') + 'connector to check whether the effect is already in place. '
         + 'If it is, do not repeat it. If your check shows it is missing, this exact call will be allowed once more after that check. '
-        + 'If there is no way to check, tell the Commander the outcome is unconfirmed instead of repeating it.'
+        + 'If there is no way to check, tell the Farmer the outcome is unconfirmed instead of repeating it.'
     };
   }
 

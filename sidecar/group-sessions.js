@@ -335,7 +335,7 @@ function makeGroupSessions(d) {
       if (answers.has(q.id) || (controllers.has(id) && progress.has(t.id))) t.state = 'running';
       else {
         t.state = 'answered'; t.reason = 'Question answered; continuing in a new turn';
-        turn(g, q.origin, q.agentId, { questionId: q.id, allowance: g.turns.filter(x => x.origin === q.origin && !['queued', 'held'].includes(x.state)).length, request: 'The Commander answered ' + JSON.stringify(value) +
+        turn(g, q.origin, q.agentId, { questionId: q.id, allowance: g.turns.filter(x => x.origin === q.origin && !['queued', 'held'].includes(x.state)).length, request: 'The Farmer answered ' + JSON.stringify(value) +
           ' to ' + JSON.stringify(q.question) + '. Continue from the saved conversation; inspect previous effects before repeating any action.', parent: t.id });
       }
       g.paused = false;
@@ -462,7 +462,7 @@ function makeGroupSessions(d) {
       system: 'You are a participant in a user-selected group DM. Speak as yourself. Do useful work with your own tools and permissions. ' +
         'Other participants: ' + JSON.stringify(roster().filter(a => g.members.includes(a.id))) + '. ' +
         'Use group.handoff for an explicit request to another participant; an @mention in prose does not launch anyone. ' +
-        'Ask material judgment questions using brief.ask; wait for the Commander instead of guessing their answer. ' +
+        'Ask material judgment questions using brief.ask; wait for the Farmer instead of guessing their answer. ' +
         'Only hand off when useful for the user request. Publish files with group.publish so peers can read the exact version using group.read. ' +
         'Do not claim another participant ran or reviewed anything until its actual response exists. ' +
         'Session instructions supplied by the user: ' + g.instructions };

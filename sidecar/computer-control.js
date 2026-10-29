@@ -34,7 +34,7 @@ function makeComputerControl(deps) {
       customBinary: !!env.STARNET_CUA_BINARY,
       available: available(), installing: !!installing, envLocked: locked, version: VERSION,
       // plain words (UX night 10-26): this line is what TOOLS › COMPUTER CONTROL shows a newcomer, after the backend name
-      detail: !shell ? 'Works only in the StarNet desktop app.'
+      detail: !shell ? 'Works only in the Homestead desktop app.'
         : !supported ? 'CUA needs Windows x64. WINDOWS · CLASSIC still works on Windows.'
         : selection() === 'off' ? 'Agents do not use the apps on your computer.'
         : selection() === 'cua' && !installed() ? 'Install CUA first, with the button below.'

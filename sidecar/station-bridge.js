@@ -46,7 +46,7 @@ function makeStationBridge(opts) {
       };
       const timer = setTimer(() => settle({
         ok: false,
-        error: 'no station page answered — open StarNet to run station commands',
+        error: 'no farm page answered — open Homestead to run farm commands',
         verb,
         unattended: true
       }), timeoutMs);
@@ -56,7 +56,7 @@ function makeStationBridge(opts) {
       try {
         emit('station.command', { id, verb, args: args || {} });
       } catch (e) {
-        settle({ ok: false, error: 'could not reach the station page: ' + ((e && e.message) || e), verb });
+        settle({ ok: false, error: 'could not reach the farm page: ' + ((e && e.message) || e), verb });
       }
     });
   }
@@ -69,7 +69,7 @@ function makeStationBridge(opts) {
     const out = outcome && typeof outcome === 'object' ? outcome : {};
     entry.resolve(out.ok
       ? { ok: true, result: out.result === undefined ? null : out.result, verb: entry.verb }
-      : { ok: false, error: String(out.error || 'the station refused the command'), verb: entry.verb });
+      : { ok: false, error: String(out.error || 'the farm refused the command'), verb: entry.verb });
     return true;
   }
 

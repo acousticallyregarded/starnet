@@ -45,7 +45,7 @@ const material = () => ({
     const r = await registry.dispatch({ name: 'brief.ask', args: material(), argsRaw: '{}' }, {});
     A.ok(r.ok, 'an answered clarify dispatches ok: ' + JSON.stringify(r.content));
     A.ok(!r.control, 'NO final control — the run keeps going in the same turn');
-    A.ok(/The Commander answered "executives" to: who is this dashboard primarily for\?/.test(r.content), 'the answer reaches the model as tool content, tied to its question');
+    A.ok(/The Farmer answered "executives" to: who is this dashboard primarily for\?/.test(r.content), 'the answer reaches the model as tool content, tied to its question');
     A.eq(askedWith[0].question, 'who is this dashboard primarily for?', 'the asker sees the validated question');
     A.eq(askedWith[0].recommended, 'operators', 'and the recommendation for the ★ chip');
     A.eq(state.brief.status, 'ready', 'the brief is back to ready — brief.proceed can settle it this turn');
@@ -87,7 +87,7 @@ const material = () => ({
     registerTaskBriefTools(registry, store, state, { now: () => 110 });
     const r = await registry.dispatch({ name: 'brief.ask', args: material(), argsRaw: '{}' }, {});
     A.eq(r.control && r.control.final, true, 'without an asker the question ends the run as before');
-    A.eq(r.content, 'Waiting for the Commander\'s decision.', 'same content');
+    A.eq(r.content, 'Waiting for the Farmer\'s decision.', 'same content');
   }
 
   // ---- E. the tool's own timeout covers the wait (the default 30s ctx budget would kill it) ----
@@ -224,7 +224,7 @@ const material = () => ({
     ] });
     const r = await registry.dispatch({ name: 'brief.ask', args, argsRaw: '{}' }, {});
     A.ok(r.ok && !r.control, 'the run continues in the same turn — nothing is left hanging');
-    A.eq(askedWith.length, 1, 'the Commander was asked ONCE, not three times');
+    A.eq(askedWith.length, 1, 'the Farmer was asked ONCE, not three times');
     A.eq(state.brief.status, 'ready', 'the whole batch is settled');
     A.eq(state.brief.questions.map(q => q.answer), ['use your judgment', 'use your judgment', 'use your judgment'],
       'every question is recorded as a REAL deferral, so the skip/ask-worthiness bookkeeping still sees them');
@@ -267,7 +267,7 @@ const material = () => ({
     A.ok(r.ok, 'a six-option multi-select is accepted: ' + JSON.stringify(r.content || r.error));
     A.eq(seen[0].options, six, 'all six reach the card');
     A.eq(store.active('stream:n').questions[0].options, six, 'and all six survive the round-trip to disk');
-    A.eq(store.active('stream:n').questions[0].answer, 'a, c, e', 'the set answer is stored as the Commander gave it');
+    A.eq(store.active('stream:n').questions[0].answer, 'a, c, e', 'the set answer is stored as the Farmer gave it');
   }
 
   A.report('taskbrief.clarify.test');

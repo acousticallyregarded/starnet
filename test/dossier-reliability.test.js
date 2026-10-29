@@ -63,14 +63,14 @@ const faultTail = faulted.slice(faulted.indexOf('Reliability'));
 A.ok(/100<span style="font-size:18px;color:var\(--ph-dim\);">%/.test(faultTail), 'provider faults + cancellations stay out of the ratio');
 A.ok(/2 runs set aside/.test(faultTail), 'but the excluded runs are NAMED, never silently dropped from the denominator');
 A.ok(/1 the provider failed/.test(faultTail), 'a provider fault is attributed to the provider, in words');
-A.ok(/1 you stopped or it asked a question/.test(faultTail), 'a Commander stop is attributed to the Commander, in words');
+A.ok(/1 you stopped or it asked a question/.test(faultTail), 'a Farmer stop is attributed to the Farmer, in words');
 A.ok(/never charged to this agent/.test(faultTail), 'and the readout says plainly that neither is the agent\'s fault');
 A.ok(!/set aside/.test(cleanTail), 'an agent with nothing excluded shows no set-aside line at all');
 
 /* ---- 4. the two meters stay legibly DISTINCT (they measure different things and may disagree) ---- */
 A.ok(/Satisfaction/.test(clean) && /Reliability/.test(clean), 'Satisfaction and Reliability are separate sections');
-A.ok(clean.indexOf('Satisfaction') < clean.indexOf('Reliability'), 'Reliability sits under Satisfaction (what you said, then what the station saw)');
-A.ok(/what the station observed — Satisfaction above is what you said/.test(clean), 'the dossier states the difference between the two meters');
+A.ok(clean.indexOf('Satisfaction') < clean.indexOf('Reliability'), 'Reliability sits under Satisfaction (what you said, then what the farm saw)');
+A.ok(/what the farm observed — Satisfaction above is what you said/.test(clean), 'the dossier states the difference between the two meters');
 // the disagreement case is the whole point: a rated-well agent that keeps failing must show both truths
 let mixed = statsFrom(['done', 'max_iters', 'max_iters']);
 mixed = Xp.applyEvent(mixed, { name: 'memory.feedback', payload: { agentId: 'a', id: 'm1', delta: 2, reason: 'work_great' } }).stats;

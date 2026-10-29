@@ -60,9 +60,9 @@ const Updates = (() => {
   // minisign / reqwest / plugin Display text; keep it as the trailing detail for support, never as the whole message.
   function installFailureText(e) {
     const raw = cleanError(e);
-    const kept = ' Nothing was installed; your current StarNet is unchanged.';
+    const kept = ' Nothing was installed; your current Homestead is unchanged.';
     if (/signature|different key|minisign|base64|invalid symbol/i.test(raw)) {
-      return 'Update refused: the download did not match the signed StarNet release.' + kept + ' (' + raw + ')';
+      return 'Update refused: the download did not match the signed Homestead release.' + kept + ' (' + raw + ')';
     }
     if (/download|request|response body|connect|timed? ?out|network|status: \d{3}/i.test(raw)) {
       return 'The update download did not finish.' + kept + ' Check the connection, then press INSTALL UPDATE again. (' + raw + ')';
@@ -206,13 +206,13 @@ const Updates = (() => {
         state.update = r.update;
         state.phase = 'available';
         if (CORE.shouldNotify(prefs, r.update.version, Date.now(), !!r.update.critical)) {
-          notify((r.update.critical ? 'Critical update' : 'StarNet update') + ' v' + r.update.version + ' is ready in Update Center', r.update.critical ? 'warn' : 'gold', undefined, { kind: r.update.critical ? 'alert' : 'result', key: 'update-ready', go: { term: 'updates' } });
+          notify((r.update.critical ? 'Critical update' : 'Homestead update') + ' v' + r.update.version + ' is ready in Update Center', r.update.critical ? 'warn' : 'gold', undefined, { kind: r.update.critical ? 'alert' : 'result', key: 'update-ready', go: { term: 'updates' } });
           prefs = CORE.recordNotified(prefs, r.update.version);
         }
       } else {
         state.update = null;
         state.phase = 'current';
-        if (manual) notify('StarNet is up to date', 'good');
+        if (manual) notify('Homestead is up to date', 'good');
       }
       savePrefs();
     } catch (e) {
@@ -272,16 +272,16 @@ const Updates = (() => {
   // The words follow the save notice (stationui.js refreshSaveDurability) and name ITS buttons, the only ways out.
   function conflictRefusal(c) {
     if (c.reset === true) {
-      return 'This computer’s station was reset after the station in this window was founded, so this window’s changes were kept separately on the station, not saved to the station file. The update was not installed. In the save notice at the top, press Download this window’s save to keep a copy, then Open the fresh station, and install the update.';
+      return 'This computer’s farm was reset after the farm in this window was founded, so this window’s changes were kept separately on the farm, not saved to the farm file. The update was not installed. In the save notice at the top, press Download this window’s save to keep a copy, then Open the fresh farm, and install the update.';
     }
     // erased work: this window's copy is from before this computer's station was reset and the station is from after it.
     // The notice shows NO Restore key for it (the station refuses that restore), so the card never names one
     if (c.predatesReset === true) {
-      return 'This window holds a station from before this computer’s station was reset, so its changes were not saved into the current station; this window’s copy is kept separately on the station. The update was not installed. In the save notice at the top, press Download this window’s save to keep a copy, then Reload current station, and install the update.';
+      return 'This window holds a farm from before this computer’s farm was reset, so its changes were not saved into the current farm; this window’s copy is kept separately on the farm. The update was not installed. In the save notice at the top, press Download this window’s save to keep a copy, then Reload current farm, and install the update.';
     }
-    return 'Your latest station changes conflict with the station file, so they were not saved to it; this window’s copy is kept separately on the station. The update was not installed. In the save notice at the top, ' +
-      (c.recovery ? 'press Restore this window’s sessions (or Reload current station), then install the update.'
-        : 'press Download this window’s save to keep a copy, then Reload current station, and install the update.');
+    return 'Your latest farm changes conflict with the farm file, so they were not saved to it; this window’s copy is kept separately on the farm. The update was not installed. In the save notice at the top, ' +
+      (c.recovery ? 'press Restore this window’s sessions (or Reload current farm), then install the update.'
+        : 'press Download this window’s save to keep a copy, then Reload current farm, and install the update.');
   }
   // the notice is drawn when the save dot refreshes; a conflict latched by this very drain may not have drawn it yet
   function raiseConflictNotice() {
@@ -344,7 +344,7 @@ const Updates = (() => {
   async function install(opts) {
     opts = opts || {};
     if (!TAURI || !CORE || busy || !state.update) {
-      notify('No StarNet update is ready to install', 'warn');
+      notify('No Homestead update is ready to install', 'warn');
       return snapshot();
     }
     const Channel = TAURI.Channel;
@@ -381,12 +381,12 @@ const Updates = (() => {
       // #121: name the save when it is the save that was not proven — the user's newest edits are the thing at risk
       state.error = conflict ? conflictRefusal(conflict)
         : drained.saveConfirmed === false
-        ? 'Your latest station changes are not confirmed in the station file yet, so the update was not installed. StarNet stays open; try again in a moment.'
-        : 'State could not be verified on disk. The update was not installed; your current StarNet remains open.';
+        ? 'Your latest farm changes are not confirmed in the farm file yet, so the update was not installed. Homestead stays open; try again in a moment.'
+        : 'State could not be verified on disk. The update was not installed; your current Homestead remains open.';
       busy = false;
       if (conflict) raiseConflictNotice();
-      notify(conflict ? 'Update paused - this window’s changes conflict with the station file (see the save notice at the top)'
-        : drained.saveConfirmed === false ? 'Update paused - latest station changes are not confirmed in the station file' : 'Update paused - state verification failed', 'warn');
+      notify(conflict ? 'Update paused - this window’s changes conflict with the farm file (see the save notice at the top)'
+        : drained.saveConfirmed === false ? 'Update paused - latest farm changes are not confirmed in the farm file' : 'Update paused - state verification failed', 'warn');
       emit();
       return snapshot();
     }
@@ -416,7 +416,7 @@ const Updates = (() => {
     try {
       await invoke('starnet_update_install', { onEvent });
       state.phase = 'restarting';
-      notify('StarNet update installed - restarting', 'good');
+      notify('Homestead update installed - restarting', 'good');
     } catch (e) {
       installing = false;   // install failed; the app lives on, so the quit guard resumes normally
       let thawError = null;
@@ -473,7 +473,7 @@ const Updates = (() => {
     savePrefs();
     state.update = null;
     state.phase = 'skipped';
-    notify('StarNet v' + prefs.ignoredVersion + ' will be skipped', 'warn');
+    notify('Homestead v' + prefs.ignoredVersion + ' will be skipped', 'warn');
     schedule();
     emit();
   }
@@ -528,7 +528,7 @@ const Updates = (() => {
 
   function html() {
     if (!TAURI) {
-      return '<div class="fb-empty">DESKTOP UPDATES ARE AVAILABLE IN THE PACKAGED STARNET APP.<br><span>This browser preview cannot install native releases.</span></div>';
+      return '<div class="fb-empty">DESKTOP UPDATES ARE AVAILABLE IN THE PACKAGED HOMESTEAD APP.<br><span>This browser preview cannot install native releases.</span></div>';
     }
     const update = state.update;
     const pct = CORE.progress(state.downloaded, state.contentLength);
@@ -549,7 +549,7 @@ const Updates = (() => {
         // Channels-confirmed, and the choice is the Commander's, not a side effect.
         out += '<div class="up-guard">' +
           esc(guardN === 1 ? '1 AGENT IS STILL WORKING' : guardN + ' AGENTS ARE STILL WORKING') +
-          ' - INSTALLING RESTARTS STARNET AND KILLS ' + (guardN === 1 ? 'ITS RUN' : 'THEIR RUNS') + '.</div>' +
+          ' - INSTALLING RESTARTS HOMESTEAD AND KILLS ' + (guardN === 1 ? 'ITS RUN' : 'THEIR RUNS') + '.</div>' +
           '<div class="up-actions">' +
           '<button class="bb sm" id="up-guard-wait">WAIT FOR AGENTS</button>' +
           '<button class="bb sm danger" id="up-install-force" ' + (busy ? 'disabled' : '') + '>INSTALL ANYWAY</button>' +
@@ -560,12 +560,12 @@ const Updates = (() => {
           (update.critical ? '' : '<button class="bb sm danger" id="up-ignore">SKIP VERSION</button>') + '</div></div>';
       }
     } else if (state.phase === 'current') {
-      out += '<div class="up-empty">You have the latest StarNet (checked ' + esc(fmtTime(state.lastCheckedAt)) + ').</div>';
+      out += '<div class="up-empty">You have the latest Homestead (checked ' + esc(fmtTime(state.lastCheckedAt)) + ').</div>';
     } else if (state.phase === 'skipped') {
       // Never "latest": a newer release exists, the Commander chose to skip it.
       out += '<div class="up-empty">v' + esc(prefs.ignoredVersion) + ' is skipped. Press CHECK NOW to see it again.</div>';
     } else if (state.phase === 'checking') {
-      out += '<div class="up-empty">Checking for a newer StarNet...</div>';
+      out += '<div class="up-empty">Checking for a newer Homestead...</div>';
     } else if (state.phase === 'idle') {
       // Not checked this launch: say only what is known — when the last check ran and what it found.
       const known = prefs.availableVersion && prefs.availableVersion !== state.currentVersion && prefs.availableVersion !== prefs.ignoredVersion ? prefs.availableVersion : '';
@@ -577,7 +577,7 @@ const Updates = (() => {
         ? 'The last check found v' + esc(known) + '. Press CHECK NOW to get it ready to install.'
         : skipped ? 'v' + esc(skipped) + ' is skipped. Press CHECK NOW to see it again.'
         : (state.lastCheckedAt ? 'Not checked since ' + esc(fmtTime(state.lastCheckedAt)) + '.' : 'Never checked for updates.') +
-          ' Press CHECK NOW to look for a newer StarNet.') + '</div>';
+          ' Press CHECK NOW to look for a newer Homestead.') + '</div>';
     }
     if (state.phase === 'preparing' || state.phase === 'downloading' || state.phase === 'installing' || state.phase === 'restarting') {
       out += '<div class="up-progress"><div style="width:' + pct + '%"></div></div>' +
@@ -588,7 +588,7 @@ const Updates = (() => {
       // reinstalling the latest build keeps all data (see RELEASES_PAGE note).
       out += '<div class="up-error">' + esc(state.error) +
         '<br><button class="bb sm up-manual" id="up-manual-err">DOWNLOAD LATEST MANUALLY</button>' +
-        '<span class="up-meta up-manual-note">Reinstalling over the top keeps your station and settings.</span></div>';
+        '<span class="up-meta up-manual-note">Reinstalling over the top keeps your farm and settings.</span></div>';
     }
     out += '<div class="up-foot">Last checked: ' + esc(fmtTime(state.lastCheckedAt)) +
       ' · <a href="#" id="up-manual-foot" class="up-manual-link">download manually</a></div></div>';

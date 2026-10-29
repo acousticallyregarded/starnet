@@ -1302,10 +1302,540 @@ const Terrain = (typeof document === 'undefined') ? { active: () => false } : ((
     },
   };
 
+  /* -------------------------------------------------------------------- GROUND: FARM ---- */
+  /* FARM — the ground the farm stands on, and the default place to land. Where the forest is a
+     dark aerial map of old growth, this is the WORKED land seen from a low hill on a fair day:
+     a patchwork of fields, each one crop, laid in rows; hedgerows, post-and-rail fences and
+     cart tracks along the field edges; sheep and cattle in the pastures; an orchard here and
+     there; and a grass yard round the farm itself with hay, a trough and the hens.
+
+     THE LAYOUT IS A GRID OF FIELDS (FIELD world px, ~38m). Everything is a pure function of the
+     field's cell: what grows in it, which way its rows run, and what bounds each of its edges.
+     A field's crop is TILES (TILE px, three by three inside a HEADLAND of grass) so the rows
+     carry straight across a field without a seam; every crop texture wraps on its own tile.
+
+     KEY: a bright summer day. Saturated greens, golden grain, warm light soil; shadows are green, not
+     black. Nothing goes to pure white, so props and the crew still read on top of it. Same sun as every ground (top-left), same hard-pixel law (hardEdge on every sprite
+     that stands up), same scale (an agent body ~35 world px, one world pixel ~5cm). */
+
+  const FARM = {
+    label: 'FARM',
+    blurb: 'Set down among the fields. Crops in rows, hedges and fences, sheep in the pasture.',
+    base: '#78a843',
+    PATCH: 512,
+    FIELD: 768,                        // world px per field
+    HEAD: 48,                          // grass headland round the crop inside a field
+    TILE: 224,                         // crop tile — (FIELD - 2*HEAD) / 3, so rows meet edge to edge
+    CELL: 96,                          // draw padding + clearing margin (terrain dispatch reads it)
+    YARD: 160,                         // grass yard kept clear of crops round the farm's footprint
+
+    LIGHT: {
+      GRASS: [[78, 128, 46], [90, 144, 52], [102, 158, 58], [116, 172, 64], [130, 186, 72], [146, 198, 82], [164, 210, 96]],
+      DRY: [[168, 170, 92], [186, 184, 104], [204, 198, 120]],
+      CLOVER: [[66, 128, 58], [80, 146, 66], [96, 162, 76]],
+      FLOWERS: [[248, 246, 232], [252, 214, 70], [196, 140, 214], [240, 120, 104]],
+      SOIL: [[110, 76, 46], [126, 88, 54], [142, 102, 64], [158, 116, 74], [172, 130, 86], [186, 146, 100]],
+      WHEAT: [[176, 136, 56], [200, 160, 66], [220, 182, 80], [236, 202, 98], [246, 220, 124], [252, 234, 160]],
+      BARLEY: [[184, 168, 92], [204, 188, 108], [220, 206, 126], [234, 222, 148], [244, 236, 172]],
+      CORN: [[50, 96, 34], [64, 118, 40], [80, 140, 48], [98, 160, 56], [120, 180, 66], [146, 198, 80]],
+      CABBAGE: [[64, 124, 84], [84, 150, 100], [108, 174, 120], [136, 196, 144], [168, 216, 170]],
+      SPROUT: [[96, 160, 60], [120, 184, 72], [148, 204, 88]],
+      PUMPKIN: [[196, 92, 24], [230, 122, 32], [248, 154, 50], [252, 186, 90]],
+      VINE: [[58, 104, 40], [74, 126, 48], [92, 148, 56], [112, 168, 66]],
+      LEAF: [[34, 70, 30], [46, 90, 38], [60, 112, 46], [76, 134, 54], [94, 156, 62], [114, 176, 72], [136, 194, 84], [162, 212, 100]],
+      HEDGE: [[30, 62, 28], [42, 80, 36], [56, 100, 44], [72, 120, 52], [90, 140, 60], [110, 158, 70]],
+      FRUIT: [[150, 34, 28], [196, 54, 38], [226, 92, 56]],
+      WOOD: [[86, 60, 38], [116, 84, 54], [146, 110, 72], [176, 138, 94], [204, 166, 118]],
+      TRACK: [[168, 136, 92], [186, 154, 106], [202, 170, 122], [216, 186, 140]],
+      STONE: [[120, 120, 112], [146, 146, 136], [172, 170, 158], [198, 196, 184]],
+      WOOL: [[132, 128, 114], [164, 160, 144], [194, 190, 174], [218, 214, 198], [234, 230, 214]],
+      HIDE: [[116, 112, 100], [158, 152, 138], [196, 190, 176], [222, 218, 204]],
+      PATCHES: [[18, 16, 15], [30, 27, 25], [44, 40, 37], [60, 55, 50]],
+      BROWN: [[72, 42, 24], [100, 60, 33], [128, 82, 44], [154, 106, 60]],
+      HAY: [[136, 106, 44], [166, 134, 58], [192, 160, 76], [214, 184, 100]],
+      WATER: [[38, 66, 84], [52, 88, 108], [74, 114, 132]],
+      HEN: [[176, 170, 152], [210, 204, 186], [232, 228, 212]], COMB: [184, 46, 36], DARK: [34, 28, 24],
+      SHADOW: [62, 104, 40],
+    },
+
+    /* ---- THE PATCH: pasture grass. Dithered three-octave base, dry swathes, clover clumps, a
+            stipple of upright blades on the light side, a few wild flowers and bare specks. ---- */
+    buildPatch(rnd) {
+      const P = FARM.PATCH, LT = FARM.LIGHT;
+      const cv = mkCv(P, P), c = cv.getContext('2d');
+      const img = c.createImageData(P, P), D = img.data;
+      const idx = (x, y) => (((((y | 0) % P) + P) % P) * P + ((((x | 0) % P) + P) % P)) * 4;
+      const put = (x, y, col) => { const i = idx(x, y); D[i] = col[0]; D[i + 1] = col[1]; D[i + 2] = col[2]; };
+      const g1 = noiseField(4, rnd), g2 = noiseField(13, rnd), g3 = noiseField(47, rnd);
+      const dry = noiseField(6, rnd), clov = noiseField(23, rnd);
+      let p = 0;
+      for (let y = 0; y < P; y++) {
+        for (let x = 0; x < P; x++, p += 4) {
+          const u = x / P, v = y / P;
+          const t = g1(u, v) * 0.42 + g2(u, v) * 0.30 + g3(u, v) * 0.16 + h01(x, y, 5) * 0.12;
+          let col = dither(LT.GRASS, t * 1.2 - 0.12, x, y, 13);
+          const dd = clamp01((dry(u, v) - 0.6) * 3.2);
+          if (dd > 0 && h01(x, y, 17) < dd * 0.7) col = dither(LT.DRY, t, x, y, 19);
+          D[p] = col[0]; D[p + 1] = col[1]; D[p + 2] = col[2]; D[p + 3] = 255;
+        }
+      }
+      // clover: small trefoils gathered by their own field
+      for (let i = 0; i < 2600; i++) {
+        const x = rnd() * P, y = rnd() * P;
+        if (rnd() > clamp01((clov(x / P, y / P) - 0.5) * 3)) continue;
+        const col = ramp(LT.CLOVER, rnd());
+        put(x, y, col); put(x + 1, y, col); put(x, y + 1, col);
+        put(x + 1, y + 1, LT.GRASS[0]);
+      }
+      // blades: 2-3px strokes leaning one way, lit tip — the tooth that says grass, not felt
+      for (let i = 0; i < 16000; i++) {
+        const x = rnd() * P, y = rnd() * P, len = 2 + ((rnd() * 2) | 0), lean = rnd() < 0.5 ? 0 : 1;
+        const base = ramp(LT.GRASS, 0.45 + rnd() * 0.35);
+        for (let s = 0; s < len; s++) put(x + (s === len - 1 ? lean : 0), y - s, s === len - 1 ? ramp(LT.GRASS, 0.85 + rnd() * 0.15) : base);
+        put(x + 1, y + 1, LT.GRASS[0]);
+      }
+      // wild flowers, sparse, in small drifts
+      for (let i = 0; i < 260; i++) {
+        const x = rnd() * P, y = rnd() * P, col = LT.FLOWERS[(rnd() * LT.FLOWERS.length) | 0];
+        for (let k = 0, n = 1 + ((rnd() * 4) | 0); k < n; k++) {
+          const fx = x + (rnd() - 0.5) * 8, fy = y + (rnd() - 0.5) * 6;
+          put(fx, fy, col); put(fx + 1, fy + 1, LT.GRASS[1]);
+        }
+      }
+      // bare specks: trodden earth and a stone or two
+      for (let i = 0; i < 180; i++) {
+        const x = rnd() * P, y = rnd() * P;
+        put(x, y, ramp(LT.SOIL, 0.4 + rnd() * 0.5));
+        if (rnd() < 0.4) put(x + 1, y, ramp(LT.SOIL, 0.3 + rnd() * 0.5));
+      }
+      c.putImageData(img, 0, 0);
+      return cv;
+    },
+
+    /* ---- crop tiles: TILE x TILE, rows running along x, every texture wrapping on the tile so
+            tiles laid side by side read as one field. Rotated copies serve fields whose rows run
+            north-south. ---- */
+    cropTile(kind, rnd) {
+      const T = FARM.TILE, LT = FARM.LIGHT;
+      const cv = mkCv(T, T), c = cv.getContext('2d');
+      const img = c.createImageData(T, T), D = img.data;
+      const w = v => ((Math.round(v) % T) + T) % T;
+      const put = (x, y, col) => { const i = (w(y) * T + w(x)) * 4; D[i] = col[0]; D[i + 1] = col[1]; D[i + 2] = col[2]; D[i + 3] = 255; };
+      const shade = (x, y, f) => { const i = (w(y) * T + w(x)) * 4; D[i] *= f; D[i + 1] *= f; D[i + 2] *= f; };
+      const n1 = noiseField(4, rnd), n2 = noiseField(16, rnd);
+      // the soil every crop stands in: tilled, faint furrow ridges along the rows (period 7)
+      const soil = (x, y, lift) => {
+        const u = x / T, v = y / T;
+        const ridge = Math.cos((y / 7) * TAU) * 0.18;           // ridge lit on its sun (north) face
+        return dither(LT.SOIL, 0.45 + ridge + (n1(u, v) - 0.5) * 0.35 + (n2(u, v) - 0.5) * 0.2 + (lift || 0), x, y, 101);
+      };
+      const ground = lift => { for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) put(x, y, soil(x, y, lift)); };
+      const disc = (cx, cy, R, pal, boost, sq) => {
+        const lim = Math.ceil(R) + 1, k = sq || 1;
+        for (let dy = -lim; dy <= lim; dy++) for (let dx = -lim; dx <= lim; dx++) {
+          const d = Math.hypot(dx, dy / k);
+          if (d > R) continue;
+          const dome = Math.sqrt(Math.max(0, 1 - (d / R) * (d / R))), side = (dx * SUN.x + dy * SUN.y) / R;
+          put(cx + dx, cy + dy, dither(pal, 0.15 + dome * 0.4 + side * 0.35 + (boost || 0), Math.round(cx + dx), Math.round(cy + dy), 103));
+        }
+      };
+      const shadowDisc = (cx, cy, R) => {
+        const lim = Math.ceil(R) + 1;
+        for (let dy = -lim; dy <= lim; dy++) for (let dx = -lim; dx <= lim; dx++) if (Math.hypot(dx, dy) <= R) shade(cx + dx - SUN.x * R * 0.5, cy + dy - SUN.y * R * 0.5, 0.62);
+      };
+      if (kind === 'plowed') {
+        // deep furrows: lit ridge, dark trough, clods
+        for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) {
+          const ph = (y % 7) / 7, u = x / T, v = y / T;
+          const prof = ph < 0.35 ? 0.35 : ph < 0.6 ? -0.05 : -0.3;
+          put(x, y, dither(LT.SOIL, 0.42 + prof + (n1(u, v) - 0.5) * 0.3 + (n2(u, v) - 0.5) * 0.2, x, y, 105));
+        }
+        for (let i = 0; i < 900; i++) { const x = rnd() * T, y = rnd() * T; put(x, y, LT.SOIL[5]); shade(x + 1, y + 1, 0.6); }
+      } else if (kind === 'wheat' || kind === 'barley') {
+        const pal = kind === 'wheat' ? LT.WHEAT : LT.BARLEY, wave = noiseField(3, rnd);
+        for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) {
+          const u = x / T, v = y / T, row = (y % 7) === 6 ? -0.22 : 0;
+          put(x, y, dither(pal, 0.4 + (wave(u, v) - 0.5) * 0.5 + (n2(u, v) - 0.5) * 0.25 + row, x, y, 107));
+        }
+        // heads: short upright strokes, lit tips, thick as the crop
+        for (let i = 0; i < 9000; i++) {
+          const x = rnd() * T, y = rnd() * T, lit = wave(x / T, y / T);
+          put(x, y, ramp(pal, 0.55 + lit * 0.4)); put(x, y + 1, ramp(pal, 0.35 + lit * 0.3)); shade(x + 1, y + 2, 0.75);
+        }
+      } else if (kind === 'corn') {
+        // tall rows (period 14) over dark soil: each plant a fan of long leaves, lit on the sun side
+        ground(-0.2);
+        for (let r = 0; r < T / 14; r++) {
+          const ry = r * 14 + 7;
+          for (let x = 0; x < T; x += 4) {
+            const px = x + (rnd() - 0.5) * 2, py = ry + (rnd() - 0.5) * 1.5;
+            for (let k = 0, n = 6 + ((rnd() * 3) | 0); k < n; k++) {
+              // leaves reach out of the row more than along it, and arch: broad at the stalk, fine at the tip
+              const a = rnd() * TAU, len = 4 + rnd() * 5, ca = Math.cos(a) * 0.7, sa = Math.sin(a);
+              const lit = ca * SUN.x + sa * SUN.y;
+              for (let s = 0; s <= len; s += 0.6) {
+                const lx = px + ca * s, ly = py + sa * s * 0.75, tone = 0.35 + lit * 0.3 + (1 - s / len) * 0.25 + rnd() * 0.1;
+                shade(lx - SUN.x * 2.5, ly - SUN.y * 2.5, 0.72);
+                put(lx, ly, ramp(LT.CORN, tone));
+                if (s < len * 0.6) put(lx, ly + 1, ramp(LT.CORN, tone - 0.18));
+              }
+            }
+            put(px, py, LT.CORN[5]); put(px, py - 1, LT.CORN[4]);
+          }
+        }
+      } else if (kind === 'cabbage') {
+        ground(0);
+        for (let r = 0; r < T / 14; r++) {
+          const ry = r * 14 + 7;
+          for (let x = (r % 2) * 7; x < T; x += 14) {
+            const R = 3.6 + rnd() * 1.3, cx = x + (rnd() - 0.5) * 1.5, cy = ry + (rnd() - 0.5) * 1.5;
+            shadowDisc(cx, cy, R + 1.2);
+            disc(cx, cy, R + 1.4, LT.CABBAGE, -0.25);       // outer leaves, darker
+            disc(cx, cy, R * 0.7, LT.CABBAGE, 0.18);        // the pale heart
+          }
+        }
+      } else if (kind === 'sprouts') {
+        ground(0.08);
+        for (let r = 0; r < T / 14; r++) {
+          const ry = r * 14 + 7;
+          for (let x = 0; x < T; x += 4) {
+            if (rnd() < 0.15) continue;
+            const px = x + rnd() * 2, py = ry + (rnd() - 0.5) * 2, col = ramp(LT.SPROUT, rnd());
+            put(px, py, col); put(px + 1, py, col); put(px, py - 1, LT.SPROUT[2]); shade(px + 1, py + 1, 0.7);
+          }
+        }
+      } else if (kind === 'pumpkin') {
+        // a mat of vines and broad leaves, pumpkins sitting in it
+        ground(-0.05);
+        for (let i = 0; i < 70; i++) {
+          let x = rnd() * T, y = rnd() * T, a = rnd() * TAU;
+          for (let s = 0, n = 40 + ((rnd() * 60) | 0); s < n; s++) {
+            a += (rnd() - 0.5) * 0.6; x += Math.cos(a); y += Math.sin(a);
+            put(x, y, LT.VINE[1]);
+            if (rnd() < 0.12) disc(x, y, 2 + rnd() * 1.8, LT.VINE, 0);
+          }
+        }
+        for (let i = 0; i < 48; i++) {
+          const cx = rnd() * T, cy = rnd() * T, R = 2.6 + rnd() * 1.8;
+          shadowDisc(cx, cy, R + 1);
+          disc(cx, cy, R, LT.PUMPKIN, 0, 0.85);
+          put(cx - 0.5, cy - R * 0.85, LT.VINE[0]);
+        }
+      }
+      c.putImageData(img, 0, 0);
+      return cv;
+    },
+
+    /* a quarter turn, pixel-exact (a rotated drawImage is not) */
+    rot90(src) {
+      const W = src.width, H = src.height, out = mkCv(H, W);
+      const a = src.getContext('2d').getImageData(0, 0, W, H).data;
+      const oc = out.getContext('2d'), img = oc.createImageData(H, W), b = img.data;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const i = (y * W + x) * 4, j = (x * H + (H - 1 - y)) * 4;
+        b[j] = a[i]; b[j + 1] = a[i + 1]; b[j + 2] = a[i + 2]; b[j + 3] = a[i + 3];
+      }
+      oc.putImageData(img, 0, 0);
+      return out;
+    },
+
+    flip(src) {
+      const out = mkCv(src.width, src.height), c = out.getContext('2d');
+      c.translate(src.width, 0); c.scale(-1, 1); c.drawImage(src, 0, 0);
+      return out;
+    },
+
+    /* a soft-edged cast shadow under anything standing, opaque (the hard-pixel law) */
+    shadow(c, cx, cy, rx, ry) {
+      c.fillStyle = rgb(FARM.LIGHT.SHADOW);
+      const ox = -SUN.x * rx * 0.35, oy = -SUN.y * ry * 0.5;
+      for (let y = -Math.ceil(ry); y <= Math.ceil(ry); y++) for (let x = -Math.ceil(rx); x <= Math.ceil(rx); x++) {
+        const d = Math.hypot(x / rx, y / ry);
+        if (d > 1 || (d > 0.85 && h01(x, y, 141) > 0.5)) continue;
+        c.fillRect(Math.round(cx + x + ox), Math.round(cy + y + oy), 1, 1);
+      }
+    },
+
+    /* a lit, dithered ellipse body (animals, bales) — `fn(x,y,lit)` may override a pixel's ramp */
+    body(c, cx, cy, rx, ry, pal, fuzz, fn) {
+      for (let y = -Math.ceil(ry) - 1; y <= Math.ceil(ry) + 1; y++) for (let x = -Math.ceil(rx) - 1; x <= Math.ceil(rx) + 1; x++) {
+        const d = Math.hypot(x / rx, y / ry) * (1 + (h01(x, y, 151) - 0.5) * (fuzz || 0));
+        if (d > 1) continue;
+        const dome = Math.sqrt(Math.max(0, 1 - d * d)), side = (x / rx) * SUN.x + (y / ry) * SUN.y;
+        const lit = 0.12 + dome * 0.45 + side * 0.35;
+        const p = (fn && fn(x, y, lit)) || pal;
+        c.fillStyle = rgb(dither(p, lit + (h01(x, y, 153) - 0.5) * (fuzz ? 0.3 : 0.1), Math.round(cx + x), Math.round(cy + y), 155));
+        c.fillRect(Math.round(cx + x), Math.round(cy + y), 1, 1);
+      }
+    },
+
+    buildSprites(rnd) {
+      const LT = FARM.LIGHT, T = FARM.TILE, out = [];
+      const add = (kind, cv, ox, oy, R, z, keepSoft) => out.push({ kind, cv: keepSoft ? cv : hardEdge(cv), ox, oy, R, z: z || 0 });
+      // CROPS — one tile per crop, east-west rows and the same turned north-south
+      for (const k of ['wheat', 'barley', 'corn', 'cabbage', 'sprouts', 'pumpkin', 'plowed']) {
+        const cv = FARM.cropTile(k, rnd);
+        add('crop:' + k + ':h', cv, 0, 0, T, -2, true);
+        add('crop:' + k + ':v', FARM.rot90(cv), 0, 0, T, -2, true);
+      }
+      // CART TRACK — 64px runs, two ruts and a grass crown, ragged where the verge takes over
+      for (let v = 0; v < 3; v++) {
+        const L = 64, W = 30, cv = mkCv(L, W), c = cv.getContext('2d'), n = noiseField(4, rnd);
+        for (let y = 0; y < W; y++) for (let x = 0; x < L; x++) {
+          const e = Math.abs(y - W / 2) / (W / 2), rag = (n(x / L, y / W) - 0.5) * 0.35 + (h01(x + v * 64, y, 161) - 0.5) * 0.15;
+          if (e > 0.9 + rag) continue;
+          const rut = Math.abs(y - W * 0.27) < 1.6 || Math.abs(y - W * 0.73) < 1.6;
+          const crown = Math.abs(y - W / 2) < 3 && h01(x + v * 64, y, 163) > 0.3;
+          const col = crown ? ramp(LT.GRASS, 0.3 + h01(x, y, 165) * 0.5) : rut ? LT.TRACK[0] : dither(LT.TRACK, 0.45 + (n(x / L, y / W) - 0.5) * 0.6 - (y < W / 2 ? -0.1 : 0.1), x + v * 64, y, 167);
+          c.fillStyle = rgb(col); c.fillRect(x, y, 1, 1);
+        }
+        add('track:h', cv, 0, W / 2, L, -1);
+        add('track:v', FARM.rot90(cv), W / 2, 0, L, -1);
+      }
+      // FENCE — post-and-rail in 64px bays: a post at the bay's start, two rails, a cast shadow
+      {
+        const L = 64, cv = mkCv(L + 6, 14), c = cv.getContext('2d');
+        c.fillStyle = rgb(LT.SHADOW); c.fillRect(3, 9, L, 2);                       // rails' shadow, down-sun
+        c.fillRect(3, 7, 4, 5);                                                       // post shadow
+        c.fillStyle = rgb(LT.WOOD[1]); c.fillRect(1, 5, L, 2);                        // lower rail
+        c.fillStyle = rgb(LT.WOOD[3]); c.fillRect(1, 4, L, 1);                        // its lit top
+        c.fillStyle = rgb(LT.WOOD[1]); c.fillRect(0, 2, 4, 6);                        // post side
+        c.fillStyle = rgb(LT.WOOD[4]); c.fillRect(0, 1, 4, 2);                        // post top, lit
+        c.fillStyle = rgb(LT.WOOD[0]); c.fillRect(3, 2, 1, 6);
+        add('fence:h', cv, 1, 6, L, 0);
+        const vv = mkCv(10, L + 8), d = vv.getContext('2d');
+        d.fillStyle = rgb(LT.SHADOW); d.fillRect(5, 4, 2, L); d.fillRect(3, 3, 5, 6);
+        d.fillStyle = rgb(LT.WOOD[1]); d.fillRect(2, 3, 2, L);
+        d.fillStyle = rgb(LT.WOOD[3]); d.fillRect(2, 3, 1, L);
+        d.fillStyle = rgb(LT.WOOD[1]); d.fillRect(1, 1, 4, 6);
+        d.fillStyle = rgb(LT.WOOD[4]); d.fillRect(1, 0, 4, 2);
+        add('fence:v', vv, 3, 3, L, 0);
+      }
+      // HEDGEROW shrubs — small dense crowns, darker than the trees above them
+      for (let v = 0; v < 10; v++) {
+        const R = 7 + Math.round(rnd() * 5), S = Math.ceil(R * 3), cv = mkCv(S, S), c = cv.getContext('2d'), m = S / 2;
+        FARM.shadow(c, m, m, R * 1.05, R * 0.95);
+        FOREST.crown(c, m, m, R, LT.HEDGE, rnd, { shadow: false, lobes: 3, boost: -0.05 + v * 0.02 });
+        add('hedge', cv, m, m, R);
+      }
+      // FIELD OAKS — the big trees that stand in hedgerows and pastures
+      for (let v = 0; v < 6; v++) {
+        const R = 22 + Math.round(rnd() * 12), S = Math.ceil(R * 3), cv = mkCv(S, S), c = cv.getContext('2d'), m = S / 2;
+        FARM.shadow(c, m + R * 0.2, m + R * 0.25, R * 1.05, R * 0.95);
+        FOREST.crown(c, m, m, R, LT.LEAF, rnd, { shadow: false, boost: -0.04 + v * 0.03 });
+        add('oak', cv, m, m, R);
+      }
+      // ORCHARD trees — rounder, smaller, with fruit on the sunny side
+      for (let v = 0; v < 8; v++) {
+        const R = 14 + Math.round(rnd() * 5), S = Math.ceil(R * 3), cv = mkCv(S, S), c = cv.getContext('2d'), m = S / 2;
+        FARM.shadow(c, m + R * 0.2, m + R * 0.25, R, R * 0.9);
+        FOREST.crown(c, m, m, R, LT.LEAF, rnd, { shadow: false, lobes: 4, boost: 0.02 + v * 0.015 });
+        for (let i = 0, n = 8 + ((rnd() * 8) | 0); i < n; i++) {
+          const a = rnd() * TAU, d = Math.sqrt(rnd()) * R * 0.75, fx = Math.round(m + Math.cos(a) * d), fy = Math.round(m + Math.sin(a) * d);
+          c.fillStyle = rgb(LT.FRUIT[1]); c.fillRect(fx, fy, 2, 2);
+          c.fillStyle = rgb(LT.FRUIT[2]); c.fillRect(fx, fy, 1, 1);
+          c.fillStyle = rgb(LT.FRUIT[0]); c.fillRect(fx + 1, fy + 1, 1, 1);
+        }
+        add('orchard', cv, m, m, R);
+      }
+      // SHEEP — fleece body, dark face; facing east, then the other three ways
+      for (let v = 0; v < 4; v++) {
+        const cv = mkCv(34, 24), c = cv.getContext('2d'), cx = 15, cy = 12, rx = 10 + rnd() * 1.5, ry = 6.5 + rnd();
+        FARM.shadow(c, cx + 1, cy + 1, rx + 1, ry + 0.5);
+        FARM.body(c, cx, cy, rx, ry, LT.WOOL, 0.35);
+        FARM.body(c, cx + rx + 1.5, cy + (rnd() - 0.5) * 2, 3.2, 2.5, LT.PATCHES, 0);
+        c.fillStyle = rgb(LT.PATCHES[3]); c.fillRect(Math.round(cx + rx), Math.round(cy - 3), 1, 1); c.fillRect(Math.round(cx + rx), Math.round(cy + 3), 1, 1);
+        const turns = [cv, FARM.flip(cv), FARM.rot90(cv)];
+        turns.push(FARM.flip(turns[2]));
+        for (const t of turns) add('sheep', hardEdge(t), t.width / 2, t.height / 2, 10);
+      }
+      // CATTLE — Friesians (black on white) and plain browns
+      for (let v = 0; v < 4; v++) {
+        const brown = v >= 2, cv = mkCv(60, 34), c = cv.getContext('2d'), cx = 26, cy = 17, rx = 19 + rnd() * 2, ry = 9 + rnd();
+        const blot = noiseField(5, rnd);
+        FARM.shadow(c, cx + 1, cy + 1, rx + 1.5, ry + 1);
+        FARM.body(c, cx, cy, rx, ry, brown ? LT.BROWN : LT.HIDE, 0.08,
+          brown ? null : (x, y) => blot((x + 30) / 60, (y + 17) / 34) > 0.56 ? LT.PATCHES : null);
+        const hx = cx + rx + 3.5;
+        FARM.body(c, hx, cy, 5, 4, brown ? LT.BROWN : LT.PATCHES, 0);
+        FARM.body(c, hx + 3.5, cy, 2.2, 2.6, brown ? LT.HIDE : LT.HIDE, 0);   // the pale muzzle
+        c.fillStyle = rgb(brown ? LT.BROWN[0] : LT.PATCHES[0]); c.fillRect(Math.round(hx - 2), Math.round(cy - 5), 2, 2); c.fillRect(Math.round(hx - 2), Math.round(cy + 4), 2, 2);
+        c.fillStyle = rgb(brown ? LT.BROWN[1] : LT.PATCHES[1]); c.fillRect(Math.round(cx - rx - 2), Math.round(cy), 3, 1);   // the tail
+        const turns = [cv, FARM.flip(cv), FARM.rot90(cv)];
+        turns.push(FARM.flip(turns[2]));
+        for (const t of turns) add('cow', hardEdge(t), t.width / 2, t.height / 2, 20);
+      }
+      // HENS — tiny white birds with a red comb
+      for (let v = 0; v < 4; v++) {
+        const cv = mkCv(10, 9), c = cv.getContext('2d');
+        FARM.shadow(c, 4.5, 5, 3, 2.2);
+        FARM.body(c, 4, 4, 2.8, 2.1, LT.HEN, 0);
+        c.fillStyle = rgb(LT.COMB); c.fillRect(v % 2 ? 1 : 6, 2, 1, 2);
+        c.fillStyle = rgb(LT.DARK); c.fillRect(v % 2 ? 1 : 6, 4, 1, 1);
+        add('hen', cv, 4, 4, 3);
+      }
+      // HAY — round bales standing on end (the spiral shows) and stacked small bales
+      for (let v = 0; v < 3; v++) {
+        const R = 12 + rnd() * 3, S = Math.ceil(R * 2.8), cv = mkCv(S, S), c = cv.getContext('2d'), m = S / 2;
+        FARM.shadow(c, m + 2, m + 3, R + 1, R);
+        FARM.body(c, m, m, R, R * 0.92, LT.HAY, 0.12, (x, y) => {
+          const d = Math.hypot(x, y / 0.92), a = Math.atan2(y, x);
+          return ((d + a * 1.1) % 4) < 1 ? [LT.HAY[0], LT.HAY[0], LT.HAY[1], LT.HAY[1]] : null;
+        });
+        add('bale', cv, m, m, R);
+      }
+      for (let v = 0; v < 2; v++) {
+        const cv = mkCv(44, 30), c = cv.getContext('2d');
+        for (const [bx, by] of (v ? [[4, 12], [22, 12], [13, 4]] : [[4, 8], [22, 8]])) {
+          c.fillStyle = rgb(LT.SHADOW); c.fillRect(bx + 3, by + 4, 18, 11);
+          for (let y = 0; y < 11; y++) for (let x = 0; x < 18; x++) {
+            const t = 0.35 + (y < 3 ? 0.35 : y > 8 ? -0.25 : 0) + (h01(bx + x, by + y, 171) - 0.5) * 0.4;
+            c.fillStyle = rgb((x === 5 || x === 12) ? LT.HAY[0] : dither(LT.HAY, t, bx + x, by + y, 173));
+            c.fillRect(bx + x, by + y, 1, 1);
+          }
+        }
+        add('bales', cv, 22, 15, 20);
+      }
+      // TROUGH — a wooden tank of water in the yard
+      {
+        const cv = mkCv(34, 16), c = cv.getContext('2d');
+        c.fillStyle = rgb(LT.SHADOW); c.fillRect(4, 5, 30, 10);
+        c.fillStyle = rgb(LT.WOOD[1]); c.fillRect(1, 2, 30, 11);
+        c.fillStyle = rgb(LT.WOOD[3]); c.fillRect(1, 2, 30, 1); c.fillRect(1, 2, 1, 11);
+        c.fillStyle = rgb(LT.WATER[0]); c.fillRect(3, 4, 26, 7);
+        c.fillStyle = rgb(LT.WATER[1]); c.fillRect(3, 4, 26, 2);
+        c.fillStyle = rgb(LT.WATER[2]); c.fillRect(6, 5, 5, 1); c.fillRect(18, 7, 3, 1);
+        add('trough', cv, 16, 8, 16);
+      }
+      // FIELD STONES
+      for (let v = 0; v < 4; v++) {
+        const R = 3 + rnd() * 4, S = Math.ceil(R * 3), cv = mkCv(S, S), c = cv.getContext('2d'), m = S / 2;
+        FARM.shadow(c, m, m, R + 1, R * 0.8);
+        FARM.body(c, m, m, R, R * 0.75, LT.STONE, 0.2);
+        add('stone', cv, m, m, R);
+      }
+      return out;
+    },
+
+    /* ---- the layout: a pure function of the field cell ---- */
+    fieldKind(fx, fy) {
+      const p = h01(fx, fy, 201);
+      return p < 0.14 ? 'wheat' : p < 0.22 ? 'barley' : p < 0.33 ? 'corn' : p < 0.42 ? 'cabbage' : p < 0.48 ? 'pumpkin'
+        : p < 0.55 ? 'sprouts' : p < 0.63 ? 'plowed' : p < 0.71 ? 'orchard' : 'pasture';
+    },
+    // the north (horizontal) and west (vertical) edge of a field: hedge, fence, track or open
+    edgeKind(fx, fy, vertical) {
+      const p = h01(fx, fy, vertical ? 211 : 213);
+      return p < 0.42 ? 'hedge' : p < 0.74 ? 'fence' : p < 0.88 ? 'track' : 'open';
+    },
+
+    place(push, x0, y0, x1, y1, clr, scale, pools) {
+      const F = FARM.FIELD, H = FARM.HEAD, T = FARM.TILE, Y = FARM.YARD;
+      const yard = clr ? { x: clr.x - Y, y: clr.y - Y, w: clr.w + Y * 2, h: clr.h + Y * 2 } : null;
+      const hits = (r, x, y, w, h) => r && x < r.x + r.w && x + w > r.x && y < r.y + r.h && y + h > r.y;
+      const inRect = (r, x, y) => r && x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h;
+      const view = (x, y, m) => x > x0 - m && x < x1 + m && y > y0 - m && y < y1 + m;
+      const pick = (pool, k) => { const a = pools[pool]; return a && a.length ? a[(k * a.length) | 0] : null; };
+      const put = (sp, x, y) => { if (sp) push(sp, x, y); };
+      const fineStuff = scale >= 0.45;
+      const fy0 = Math.floor(y0 / F) - 1, fy1 = Math.floor(y1 / F) + 1;
+      for (let fy = fy0; fy <= fy1; fy++) {
+        // each row of fields is slid along by its own amount, so the boundaries meet in T-junctions
+        // and the land reads as a patchwork rather than graph paper
+        const shift = Math.round(h01(0, fy, 207) * F);
+        const fx0 = Math.floor((x0 - shift) / F) - 1, fx1 = Math.floor((x1 - shift) / F) + 1;
+        for (let fx = fx0; fx <= fx1; fx++) {
+          const ox = fx * F + shift, oy = fy * F;
+          // THE HOME PADDOCK: a field the yard reaches into is kept as grass, never cut into a notch
+          const kind = hits(yard, ox + H, oy + H, F - H * 2, F - H * 2) ? 'paddock' : FARM.fieldKind(fx, fy);
+          // 1. the field's own ground
+          if (kind === 'orchard') {
+            const S = (F - H * 2) / 8;
+            for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) {
+              const x = ox + H + S * (i + 0.5) + (h01(fx * 8 + i, fy * 8 + j, 221) - 0.5) * 6, y = oy + H + S * (j + 0.5) + (h01(fx * 8 + i, fy * 8 + j, 223) - 0.5) * 6;
+              if (!view(x, y, 60) || inRect(yard, x, y) || h01(fx * 8 + i, fy * 8 + j, 225) < 0.06) continue;   // a gap where one has died
+              put(pick('orchard', h01(fx * 8 + i, fy * 8 + j, 227)), x, y);
+            }
+          } else if (kind === 'pasture') {
+            const herd = h01(fx, fy, 231) < 0.55 ? 'sheep' : 'cow';
+            for (let g = 0, groups = 1 + (h01(fx, fy, 233) < 0.5 ? 1 : 0); g < groups; g++) {
+              const gx = ox + H + 80 + h01(fx, fy, 235 + g) * (F - H * 2 - 160), gy = oy + H + 80 + h01(fx, fy, 237 + g) * (F - H * 2 - 160);
+              const n = herd === 'sheep' ? 5 + ((h01(fx, fy, 239 + g) * 7) | 0) : 3 + ((h01(fx, fy, 239 + g) * 3) | 0);
+              const spread = herd === 'sheep' ? 46 : 70;
+              for (let k = 0; k < n; k++) {
+                const a = h01(fx * 31 + k, fy * 17 + g, 241) * TAU, d = Math.sqrt(h01(fx * 31 + k, fy * 17 + g, 243)) * spread;
+                const x = gx + Math.cos(a) * d, y = gy + Math.sin(a) * d * 0.8;
+                if (!view(x, y, 40) || inRect(yard, x, y)) continue;
+                put(pick(herd, h01(fx * 31 + k, fy * 17 + g, 245)), x, y);
+              }
+            }
+            for (let k = 0, n = (h01(fx, fy, 247) * 3) | 0; k < n; k++) {        // a lone oak or two, some stones
+              const x = ox + H + h01(fx, fy, 249 + k) * (F - H * 2), y = oy + H + h01(fx, fy, 251 + k) * (F - H * 2);
+              if (view(x, y, 120) && !inRect(yard, x, y)) put(pick(k ? 'stone' : 'oak', h01(fx, fy, 253 + k)), x, y);
+            }
+          } else if (kind !== 'paddock') {
+            const dir = h01(fx, fy, 203) < 0.5 ? 'h' : 'v';
+            const sp = pick('crop:' + kind + ':' + dir, 0);
+            for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) {
+              const x = ox + H + i * T, y = oy + H + j * T;
+              if (x > x1 || y > y1 || x + T < x0 || y + T < y0) continue;
+              put(sp, x, y);
+            }
+          }
+          // 2. the field's north and west edges
+          for (const vertical of [false, true]) {
+            const ek = FARM.edgeKind(fx, fy, vertical);
+            if (ek === 'open') continue;
+            const step = ek === 'hedge' ? 12 : 64;
+            for (let s = 0; s < F; s += step) {
+              const x = vertical ? ox : ox + s, y = vertical ? oy + s : oy;
+              if (!view(x, y, 80)) continue;
+              if (ek === 'track') {
+                if (!hits(clr, x - 16, y - 16, vertical ? 32 : 64, vertical ? 64 : 32)) put(pick(vertical ? 'track:v' : 'track:h', h01(fx * 13 + s, fy, 261)), x, y);
+                continue;
+              }
+              if (inRect(clr, x, y) || inRect(clr, x + (vertical ? 0 : step), y + (vertical ? step : 0))) continue;
+              if (ek === 'fence') { put(pick(vertical ? 'fence:v' : 'fence:h', 0), x, y); continue; }
+              const j = (h01(fx * 97 + s, fy * 89 + (vertical ? 1 : 0), 263) - 0.5) * 6;
+              put(pick('hedge', h01(fx * 97 + s, fy * 89, 265)), x + (vertical ? j : 0), y + (vertical ? 0 : j));
+              if (h01(fx * 97 + s, fy * 89 + (vertical ? 1 : 0), 267) < 0.035) put(pick('oak', h01(fx, fy * 7 + s, 269)), x, y);
+            }
+          }
+        }
+      }
+      // 3. THE YARD — hay, a trough and hens on the grass round the farm's own footprint
+      if (clr && fineStuff) {
+        const band = 130, per = 2 * (clr.w + clr.h + band * 4), step = 70;
+        for (let s = 0, k = 0; s < per; s += step, k++) {
+          const r = h01(k, 7, 271);
+          if (r > 0.42) continue;
+          // walk the rim of the yard, then step out into the band
+          let t = s, x, y;
+          const W = clr.w + band * 2, Hh = clr.h + band * 2;
+          if (t < W) { x = clr.x - band + t; y = clr.y - band; }
+          else if ((t -= W) < Hh) { x = clr.x + clr.w + band; y = clr.y - band + t; }
+          else if ((t -= Hh) < W) { x = clr.x + clr.w + band - t; y = clr.y + clr.h + band; }
+          else { t -= W; x = clr.x - band; y = clr.y + clr.h + band - t; }
+          const inX = clr.x + clr.w / 2 - x, inY = clr.y + clr.h / 2 - y, L = Math.hypot(inX, inY) || 1;
+          const pull = 30 + h01(k, 7, 273) * 70;
+          x += inX / L * pull; y += inY / L * pull;
+          if (inRect(clr, x, y) || !view(x, y, 60)) continue;
+          if (r < 0.14) put(pick('bale', h01(k, 7, 275)), x, y);
+          else if (r < 0.2) put(pick('bales', h01(k, 7, 277)), x, y);
+          else if (r < 0.24) put(pick('trough', 0), x, y);
+          else for (let i = 0, n = 3 + ((h01(k, 7, 279) * 4) | 0); i < n; i++) {
+            const hx = x + (h01(k, i, 281) - 0.5) * 50, hy = y + (h01(k, i, 283) - 0.5) * 36;
+            if (!inRect(clr, hx, hy)) put(pick('hen', h01(k, i, 285)), hx, hy);
+          }
+        }
+      }
+    },
+  };
+
   /* ---------------------------------------------------------------------- registry ---- */
 
-  const GROUNDS = { forest: FOREST, moon: MOON };
-  const ORDER = ['forest', 'moon'];
+  const GROUNDS = { farm: FARM, forest: FOREST, moon: MOON };
+  const ORDER = ['farm', 'forest', 'moon'];
   const has = id => Object.prototype.hasOwnProperty.call(GROUNDS, id);
 
   /* ---------------------------------------------------------------------- dispatch ---- */

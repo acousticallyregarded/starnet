@@ -101,7 +101,7 @@
   function chooseAgent(args, ctx, rosterEntries) {
     const requested = clean(args && args.agentId, 80);
     if (requested) {
-      if (!validId(requested)) throw new Error('agentId must be one of your station agents');
+      if (!validId(requested)) throw new Error('agentId must be one of your farm agents');
       const known = rosterEntries.some(e => e.id === requested);
       if (rosterEntries.length && !known && requested !== 'agent') {
         throw new Error('unknown routine agentId "' + requested + '" (known: ' + rosterEntries.map(e => e.id).join(', ') + ')');
@@ -217,9 +217,9 @@
        choice and their switch — never "DISARMED" as if a create could fix it */
     const schedulerOffByChoice = typeof deps.schedulerOffByChoice === 'function' ? deps.schedulerOffByChoice : function () { return false; };
     const armedNote = function () {
-      if (schedulerHalted()) return "the scheduler is STOPPED by the Commander's E-STOP — nothing fires until they resume it";
+      if (schedulerHalted()) return "the scheduler is STOPPED by the Farmer's E-STOP — nothing fires until they resume it";
       if (schedulerState()) return null;
-      if (schedulerOffByChoice()) return 'scheduling is OFF because the Commander turned it off — saving a routine keeps it off, so nothing fires until they turn scheduling on (AUTOMATE › SCHEDULES › ▶ TURN SCHEDULING ON)';
+      if (schedulerOffByChoice()) return 'scheduling is OFF because the Farmer turned it off — saving a routine keeps it off, so nothing fires until they turn scheduling on (AUTOMATE › SCHEDULES › ▶ TURN SCHEDULING ON)';
       return 'the scheduler is DISARMED — nothing fires until it is armed';
     };
     const roster = typeof deps.roster === 'function' ? deps.roster : function () { return new Map(); };
@@ -249,11 +249,11 @@
 
     const listTool = {
       name: 'routine.list', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-      description: 'List StarNet ROUTINES scheduled jobs. Use this to check existing routines before creating another one.',
+      description: 'List Homestead ROUTINES scheduled jobs. Use this to check existing routines before creating another one.',
       schema: { type: 'object', properties: { agentId: { type: 'string' } } },
       run: async (args) => {
         const agentId = clean(args && args.agentId, 80);
-        if (agentId && !validId(agentId)) throw new Error('agentId must be one of your station agents');
+        if (agentId && !validId(agentId)) throw new Error('agentId must be one of your farm agents');
         let jobs = (listJobs() || []).map(pack).filter(Boolean);
         if (agentId) jobs = jobs.filter(j => j.agentId === agentId);
         return { content: JSON.stringify({ schedulerArmed: !!schedulerState(), schedulerHalted: !!schedulerHalted(), schedulerNote: armedNote() || undefined, jobs: jobs }), summary: jobs.length + ' routine(s)' };
@@ -267,7 +267,7 @@
          to a shell, and the check-first rule. Dropped: the agentId auto-routing and `arm` default, both of
          which the schema below already states at the point of use, and the explanation that the server
          rejects a duplicate name — it says so itself, at call time, more precisely than a remembered note. */
-      description: 'Create a StarNet ROUTINE: work an agent runs on a schedule (digests, research, monitoring, reports, drafts, reminders). Use it whenever the Commander wants anything recurring, scheduled or automated — never shell.exec, crontab or an OS scheduler. Results come back to this chat by default; do not ask where to send them. Write a self-contained prompt: task, sources, format, what to flag. Asked to automate something broadly? Create 2-5 routines your own tools can run now (web research, writing, checks; no connection needed), then list them. Call routine.list first; never duplicate.',
+      description: 'Create a Homestead ROUTINE: work an agent runs on a schedule (digests, research, monitoring, reports, drafts, reminders). Use it whenever the Farmer wants anything recurring, scheduled or automated — never shell.exec, crontab or an OS scheduler. Results come back to this chat by default; do not ask where to send them. Write a self-contained prompt: task, sources, format, what to flag. Asked to automate something broadly? Create 2-5 routines your own tools can run now (web research, writing, checks; no connection needed), then list them. Call routine.list first; never duplicate.',
       schema: {
         type: 'object',
         required: ['prompt', 'schedule'],
@@ -275,7 +275,7 @@
           name: { type: 'string' },
           prompt: { type: 'string', description: 'The instruction the target agent will run every time the routine fires.' },
           schedule: { type: 'string', description: 'Plain English (every day at 7am, weekdays at 9am, mondays at 6pm, 1st of every month, tomorrow at 9am), every 30m, in 2h, or cron.' },
-          agentId: { type: 'string', description: 'Optional exact station agent id. Omit to auto-route by specialty.' },
+          agentId: { type: 'string', description: 'Optional exact farm agent id. Omit to auto-route by specialty.' },
           agentHint: { type: 'string', description: 'Optional specialty hint such as research, engineer, scribe, operator, designer.' },
           timezone: { type: 'string', description: 'Optional IANA timezone for cron expressions, e.g. America/New_York.' },
           provider: { type: 'string', enum: providerEnum },
@@ -288,7 +288,7 @@
           ,skills: { type: 'array', items: { type: 'string' }, maxItems: 8, description: 'Saved runtime skills to preload on every run.' }
           ,contextFrom: { type: 'array', items: { type: 'string' }, maxItems: 8, description: 'Routine ids whose latest successful outputs feed this routine.' }
           ,monitorMode: { type: 'boolean', description: 'When true with contextFrom, run only after the durable upstream source hash changes.' }
-          ,enabledToolsets: { type: 'array', items: { type: 'string' }, maxItems: 16, description: 'Only these toolset ids (e.g. web, cabinet); omit = station defaults.' }
+          ,enabledToolsets: { type: 'array', items: { type: 'string' }, maxItems: 16, description: 'Only these toolset ids (e.g. web, cabinet); omit = farm defaults.' }
         }
       },
       run: async (args, ctx) => {
@@ -358,7 +358,7 @@
           schedulerHalted: !!schedulerHalted(),
           // so the model cannot report "this will run daily" over a stopped scheduler. (AUTO-P16-1: the arm schema has ~0 payload
           // headroom, so the arm rule's detail lives HERE, in the result the model reads after the call — a save never lifts an E-STOP.)
-          schedulerNote: schedulerHalted() ? armedNote() + ' (saving this routine did not lift it — only the Commander resumes)' : (armedNote() || undefined),
+          schedulerNote: schedulerHalted() ? armedNote() + ' (saving this routine did not lift it — only the Farmer resumes)' : (armedNote() || undefined),
           // the one arm rule, said as it happened: THIS create turned scheduling on, or kept the Commander's OFF
           schedulerArmedNow: !wasArmed && !!schedulerState() && !schedulerHalted(),
           schedulerOffByChoice: offByChoice,
@@ -371,7 +371,7 @@
         };
         return {
           content: JSON.stringify(body),
-          summary: 'scheduled routine for ' + route.agentId + (armError ? ' (arm failed)' : offByChoice ? ' — scheduling is off (the Commander turned it off), so it will not run yet' : '')
+          summary: 'scheduled routine for ' + route.agentId + (armError ? ' (arm failed)' : offByChoice ? ' — scheduling is off (the Farmer turned it off), so it will not run yet' : '')
         };
       }
     };
@@ -398,7 +398,7 @@
       // schedules nothing); update/resume/run_now re-arm what a later run obeys and remove throws it away. Same
       // action reading as run() below, so the lock and the tool can never disagree about which action this is.
       taintLocked: (a) => lower(clean(a && a.action, 20)) !== 'pause',
-      description: 'Edit, pause, resume, delete, or queue an immediate fire of an existing StarNet ROUTINES job. Call routine.list first to see what exists; reference a routine by its exact id, or by name when that name is unambiguous.',
+      description: 'Edit, pause, resume, delete, or queue an immediate fire of an existing Homestead ROUTINES job. Call routine.list first to see what exists; reference a routine by its exact id, or by name when that name is unambiguous.',
       schema: {
         type: 'object',
         required: ['action'],
@@ -454,7 +454,7 @@
               // model reports "I ran it" to the Commander and then reads no result. And an E-STOP means no tick
               // is coming at all — promising one "within ~1 minute" is the same lie with a deadline on it.
               note: halted
-                ? "queued, but the scheduler is STOPPED by the Commander's E-STOP so nothing will fire until they resume it"
+                ? "queued, but the scheduler is STOPPED by the Farmer's E-STOP so nothing will fire until they resume it"
                 : armed
                   ? 'queued — the scheduler fires this routine on its next tick (within ~1 minute); it has not run yet'
                   : 'queued, but the scheduler is DISARMED so nothing will fire until it is armed',
@@ -503,7 +503,7 @@
         // in index.js) — say so, or the model promises the Commander a routine that will now be locked out.
         const cleared = updated && Array.isArray(updated._grantsCleared) ? updated._grantsCleared : [];
         const out = { ok: true, action: action, changed: touched, job: pack(updated || job) };
-        if (cleared.length) out.standingGrantsCleared = { grants: cleared, note: 'the new instruction was not approved by the Commander, so its unattended ' + cleared.join('/') + ' grant was removed; the Commander can re-grant it in ROUTINES' };
+        if (cleared.length) out.standingGrantsCleared = { grants: cleared, note: 'the new instruction was not approved by the Farmer, so its unattended ' + cleared.join('/') + ' grant was removed; the Farmer can re-grant it in ROUTINES' };
         return {
           content: JSON.stringify(out),
           summary: 'updated routine "' + job.name + '" (' + touched.join(', ') + ')' + (cleared.length ? ' — unattended grants cleared' : '')

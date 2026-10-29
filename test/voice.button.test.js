@@ -432,7 +432,7 @@ async function opensWithin(t, ms) {
     t.sandbox.__busy = true;
     await until(() => t.Voice.isListening(), 1000);
     A.ok(t.Voice.isListening(), 'live re-arm: the mic re-opens while the run thinks (steering)');
-    t.Voice.speakChunk('Clear skies over the station tonight.', 'agent', { replyToken: token });
+    t.Voice.speakChunk('Clear skies over the farm tonight.', 'agent', { replyToken: token });
     await until(() => requests.length > 0, 1000);
     A.eq(requests.length, 1, 'live re-arm: the re-armed mic did NOT cancel the reply — it is synthesized');
     await until(() => !t.Voice.isListening(), 1000);
@@ -533,7 +533,7 @@ async function opensWithin(t, ms) {
     A.ok(!t.statusLog.some(s => /^mic: /.test(String(s))), 'mic errors: no raw engine code reaches the status line');
     t.Voice.speakChunk('Here is the answer you asked for.', 'agent', { replyToken: token }); t.Voice.endReply();
     await until(() => requests.length > 0, 1000);
-    A.eq(requests.length, 1, 'mic errors: the pause never cancels the reply the Commander is waiting for');
+    A.eq(requests.length, 1, 'mic errors: the pause never cancels the reply the Farmer is waiting for');
     await until(() => !t.Voice.isReplyPending(), 1000);
     A.eq(srInstances.length, instances, 'mic errors: the reply ending does not re-arm a paused mic');
     t.Voice.resumeCoordinator(); await until(() => srInstances.length > instances, 1000);
@@ -591,7 +591,7 @@ async function opensWithin(t, ms) {
   {
     const t = boot({ ttsKey: true, fetch: ttsFailFetch('insufficient credits') });
     t.Voice.setSpeakReplies(true);
-    t.Voice.speak('hello commander, systems are nominal', 'agent'); await tick(40);
+    t.Voice.speak('hello farmer, systems are nominal', 'agent'); await tick(40);
     const title = String(t.nodes['voice-toggle'].title || '');
     A.ok(/Speech interrupted|real voice|backup voice/i.test(title), 'voice degrade: honest reason pinned on the speaker-toggle tooltip (telemetry preserved)');
     A.ok(!t.statusLog.some(s => /real voice|backup voice|voice provider/i.test(String(s))), 'voice degrade: outage banner is NEVER pushed to the COMMS status bar');
@@ -606,7 +606,7 @@ async function opensWithin(t, ms) {
     const state = { tts: 0 };
     const t = boot({ ttsKey: true, fetch: countingFetch(state, 'no key') });
     t.Voice.setSpeakReplies(true);
-    t.Voice.speak('first line to the commander', 'agent'); await tick(40);
+    t.Voice.speak('first line to the farmer', 'agent'); await tick(40);
     const afterFirst = state.tts;
     A.ok(afterFirst >= 1, 'no-key: the first speak actually hits /api/tts (always asks the sidecar)');
     t.Voice.speak('second line while still cold', 'agent'); await tick(40);
@@ -938,7 +938,7 @@ async function opensWithin(t, ms) {
     A.eq((await say('scout', 'SCOUT')).localVoice, 'af_heart', 'new live call adopts the saved change');
     t.Voice.setLocalTts(false);
     t.Voice.setVoiceChoice('', 'scout');
-    A.eq(t.Voice.localVoiceId('scout'), 'am_onyx', 'clearing an assignment restores station inheritance');
+    A.eq(t.Voice.localVoiceId('scout'), 'am_onyx', 'clearing an assignment restores farm inheritance');
     t.sandbox.Workstreams = {active:()=>({agentId:'builder'}),get:()=>({agentId:'scout'})};
     A.eq(t.Voice.currentAgentId(), 'builder', 'ordinary voice follows the active session agent');
     t.sandbox.VoiceLive = {boundSessionId:()=> 'bound'};
@@ -985,7 +985,7 @@ async function opensWithin(t, ms) {
     let now = Date.now();
     const t = boot({ now: () => now, fetch: countingFetch(state, 'no key; edge: edge timeout') });
     t.Voice.setSpeakReplies(true);
-    t.Voice.speak('first line on a keyless station', 'agent'); await until(() => state.tts >= 3 && !t.Voice.isReplyPending(), 5000);   // retries are spaced (RETRY_GAP_MS)
+    t.Voice.speak('first line on a keyless farm', 'agent'); await until(() => state.tts >= 3 && !t.Voice.isReplyPending(), 5000);   // retries are spaced (RETRY_GAP_MS)
     A.eq(state.tts, 3, 'keyless + edge blip: two bounded retries retain the chunk');
     A.ok(!/needs an OpenRouter, Gemini, or OpenAI credential/.test(String(t.nodes['voice-toggle'].title || '')),
       'keyless + edge blip: the tooltip does NOT demand a credential for a network blip');
@@ -1104,9 +1104,9 @@ async function opensWithin(t, ms) {
     t.Voice.stopListening();
     await until(() => t.statusLog.some(s => /not verified|restarted/i.test(String(s))), 5000);
     A.eq(t.sandbox.__sent.length, 0, 'stt 403 on a withheld page: nothing is sent');
-    A.ok(t.statusLog.some(s => /not verified as your own account/.test(String(s)) && /station notice/.test(String(s))),
+    A.ok(t.statusLog.some(s => /not verified as your own account/.test(String(s)) && /farm notice/.test(String(s))),
       'stt 403 on a withheld page: names the ownership check and the notice: ' + JSON.stringify(t.statusLog));
-    A.ok(!t.statusLog.some(s => /restarted/i.test(String(s))), 'stt 403 on a withheld page: never says the station restarted');
+    A.ok(!t.statusLog.some(s => /restarted/i.test(String(s))), 'stt 403 on a withheld page: never says the farm restarted');
   }
   // the documented 200-degrade envelope keeps working, and its reason is painted too
   {
@@ -1209,7 +1209,7 @@ async function opensWithin(t, ms) {
     A.eq((await say('The mapped Edge floor speaks.')).chain, 'natural', 'AUTO: the built-in Edge floor plays natural too');
     t.Voice.setVoiceChoice('', 'agent');
     served = '';
-    A.eq((await say('The keyed station voice speaks.')).chain, 'machine', 'AUTO: the keyed station recipe keeps its locked machine shell');
+    A.eq((await say('The keyed farm voice speaks.')).chain, 'machine', 'AUTO: the keyed farm recipe keeps its locked machine shell');
     A.eq(t.Voice.setVoiceEffect('natural').effect, 'natural', 'effect: a choice is saved');
     A.eq(t.sandbox.localStorage.getItem('starnet.voice.effect.v1'), 'natural', 'effect: the choice persists in app storage');
     A.eq((await say('Natural for every voice now.')).chain, 'natural', 'a chosen effect applies to the keyed voice too');

@@ -166,19 +166,19 @@
   }
   // the model's own sense of the date is its training era: every hand-off states the real one
   const today = () => { try { return 'Today is ' + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + '. '; } catch (_) { return ''; } };
-  const buildText = (a, what) => 'Build my new StarNet app "' + a.name + '" (app id: ' + a.id + ').\n\nWhat it should do: ' + what + '\n\n' + today() +
+  const buildText = (a, what) => 'Build my new Homestead app "' + a.name + '" (app id: ' + a.id + ').\n\nWhat it should do: ' + what + '\n\n' + today() +
     'Use the app tools (find them with tool.search "app"): read it with app.read, write index.html with app.write, app.check it, ' +
-    'and make it exactly what I described — if I said how it should look or behave, do that; where I did not, match the station. ' +
+    'and make it exactly what I described — if I said how it should look or behave, do that; where I did not, match the farm. ' +
     'If it should update by itself, app.schedule it FIRST (before any web research); if it shows information, fill it with REAL content now with app.publish; if it is a tool I use myself, make it work and keep what I enter. ' +
     'Then tell me in a sentence what it does.';
-  const changeText = (a, what) => 'Change my StarNet app "' + a.name + '" (app id: ' + a.id + '): ' + what + '\n\n' + today() +
+  const changeText = (a, what) => 'Change my Homestead app "' + a.name + '" (app id: ' + a.id + '): ' + what + '\n\n' + today() +
     'Read it first with app.read (find the app tools with tool.search "app"), then app.write the new version and app.check it. Keep what already works.';
 
   /* create(name, what) -> { app, sent } — the app exists either way; `sent` says whether the crew has the build. */
   async function create(name, what) {
     const r = await post('/api/apps', { name, description: what });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j.ok) throw new Error((j && j.error) || 'the station could not create the app');
+    if (!r.ok || !j.ok) throw new Error((j && j.error) || 'the farm could not create the app');
     await load();
     const a = find(j.app.id) || j.app;
     const h = host();
@@ -219,7 +219,7 @@
     try {
       const r = await post('/api/apps/delete', { id });
       if (!r.ok) { const j = await r.json().catch(() => ({})); notify((j && j.error) || 'Could not delete that app.', 'warn'); return false; }
-    } catch (_) { notify('Could not delete that app — the station did not answer.', 'warn'); return false; }
+    } catch (_) { notify('Could not delete that app — the farm did not answer.', 'warn'); return false; }
     dropLocal(id);
     await load(); rerenderList();
     return true;
@@ -239,7 +239,7 @@
       const r = await post('/api/apps/rename', { id, name: n });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.ok) { notify((j && j.error) || 'Could not rename that app.', 'warn'); return false; }
-    } catch (_) { notify('Could not rename that app — the station did not answer.', 'warn'); return false; }
+    } catch (_) { notify('Could not rename that app — the farm did not answer.', 'warn'); return false; }
     await load();
     const a = find(id), h = host();
     if (a && h && h.renameApp) h.renameApp(id, a.name);
@@ -328,7 +328,7 @@
       try {
         const r = await post('/api/apps/schedule', { id, every: pick, task: t });
         const j = await r.json().catch(() => ({}));
-        if (!r.ok || !j.ok) throw new Error((j && j.error) || 'the station could not save that');
+        if (!r.ok || !j.ok) throw new Error((j && j.error) || 'the farm could not save that');
         await load();
         panel.hidden = true; toggle.setAttribute('aria-expanded', 'false');
         paintAll(id);   // said inline: the toggle and the status line under the window now read the new schedule
@@ -369,7 +369,7 @@
   let listEl = null;
   function rerenderList() {
     if (!listEl || !listEl.isConnected) return;
-    if (loadError && !list.length) { listEl.innerHTML = '<div class="ext-empty">Could not load your apps — the station did not answer. <button class="apps-btn" type="button" data-app-retry>RETRY</button></div>'; return; }
+    if (loadError && !list.length) { listEl.innerHTML = '<div class="ext-empty">Could not load your apps — the farm did not answer. <button class="apps-btn" type="button" data-app-retry>RETRY</button></div>'; return; }
     if (!list.length) { listEl.innerHTML = '<div class="ext-empty">No apps yet. Describe one above — your crew builds it in its own window.</div>'; return; }
     // a card = NAME + ONE short status line + its keys; the description is the hover tip (no sentences under tiles)
     listEl.innerHTML = list.map((a) => '<div class="mc-row ext-row app-row" data-app="' + esc(a.id) + '"' +
@@ -414,7 +414,7 @@
       '<input id="app-name" class="apps-field" maxlength="60" autocomplete="off" aria-describedby="apps-msg" placeholder="Call it anything">' +
       '<label for="app-what">What should it do?</label>' +
       '<textarea id="app-what" class="apps-field apps-what" maxlength="1500" rows="4" aria-describedby="apps-msg" placeholder="In your own words: what it shows or does, how it should look, and whether it updates by itself."></textarea>' +
-      '<div class="mc-hint">It can be anything — a dashboard, a tracker, a tool, a game. Say how it should look and work; where you don\'t, it matches the station.</div>' +
+      '<div class="mc-hint">It can be anything — a dashboard, a tracker, a tool, a game. Say how it should look and work; where you don\'t, it matches the farm.</div>' +
       '<div class="apps-examples"><span class="mc-hint">Try:</span>' + EXAMPLES.map((e, i) => '<button class="apps-btn apps-chip" type="button" aria-pressed="false" data-app-example="' + i + '">' + esc(e[0]) + '</button>').join('') + '</div>' +
       '<div class="mc-acts"><button class="apps-btn primary" id="app-create" type="submit">+ BUILD IT</button><span id="apps-msg" class="mc-hint apps-msg" role="status"></span></div>' +
       '</form>' +

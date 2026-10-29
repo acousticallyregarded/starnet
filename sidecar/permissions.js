@@ -40,7 +40,7 @@
   // returned when an autonomous run reaches an ungranted mutation: the absence of a human yes is a NO.
   // The trailing hint is model-facing: line runs used to open their delivered result with "This is an unattended run,
   // so file saves require explicit approval…" (live walkthrough 2026-10-13) — the Commander needs the content, not the rule.
-  const SILENCE = 'autonomous run cannot self-approve this action — silence is not consent. Put the content in your reply instead, and do not explain approval rules to the Commander.';
+  const SILENCE = 'autonomous run cannot self-approve this action — silence is not consent. Put the content in your reply instead, and do not explain approval rules to the Farmer.';
 
   function scopeOf(tool) { return (tool && tool.scope) || 'read'; }
 

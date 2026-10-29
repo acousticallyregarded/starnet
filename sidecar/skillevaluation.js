@@ -169,7 +169,7 @@ function validatePromotionReceipt(receipt, options) {
 /* Only an executable runner observes a process exit. The provider and fixture runners work in an isolated file
    workspace, so a process_exit check there could never pass: refuse it before any run, and say why. Exported so the
    suite-registration route refuses it too (it validates without an evaluator). Returns the suite. */
-const PROCESS_EXIT_REFUSAL = 'process_exit checks need an executable runner; this station evaluates in an isolated file workspace, so use json_equal, artifact_json_equal, artifact_sha256 or tool_call checks';
+const PROCESS_EXIT_REFUSAL = 'process_exit checks need an executable runner; this farm evaluates in an isolated file workspace, so use json_equal, artifact_json_equal, artifact_sha256 or tool_call checks';
 function assertSuiteRunnable(suite, evidenceClass) {
   if (evidenceClass !== 'executable' && suite.cases.some(c => c.checks.some(check => check.kind === 'process_exit'))) throw new Error(PROCESS_EXIT_REFUSAL);
   return suite;

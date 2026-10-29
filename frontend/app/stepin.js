@@ -168,7 +168,7 @@ const StepIn = (() => {
     const b = r.body || {};
     if (b.view) upsert(b.view);
     if (kind === 'take') {
-      if (!b.ok) say(b.error || 'The station could not hand you this browser.');
+      if (!b.ok) say(b.error || 'The farm could not hand you this browser.');
       else { say(''); try { v.vp.focus(); } catch (_) {} }
     } else if (r.status === 200) say(kind === 'back' ? 'Handed back. ' + agentName(h.agentId) + ' is carrying on.' : 'Told ' + agentName(h.agentId) + ' to take another route.');
     else say(b.error || 'That handoff had already ended.');
@@ -256,9 +256,9 @@ const StepIn = (() => {
       + (sites.length
         ? '<ul class="si-list">' + sites.map(s => '<li><b>' + esc(s.host) + '</b> <small>signed in for ' + esc(agentName(s.agentId)) + ' · ' + esc(rel(s.at)) + '</small></li>').join('') + '</ul>'
           + '<p class="si-dim">Sites you signed in to through STEP-IN. A site can still sign the browser out on its own.</p>'
-        : '<p class="si-dim">' + (signins.profile ? 'The station browser has a saved profile, but no STEP-IN sign-ins are recorded in it.' : 'No saved sign-ins. The station browser profile is empty.') + '</p>')
+        : '<p class="si-dim">' + (signins.profile ? 'The farm browser has a saved profile, but no STEP-IN sign-ins are recorded in it.' : 'No saved sign-ins. The farm browser profile is empty.') + '</p>')
       + (signins.profile ? '<button type="button" class="bb sm si-forget"' + (signins.inUse ? ' disabled' : '') + '>FORGET ALL SIGN-INS</button>'
-        + (signins.inUse ? '<p class="si-dim">A run is using the station browser right now. Forget works once it finishes.</p>' : '') : '');
+        + (signins.inUse ? '<p class="si-dim">A run is using the farm browser right now. Forget works once it finishes.</p>' : '') : '');
     const f = saved.querySelector('.si-forget');
     if (f && typeof ArmConfirm !== 'undefined' && ArmConfirm.wire) {
       ArmConfirm.wire(f, { armedLabel: 'FORGET EVERY SIGN-IN — SURE?', onConfirm: async () => {
@@ -284,7 +284,7 @@ const StepIn = (() => {
       while (view === v && v.streamId === id) {
         let r;
         try { r = await getJson('/api/browser/handoff/frame?id=' + encodeURIComponent(id) + '&after=' + v.seq, ctl && ctl.signal); }
-        catch (_) { if (view !== v || v.streamId !== id) return; if (++fails > 5) { say('Lost the picture from the station.'); return; } await new Promise(res => setTimeout(res, 400 * fails)); continue; }
+        catch (_) { if (view !== v || v.streamId !== id) return; if (++fails > 5) { say('Lost the picture from the farm.'); return; } await new Promise(res => setTimeout(res, 400 * fails)); continue; }
         fails = 0;
         if (view !== v || v.streamId !== id) return;
         if (r.status !== 200 || !r.body || !r.body.ok) {

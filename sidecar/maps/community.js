@@ -61,13 +61,13 @@ function makeCommunityMaps(deps) {
     const out = fmt.readCatalog(parsed);
     // a signed but OLDER gallery (a replayed copy, a stale cache) is refused: this station has read a newer one
     const highest = Number(seen[url]) || 0;
-    if (out.serial < highest) throw new Error('the community gallery is older than one this station already read');
+    if (out.serial < highest) throw new Error('the community gallery is older than one this farm already read');
     if (out.serial > highest) { seen[url] = out.serial; try { saveState({ serials: seen }); } catch (e) { note('community-maps.serial-save', e); } }   // a failed save: the in-memory floor still holds
     return { ok: true, serial: out.serial, maps: out.maps, base: url };
   }
   async function catalog(opts) {
     const url = indexUrl();
-    if (!url) return { ok: false, off: true, error: 'The community gallery is switched off on this station.' };
+    if (!url) return { ok: false, off: true, error: 'The community gallery is switched off on this farm.' };
     if (cached && cached.base === url && !(opts && opts.refresh) && now() - cachedAt < CACHE_MS) return cached;
     // one read at a time: every card and every caller waits on the same fetch
     if (!inflight) inflight = readIndex(url).then(c => { cached = c; cachedAt = now(); return c; }).finally(() => { inflight = null; });
@@ -93,7 +93,7 @@ function makeCommunityMaps(deps) {
   }
   async function call(method, path, body, timeoutMs, what) {
     const c = linked();
-    if (!c) return { ok: false, outcome: 'refused', status: 401, linked: false, error: 'Link this station to a StarNet account to share ' + what + '.' };
+    if (!c) return { ok: false, outcome: 'refused', status: 401, linked: false, error: 'Link this farm to a StarNet account to share ' + what + '.' };
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     let res, text = '';
@@ -106,15 +106,15 @@ function makeCommunityMaps(deps) {
       text = await res.text();
     } catch (e) {
       // the request may have reached StarNet before the answer was lost: nobody here knows, so say so
-      return { ok: false, outcome: 'unknown', status: 0, linked: true, error: ctrl.signal.aborted ? 'StarNet did not answer in time.' : 'The connection to StarNet dropped.' };
+      return { ok: false, outcome: 'unknown', status: 0, linked: true, error: ctrl.signal.aborted ? 'Homestead did not answer in time.' : 'The connection to Homestead dropped.' };
     } finally { clearTimeout(timer); }
     let json = null;
     try { json = JSON.parse(text); } catch (_) { json = null; }
     if (res.ok && json && json.ok) return Object.assign({ ok: true, outcome: 'ok', status: res.status, linked: true }, json);
-    if (res.ok || res.status >= 500 && !json) return { ok: false, outcome: 'unknown', status: res.status, linked: true, error: 'StarNet gave no readable answer.' };
-    if (res.status === 401) return { ok: false, outcome: 'refused', status: 401, linked: true, code: 'token_rejected', error: 'StarNet no longer accepts this station\'s link. Link it again in STORE › LINK STATION.' };
+    if (res.ok || res.status >= 500 && !json) return { ok: false, outcome: 'unknown', status: res.status, linked: true, error: 'Homestead gave no readable answer.' };
+    if (res.status === 401) return { ok: false, outcome: 'refused', status: 401, linked: true, code: 'token_rejected', error: 'Homestead no longer accepts this farm\'s link. Link it again in STORE › LINK FARM.' };
     const msg = json && json.error && (json.error.message || json.error);
-    return { ok: false, outcome: 'refused', status: res.status, linked: true, code: json && json.error && json.error.code, error: typeof msg === 'string' && msg ? msg : 'StarNet refused it (HTTP ' + res.status + ').' };
+    return { ok: false, outcome: 'refused', status: res.status, linked: true, code: json && json.error && json.error.code, error: typeof msg === 'string' && msg ? msg : 'Homestead refused it (HTTP ' + res.status + ').' };
   }
 
   /* share({ title, description, credit, agree, build, still }) -> the outcome above */

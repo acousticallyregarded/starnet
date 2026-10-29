@@ -379,9 +379,9 @@ const OK = [{ status: 200, headers: { 'content-type': 'application/json' }, body
       const rec = recorder(OK);
       let msg = '';
       try { await reservedTools(rec.impl).run(args, ctx()); } catch (e) { msg = e.message; }
-      A.ok(/is a model-provider key/.test(msg) && /do not ask the Commander for it/.test(msg), label + ': a provider key is refused as one: ' + JSON.stringify(msg));
+      A.ok(/is a model-provider key/.test(msg) && /do not ask the Farmer for it/.test(msg), label + ': a provider key is refused as one: ' + JSON.stringify(msg));
       A.ok(/image_generate/.test(msg) && /transparent:true/.test(msg), label + ': the refusal points at the built-in tool that does the job');
-      A.ok(!/add it in/.test(msg), label + ': it never sends the Commander to KEYS, which refuses provider keys');
+      A.ok(!/add it in/.test(msg), label + ': it never sends the Farmer to KEYS, which refuses provider keys');
       A.eq(rec.sent.length, 0, label + ': nothing was sent, and the legacy key was never spent');
     }
   }

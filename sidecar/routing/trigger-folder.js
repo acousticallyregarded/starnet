@@ -139,13 +139,13 @@ function makeFolderPolicy(deps) {
     if (rhr) return { ok: false, code: 'hardline', error: rhr };
     if (norm(real) === norm(P.parse(real).root)) return { ok: false, code: 'system', error: 'a whole drive cannot be watched — choose a specific folder' };
     const sysRoots = list(d.systemRoots), forbidden = list(d.forbiddenRoots);
-    if (!sysRoots || !forbidden) return { ok: false, code: 'policy', error: 'the station could not read its protected-folder list — refused (try again)' };
+    if (!sysRoots || !forbidden) return { ok: false, code: 'policy', error: 'the farm could not read its protected-folder list — refused (try again)' };
     for (const sys of sysRoots) if (sys && inside(real, sys)) return { ok: false, code: 'system', error: 'system folders cannot be watched: ' + real };
-    for (const f of forbidden) if (f && inside(real, f)) return { ok: false, code: 'station', error: 'the station\'s own data folder cannot be watched (agents write there): ' + real };
+    for (const f of forbidden) if (f && inside(real, f)) return { ok: false, code: 'station', error: 'the farm\'s own data folder cannot be watched (agents write there): ' + real };
     // A LINE'S OWN OUTPUT (sweep 2026-09-25): a folder equal to or inside the working folder a line's stages write to
     // (its trusted project) would feed that line its own results — a loop that spends on every file it writes.
     const lineRoots = list(d.lineRoots);
-    if (!lineRoots) return { ok: false, code: 'policy', error: 'the station could not read its lines\' working folders — refused (try again)' };
+    if (!lineRoots) return { ok: false, code: 'policy', error: 'the farm could not read its lines\' working folders — refused (try again)' };
     for (const lr of lineRoots) if (lr && inside(real, lr)) return { ok: false, code: 'lineoutput', error: lineOutputError(lr) };
     const homes = (list(d.homeRoots) || []).filter(Boolean);
     for (const h of homes) if (norm(real) === norm(h)) return { ok: false, code: 'broad', error: 'your whole home folder is too broad — choose a specific folder inside it' };

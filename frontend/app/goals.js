@@ -99,11 +99,11 @@
     const g = clip(goalText, 280);
     const lines = [];
     lines.push('INTERNAL — GOAL DECOMPOSITION. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('Your Commander has this goal: "' + g + '".');
+    lines.push('Your Farmer has this goal: "' + g + '".');
     lines.push('Break it into a clear PATH — the ordered milestones that get them there. Hard rules:');
     lines.push('- Between ' + MIN_MILESTONES + ' and ' + MAX_MILESTONES + ' milestones. Ordered: earliest first, each a real step toward the goal.');
     lines.push('- Each milestone is ONE concrete, achievable outcome — something you could actually help build or do, not a vague theme.');
-    lines.push('- Ground them in what you know about this Commander (their stack, pain, world). No generic filler.');
+    lines.push('- Ground them in what you know about this Farmer (their stack, pain, world). No generic filler.');
     lines.push('- One per line, numbered. Nothing else — no preamble, no closing note.');
     lines.push('Reply in EXACTLY this format:');
     lines.push('1. <first milestone>');
@@ -339,7 +339,7 @@
         id: 'arc:step:' + m.id, kind: 'arc-step', title: (isDone ? 'done — ' : (isNext ? '▸ ' : '· ')) + clip(m.text, 120),
         desc: isDone ? ('done.' + (m.evidence ? ' ' + m.evidence : ''))
           : inFlight ? 'in progress — the build is running; finishing it completes this step.'
-          : (isNext ? 'the next step — do it yourself or ask StarNet for help.' : 'another planned step — you can choose it next in Goals.'),
+          : (isNext ? 'the next step — do it yourself or ask Homestead for help.' : 'another planned step — you can choose it next in Goals.'),
         reward: 'progress on “' + clip(goal.text, 60) + '”', status,
         arcGoalId: goal.id, milestoneId: m.id, isNext: !!isNext, inFlight: inFlight
       });

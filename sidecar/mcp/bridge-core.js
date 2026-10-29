@@ -30,15 +30,15 @@ const QUEUE_CAP = 1000;                               // the reference harness p
 const PROTO_RE = /^\d{4}-\d{2}-\d{2}$/;               // a well-formed MCP protocol revision string
 
 const INSTRUCTIONS =
-  'StarNet station messaging bridge. These tools OBSERVE and MESSAGE a running StarNet station over ' +
+  'Homestead farm messaging bridge. These tools OBSERVE and MESSAGE a running Homestead farm over ' +
   'its local loopback API — they do not run agent turns. conversations_list / conversation_get / ' +
-  'messages_read read the station\'s run history and per-stream transcripts; channels_list shows the ' +
-  'connected messaging channels; events_poll / events_wait deliver live station telemetry (runs, ' +
+  'messages_read read the farm\'s run history and per-stream transcripts; channels_list shows the ' +
+  'connected messaging channels; events_poll / events_wait deliver live farm telemetry (runs, ' +
   'deliveries, permission prompts) with monotonic cursors; permissions_list_open / permissions_respond ' +
-  'surface and answer live consent prompts. messages_send drives the station over its local DEV channel ' +
-  '(target "dev:<chat>", only when StarNet runs with DEV mode enabled); real platform channels ' +
+  'surface and answer live consent prompts. messages_send drives the farm over its local DEV channel ' +
+  '(target "dev:<chat>", only when Homestead runs with DEV mode enabled); real platform channels ' +
   '(telegram/discord/…) are not injectable over the API and return a structured not-supported result. ' +
-  'If the sidecar is not running every tool returns a structured error telling you to start StarNet.';
+  'If the sidecar is not running every tool returns a structured error telling you to start Homestead.';
 
 // ---------------------------------------------------------------------------
 // small pure helpers
@@ -62,7 +62,7 @@ const AGENT_RE = /^[A-Za-z0-9_-]{1,40}$/;             // the sidecar's transcrip
 const TOOLS = [
   {
     name: 'conversations_list',
-    description: 'List the station\'s recent runs (conversations) across agents. Returns each run\'s session_key (needed for messages_read), the agent, a display title, model, outcome, and last-activity time.',
+    description: 'List the farm\'s recent runs (conversations) across agents. Returns each run\'s session_key (needed for messages_read), the agent, a display title, model, outcome, and last-activity time.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -90,12 +90,12 @@ const TOOLS = [
   },
   {
     name: 'attachments_fetch',
-    description: 'List non-text attachments for a message. StarNet transcripts are text-only, so this reports zero attachments truthfully.',
+    description: 'List non-text attachments for a message. Homestead transcripts are text-only, so this reports zero attachments truthfully.',
     inputSchema: { type: 'object', required: ['session_key', 'message_id'], properties: { session_key: { type: 'string' }, message_id: { type: 'string' } } }
   },
   {
     name: 'events_poll',
-    description: 'Poll for new station events since a cursor (runs, deliveries, permission prompts). Returns events plus a next_cursor to pass back. Events are fed from the station\'s live SSE stream.',
+    description: 'Poll for new farm events since a cursor (runs, deliveries, permission prompts). Returns events plus a next_cursor to pass back. Events are fed from the farm\'s live SSE stream.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -107,7 +107,7 @@ const TOOLS = [
   },
   {
     name: 'events_wait',
-    description: 'Long-poll: block until the next matching station event arrives or the timeout expires. Use for near-real-time delivery without busy-polling.',
+    description: 'Long-poll: block until the next matching farm event arrives or the timeout expires. Use for near-real-time delivery without busy-polling.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -119,17 +119,17 @@ const TOOLS = [
   },
   {
     name: 'messages_send',
-    description: 'Deliver a message INTO the station over its local DEV channel (target "dev:<chat>"), as if from the operator; the station\'s agent processes it and its replies are returned. Requires StarNet running with DEV mode. Real platform channels (telegram/discord/…) are not injectable over the API and return a structured not-supported result.',
+    description: 'Deliver a message INTO the farm over its local DEV channel (target "dev:<chat>"), as if from the operator; the farm\'s agent processes it and its replies are returned. Requires Homestead running with DEV mode. Real platform channels (telegram/discord/…) are not injectable over the API and return a structured not-supported result.',
     inputSchema: { type: 'object', required: ['target', 'message'], properties: { target: { type: 'string', description: 'Target in "platform:chat_id" form, e.g. "dev:devchat".' }, message: { type: 'string' } } }
   },
   {
     name: 'channels_list',
-    description: 'List the station\'s messaging channels and their connection status. Connected channels can receive the station\'s agent replies; use messages_send target "dev:<chat>" to drive the station locally.',
+    description: 'List the farm\'s messaging channels and their connection status. Connected channels can receive the farm\'s agent replies; use messages_send target "dev:<chat>" to drive the farm locally.',
     inputSchema: { type: 'object', properties: { platform: { type: 'string', description: 'Filter by platform id (telegram/discord/slack/matrix/signal).' } } }
   },
   {
     name: 'permissions_list_open',
-    description: 'List the station\'s OPEN consent prompts awaiting a human decision (each carries an id, the run, agent, and — when observed on the live stream — the tool/scope/argsSummary).',
+    description: 'List the farm\'s OPEN consent prompts awaiting a human decision (each carries an id, the run, agent, and — when observed on the live stream — the tool/scope/argsSummary).',
     inputSchema: { type: 'object', properties: {} }
   },
   {
@@ -225,7 +225,7 @@ function sidecarDown(ctx, r) {
   return {
     ok: false,
     sidecarReachable: false,
-    error: 'Cannot reach the StarNet sidecar at ' + (ctx.baseLabel || 'the loopback port') + ' — is StarNet running? Start it with `npm start`.',
+    error: 'Cannot reach the Homestead sidecar at ' + (ctx.baseLabel || 'the loopback port') + ' — is Homestead running? Start it with `npm start`.',
     detail: (r && r.error) ? str(r.error) : ''
   };
 }
@@ -314,7 +314,7 @@ const IMPLS = {
       message_id: str(args.message_id),
       count: 0,
       attachments: [],
-      note: 'StarNet stores conversation transcripts as text; no per-message attachment store is exposed over the API.'
+      note: 'Homestead stores conversation transcripts as text; no per-message attachment store is exposed over the API.'
     };
   },
 
@@ -337,12 +337,12 @@ const IMPLS = {
     if (platform !== 'dev') {
       return {
         ok: false, supported: false, target: target,
-        error: 'StarNet exposes no outbound-send route for platform channel "' + platform + '". Channel replies are produced only as agent turns inside runs. Use messages_send target "dev:<chat>" to drive the station over its local DEV channel (requires StarNet running with DEV mode).'
+        error: 'Homestead exposes no outbound-send route for platform channel "' + platform + '". Channel replies are produced only as agent turns inside runs. Use messages_send target "dev:<chat>" to drive the farm over its local DEV channel (requires Homestead running with DEV mode).'
       };
     }
     const r = await ctx.callSidecar('POST', '/api/dev/inbound', { text: message, chatId: chatId || 'devchat' });
     if (!r.ok) return sidecarDown(ctx, r);
-    if (r.status === 404) return { ok: false, supported: false, target: target, error: 'The DEV channel is only available when StarNet runs with DEV mode enabled (launch with SKYNET_DEV=1). No message was delivered.' };
+    if (r.status === 404) return { ok: false, supported: false, target: target, error: 'The DEV channel is only available when Homestead runs with DEV mode enabled (launch with SKYNET_DEV=1). No message was delivered.' };
     if (r.status !== 200) return badStatus('/api/dev/inbound', r);
     const j = r.json || {};
     return { ok: true, target: target, delivered: true, agentId: j.agentId || null, isTask: !!j.isTask, replies: Array.isArray(j.replies) ? j.replies : [] };

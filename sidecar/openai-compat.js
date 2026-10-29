@@ -314,7 +314,7 @@ function makeOpenAiCompat(deps) {
     const key = apiKeyFn();
     if (!keyUsable(key)) {
       json(res, 403, openAiError(
-        'The StarNet /v1 API is disabled. It dispatches terminal-capable agent work, so it refuses to run without a strong bearer key. Set STARNET_API_KEY to a secret of at least ' + MIN_KEY_LEN + ' characters (e.g. `openssl rand -hex 32`) and restart the station to enable /v1.',
+        'The Homestead /v1 API is disabled. It dispatches terminal-capable agent work, so it refuses to run without a strong bearer key. Set STARNET_API_KEY to a secret of at least ' + MIN_KEY_LEN + ' characters (e.g. `openssl rand -hex 32`) and restart the farm to enable /v1.',
         { type: 'invalid_request_error', code: 'api_disabled' }), { 'WWW-Authenticate': 'Bearer' });
       return true;
     }
@@ -394,7 +394,7 @@ function makeOpenAiCompat(deps) {
     const provider = target.provider || 'openrouter';
     // conversation for runOnce = prior turns (history) + the new user directive last (system passed separately).
     const messages = parsed.history.map(m => ({ role: m.role, content: m.content })).concat([{ role: 'user', content: parsed.lastUser }]);
-    let system = parsed.system || 'You are the Commander\'s StarNet agent, reached over an OpenAI-compatible API. Use your REAL tools when given a task and report what you actually did.';
+    let system = parsed.system || 'You are the Farmer\'s Homestead agent, reached over an OpenAI-compatible API. Use your REAL tools when given a task and report what you actually did.';
 
     if (contract.schema) system += '\nReturn ONLY strict JSON matching this schema: ' + JSON.stringify(contract.schema);
     const id = reservedId || 'chatcmpl-' + String(newId()).replace(/-/g, '').slice(0, 24);
@@ -587,7 +587,7 @@ function makeOpenAiCompat(deps) {
     const runModel = target.matched ? (target.model || defaultModel()) : defaultModel();
     const provider = target.provider || 'openrouter';
     const messages = history.map(m => ({ role: m.role, content: m.content })).concat([{ role: 'user', content: lastUser }]);
-    const sys = system || 'You are the Commander\'s StarNet agent, reached over an OpenAI-compatible API. Use your REAL tools when given a task and report what you actually did.';
+    const sys = system || 'You are the Farmer\'s Homestead agent, reached over an OpenAI-compatible API. Use your REAL tools when given a task and report what you actually did.';
 
     const ac = new AbortController();
     sweepRuns();

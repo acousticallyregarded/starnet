@@ -35,7 +35,7 @@ function makeCase(o) {
     const u = String(url), method = ((init && init.method) || 'GET').toUpperCase();
     calls.push(method + ' ' + u.split('?')[0]);
     if (u.startsWith('/api/save') && method === 'POST') {
-      if (station.down) throw new Error('station file unreachable');
+      if (station.down) throw new Error('farm file unreachable');
       const doc = JSON.parse(init.body);
       station.posted.push(doc);
       station.revision++;
@@ -87,12 +87,12 @@ function makeCase(o) {
     const c = makeCase({ stationDown: true });
     await c.ready();
     const state = await c.updates.install();
-    A.ok(c.calls.indexOf('persist') >= 0, 'the drain queues the live station before proving it');
+    A.ok(c.calls.indexOf('persist') >= 0, 'the drain queues the live farm before proving it');
     A.eq(c.installCalls(), 0, 'an unconfirmed newest save blocks the native installer');
     A.eq(c.calls.includes('/api/update/prepare') || c.calls.includes('POST /api/update/prepare'), false, 'no recovery point is cut over an unconfirmed save');
-    A.ok(/latest station changes are not confirmed in the station file/i.test(state.error), 'the refusal names the unconfirmed station changes (got: ' + state.error + ')');
-    A.ok(/StarNet stays open/.test(state.error), 'the refusal says StarNet stays open');
-    A.ok(c.notices.some(n => /not confirmed in the station file/.test(String(n[0]))), 'the notice names the unconfirmed save');
+    A.ok(/latest farm changes are not confirmed in the farm file/i.test(state.error), 'the refusal names the unconfirmed farm changes (got: ' + state.error + ')');
+    A.ok(/Homestead stays open/.test(state.error), 'the refusal says Homestead stays open');
+    A.ok(c.notices.some(n => /not confirmed in the farm file/.test(String(n[0]))), 'the notice names the unconfirmed save');
   }
   {
     // the station file is up: the NEWEST live state must be what it confirms before the installer runs
@@ -100,7 +100,7 @@ function makeCase(o) {
     await c.ready();
     await c.updates.install();
     const posted = c.station.posted[c.station.posted.length - 1];
-    A.eq(posted && posted.station && posted.station.floor, 'verdant', 'the station file received the live station, not an older cached one');
+    A.eq(posted && posted.station && posted.station.floor, 'verdant', 'the farm file received the live farm, not an older cached one');
     const order = ['persist', 'POST /api/save', 'POST /api/update/prepare', 'starnet_update_install'].map(x => c.calls.indexOf(x));
     A.ok(order.every((n, i) => n >= 0 && (i === 0 || n > order[i - 1])), 'persist, station-file confirmation, recovery point and install run in strict order (' + order.join(',') + ')');
     A.eq(c.installCalls(), 1, 'a confirmed newest save lets the install proceed');
@@ -110,8 +110,8 @@ function makeCase(o) {
     const c = makeCase({ persistThrows: true });
     await c.ready();
     const state = await c.updates.install();
-    A.eq(c.installCalls(), 0, 'a persist that could not queue the live station blocks the installer');
-    A.ok(/not confirmed in the station file/.test(state.error), 'and says the latest changes are not confirmed');
+    A.eq(c.installCalls(), 0, 'a persist that could not queue the live farm blocks the installer');
+    A.ok(/not confirmed in the farm file/.test(state.error), 'and says the latest changes are not confirmed');
   }
   {
     // the drain result itself carries the verdict the quit guard and the install path read
@@ -120,7 +120,7 @@ function makeCase(o) {
     A.eq([drained.ok, drained.saveConfirmed], [false, false], 'preInstallDrain reports the unconfirmed save');
     c.station.down = false;
     const again = await c.updates.preInstallDrain(500);
-    A.eq([again.ok, again.saveConfirmed], [true, true], 'once the station file confirms the newest save, the drain passes');
+    A.eq([again.ok, again.saveConfirmed], [true, true], 'once the farm file confirms the newest save, the drain passes');
   }
   A.report('update-drain-newest-save');
 })().catch(e => { console.log('FAIL: unhandled ' + (e && e.stack || e)); process.exit(1); });

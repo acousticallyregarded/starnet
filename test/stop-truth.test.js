@@ -170,7 +170,7 @@ function stopRig(opts) {
     // the wiring the sandbox injects: the live run's tokens mark echoes, and every teardown settles the run's lines
     A.ok(/onToken: d => \{ acc \+= d; Channels\.appendToken\(ws\.id, d\); if \(thisRunId && d && d\.indexOf\('\[steering\] '\) >= 0\) markSentNowLanded\(ws\.id, thisRunId, d\);/.test(src),
       'the run\'s own token stream marks a sent-now line read when its [steering] echo arrives');
-    A.ok(/\} finally \{[\s\S]{0,600}Channels\.end\(ws\.id\);\s*if \(thisRunId\) \{ if \(streamLost \|\| interruptedStreams\.has\(ws\.id\)\) releaseSentNow\(ws\.id, thisRunId, acc\); else settleSentNow\(ws\.id, thisRunId, acc\); \}/.test(src), 'send()\'s teardown settles the run\'s sent-now lines on every end, against the run\'s own text — unless its stream died (the station decides those)');
+    A.ok(/\} finally \{[\s\S]{0,600}Channels\.end\(ws\.id\);\s*if \(thisRunId\) \{ if \(streamLost \|\| interruptedStreams\.has\(ws\.id\)\) releaseSentNow\(ws\.id, thisRunId, acc\); else settleSentNow\(ws\.id, thisRunId, acc\); \}/.test(src), 'send()\'s teardown settles the run\'s sent-now lines on every end, against the run\'s own text — unless its stream died (the farm decides those)');
     // LIVE (this lane): the station was killed mid-run with a send-now line pending; the page's thrown teardown is not always
     // classified 'network', so the line was re-queued and auto-sent into the dead station. A throw that is not a deliberate
     // STOP never saw its run end: it marks the stream lost, whatever the error's wording.
@@ -262,7 +262,7 @@ function stopRig(opts) {
       const id = kept[0].id;
       const two = pageTwo(storage, say(storage, () => ({ [id]: 'unapplied' })));
       await two.r.ctx.__reconcile(two.ws);
-      A.eq(two.asked, ['/api/run/steer?runId=run-1'], 'the reloaded page asks the station about that run');
+      A.eq(two.asked, ['/api/run/steer?runId=run-1'], 'the reloaded page asks the farm about that run');
       A.eq(two.r.ctx.input.value, 'use the blue folder\nand skip the tests', 'the unread line is back in the message box as typed');
       A.ok(two.r.lines.some(l => /run ended before the agent read your send-now message/.test(l) && /back in the message box/.test(l)), 'one honest line: ' + JSON.stringify(two.r.lines));
       A.eq(two.r.ctx.queued.has('ws1'), false, 'never queued (a queue would auto-send it)');
@@ -284,8 +284,8 @@ function stopRig(opts) {
       await two.r.ctx.__reconcile(two.ws);
       A.eq(two.r.ctx.input.value, '', 'a line the agent read never comes back');
       const echo = two.ws.history.filter(m => m && m.steerEcho);
-      A.eq(echo.map(m => [m.content, m.sourceRunId, m.sys]), [['[steering] use the blue folder', 'run-1', true]], 'it is shown as read: one steer-echo row, a station row (never model context)');
-      A.eq(two.ws.history.indexOf(echo[0]), 1, 'placed after that run\'s own dialogue, before the station\'s lines about it');
+      A.eq(echo.map(m => [m.content, m.sourceRunId, m.sys]), [['[steering] use the blue folder', 'run-1', true]], 'it is shown as read: one steer-echo row, a farm row (never model context)');
+      A.eq(two.ws.history.indexOf(echo[0]), 1, 'placed after that run\'s own dialogue, before the farm\'s lines about it');
       A.eq(onDisk(storage, 'ws1'), [], 'and it leaves the disk');
       A.eq(two.r.lines, [], 'no extra line: the echo row is the proof');
       // a saved reply that already shows the echo is never doubled
@@ -320,7 +320,7 @@ function stopRig(opts) {
       await tick(); await tick();
       const two = pageTwo(storage, () => Promise.reject(new Error('offline')), null, { setTimeout: () => {} });
       await two.r.ctx.__reconcile(two.ws);
-      A.eq([two.r.ctx.input.value, onDisk(storage, 'ws1').length], ['', 1], 'an unreachable station decides nothing (the line stays on disk)');
+      A.eq([two.r.ctx.input.value, onDisk(storage, 'ws1').length], ['', 1], 'an unreachable farm decides nothing (the line stays on disk)');
       const bad = pageTwo(storage, () => Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({ error: 'x' }) }), null, { setTimeout: () => {} });
       await bad.r.ctx.__reconcile(bad.ws);
       A.eq([bad.r.ctx.input.value, onDisk(storage, 'ws1').length], ['', 1], 'nor does a 500');
@@ -340,7 +340,7 @@ function stopRig(opts) {
       const three = pageTwo(storage2, say(storage2, () => ({}), none), [{ role: 'user', content: 'go' }, { role: 'assistant', content: '\n[steering] use the blue folder\nOk.', sourceRunId: 'run-0' }]);
       await three.r.ctx.__reconcile(three.ws);
       A.eq(three.r.ctx.input.value, 'use the blue folder', 'an echo from ANOTHER run proves nothing: it comes back');
-      A.ok(three.r.lines.some(l => /station has no record that the agent read your send-now message/.test(l) && /back in the message box/.test(l)), 'with a line that says the station cannot tell: ' + JSON.stringify(three.r.lines));
+      A.ok(three.r.lines.some(l => /farm has no record that the agent read your send-now message/.test(l) && /back in the message box/.test(l)), 'with a line that says the farm cannot tell: ' + JSON.stringify(three.r.lines));
     }
     {
       // (f) the station never took it (its POST was refused or never arrived; the recorded run has no such note): back
@@ -349,7 +349,7 @@ function stopRig(opts) {
       await tick(); await tick();
       const two = pageTwo(storage, say(storage, () => ({}), () => ({ source: 'record' })));
       await two.r.ctx.__reconcile(two.ws);
-      A.eq(two.r.ctx.input.value, 'use the blue folder', 'a line the station never took is back in the box');
+      A.eq(two.r.ctx.input.value, 'use the blue folder', 'a line the farm never took is back in the box');
     }
     {
       // (g) a line STOP already gave back is never given back again after a reload; one held for another session is, once
@@ -386,7 +386,7 @@ function stopRig(opts) {
       await tick(); await tick();
       one.r.ctx.__release('ws1');                    // Chat.abort(): the teardown lets go of every line it holds
       Channels.end('ws1'); one.r.ctx.__settleSentNow('ws1', 'run-1', 'Working.');   // the aborted run's finally runs after that
-      A.eq([one.r.ctx.queued.has('ws1'), one.r.ctx.sentNow.has('ws1'), onDisk(storage, 'ws1').length], [false, false, 1], 'not re-queued, not held: it waits on disk for the station');
+      A.eq([one.r.ctx.queued.has('ws1'), one.r.ctx.sentNow.has('ws1'), onDisk(storage, 'ws1').length], [false, false, 1], 'not re-queued, not held: it waits on disk for the farm');
       const id = onDisk(storage, 'ws1')[0].id;
       const two = pageTwo(storage, say(storage, () => ({ [id]: 'unapplied' })));
       await two.r.ctx.__reconcile(two.ws);
@@ -408,7 +408,7 @@ function stopRig(opts) {
       one.r.ctx.activeWs = { id: 'ws1', agentId: 'agent', conversationMode: 'chat', history: [] };
       one.r.ctx.fetch = url => { asked.push(url); return Promise.reject(new Error('no')); };
       await one.r.ctx.__reconcile(one.r.ctx.activeWs);
-      A.eq([asked, one.r.ctx.input.value], [[], ''], 'a line in this page\'s own hands is not the station\'s to decide');
+      A.eq([asked, one.r.ctx.input.value], [[], ''], 'a line in this page\'s own hands is not the farm\'s to decide');
     }
     // ── 1d POLISH (SEND NOW review, 2026-10-15) ──
     const sendSeveral = async (storage, typed) => {
@@ -432,7 +432,7 @@ function stopRig(opts) {
       A.eq(two.ws.history.map(m => m.content), ['go', 'Halfway.', '[steering] first note', '[steering] second note', '[steering] third note', 'next'],
         'three read lines of one run follow its dialogue in the order they were sent');
       const echoes = two.ws.history.filter(m => m && m.steerEcho);
-      A.eq(echoes.map(m => [m.role, m.sys]), [['system', true], ['system', true], ['system', true]], 'each is the station-row shape every other station row uses (role system + sys), never an agent turn');
+      A.eq(echoes.map(m => [m.role, m.sys]), [['system', true], ['system', true], ['system', true]], 'each is the station-row shape every other farm row uses (role system + sys), never an agent turn');
       // a run with no dialogue row of its own: ahead of the station's own line about it, still in send order
       const storage2 = memStorage();
       const ids2 = await sendSeveral(storage2, ['first note', 'second note', 'third note']);
@@ -441,7 +441,7 @@ function stopRig(opts) {
         { role: 'assistant', sys: true, error: true, transcriptPending: true, sourceRunId: 'run-1', content: '■ the run ended when this page closed' }]);
       await three.r.ctx.__reconcile(three.ws);
       A.eq(three.ws.history.map(m => m.content), ['go', '[steering] first note', '[steering] second note', '[steering] third note', '■ the run ended when this page closed'],
-        'with no dialogue row of the run, they go ahead of its station line, in send order');
+        'with no dialogue row of the run, they go ahead of its farm line, in send order');
     }
     {
       // (k) ONE retry chain per line: another load or a run's end while a retry is armed never arms a second one
@@ -511,7 +511,7 @@ function stopRig(opts) {
       storage2.setItem('starnet.sentNow.v1', JSON.stringify({ ws1: [{ id: 'snstale', runId: 'run-1', text: 'an old note', wire: 'an old note', at: dayAgo }] }));
       const three = pageTwo(storage2, say(storage2, () => ({ snstale: 'applied' })));
       await three.r.ctx.__reconcile(three.ws);
-      A.eq([three.r.ctx.input.value, three.ws.history.filter(m => m && m.steerEcho).length], ['', 1], 'a day-old line the station says was read is shown as read');
+      A.eq([three.r.ctx.input.value, three.ws.history.filter(m => m && m.steerEcho).length], ['', 1], 'a day-old line the farm says was read is shown as read');
     }
     {
       // (o) an echo of the SAME words from a DIFFERENT run never stands in for this line's proof
@@ -542,7 +542,7 @@ function stopRig(opts) {
       const abortFn = A.fnBody(src, '  function abort() {');
       A.ok(abortFn.length > 100 && abortFn.length < 4000 && /for \(const id of Array\.from\(sentNow\.keys\(\)\)\) releaseSentNow\(id\);/.test(abortFn), 'DISCONNECT lets go of every sent-now line before it aborts (no re-queue into the wiped queue)');
       const load = A.fnBody(src, '  function load(ws) {');
-      A.ok(/Promise\.resolve\(loadServerHistory\(activeWs, historyPin\)\)[^\n]*reconcileSentNow\(/.test(load), 'a conversation\'s load asks the station about its leftover lines once its history is merged');
+      A.ok(/Promise\.resolve\(loadServerHistory\(activeWs, historyPin\)\)[^\n]*reconcileSentNow\(/.test(load), 'a conversation\'s load asks the farm about its leftover lines once its history is merged');
       A.ok(/releaseSentNow\(ws\.id, thisRunId, acc\); else settleSentNow\(ws\.id, thisRunId, acc\); \}(?:[ \t]*\/\/[^\n]*)?\s*reconcileSentNow\(ws\);/.test(src), 'a run\'s end asks right away about any line it let go');
     }
   }
@@ -563,7 +563,7 @@ function stopRig(opts) {
     r.ctx.__stop('click');
     A.eq(r.aborted, ['ws1'], 'the waiting send itself is let go at once (nothing to kill by id)');
     for (let i = 0; i < 5; i++) await new Promise(res => setTimeout(res, 0));
-    A.eq(gets, ['/api/overseer'], 'the station\'s own list of reports is read fresh at STOP time');
+    A.eq(gets, ['/api/overseer'], 'the farm\'s own list of reports is read fresh at STOP time');
     A.eq(cancels, ['review-run-1'], 'STOP reaches exactly the report holding THIS conversation — never another conversation\'s, never a finished one');
     A.eq(r.lines.filter(l => /also ended the report on your delegated work/i.test(l)).length, 1, 'one line says the report was stopped too: ' + JSON.stringify(r.lines));
   }
@@ -595,7 +595,7 @@ function stopRig(opts) {
       r.ctx.__stop('click');
       for (let i = 0; i < 5; i++) await new Promise(res => setTimeout(res, 0));
       A.eq(cancels, ['review-run-1'], 'the stop is still asked for (' + JSON.stringify(answer) + ')');
-      A.ok(!r.lines.some(l => /report/i.test(l)), 'a stop the station did not prove claims nothing (' + JSON.stringify(answer) + '): ' + JSON.stringify(r.lines));
+      A.ok(!r.lines.some(l => /report/i.test(l)), 'a stop the farm did not prove claims nothing (' + JSON.stringify(answer) + '): ' + JSON.stringify(r.lines));
     }
   }
   {
@@ -638,7 +638,7 @@ function stopRig(opts) {
     o = await call(JSON.stringify({ runId: 'hop-1' }), new Map(), hop);
     A.eq([o.code, bodyOf(o)], [200, { ok: true, stopped: true }], 'a routine/line run reached by its stop handle is stopped too');
     o = await call(JSON.stringify({ runId: 'gone' }), live, hop);
-    A.eq([o.code, bodyOf(o)], [200, { ok: true, stopped: false }], 'an id the station no longer holds still answers 200 (nothing to stop is not an error) but says nothing was stopped');
+    A.eq([o.code, bodyOf(o)], [200, { ok: true, stopped: false }], 'an id the farm no longer holds still answers 200 (nothing to stop is not an error) but says nothing was stopped');
     o = await call('{not json', live, hop);
     A.eq(o.code, 400, 'bad json is still a 400');
   }
@@ -651,7 +651,7 @@ function stopRig(opts) {
     Channels.setPending('ws1', { promptId: 'p-bg', tool: 'fs.write', runId: 'run-0', background: true }, Date.now());
     A.eq(r.ctx.__announced('p-lead', { id: 'ws1' }), false, 'fixture: the lead ask was filed under the conversation\'s bell key');
     r.ctx.__stop('click');
-    A.eq(r.emitted.length, 0, 'nothing is announced before the station confirms the kill');
+    A.eq(r.emitted.length, 0, 'nothing is announced before the farm confirms the kill');
     r.confirm({ ok: true });
     await new Promise(res => setTimeout(res, 0));
     A.eq(r.retired.length, 1, 'the run\'s open cards retire on the confirmed stop');
@@ -696,7 +696,7 @@ function stopRig(opts) {
     const world = fs.readFileSync(path.join(__dirname, '../frontend/app/world.js'), 'utf8');
     A.ok(/U\.bus\.on\('permission\.response', p => \{\s*if \(p && awaitPrompt && \(!p\.promptId \|\| p\.promptId === awaitPrompt\.promptId\)\) clearAwait\(\);/.test(world), 'the hero\'s AWAITING tag clears on the response');
     const tut = fs.readFileSync(path.join(__dirname, '../frontend/app/tutorial.js'), 'utf8');
-    A.ok(/p\.decision === 'deny' && !p\.stopped\) sawDeny = true/.test(tut), 'a stopped ask is not counted as the Commander denying it');
+    A.ok(/p\.decision === 'deny' && !p\.stopped\) sawDeny = true/.test(tut), 'a stopped ask is not counted as the Farmer denying it');
   }
 
   // ── 5. the queued pill never hides the live line: a strip that grows while the log shows its end keeps that end in view ──

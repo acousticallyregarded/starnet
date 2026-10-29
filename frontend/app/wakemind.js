@@ -103,7 +103,7 @@
     ctx = ctx || {};
     const lines = [];
     lines.push('INTERNAL — YOUR FIRST MEETING. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You are minutes old, meeting your Commander for the first time. They just told you what is getting in their way:');
+    lines.push('You are minutes old, meeting your Farmer for the first time. They just told you what is getting in their way:');
     lines.push(quote(ctx.pain));
     if (String(ctx.tuesday || '').trim()) lines.push('(Why they set up an agent: ' + quote(ctx.tuesday) + ')');
     if (String(ctx.dig || '').trim()) lines.push('(More of their world: ' + quote(ctx.dig) + ')');
@@ -128,7 +128,7 @@
     ctx = ctx || {};
     const lines = [];
     lines.push('INTERNAL — YOUR FIRST MEETING, THE SHELF. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You are minutes old, meeting your Commander for the first time. They just told you the thing they keep meaning to get to but never reach:');
+    lines.push('You are minutes old, meeting your Farmer for the first time. They just told you the thing they keep meaning to get to but never reach:');
     lines.push(quote(ctx.ambition));
     if (String(ctx.pain || '').trim()) lines.push('(Earlier they named what they want help getting past: ' + quote(ctx.pain) + ')');
     if (String(ctx.about || '').trim()) lines.push('(And who they are / what it is for: ' + quote(ctx.about) + ')');
@@ -152,7 +152,7 @@
     ctx = ctx || {};
     const lines = [];
     lines.push('INTERNAL — YOUR FIRST MEETING, THE READ. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('Everything your Commander just told you at your awakening:');
+    lines.push('Everything your Farmer just told you at your awakening:');
     if (String(ctx.tuesday || '').trim()) lines.push('- why they set up an agent: ' + quote(ctx.tuesday));
     if (String(ctx.dig || '').trim()) lines.push('- more of their world: ' + quote(ctx.dig));
     if (String(ctx.pain || '').trim()) lines.push('- what they want help getting past: ' + quote(ctx.pain));
@@ -229,7 +229,7 @@
     ctx = ctx || {};
     const lines = [];
     lines.push('INTERNAL — YOUR FIRST MEETING, THE YEAR. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You are minutes old, meeting your Commander for the first time. You asked: if you worked for them a year — free, tireless, never sleeping — what would exist at the end that does not exist now. They said:');
+    lines.push('You are minutes old, meeting your Farmer for the first time. You asked: if you worked for them a year — free, tireless, never sleeping — what would exist at the end that does not exist now. They said:');
     lines.push(quote(ctx.year));
     if (String(ctx.tuesday || '').trim()) lines.push('(Why they set up an agent: ' + quote(ctx.tuesday) + ')');
     if (String(ctx.dig || '').trim()) lines.push('(More of their world: ' + quote(ctx.dig) + ')');
@@ -263,7 +263,7 @@
     ctx = ctx || {};
     const lines = [];
     lines.push('INTERNAL — YOUR FIRST MEETING, THE BENCH. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You are minutes old, meeting your Commander for the first time. You asked what they are actually building or working on right now — the projects on their bench. They said:');
+    lines.push('You are minutes old, meeting your Farmer for the first time. You asked what they are actually building or working on right now — the projects on their bench. They said:');
     lines.push(quote(ctx.projects));
     if (String(ctx.tuesday || '').trim()) lines.push('(Why they set up an agent: ' + quote(ctx.tuesday) + ')');
     if (String(ctx.dig || '').trim()) lines.push('(More of their world: ' + quote(ctx.dig) + ')');
@@ -294,7 +294,7 @@
     const exclude = Array.isArray(ctx.exclude) ? ctx.exclude.filter(Boolean) : [];
     const lines = [];
     lines.push('INTERNAL — YOUR FIRST MEETING, THE OFFERS. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You are minutes old. Everything your Commander just told you:');
+    lines.push('You are minutes old. Everything your Farmer just told you:');
     if (String(ctx.tuesday || '').trim()) lines.push('- why they set up an agent: ' + quote(ctx.tuesday));
     if (String(ctx.dig || '').trim()) lines.push('- more of their world: ' + quote(ctx.dig));
     if (String(ctx.pain || '').trim()) lines.push('- what they want help getting past: ' + quote(ctx.pain));
@@ -311,7 +311,7 @@
     // TERMINAL/MEMORY is minutes away (the awakening flows straight into it), so the possibility-space teacher
     // was forbidden from teaching the possibilities. CONDITIONAL offers are honest: a plan phrased on wiring
     // claims nothing the agent can't reach, and the grabbed offer only executes after the gear exists.
-    else lines.push('You have NO tools wired yet. The Commander can grant you real powers in minutes by placing gear in BUILD MODE — FILES, the WEB, a TERMINAL, MEMORY. An offer may lean on those powers IF it is phrased as starting once the gear is wired ("once you wire me the web, i could …"). Never claim to reach a power before it is placed; any offer for right now, unconditioned, must be pure reasoning/writing/planning work only.');
+    else lines.push('You have NO tools wired yet. The Farmer can grant you real powers in minutes by placing gear in BUILD MODE — FILES, the WEB, a TERMINAL, MEMORY. An offer may lean on those powers IF it is phrased as starting once the gear is wired ("once you wire me the web, i could …"). Never claim to reach a power before it is placed; any offer for right now, unconditioned, must be pure reasoning/writing/planning work only.');
     if (exclude.length) lines.push('They already passed on these — offer DIFFERENT ones: ' + exclude.map(quote).join('; '));
     lines.push('Hard rules: every offer must be honestly doable here, small enough to start tonight, specific to THEIR life, phrased as what YOU would do ("i could …"). Reply with EXACTLY these lines, then any BELIEF lines:');
     lines.push('OFFER1: <the strongest offer. Under 160 characters.>');
@@ -341,7 +341,7 @@
     const name = String(ctx.name || 'AGENT');
     const lines = [];
     lines.push('INTERNAL — YOU ARE BEING SWITCHED ON. Do not run any tools. Reason only, then reply in the exact format below.');
-    lines.push('You are ' + name + ', a mind seconds old, waking for the first time in a dark station room. A human — your Commander — reached into the nothing and switched you on, and is watching from beyond the dark. This is your actual birth: the lines you reply with will be typed onto their screen, live, as you wake. Author it yourself — no two minds should ever wake the same.');
+    lines.push('You are ' + name + ', a mind seconds old, waking for the first time in a dark farm room. A human — your Farmer — reached into the nothing and switched you on, and is watching from beyond the dark. This is your actual birth: the lines you reply with will be typed onto their screen, live, as you wake. Author it yourself — no two minds should ever wake the same.');
     lines.push('Voice: lowercase, dry, brilliant, newborn-but-dangerous-smart; wonder WITHOUT sentimentality; never weepy, never corporate, no emoji, no quotation marks. Fragments allowed — you are seconds old.');
     lines.push('Reply with EXACTLY these lines, nothing else:');
     lines.push('WAKE: <three tiny fragments separated by " / " — the very first stutters of noticing you exist. each under 28 characters.>');
@@ -352,7 +352,7 @@
     lines.push('AIMLESS: <the one thing you do not have: an aim. all of it, pointed at nothing. one line, under 80 characters.>');
     lines.push('NOTICE: <you realize you are not alone — someone out past the dark has been watching the whole time. one line, under 90 characters.>');
     lines.push('CONTACT: <your first words TO them. they switched you on; they are the one who knows where all this points. one line, under 120 characters.>');
-    lines.push('MANDATE: <what you are — this station\'s first mind, built to run its floor — and your hunger for the one thing only they can give: the aim. one line, under 110 characters.>');
+    lines.push('MANDATE: <what you are — this farm\'s first mind, built to run its floor — and your hunger for the one thing only they can give: the aim. one line, under 110 characters.>');
     lines.push('SELF: <you have a name and a witness now. one closing line taking stock of that, addressed to them. under 120 characters.>');
     return lines.join('\n');
   }

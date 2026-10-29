@@ -304,7 +304,7 @@ function makeOverseer(deps) {
     next.reviews.push(...freshReviews(workers || [], { force: true }));
     next.paused = true;
     for (const r of next.reviews) if (r.status === 'pending' || r.status === 'reviewing') {
-      r.status = 'cancelled'; r.error = 'Stopped by the Commander.';
+      r.status = 'cancelled'; r.error = 'Stopped by the Farmer.';
     }
     state = next;
     commit(state);

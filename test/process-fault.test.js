@@ -188,10 +188,10 @@ function harness(extra) {
     A.ok(/markFaulted\(\.\.\.handoffRunner\.inflights\(\)\); killAll\(null, \.\.\.handoffRunner\.inflights\(\)\);/.test(q), '…the hand-off runs');
     A.ok(/sampleInFlight\.stopCause = 'fault';[^\n]*markFaulted\(\(sampleHub && sampleHub\._internals\) \? sampleHub\._internals\.inflight : null\); killAll\(null,/.test(q), '…and the sample run, whose record and answer say the fault');
     const estop = A.fnBody(src, 'function handleHalt(req, res)');
-    A.ok(/killAll\(runs,/.test(estop) && !/markFaulted|stopCause/.test(estop), 'the Commander\'s E-STOP marks no fault');
+    A.ok(/killAll\(runs,/.test(estop) && !/markFaulted|stopCause/.test(estop), 'the Farmer\'s E-STOP marks no fault');
     const sample = A.fnBody(src, 'async function runSampleJob(readArgs)');
-    A.ok(/stoppedJob \? \(sampleInFlight\.stopCause === 'fault' \? 'the station hit an internal fault and stopped this job' : 'you stopped this job'\)/.test(sample), 'the sample job record words a fault stop as the fault');
-    A.ok(/\(stopped && sampleInFlight\.stopCause === 'fault'\) \? \{ error: 'stopped — the station hit an internal fault and stopped this job before it reached the OUTBOX', stoppedBy: 'fault' \} : null/.test(sample), 'the sample answer words it so too, and says stoppedBy fault');
+    A.ok(/stoppedJob \? \(sampleInFlight\.stopCause === 'fault' \? 'the farm hit an internal fault and stopped this job' : 'you stopped this job'\)/.test(sample), 'the sample job record words a fault stop as the fault');
+    A.ok(/\(stopped && sampleInFlight\.stopCause === 'fault'\) \? \{ error: 'stopped — the farm hit an internal fault and stopped this job before it reached the OUTBOX', stoppedBy: 'fault' \} : null/.test(sample), 'the sample answer words it so too, and says stoppedBy fault');
     A.ok(/halted: \(\) => cronHalted === true \|\| processFaultQuiesced === true,/.test(src), 'the trigger runner treats a fault-quiesced process as halted');
     const bump = A.fnBody(src, 'function bumpQueue(agentId, d)');
     A.ok(/queueDepth\.delete\(agentId\)/.test(bump), 'bumpQueue deletes a drained entry (bounded Map)');

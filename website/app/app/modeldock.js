@@ -905,7 +905,7 @@ const ModelDock = (() => {
       let who = '', id = '';
       try { who = String((opts.agentName && opts.agentName()) || '').trim(); id = String((opts.identity && opts.identity()) || ''); } catch (_) {}
       scope.textContent = id === 'agent'
-        ? 'STATION DEFAULT · agents without their own model follow it'
+        ? 'FARM DEFAULT · agents without their own model follow it'
         : 'MODEL FOR ' + (who ? who.toUpperCase() : 'THIS AGENT') + ' ONLY · same as its AGENTS › CONFIG';
     }
     const effort = ensureCurrentEffort();

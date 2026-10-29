@@ -153,17 +153,17 @@ const Backup = (() => {
     let refused = '';
     if (o.desktop) {
       let r = null;
-      try { r = await post('/api/config/export/save', body); } catch (e) { r = null; refused = 'the station did not answer'; }
+      try { r = await post('/api/config/export/save', body); } catch (e) { r = null; refused = 'the farm did not answer'; }
       const j = r && r.j;
       if (r && r.ok && j && j.ok && j.path) {
         return { ok: true, where: 'disk', path: String(j.path), file: String(j.file || ''), line: '✓ saved to ' + j.path + ' — ' + SECRETS_NOTE };
       }
       if (j && j.error && r.status !== 404) refused = String(j.error);
-      else if (!refused) refused = 'this station cannot save files yet';
+      else if (!refused) refused = 'this farm cannot save files yet';
     }
     let r;
     try { r = await post('/api/config/export', body); }
-    catch (e) { return { ok: false, line: 'export failed — the station did not answer' }; }
+    catch (e) { return { ok: false, line: 'export failed — the farm did not answer' }; }
     if (!r || !r.ok || !r.j || typeof r.j !== 'object') {   // never download an error body as a "backup"
       const why = (r && r.j && r.j.error) ? String(r.j.error) : ('http ' + (r ? r.status : '?'));
       return { ok: false, line: 'export failed — ' + why };
@@ -179,11 +179,11 @@ const Backup = (() => {
   // validate a parsed bundle WITHOUT mutating anything — callers decide whether to apply.
   function validate(doc) {
     if (!doc || typeof doc !== 'object') return 'not a JSON object';
-    if (doc.schema !== SCHEMA && doc.schema !== LEGACY_SCHEMA) return 'not a StarNet backup file';
+    if (doc.schema !== SCHEMA && doc.schema !== LEGACY_SCHEMA) return 'not a Homestead backup file';
     // FORWARD-VERSION GUARD (P0.3): a backup file whose envelope version is NEWER than this build understands
     // was exported by a later StarNet. Its store may carry key shapes/save schemas this code can't restore
     // faithfully, so refuse rather than importing a half-understood bundle. The import UI surfaces this string.
-    if (Number(doc.version || 0) > VERSION) return 'backup was made by a newer StarNet (v' + Number(doc.version) + ') — update the app to import it';
+    if (Number(doc.version || 0) > VERSION) return 'backup was made by a newer Homestead (v' + Number(doc.version) + ') — update the app to import it';
     if (!doc.store || typeof doc.store !== 'object') return 'backup has no data';
     if (typeof doc.store[SAVE_KEY] !== 'string' && typeof doc.store['skynet.save'] !== 'string') return 'backup has no agent';
     return null;   // ok
@@ -244,7 +244,7 @@ const Backup = (() => {
       if (posture && typeof AutonomyStore !== 'undefined' && AutonomyStore.importState) {
         try {
           const result = await AutonomyStore.importState(JSON.parse(posture));
-          if (!result.ok) return { ok: false, error: 'Backup partly restored; autonomy was not confirmed. ' + (result.error || 'Try again when the station is connected.') };
+          if (!result.ok) return { ok: false, error: 'Backup partly restored; autonomy was not confirmed. ' + (result.error || 'Try again when the farm is connected.') };
         } catch (_) { return { ok: false, error: 'Backup partly restored; its autonomy setting could not be restored.' }; }
       }
     }

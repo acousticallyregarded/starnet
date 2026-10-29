@@ -61,7 +61,7 @@ const textReply = (status, text) => async () => ({ ok: status === 200, status, t
     const invoked = [];
     const desk = { __TAURI__: { core: { invoke: async (cmd) => { invoked.push(cmd); if (cmd === 'starnet_sidecar_status') return { halted: true, reason: 'sidecar crashed 5 times' }; return true; } } } };
     H = liftHarness(async () => { throw new TypeError('Failed to fetch'); }, desk);
-    A.eq((await H.engineState(200)).reason, 'station service halted: sidecar crashed 5 times', 'a halted guardian is the reason for a dead service');
+    A.eq((await H.engineState(200)).reason, 'farm service halted: sidecar crashed 5 times', 'a halted guardian is the reason for a dead service');
     H = liftHarness(textReply(200, 'ok'), desk);
     await H.engineState(200);
     A.ok(!invoked.slice(1).includes('starnet_sidecar_status'), 'a healthy service never consults the guardian');
@@ -132,13 +132,13 @@ const textReply = (status, text) => async () => ({ ok: status === 200, status, t
     A.ok(!m.cls.has('recoverable'), 'no restart door before the link has stayed down');
     m.advance(15000); m.T._paintSig(); await m.settle(); await m.settle();
     A.ok(m.sig.title.indexOf(DEGRADED) === 0, 'after 15s the tip carries the service\'s own reason verbatim: ' + m.sig.title);
-    A.ok(/click to restart the station service/.test(m.sig.title), 'and, on the desktop, the way out');
+    A.ok(/click to restart the farm service/.test(m.sig.title), 'and, on the desktop, the way out');
     A.eq(m.sig.childNodes[0].nodeValue, 'LINK DOWN · RESTART ', 'the label itself shows the door (a tip alone is undiscoverable)');
     A.ok(m.cls.has('recoverable') && m.attrs.role === 'button', 'the connection box becomes a keyboard-reachable button');
     m.listeners.click[0](); m.listeners.click[0]();
     await m.settle(); await m.settle(); await m.settle();
     A.eq(m.restarts.length, 1, 'a double click restarts once');
-    A.ok(m.notes.some(n => /restarting the station service/.test(n[0])), 'the restart is announced');
+    A.ok(m.notes.some(n => /restarting the farm service/.test(n[0])), 'the restart is announced');
     A.ok(m.notes.some(n => /still reports: degraded: crash-loop/.test(n[0])), 'a respawn that comes back degraded is not claimed as healed');
     m.setEngine({ state: 'ok', reason: '' });
     m.setLink({ bridged: true, down: false, paused: false }); m.T._paintSig();
@@ -153,7 +153,7 @@ const textReply = (status, text) => async () => ({ ok: status === 200, status, t
     const r = mountTopbar({ desktop: true, engine: { state: 'down', reason: '' }, restartOk: false });
     r.T._paintSig(); r.advance(16000); r.T._paintSig(); await r.settle(); await r.settle();
     r.listeners.click[0](); await r.settle(); await r.settle();
-    A.ok(r.notes.some(n => /could not be restarted — quit StarNet fully/.test(n[0])), 'a failed restart names the last-resort step');
+    A.ok(r.notes.some(n => /could not be restarted — quit Homestead fully/.test(n[0])), 'a failed restart names the last-resort step');
   }
   {
     // the service answers 200: the engine is fine, restarting it would kill live work — no door, a truthful tip
@@ -212,7 +212,7 @@ const textReply = (status, text) => async () => ({ ok: status === 200, status, t
     for (const [name, src, fn] of [['app.js', appSrc, 'function startStarnetLink'], ['stationui.js', stationuiSrc, 'function startCreditsLink']]) {
       const b = A.fnBody(src, fn);
       A.ok(b.length > 200, name + ' ' + fn + ' located');
-      A.ok(/\(\) => \{ throw startFail\(\{ local: true \}\); \}/.test(b), name + ': a rejected station POST is tagged local');
+      A.ok(/\(\) => \{ throw startFail\(\{ local: true \}\); \}/.test(b), name + ': a rejected farm POST is tagged local');
       A.ok(/Friendly\.linkStartFailure\(e && e\.linkStart\)/.test(b), name + ': the copy comes from Friendly.linkStartFailure');
       A.ok(/!r \|\| !r\.ok/.test(b), name + ': a null reply is guarded');
     }

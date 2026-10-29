@@ -480,7 +480,7 @@
     const relBand = r.known ? r.band : null;          // what the HARNESS saw (needs MIN_RUNS attributable runs)
     const parts = [];
     if (tier) parts.push(tier.label);
-    if (confBand) parts.push('Commander rating: ' + confBand.toUpperCase());
+    if (confBand) parts.push('Farmer rating: ' + confBand.toUpperCase());
     if (relBand) parts.push('finish rate: ' + relBand.toUpperCase());
     return {
       tier: tier ? tier.at : null, confBand, relBand,

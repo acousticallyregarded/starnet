@@ -213,6 +213,8 @@ const WorldModel = (() => {
     // drives the DOMINANT channel hardest, its lifts run toward pure green rather than the
     // yellow-green of a lawn. Raising red and dropping blue is what buys the olive.
     meadow:   { base: '#374024', label: 'MEADOW' },
+    // BARN RED — the farm's own colour, for a barn's siding. Deep enough to sit in the shell band unclamped.
+    barn:     { base: '#5a2620', label: 'BARN RED' },
     // value poles — the bright + near-black ends of the range (stark, deliberate)
     bone:     { base: '#e7e3d9', label: 'BONE' },
     /* WHITE — bone's neutral twin, added 2026-08-05 for the SHELL axis (Andrew: "lets add white as a
@@ -359,14 +361,19 @@ const WorldModel = (() => {
      every station already built — floorMat is null on all of them — because the default deck is the
      one surface every player sees. `plate` stays in the palette, so the old look is still choosable
      and nothing is destroyed. It also means the Guardian goldens all shift. */
+  /* THE FARM (remaster): the kind ids stay — saves, capability scopes and the sidecar all key on them — but
+     every kind is now a farm building. `wall`, `hull` and `shell` are the materials and shell hue a NEW room
+     of that kind is built with; they are written onto the room at addRoom, so a room built before the farm
+     keeps the null ("bulkhead" / "station") it was saved with and renders exactly as it did. `was` is the
+     kind's station-era name, still accepted wherever a type is asked for by name (agents and old plans use it). */
   const ROOM_KINDS = {
-    hab:      { label: 'HAB',      floor: 'hull',     mat: 'spine' },
-    bridge:   { label: 'BRIDGE',   floor: 'cobalt',   mat: 'panel' },
-    lab:      { label: 'LAB',      floor: 'sterile',  mat: 'tile'  },
-    factory:  { label: 'FOUNDRY',  floor: 'rust',     mat: 'tread' },
-    quarters: { label: 'QUARTERS', floor: 'verdant',  mat: 'soft'  },
-    storage:  { label: 'STORAGE',  floor: 'rust',     mat: 'tread' },
-    corridor: { label: 'CORRIDOR', floor: 'corridor', mat: 'spine' },
+    hab:      { label: 'BARN',       was: 'HAB',      floor: 'oak',    mat: 'plank',   wall: 'wainscot', hull: 'clapboard', shell: 'barn' },
+    bridge:   { label: 'FARMHOUSE',  was: 'BRIDGE',   floor: 'walnut', mat: 'parquet', wall: 'wainscot', hull: 'clapboard', shell: 'white' },
+    lab:      { label: 'GREENHOUSE', was: 'LAB',      floor: 'meadow', mat: 'turf',    wall: 'wainscot', hull: 'curtain',   shell: null },
+    factory:  { label: 'WORKSHOP',   was: 'FOUNDRY',  floor: 'ash',    mat: 'basalt',  wall: 'wainscot', hull: 'brick',     shell: null },
+    quarters: { label: 'COTTAGE',    was: 'QUARTERS', floor: 'oak',    mat: 'soft',    wall: 'wainscot', hull: 'stone',     shell: null },
+    storage:  { label: 'GRANARY',    was: 'STORAGE',  floor: 'amber',  mat: 'plank',   wall: 'wainscot', hull: 'timber',    shell: null },
+    corridor: { label: 'PATH',       was: 'CORRIDOR', floor: 'ash',    mat: 'plank',   wall: null,       hull: 'shingle',   shell: null },
   };
   // a room's effective deck material: explicit override, else the kind default, else plate.
   const matOfRoom = rm => (rm && FLOOR_MATERIALS[rm.floorMat]) ? rm.floorMat
@@ -439,16 +446,16 @@ const WorldModel = (() => {
   function freshDoc(createdAt) {
     const doc = {
       schema: 'starnet.station', version: STATION_VERSION, _nid: 1,
-      meta: { name: 'STARNET STATION', createdAt: createdAt || stationId(), tier: 0, spawnRoomId: null, trunkRoomId: null },
+      meta: { name: 'THE FARM', createdAt: createdAt || stationId(), tier: 0, spawnRoomId: null, trunkRoomId: null },
       rooms: {}, order: [], props: [], belts: {}, edges: []
     };
     // seed the shabby starter HAB (18×11 floor — the v7 / world.js starter room), so a new
     // station is never empty and the builder has something to extend from.
     const id = 'r' + (doc._nid++);
     doc.rooms[id] = {
-      id, kind: 'hab', name: 'HAB-01',
+      id, kind: 'hab', name: 'BARN-01',
       rects: [{ x1: 0, y1: 0, x2: 17, y2: 10 }],
-      floorStyle: 'hull', floorMat: null, wallStyle: null, wallMat: null, hullStyle: null, hullMat: null, tier: 0, floorPaint: {}
+      floorStyle: 'oak', floorMat: null, wallStyle: null, wallMat: 'wainscot', hullStyle: 'barn', hullMat: 'clapboard', tier: 0, floorPaint: {}
     };
     doc.order.push(id);
     doc.meta.spawnRoomId = id;
@@ -1139,8 +1146,8 @@ const WorldModel = (() => {
       for (const r of rects) {
         const w = rectW(r), h = rectH(r);
         if (isCor) {
-          if (Math.min(w, h) < 1) return fail('TOO_SMALL', 'hallway needs width');
-          if (Math.max(w, h) < MIN_HALL) return fail('TOO_SHORT', 'hallway too short');
+          if (Math.min(w, h) < 1) return fail('TOO_SMALL', 'path needs width');
+          if (Math.max(w, h) < MIN_HALL) return fail('TOO_SHORT', 'path too short');
         } else {
           if (w < MIN_ROOM || h < MIN_ROOM) return fail('TOO_SMALL', 'room min ' + MIN_ROOM + '×' + MIN_ROOM);
         }
@@ -1154,7 +1161,7 @@ const WorldModel = (() => {
       const acc = r => { if (r.x1 < mnx) mnx = r.x1; if (r.y1 < mny) mny = r.y1; if (r.x2 > mxx) mxx = r.x2; if (r.y2 > mxy) mxy = r.y2; };
       eachRectWorld(ignoreId, (id, rm, r) => acc(r));
       for (const r of rects) acc(r);
-      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the station');
+      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the farm');
       let hitName = null;
       eachRectWorld(ignoreId, (id, rm, r) => {
         if (hitName) return;
@@ -1284,9 +1291,14 @@ const WorldModel = (() => {
       // and a room built before the material axis existed serialize (and render) identically.
       const floorMat = FLOOR_MATERIALS[opts.floorMat] ? opts.floorMat : null;
       const label = ROOM_KINDS[kind].label;
+      // the farm building this kind is: its walls and siding (see ROOM_KINDS) — explicit, so the old null
+      // defaults keep meaning what they meant for rooms saved before the farm
+      const K = ROOM_KINDS[kind];
+      const hullMat = HULL_MATERIALS[K.hull] ? K.hull : null;
+      const hullStyle = FLOOR_STYLES[K.shell] && K.shell !== (HULL_MATERIALS[hullMat || 'station'] || {}).suggest ? K.shell : null;
       doc.rooms[id] = {
         id, kind, name: opts.name || (label + '-' + pad2(doc._nid - 1)),
-        rects, floorStyle, floorMat, wallStyle: null, wallMat: null, hullStyle: null, hullMat: null, tier: 0, floorPaint: {}
+        rects, floorStyle, floorMat, wallStyle: null, wallMat: WALL_MATERIALS[K.wall] ? K.wall : null, hullStyle, hullMat, tier: 0, floorPaint: {}
       };
       doc.order.push(id);
       if (!doc.meta.spawnRoomId && kind !== 'corridor') doc.meta.spawnRoomId = id;
@@ -1452,7 +1464,7 @@ const WorldModel = (() => {
       // the span of the station as it will stand
       let mnx = Infinity, mny = Infinity, mxx = -Infinity, mxy = -Infinity;
       for (const z of all) for (const r of z.rects) { mnx = Math.min(mnx, r.x1); mny = Math.min(mny, r.y1); mxx = Math.max(mxx, r.x2); mxy = Math.max(mxy, r.y2); }
-      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the station');
+      if (mxx - mnx + 1 > MAX_SPAN || mxy - mny + 1 > MAX_SPAN) return fail('TOO_FAR', 'too far from the farm');
       // no moved room lands on another room (moved or not)
       for (const pl of plans) for (const z of all) if (z.id !== pl.rm.id && pl.rects.some(r => z.rects.some(q => hits(r, q)))) return fail('OVERLAP', (pl.rm.name || pl.rm.id) + ' would overlap ' + (z.rm.name || z.id));
       // nothing that stays (a piece or a belt riding no moved room) is left inside a moved room's new floor
@@ -2501,7 +2513,7 @@ const WorldModel = (() => {
     const machineWord = p => (p && LABEL_OF[p.t]) || 'MACHINE';
     function circleFail(here, there, fromId, toId) {
       return Object.assign(fail('CIRCLE', 'That belt would close a circle: ' + there.toLowerCase() + ' already hands its work on, round to ' + here.toLowerCase()
-        + ', so a job would go round for ever and routing would stop for the whole station. A LOOP gate is the one way to send work back — belt it upstream from a LOOP.'),
+        + ', so a job would go round for ever and routing would stop for the whole farm. A LOOP gate is the one way to send work back — belt it upstream from a LOOP.'),
       { short: 'A CIRCLE — ' + there + ' ALREADY HANDS WORK BACK TO ' + here + ' · USE A LOOP TO SEND WORK BACK', circle: { from: fromId, back: toId } });
     }
     /* null = a new lane out of machine A, whose work goes on to machine `toId`, closes no circle — else the refusal. o.skip = a
@@ -3276,7 +3288,7 @@ const WorldModel = (() => {
         const r = planBelt(A, standIn('merger', x, y), linked, o);
         return r.ok ? { ok: true, mode: 'merge', path: pathOut(r) } : { ok: false, mode: 'merge', error: r.error, msg: r.msg };
       }
-      if (!roomAt(x, y)) return { ok: false, mode: 'floor', error: 'OFF_DECK', msg: 'that is not station floor', short: 'NOT STATION FLOOR' };
+      if (!roomAt(x, y)) return { ok: false, mode: 'floor', error: 'OFF_DECK', msg: 'that is not farm floor', short: 'NOT FARM FLOOR' };
       if (propAt(x, y)) return { ok: false, mode: 'floor', error: 'OVERLAP', msg: 'something stands there', short: 'SOMETHING STANDS HERE' };
       const no = beltEndRefusal(A, null);
       if (no) return { ok: false, mode: 'floor', error: no.error, msg: no.msg, short: no.short };
@@ -3313,7 +3325,7 @@ const WorldModel = (() => {
         const r = planBelt(S, standIn('merger', tx, ty), linked, o);
         return r.ok ? { ok: true, mode: 'branchmerge', path: pathOut(r) } : { ok: false, mode: 'branchmerge', error: r.error, msg: r.msg };
       }
-      if (!roomAt(tx, ty)) return { ok: false, mode: 'branchfloor', error: 'OFF_DECK', msg: 'that is not station floor', short: 'NOT STATION FLOOR' };
+      if (!roomAt(tx, ty)) return { ok: false, mode: 'branchfloor', error: 'OFF_DECK', msg: 'that is not farm floor', short: 'NOT FARM FLOOR' };
       if (propAt(tx, ty)) return { ok: false, mode: 'branchfloor', error: 'OVERLAP', msg: 'something stands there', short: 'SOMETHING STANDS HERE' };
       const r = planBelt(S, standIn('__tile', tx, ty), linked, o);
       return r.ok ? { ok: true, mode: 'branchfloor', path: pathOut(r) } : { ok: false, mode: 'branchfloor', error: r.error, msg: r.msg };
@@ -3626,7 +3638,7 @@ const WorldModel = (() => {
         if (!v.ok) {
           badNodes.push(i);
           if (v.error === 'OVERLAP') why('OVERLAP', v.msg, 'SOMETHING ALREADY STANDS WHERE A PIECE GOES');
-          else if (v.error === 'OFF_DECK') why('OFF_DECK', v.msg, 'PART OF IT IS OFF THE STATION FLOOR');
+          else if (v.error === 'OFF_DECK') why('OFF_DECK', v.msg, 'PART OF IT IS OFF THE FARM FLOOR');
           else why(v.error, v.msg, String(v.msg || v.error).toUpperCase());
           return;
         }
@@ -3639,7 +3651,7 @@ const WorldModel = (() => {
       for (const b of (clip.belts || [])) {
         const x = ax + b.x, y = ay + b.y, k = beltKey(x, y);
         let bad = null;
-        if (!roomAt(x, y)) bad = ['OFF_DECK', 'belts must sit on a deck', 'PART OF IT IS OFF THE STATION FLOOR'];
+        if (!roomAt(x, y)) bad = ['OFF_DECK', 'belts must sit on a deck', 'PART OF IT IS OFF THE FARM FLOOR'];
         else if (doc.belts[k]) bad = ['ON_BELT', 'a belt is already here', 'A BELT IS ALREADY HERE'];
         else {
           const pid = propAt(x, y), p = pid && propById(pid);
@@ -4015,7 +4027,7 @@ const WorldModel = (() => {
       const ROOM_PART = { name: 'ROOM NAME', floorStyle: 'FLOOR', floorMat: 'FLOOR', floorPaint: 'FLOOR', wallStyle: 'WALLS', wallMat: 'WALLS', hullStyle: 'WALLS', hullMat: 'WALLS' };
       const partOf = ([x, y]) => { const w = new Set(); for (const k of new Set(Object.keys(x).concat(Object.keys(y)))) if (JSON.stringify(x[k]) !== JSON.stringify(y[k])) w.add(ROOM_PART[k] || 'ROOM'); return w.size === 1 ? [...w][0] : 'ROOM'; };
       const roomWord = roomCame.length + roomChanged.length > 1 ? (roomCame.length + roomChanged.length) + ' ROOMS'
-        : roomCame.length ? (roomCame[0].kind === 'corridor' ? 'HALLWAY' : 'ROOM')
+        : roomCame.length ? (roomCame[0].kind === 'corridor' ? 'PATH' : 'ROOM')
         : roomChanged.length ? partOf(roomChanged[0]) : '';
       const one = came.length + went.length === 1 ? (came[0] || went[0]) : null;
       const word = roomCame.length ? roomWord
@@ -5062,7 +5074,7 @@ const WorldModel = (() => {
     else { const clean = {}; for (const k in doc.belts) { const d = doc.belts[k]; if (/^-?\d+,-?\d+$/.test(k) && (d === 'E' || d === 'W' || d === 'N' || d === 'S')) clean[k] = d; } doc.belts = clean; }
     if (!Array.isArray(doc.edges)) doc.edges = [];
     doc.edges = doc.edges.map(cleanPipelineEdge).filter(Boolean);
-    if (!doc.meta || typeof doc.meta !== 'object') doc.meta = { name: 'STARNET STATION', createdAt: 0, tier: 0, spawnRoomId: null };
+    if (!doc.meta || typeof doc.meta !== 'object') doc.meta = { name: 'HOMESTEAD FARM', createdAt: 0, tier: 0, spawnRoomId: null };
     /* ONE-TIME, NON-DESTRUCTIVE BACKFILL of the station id (see freshDoc's note). A doc saved before
        station identity existed carries createdAt 0/absent; give it one now so its per-station latches
        stop colliding with every other station's. It must be SAVED on the same load that stamps it —
@@ -5093,9 +5105,11 @@ const WorldModel = (() => {
       const room = doc.rooms[doc.meta.spawnRoomId];
       room.rects = [{ x1: 0, y1: 0, x2: 17, y2: 10 }];
       room.name = 'HOME';
-      room.floorMat = 'resin';
-      room.wallMat = 'panelled';
-      room.hullStyle = 'bone';
+      room.floorStyle = 'oak';
+      room.floorMat = 'plank';
+      room.wallMat = 'wainscot';
+      room.hullMat = 'clapboard';
+      room.hullStyle = 'white';
       doc.props = [
         // The five essentials are real floor grants. Keep the desk unassigned so
         // ensureWorkstation adopts it for the new Commander on the normal boot path.

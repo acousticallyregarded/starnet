@@ -268,7 +268,7 @@
       + 'needs searching, clicking, or a bot wall blocks the fetch; do not delegate this single-host lookup. If the fetch or navigation reports '
       + 'that the domain does not resolve / NXDOMAIN, that is terminal evidence for this request: make no more '
       + 'web, DNS, archive, WHOIS, certificate, or spelling-variant calls. Report the unavailable host and ask '
-      + 'for the corrected URL. Only search for alternatives when the Commander explicitly asked you to find them.';
+      + 'for the corrected URL. Only search for alternatives when the Farmer explicitly asked you to find them.';
   }
 
   function stopControl(policy) {

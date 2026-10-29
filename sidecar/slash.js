@@ -56,7 +56,7 @@ const BUILTIN_COMMANDS = Object.freeze([
   Object.freeze({
     name: 'usage',
     category: 'Info',
-    desc: 'show real spend from the station ledger',
+    desc: 'show real spend from the farm ledger',
     action: 'usage',
     dispatch: 'server'
   }),
@@ -106,7 +106,7 @@ const BUILTIN_COMMANDS = Object.freeze([
   Object.freeze({
     name: 'save',
     category: 'Session',
-    desc: 'save the current station state',
+    desc: 'save the current farm state',
     action: 'save'
   }),
   Object.freeze({
@@ -307,7 +307,7 @@ const BUILTIN_COMMANDS = Object.freeze([
     name: 'version',
     aliases: ['v'],
     category: 'Info',
-    desc: 'show StarNet version information',
+    desc: 'show Homestead version information',
     action: 'version'
   })
 ]);

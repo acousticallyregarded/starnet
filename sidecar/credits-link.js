@@ -130,7 +130,7 @@
       const ticket = ++generation;
       transition('pairing_started');
       pending.clear();
-      const payload = { deviceName: str(deviceName) || 'StarNet Station' };
+      const payload = { deviceName: str(deviceName) || 'Homestead Farm' };
       let j;
       try { j = await postJson('/v1/link/start', payload); }
       catch (e) {

@@ -55,7 +55,7 @@ const lineOfIntake = (s, id) => plan(s).lines.find(l => l.intakes.includes(id));
   A.ok(node(L.LOOP).cfg && node(L.LOOP).cfg.maxIter === 4 && node(L.LOOP).cfg.when === 'APPROVED' && !!node(L.LOOP).cfg.done, 'a LOOP keeps its passes, its verdict and its DONE lane (the old copy lost all three)');
   A.ok(node(L.I).label === 'RESEARCH' && node(L.I).limits && node(L.I).limits.maxHops === 5, 'an INBOX keeps its line\'s name and budget');
   A.ok(node(L.B1).role === 'RESEARCHER' && node(L.B1).brief === 'Find three sources.' && node(L.B1).hands === 'hand on the sources', 'a BAY keeps its role, brief and hand-off');
-  A.ok(node(L.B1).agentId === 'nova' && !node(L.B2).agentId && c.clip.crewLeft === 1, 'crew travels only when the caller says that agent is on this station (atlas left behind, counted)');
+  A.ok(node(L.B1).agentId === 'nova' && !node(L.B2).agentId && c.clip.crewLeft === 1, 'crew travels only when the caller says that agent is on this farm (atlas left behind, counted)');
   A.ok(c.clip.belts.some(b => b.x === node(L.LOOP).x && b.y === node(L.LOOP).y), 'the belt under the junction comes too');
   const all = c.clip.nodes.every(n => n.x >= 0 && n.y >= 0 && n.x + n.w <= c.clip.w && n.y + n.h <= c.clip.h) && c.clip.belts.every(b => b.x >= 0 && b.y >= 0 && b.x < c.clip.w && b.y < c.clip.h);
   A.ok(all, 'everything is relative to the clip\'s top-left, inside its box');
@@ -102,7 +102,7 @@ const lineOfIntake = (s, id) => plan(s).lines.find(l => l.intakes.includes(id));
   const dupd = s.pasteLines(c, c.x0, c.y0 + 24, { label: 'DUPLICATE' });
   A.ok(dupd.ok && s.undo().label === 'DUPLICATE', 'a caller may name the slot (Ctrl+D: UNDID · DUPLICATE)');
   const off = s.checkPaste(c, 200, 200);
-  A.ok(!off.ok && off.error === 'OFF_DECK' && off.short === 'PART OF IT IS OFF THE STATION FLOOR', 'off the station floor says so');
+  A.ok(!off.ok && off.error === 'OFF_DECK' && off.short === 'PART OF IT IS OFF THE FARM FLOOR', 'off the farm floor says so');
 }
 
 /* ---------- B2. review worldmodel-01: a paste whose belt runs right beside another line's belt is refused (never fused) ----------
@@ -403,7 +403,7 @@ const lineOfIntake = (s, id) => plan(s).lines.find(l => l.intakes.includes(id));
   A.ok(/station\.removeLine\(pid\)/.test(fn('deleteLine')), 'DELETE LINE is the model\'s removeLine (one undo; a SEND TO into it is let go)');
   A.ok(/addKey\('WHOLE LINE','dbl-click'/.test(fn('renderSelection')), 'a single conveyor piece\'s card has WHOLE LINE (the double-click, as a key — touch and discoverability)');
   // the clip
-  A.ok(/station\.copyLines\(ids, \{ agent: agentHere, turns: t => canTurn\(t\) \}\)/.test(fn('clipOfSelection')), 'a clip carries only crew this station has (agentHere)');
+  A.ok(/station\.copyLines\(ids, \{ agent: agentHere, turns: t => canTurn\(t\) \}\)/.test(fn('clipOfSelection')), 'a clip carries only crew this farm has (agentHere)');
   // (repair 2026-10-11: a whole line cuts through removeLine — the card's DELETE LINE, under a CUT undo slot)
   A.ok(/if \(cut && !\(whole \? deleteLine\(whole\.id, ev, 'CUT'\) : deleteGroup\(ev, 'CUT'\)\)\) return true;/.test(fn('copyClip')) && fn('copyClip').indexOf('clipOfSelection()') < fn('copyClip').indexOf("deleteGroup(ev, 'CUT')"), 'CUT copies first, then takes it up (one undo) — a refused cut holds nothing');
   const clb = fn('cutLeavesBehind');

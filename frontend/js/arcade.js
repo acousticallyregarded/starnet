@@ -70,7 +70,7 @@ const ARCADE = (() => {
       'ULTRON> Hostile botnet detected on approach vector.',
       'ULTRON> The turret is calibrated. You are not.',
       'ULTRON> VYBES holds the record. This bothers me.',
-      'ULTRON> Token accepted. Try to be efficient, Commander.'
+      'ULTRON> Token accepted. Try to be efficient, Farmer.'
     ],
     wave: [
       'ULTRON> Wave purged. They never learn.',
@@ -86,9 +86,9 @@ const ARCADE = (() => {
     over: [
       'ULTRON> Simulation terminated. The crew will hear about this.',
       'ULTRON> Recorded. Filed. Judged.',
-      'ULTRON> The station survived. You did not.'
+      'ULTRON> The farm survived. You did not.'
     ],
-    hi: 'ULTRON> New station record. VYBES is going to sulk.'
+    hi: 'ULTRON> New farm record. VYBES is going to sulk.'
   };
   /* Never let the attract loop claim VYBES holds a record the Commander already took. */
   function attractQuip(board) {
@@ -336,7 +336,7 @@ const ARCADE = (() => {
       st.beatHi = true; st.hi = { name: 'CMDR', score: st.score };
       st.quip = Q.hi; SFX.notify();
       bank();        // persist the record the moment it falls — closing the window can't lose it
-      if (typeof SIM !== 'undefined' && SIM.S) SIM.crewChat('VYBES', 'commander just cracked the BREACH PROTOCOL record. respect. rematch after my shift.');
+      if (typeof SIM !== 'undefined' && SIM.S) SIM.crewChat('VYBES', 'farmer just cracked the BREACH PROTOCOL record. respect. rematch after my shift.');
     } else if (st.beatHi) st.hi.score = st.score;
   }
 
@@ -399,7 +399,7 @@ const ARCADE = (() => {
 
   /* the station records ledger — the run you just played is the bright row */
   function drawBoard(y0, gap) {
-    text('STATION RECORDS', W / 2, y0, C.dim, 8, 'center');
+    text('FARM RECORDS', W / 2, y0, C.dim, 8, 'center');
     st.board.forEach((r, i) => {
       const y = y0 + 12 + i * gap;
       const col = r.me ? C.bright : i === 0 ? C.ph : C.dim;

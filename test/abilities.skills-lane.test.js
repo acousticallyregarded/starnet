@@ -116,9 +116,9 @@ async function checkAvailability() {
   const full = await run(effectiveToolsets({fullAccess:true}));
   A.ok(full.rendered.includes('cabinet') && full.requested.includes('cabinet'), 'Full Access projects FILES into skill availability without a placed cabinet');
   const profile = await run(effectiveToolsets({agent:{executionProfile:'safe-cell',approvalMode:'ask'}}), ['dish']);
-  A.ok(profile.rendered.includes('cabinet') && profile.rendered.includes('dish'), 'profile objects and shared station gear follow the runtime skill context');
+  A.ok(profile.rendered.includes('cabinet') && profile.rendered.includes('dish'), 'profile objects and shared farm gear follow the runtime skill context');
   const restricted = await run(effectiveToolsets({agent:{executionProfile:'station-gear',approvalMode:'ask'}}));
-  A.ok(!restricted.rendered.includes('cabinet'), 'restricted station without FILES does not invent that ability');
+  A.ok(!restricted.rendered.includes('cabinet'), 'restricted farm without FILES does not invent that ability');
   const unavailable = await run(null);
   A.eq(unavailable.requested, '', 'unavailable authority never produces a guessed skill query');
   A.ok(unavailable.host.innerHTML.includes('Could not load'), 'unavailable authority renders recovery instead of missing-prop advice');
@@ -172,7 +172,7 @@ async function checkCandidateReview() {
   A.eq(requests[0].body.candidateDigest, 'exact-sha', 'evaluation request binds displayed revision');
   A.eq(requests[0].body.suiteId, 'brief-checks', 'host selects runner for registered suite');
   // skills-eval-06: the page waits as long as the station says this suite can take, never a fixed 3 minutes
-  A.eq(requests[0].opts && requests[0].opts.timeoutMs, 750000, 'evaluate waits the suite\'s waitMs from the station');
+  A.eq(requests[0].opts && requests[0].opts.timeoutMs, 750000, 'evaluate waits the suite\'s waitMs from the farm');
   A.eq(approve.disabled, false, 'passing host receipt enables separate approval action');
   await approve.onclick();
   A.eq(requests[1].opts && requests[1].opts.timeoutMs, 60000, 'other skill actions keep the 60 s wait');
@@ -255,7 +255,7 @@ async function checkCandidateReview() {
   vm.runInNewContext('renderSkillCandidates(host, "agent", review);', ctx);
   const card8 = host8.children[0];
   await card8.querySelector('[data-evaluation-suites]').children[1].onclick();
-  A.ok(card8.querySelector('[data-evaluation-result]').textContent.includes('the station stopped a run (a budget limit, paused spending, the time limit, or an earlier run whose cost could not be settled)'), 'a refused run lists what can stop one');
+  A.ok(card8.querySelector('[data-evaluation-result]').textContent.includes('the farm stopped a run (a budget limit, paused spending, the time limit, or an earlier run whose cost could not be settled)'), 'a refused run lists what can stop one');
   A.ok(!card8.querySelector('[data-evaluation-result]').textContent.includes('insufficient_evidence'), 'no enum status reaches the owner');
   // The host's stored receipt for this exact revision (latestEvaluation) seeds the card after a reload.
   // Contract: latestEvaluation is the WHOLE stored receipt row, the same object evaluate-candidate returns as
@@ -287,7 +287,7 @@ async function checkCandidateReview() {
   A.eq(card7.querySelector('[data-candidate-approve]').disabled, false, 'a stored passing receipt keeps approval available');
   await card7.querySelector('[data-candidate-approve]').onclick();
   A.eq(requests.length, sent + 1, 'approval does not require paying for another evaluation');
-  A.eq(requests.at(-1).body.evaluation, passedRow.receiptId, 'approval names the stored host receipt; the station re-verifies it');
+  A.eq(requests.at(-1).body.evaluation, passedRow.receiptId, 'approval names the stored host receipt; the farm re-verifies it');
   // A stored tie offers only the armed acknowledgement, exactly like a fresh one.
   const card9 = reload(tieRow);
   A.eq(card9.querySelector('[data-candidate-acknowledge]').hidden, false, 'a stored tie shows the acknowledgement');
@@ -295,7 +295,7 @@ async function checkCandidateReview() {
   A.ok(/^Last evaluation: No improvement shown/.test(card9.querySelector('[data-evaluation-result]').textContent), 'a stored tie says no improvement was shown');
   // A stored refused run reads the same after a reload.
   const card10 = reload(deniedRow);
-  A.ok(card10.querySelector('[data-evaluation-result]').textContent.includes('the station stopped a run (a budget limit'), 'a stored refused run lists what can stop one');
+  A.ok(card10.querySelector('[data-evaluation-result]').textContent.includes('the farm stopped a run (a budget limit'), 'a stored refused run lists what can stop one');
   A.eq(card10.querySelector('[data-candidate-acknowledge]').hidden, true, 'a stored spend-denied run offers no acknowledgement');
   // A provider error (an HTTP 429) on the first run leaves its cost unsettled, so the real accounting refuses every
   // later run and the runner writes 'policy-denied' for them. No budget limit or paused spending was involved, so
@@ -338,7 +338,7 @@ async function checkCandidateReview() {
   vm.runInNewContext('renderSkillCandidates(host, "agent", review);', ctx);
   const outdated = outdatedHost.children[0];
   A.ok(outdated.html.includes('<span class="sk-badge miss">OUTDATED</span>') && !outdated.html.includes('PROPOSED REVISION'), 'an outdated proposal is badged OUTDATED');
-  A.ok(outdated.html.includes('The active skill changed after this was proposed. Reject it, or wait for the agent\'s next revision.'), 'it says why and what the Commander can do');
+  A.ok(outdated.html.includes('The active skill changed after this was proposed. Reject it, or wait for the agent\'s next revision.'), 'it says why and what the Farmer can do');
   for (const attr of ['data-evaluation-suites', 'data-candidate-approve', 'data-candidate-acknowledge', 'data-suite-register', 'data-suite-json'])
     A.ok(!outdated.html.includes(attr), 'an outdated proposal has no ' + attr);
   A.ok(!/Last evaluation|Passed/.test(outdated.querySelector('[data-evaluation-result]').textContent), 'a stored receipt is not offered on an outdated proposal');
@@ -392,7 +392,7 @@ async function checkSkillSharing() {
   const panel = body.querySelector('[data-skill-sharing]');
   A.ok(panel, 'Change sharing opens the panel');
   const row = panel.children.find(c => /consent-btns/.test(c.className)), buttons = row.children;
-  A.eq(buttons.map(b => b.textContent), ['Only this agent', 'This project', 'Whole station'], 'scope buttons use plain words, not raw ids');
+  A.eq(buttons.map(b => b.textContent), ['Only this agent', 'This project', 'Whole farm'], 'scope buttons use plain words, not raw ids');
   A.eq(buttons.map(b => b.attrs['aria-pressed']), ['true', 'false', 'false'], 'the current sharing is marked');
   A.ok(/(^| )sel( |$)/.test(buttons[0].className), 'the current sharing has the selected skin');
   const input = panel.children.find(c => c.tag === 'input');

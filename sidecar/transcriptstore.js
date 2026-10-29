@@ -144,8 +144,8 @@
           out.push(row); prompts.add(id);
           out.push({ streamId: row.streamId, agentId: row.agentId, role: 'assistant', sys: true, error: true, transcriptPending: true, sourceRunId: id,
             dispatchState: 'interrupted', ts: row.ts, content: str(run.error) || (run.continuedRunId
-              ? 'interrupted: StarNet stopped before this delegated run finished; it was continued as another run'
-              : 'interrupted: StarNet stopped before this delegated run finished; no result was accepted') });
+              ? 'interrupted: Homestead stopped before this delegated run finished; it was continued as another run'
+              : 'interrupted: Homestead stopped before this delegated run finished; no result was accepted') });
         }
         continue;
       }

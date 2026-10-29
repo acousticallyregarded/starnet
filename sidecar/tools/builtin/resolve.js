@@ -179,7 +179,7 @@
       ? el('gap', { name: 'Gap', offset: ftime(s.offF, rate), start: '0s', duration: ftime(s.durF, rate) }, s.children)
       : el('asset-clip', { ref: s.clip.ref, name: s.clip.name, offset: ftime(s.offF, rate), start: ftime(s.srcF, rate), duration: ftime(s.durF, rate) }, s.children));
     const fmt = el('format', { id: 'r1', name: 'FFVideoFormat' + H + 'p' + String(plan.fps || 24).replace('.', ''), frameDuration: ftime(1, rate), width: String(W), height: String(H) });
-    const title = str(plan.name) || 'StarNet Timeline';
+    const title = str(plan.name) || 'Homestead Timeline';
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE fcpxml>\n' +
       el('fcpxml', { version: '1.10' }, [
         el('resources', {}, [fmt].concat(assets)),
@@ -451,7 +451,7 @@ out(dict(base, ok=False, error="unknown action " + str(act)))
         + 'Studio). Times are SECONDS. Main-track (lane 0) clips play back to back in the order given; give `at` to '
         + 'leave a gap before one. lane > 0 = a connected clip above the main track (b-roll, overlays), lane < 0 = '
         + 'below (music, voice-over); connected clips need `at`. Media durations and audio/video streams are read '
-        + 'with ffprobe when available. Paths: workspace-relative, or absolute paths the station has granted.',
+        + 'with ffprobe when available. Paths: workspace-relative, or absolute paths the farm has granted.',
       schema: { type: 'object', required: ['name', 'clips'], properties: {
         name: { type: 'string', description: 'timeline / project name' },
         fps: { type: 'number', description: 'timeline frame rate: 23.976, 24, 25, 29.97, 30, 50, 59.94, 60 (default 24)' },
@@ -482,7 +482,7 @@ out(dict(base, ok=False, error="unknown action " + str(act)))
           else notes.push(baseName(k) + ': not probed (' + m.reason + ') — stream flags guessed from the extension');
         }
         const plan = {
-          name: str(args.name) || 'StarNet Timeline', fps: num(args.fps, 24), width: num(args.width, 1920), height: num(args.height, 1080),
+          name: str(args.name) || 'Homestead Timeline', fps: num(args.fps, 24), width: num(args.width, 1920), height: num(args.height, 1080),
           clips: clipsIn.map(c => ({ path: absOf[str(c.path)], url: fileUrl(absOf[str(c.path)]), name: c.name, in: num(c.in, 0), out: c.out, lane: c.lane, at: c.at })),
           markers: Array.isArray(args.markers) ? args.markers : []
         };

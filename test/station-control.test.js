@@ -33,7 +33,7 @@ for (const name of Object.keys(ACTIONS)) {
   const card = cardFor({ action: name, args: { agent: 'NOVA', session: 'research', on: true, mode: 'full', reach: 'this-computer', id: 'x', slug: 's', look: { theme: 'green' } } });
   A.ok(/^[a-zA-Z]/.test(card) && !/[{}]/.test(card.replace(/\{[^}]*\}/g, '')) && card.length < 400 && !/\.$/.test(card), name + ': the card is one host-written verb phrase ("NOVA wants to …")');
 }
-A.ok(/unknown station change/.test(cardFor({ action: 'nope' })), 'an unknown action\'s card says nothing will change');
+A.ok(/unknown farm change/.test(cardFor({ action: 'nope' })), 'an unknown action\'s card says nothing will change');
 
 // ---- the split: control refuses escalations, power refuses the rest ----
 {
@@ -67,7 +67,7 @@ A.ok(/unknown station change/.test(cardFor({ action: 'nope' })), 'an unknown act
   A.ok(refused(r) && /unattended/.test(r.content), 'a routine/night-shift run cannot raise caps');
   A.eq(s.routes.length, 0, 'nothing was called on the unattended run');
   const owner = make(stubs(), { surface: 'autonomous', ownerTrusted: true });
-  A.ok(!refused(await owner.powerTool.run({ action: 'budget.set', args: { perDay: 50 } })), 'the Commander\'s own paired chat counts as watched');
+  A.ok(!refused(await owner.powerTool.run({ action: 'budget.set', args: { perDay: 50 } })), 'the Farmer\'s own paired chat counts as watched');
   const ord = await t.controlTool.run({ action: 'session.pin', args: { session: 'x' } });
   A.ok(!refused(ord), 'ordinary changes still work unattended (their consent gate decides)');
 }
@@ -118,7 +118,7 @@ A.ok(/unknown station change/.test(cardFor({ action: 'nope' })), 'an unknown act
   const s = stubs((m, u) => m === 'GET' && LISTS[u] ? { status: 200, json: LISTS[u] } : { status: 200, json: { ok: true } });
   const t = make(s);
   const want = [
-    ['control', 'memory.forget', { agent: 'NOVA', id: 'm1' }, 'POST', '/api/memory/forget', { agentId: 'NOVA', id: 'm1', reason: 'commander via chat' }],
+    ['control', 'memory.forget', { agent: 'NOVA', id: 'm1' }, 'POST', '/api/memory/forget', { agentId: 'NOVA', id: 'm1', reason: 'farmer via chat' }],
     ['control', 'learning.set', { on: false }, 'POST', '/api/personalization', { enabled: false }],
     ['control', 'learning.wipe', {}, 'DELETE', '/api/personalization', undefined],
     ['control', 'connector.remove', { id: 'github' }, 'POST', '/api/connectors/remove', { id: 'github' }],
@@ -156,7 +156,7 @@ A.ok(/unknown station change/.test(cardFor({ action: 'nope' })), 'an unknown act
   A.ok(refused(r), 'an unknown action is refused');
   const bare = makeStationControlTools({ surface: 'interactive' });
   r = await bare.controlTool.run({ action: 'session.pin', args: { session: 'x' } });
-  A.ok(refused(r) && /no station page/.test(r.content), 'no bridge: an honest refusal, never "done"');
+  A.ok(refused(r) && /no farm page/.test(r.content), 'no bridge: an honest refusal, never "done"');
 }
 
 // ---- reads ----

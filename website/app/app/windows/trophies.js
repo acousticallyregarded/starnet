@@ -27,7 +27,7 @@
       ? Trophies.build({ quests, stateOf, tools })
       : { trophies: [], tools: [], earned: 0, empty: true };
 
-    const KIND = { milestone: 'MILESTONE', 'station-gap': 'CAPABILITY', station: 'STATION', dossier: 'DOSSIER', idea: 'WORK' };
+    const KIND = { milestone: 'MILESTONE', 'station-gap': 'CAPABILITY', station: 'FARM', dossier: 'DOSSIER', idea: 'WORK' };
     const fmtDate = at => { if (at == null) return 'date unknown'; try { return new Date(at).toLocaleDateString(); } catch (_) { return 'date unknown'; } };
     const troRow = t =>
       '<div class="gx-tro on">'
@@ -52,7 +52,7 @@
       : '';
 
     body.innerHTML = '<div class="gx">'
-      + '<div class="dim" style="margin:2px 0 10px;">The station&rsquo;s real achievements, made permanent. Every milestone here is a completion that genuinely happened &mdash; never points, never invented. No dates are guessed.</div>'
+      + '<div class="dim" style="margin:2px 0 10px;">The farm&rsquo;s real achievements, made permanent. Every milestone here is a completion that genuinely happened &mdash; never points, never invented. No dates are guessed.</div>'
       + '<div class="gx-sec"><span class="gx-title">MILESTONES</span> <span class="gx-tag">' + surf.earned + ' EARNED</span></div>'
       + trophiesHtml
       + toolsHtml

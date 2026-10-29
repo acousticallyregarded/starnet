@@ -360,7 +360,7 @@ function makeStation() {
   function sendFailed(agentId, streamId, message, now) {
     const i = st.sent.findIndex(s => s.agentId === String(agentId) && s.streamId === String(streamId || '') && !s.runId);
     if (i >= 0) st.sent.splice(i, 1);
-    log(agent(agentId), { k: 'bad', text: 'not sent: ' + String(message || 'the station refused the message'), at: now });
+    log(agent(agentId), { k: 'bad', text: 'not sent: ' + String(message || 'the farm refused the message'), at: now });
   }
   // the agent's own words that did not come from a run (its closing line from the awakening), in its pane
   function noteAgentLine(agentId, text, now) { log(agent(agentId), { k: 'agent', text: String(text || ''), at: now }); }

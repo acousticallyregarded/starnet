@@ -823,7 +823,7 @@ const Voice = (() => {
     const desktop = !!(window.__TAURI__ || window.__TAURI_INTERNALS__);
     const mac = /Mac/i.test(navigator.platform || navigator.userAgent || '');
     return desktop && mac
-      ? 'Microphone blocked — enable StarNet in System Settings → Privacy & Security → Microphone, then quit and reopen StarNet. If it is missing or still blocked, install the latest StarNet build.'
+      ? 'Microphone blocked — enable Homestead in System Settings → Privacy & Security → Microphone, then quit and reopen Homestead. If it is missing or still blocked, install the latest Homestead build.'
       : desktop ? 'Microphone blocked — allow microphone access for desktop apps in your system privacy settings, then try again.'
         : 'Microphone blocked — allow microphone access for this page in your browser, then try again.';
   }
@@ -1499,8 +1499,8 @@ const Voice = (() => {
         // reload only re-runs the same ownership check, and the station notice says why (review threads-backend-05)
         const withheld = r.status === 403 && typeof Harness !== 'undefined' && Harness
           && typeof Harness.tokenWithheld === 'function' && Harness.tokenWithheld();
-        const reason = withheld ? 'this browser was not verified as your own account — see the station notice'
-          : r.status === 403 ? 'the station restarted — reload the page to reconnect'
+        const reason = withheld ? 'this browser was not verified as your own account — see the farm notice'
+          : r.status === 403 ? 'the farm restarted — reload the page to reconnect'
           : 'transcription unreachable (HTTP ' + r.status + ')';
         console.warn('[voice] STT HTTP', r.status);
         return { text: '', reason, failed: true };

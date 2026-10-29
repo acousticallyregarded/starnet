@@ -128,7 +128,7 @@
     let body = turns.join('\n');
     const cap = Number.isFinite(o.cap) ? o.cap : PROMPT_CAP;
     if (body.length > cap) body = body.slice(body.length - cap);   // keep the most recent exchange
-    return 'You just finished a task for your Commander. From the WORK below, update what the station believes ' +
+    return 'You just finished a task for your Farmer. From the WORK below, update what the farm believes ' +
       'about them. Propose ONLY durable, evidenced belief changes — one per line, tagged with a dimension and ' +
       'ADD (a new belief) or RETIRE (a belief that now looks stale/shipped), plus a short VERBATIM evidence quote. Dimensions: goals, pain, ambition, ' +
       'stack, style, identity, standing_orders, people, schedule. Examples:\n' +
@@ -136,7 +136,7 @@
       'style ADD: prefers terse, verified answers | EVIDENCE: "keep the answer terse and verify it"\n' +
       'goals RETIRE: ship the dossier | EVIDENCE: "the dossier is shipped"\n' +
       'Skip anything transient, guessed, or already known. If nothing changed, reply NONE.\n\n' +
-      (block ? 'WHAT THE STATION ALREADY BELIEVES:\n' + block + '\n\n' : '') +
+      (block ? 'WHAT THE FARM ALREADY BELIEVES:\n' + block + '\n\n' : '') +
       (directive ? 'THE DIRECTIVE:\n' + directive + '\n\n' : '') +
       'THE WORK:\n' + body;
   }
@@ -273,14 +273,14 @@
     if ((entry.up || 0) >= STREAK_N && !entry.upMinted) {
       return { mintedKey: 'upMinted', proposal: {
         id: 'taste_up_' + archetype, dim: 'style', kind: 'add',
-        text: 'Commander consistently likes ' + archetype + ' work — lean into it.',
+        text: 'Farmer consistently likes ' + archetype + ' work — lean into it.',
         evidence: STREAK_N + ' consecutive 👍 on ' + archetype, source: 'study', sourceRunId: null, createdAt: now
       } };
     }
     if ((entry.down || 0) >= STREAK_N && !entry.downMinted) {
       return { mintedKey: 'downMinted', proposal: {
         id: 'taste_down_' + archetype, dim: 'style', kind: 'add',
-        text: 'Commander has been unhappy with ' + archetype + ' work — take extra care there (verify before turning it in).',
+        text: 'Farmer has been unhappy with ' + archetype + ' work — take extra care there (verify before turning it in).',
         evidence: STREAK_N + ' consecutive 👎 on ' + archetype, source: 'study', sourceRunId: null, createdAt: now
       } };
     }

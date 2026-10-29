@@ -97,12 +97,12 @@
     const bal = (o.balanceUsd == null || o.balanceUsd === '') ? NaN : Number(o.balanceUsd);
     if (o.exhausted && held && held.counted === true && held.runs > 0 && held.usd > 0 && isFinite(bal) && bal + held.usd > 0) {
       const n = Math.floor(held.runs);
-      return { transient: true, message: 'Managed credits are held — your StarNet balance is held by ' + n + ' running StarNet run' + (n === 1 ? '' : 's') +
+      return { transient: true, message: 'Managed credits are held — your StarNet balance is held by ' + n + ' running Homestead run' + (n === 1 ? '' : 's') +
         ' (each reserves up to its PER RUN limit while it works and refunds what it does not spend). Wait for ' + (n === 1 ? 'it' : 'them') +
         ' to finish, lower PER RUN in SETTINGS › SPENDING LIMITS so runs can share the balance, or top up under SETTINGS → AI & MODELS.' };
     }
     if (o.exhausted) return { transient: false, message: 'Out of managed credit — add credits in the STORE to keep running (or connect your own provider key).' };
-    if (o.linkRefused) return { transient: false, message: 'Managed credits are unavailable — your StarNet account refused this station\'s link (it was unlinked, or belongs to another account). Relink it under SETTINGS → AI & MODELS → STARNET MANAGED (or use your own provider key).' };
+    if (o.linkRefused) return { transient: false, message: 'Managed credits are unavailable — your StarNet account refused this farm\'s link (it was unlinked, or belongs to another account). Relink it under SETTINGS → AI & MODELS → STARNET MANAGED (or use your own provider key).' };
     return { transient: true, message: 'Managed credits are unavailable right now — the credits service did not answer (try again, or use your own provider key).' };
   }
 

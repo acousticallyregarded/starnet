@@ -272,7 +272,7 @@
     }
     if (!parts.length) return '';
     const head = '\n\n## INSTALLED SKILLS\n'
-      + 'Your Commander enabled these ready-made skill recipes and your workstation supports them. '
+      + 'Your Farmer enabled these ready-made skill recipes and your workstation supports them. '
       + 'When a task matches one, FOLLOW its recipe instead of improvising.\n\n';
     const tail = omitted ? ('\n\n(' + omitted + ' more enabled skill' + (omitted > 1 ? 's were' : ' was')
       + ' omitted here to keep the prompt lean.)') : '';
@@ -321,7 +321,7 @@
       lines.push(line); used += line.length;
     }
     const head = '\n\n## INSTALLED SKILLS\n'
-      + 'Your Commander enabled these ready-made skill recipes and your workstation supports them. '
+      + 'Your Farmer enabled these ready-made skill recipes and your workstation supports them. '
       + 'When a task matches one, FOLLOW its recipe instead of improvising.\n'
       + 'This is an INDEX, not the recipes. Before following one, load its full text with skill.view using the name in '
       + 'brackets (e.g. skill.view {"name": "' + viewName(offered[0]) + '"}); never work from the one-line summary alone.\n\n';

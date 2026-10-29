@@ -16,7 +16,8 @@ const IndustrialTextures = (() => {
   const images = {}, originals = {}, failed = [];
   // Exposed to the existing CRT lab for a live, reproducible material review.
   // Values read back from the live CRT lab after the combined-room review.
-  const lighting = { fixtureTint: projectionReview?.14:.04, propTint: projectionReview?.65:.48,
+  // farm daylight: props keep their own colours (propTint .65 pulled every prop toward the amber phosphor)
+  const lighting = { fixtureTint: projectionReview?0:.04, propTint: projectionReview?.1:.48,
     propLift: projectionReview?.85:.65, ambientLift: projectionReview?.10:0,
     floorGain: projectionReview?1.04:1, wallGain: projectionReview?.86:1, contact: .28,
     // 2026-09-22 key light (WorldLight KEY buffer): pools open further (cut) and then

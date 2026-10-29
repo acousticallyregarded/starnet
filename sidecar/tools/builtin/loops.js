@@ -50,20 +50,20 @@ function makeLoopTools(deps) {
 
   const listTool = {
     name: 'loop.list', capability: 'orchestrator', scope: 'read', requiresConsent: false,
-    description: 'List durable StarNet LOOPS and their proven state. A LOOP keeps iterating toward an objective; for “every weekday”, cron, reminders, or clock schedules use routine.list/create/manage instead.',
+    description: 'List durable Homestead LOOPS and their proven state. A LOOP keeps iterating toward an objective; for “every weekday”, cron, reminders, or clock schedules use routine.list/create/manage instead.',
     schema: { type: 'object', properties: {} },
     run: async () => {
       const state = listState() || {};
       const loops = (state.loops || []).map(safeLoop);
       const body = { loops, halted: !!state.halted, armed: !!state.armed, inFlight: Number(state.inFlight) || 0 };
-      if (body.halted) body.note = "LOOPS are stopped by the Commander's E-STOP; creating or resuming one does not lift it";
+      if (body.halted) body.note = "LOOPS are stopped by the Farmer's E-STOP; creating or resuming one does not lift it";
       return { content: JSON.stringify(body), summary: loops.length + ' loop(s)' + (body.halted ? ' - E-STOPPED' : '') };
     }
   };
 
   const createTool = {
     name: 'loop.create', capability: 'orchestrator', scope: 'write', requiresConsent: true, timeoutMs: 15000, taintLocked: true,
-    description: 'Create one durable StarNet LOOP when the Commander asks to keep working, iterate, or continue until an objective/convergence/check passes. Do not use for clock schedules such as “every weekday” (use routine.create). The review gate is fixed: generated changes wait for the Commander. A check command is never model-authored; for exitOn=check-green the host may derive a check only from an already-approved project folder. Repeating the same objective returns the existing loop.',
+    description: 'Create one durable Homestead LOOP when the Farmer asks to keep working, iterate, or continue until an objective/convergence/check passes. Do not use for clock schedules such as “every weekday” (use routine.create). The review gate is fixed: generated changes wait for the Farmer. A check command is never model-authored; for exitOn=check-green the host may derive a check only from an already-approved project folder. Repeating the same objective returns the existing loop.',
     schema: {
       type: 'object', required: ['objective'], properties: {
         name: { type: 'string' }, objective: { type: 'string' }, agentId: { type: 'string' },
@@ -88,7 +88,7 @@ function makeLoopTools(deps) {
       const safe = safeLoop(row);
       return {
         content: JSON.stringify({ ok: true, duplicate, loop: safe, halted: !!(row && row._halted), durable: true,
-          note: row && row._halted ? "saved, but LOOPS remain stopped by the Commander's E-STOP" : undefined }),
+          note: row && row._halted ? "saved, but LOOPS remain stopped by the Farmer's E-STOP" : undefined }),
         summary: duplicate ? 'loop already exists - no duplicate created' : 'created durable loop "' + (safe && safe.name) + '"'
       };
     }
@@ -134,7 +134,7 @@ function makeLoopTools(deps) {
       } else throw new Error('unknown loop action');
       const safe = safeLoop(row);
       return { content: JSON.stringify({ ok: true, loop: safe, halted: !!(row && row._halted), durable: true,
-        note: row && row._halted ? "the loop is saved but remains blocked by the Commander's E-STOP" : undefined }), summary: args.action + ' loop "' + found.name + '"' };
+        note: row && row._halted ? "the loop is saved but remains blocked by the Farmer's E-STOP" : undefined }), summary: args.action + ' loop "' + found.name + '"' };
     }
   };
 

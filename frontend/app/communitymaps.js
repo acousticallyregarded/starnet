@@ -31,7 +31,7 @@ const CommunityMaps = (() => {
   const api = (url, init) => (typeof Harness !== 'undefined' && Harness.apiFetch) ? Harness.apiFetch(url, init) : fetch(url, init);
   const STILL_PX = 1280, STILL_SMALL_PX = 960, MAX_DATA_URL = 2.8 * 1024 * 1024 * 4 / 3;
   const PICTURES_AT_ONCE = 3;
-  const UNREACHABLE = 'The station is not answering right now.';
+  const UNREACHABLE = 'The farm is not answering right now.';
   let stills = new Map(), active = 0, generation = 0;
   const waiting = [];
 
@@ -136,9 +136,9 @@ const CommunityMaps = (() => {
     ctx.save(); ctx.scale(cv.width / 230, cv.height / 140); drawPlan(ctx, cleanDoc, 230, 140); ctx.restore();
     return {
       dataUrl: cv.toDataURL('image/png'), kind: 'plan',
-      why: madeLeftOut ? 'Its picture is the floor plan: your made props stay home, so a picture of the station would show furniture others will not get.'
-        : tooBig ? 'Its picture is the floor plan: a picture of this station is too large to send.'
-        : 'Its picture is the floor plan, because a picture of the station was not available just now. Unsaved build changes are the usual reason: SAVE & EXIT, then share again for a picture of the station itself.'
+      why: madeLeftOut ? 'Its picture is the floor plan: your made props stay home, so a picture of the farm would show furniture others will not get.'
+        : tooBig ? 'Its picture is the floor plan: a picture of this farm is too large to send.'
+        : 'Its picture is the floor plan, because a picture of the farm was not available just now. Unsaved build changes are the usual reason: SAVE & EXIT, then share again for a picture of the farm itself.'
     };
   }
 

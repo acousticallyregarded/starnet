@@ -208,7 +208,7 @@ function makeRunAuthority(opts) {
         if (String(decision) === 'timeout') {
           return {
             ok: false, impact, timedOut: true,
-            reason: 'the exact confirmation for ' + String((call && call.name) || 'this call') + ' timed out: the Commander did not answer in time, '
+            reason: 'the exact confirmation for ' + String((call && call.name) || 'this call') + ' timed out: the Farmer did not answer in time, '
               + 'so it was NOT run. This was not a refusal; tell them it timed out and that they can ask again. Do NOT retry it yourself.'
           };
         }

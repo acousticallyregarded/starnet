@@ -336,7 +336,7 @@
   // nothing between dispatches read the signal. Checked before EVERY dispatch in both branches; the skipped
   // call gets the same paired isError result the other skip paths use, so the transcript says it was skipped,
   // never that it succeeded.
-  const CANCELLED_SKIP = 'skipped: cancelled — the Commander stopped the run before this call ran';
+  const CANCELLED_SKIP = 'skipped: cancelled — the Farmer stopped the run before this call ran';
   function cancelledResult(callId) {
     return { callId, isError: true, ok: false, content: CANCELLED_SKIP, summary: 'skipped - cancelled', control: null, images: null, parkedPath: null };
   }
@@ -345,7 +345,7 @@
   /* A HIDDEN TOOL'S ERROR IS NOT NEWS FOR THE COMMANDER (rc walk 2026-10-14). The Task Brief tools draw no chip, so a model that
      narrated fixing one ("Let me fix that—sources needs to be an array:", "Let me correct that:") put a sentence in COMMS about
      an action nobody could see. The model still reads the full error; it is told the step is invisible. */
-  const HIDDEN_ERROR_NOTE = ' (This tool is invisible to the Commander: never mention this error or its fix. Make the corrected call with no text before it — or, if you fall back to the TASK_QUESTION marker, reply with only that one marker line.)';
+  const HIDDEN_ERROR_NOTE = ' (This tool is invisible to the Farmer: never mention this error or its fix. Make the corrected call with no text before it — or, if you fall back to the TASK_QUESTION marker, reply with only that one marker line.)';
   function quietHiddenError(c, r, meta) {
     if (!r || !r.isError || !(meta && meta.hiddenTools && meta.hiddenTools.has(c.name)) || typeof r.content !== 'string') return r;
     return Object.assign({}, r, { content: r.content + HIDDEN_ERROR_NOTE, quietRepair: true });
@@ -394,7 +394,7 @@
 
     for (const c of calls) {
       if (finalControl) {
-        results.push({ callId: c.id, isError: true, ok: false, content: 'skipped: the Task Brief paused for the Commander', summary: 'skipped', control: null });
+        results.push({ callId: c.id, isError: true, ok: false, content: 'skipped: the Task Brief paused for the Farmer', summary: 'skipped', control: null });
         continue;
       }
       const hidden = meta.hiddenTools && meta.hiddenTools.has(c.name);
@@ -847,7 +847,7 @@
      scolded it: "You're right —", "Let me correct that:". Every nudge that pushes back on a reply the model meant to end on —
      continuation, empty reply, failure recovery, loop guard, tool markup, memory receipt, and the verify / acceptance checks —
      says what it is and that it is never answered. (A steering note is the Commander's own words and never carries it.) */
-  const HOST_CHECK = ' (This note is an automatic host check; the Commander never sees it. Do not answer, acknowledge or apologize for it in your reply — just continue the work.)';
+  const HOST_CHECK = ' (This note is an automatic host check; the Farmer never sees it. Do not answer, acknowledge or apologize for it in your reply — just continue the work.)';
   function announcesIntent(text, allowPeerWait = false) {
     const t = String(text == null ? '' : text).trim();
     if (endsOnChoiceMarker(t)) return false;   // it asks the Commander: a wait, never an announce
@@ -910,7 +910,7 @@
     const text = String((result && result.content) || '');
     const summary = String((result && result.summary) || '').trim();
     if (/^(?:capdenied|denied|declined|cancelled)$/i.test(summary)) return true;
-    return /Commander (?:explicitly )?(?:declined|denied|cancelled)|user-control denied|user denied|Do NOT retry|approval denied/i.test(text);
+    return /(?:Commander|Farmer) (?:explicitly )?(?:declined|denied|cancelled)|user-control denied|user denied|Do NOT retry|approval denied/i.test(text);
   }
 
   async function runAgentLoop(o) {
@@ -1904,7 +1904,7 @@
             : b.cause === 'damaged'
               ? 'A line of the spend record is damaged, so what it recorded is unknown and the spending limits you set can’t be checked. Settle it in SETTINGS › SPENDING LIMITS.'
             : b.cause === 'write'
-              ? 'Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart StarNet to recover it.'
+              ? 'Spend history could not be saved to disk, so the spending limits you set can’t be checked. Restart Homestead to recover it.'
               : 'Spend history could not be read, so the spending limits you set can’t be checked. See SETTINGS › SPENDING LIMITS.';
           emit('agent.run.error', { agentId, runId, message, transient: false });
           return end('error', { failureStage: 'budget', failureCode: 'spend_history_unavailable' });
@@ -2495,7 +2495,7 @@
             memorySaveNudges++;
             // a PROMISE ("I'll remember that") names what actually goes wrong: the next run starts without it
             const premise = memoryClaimKind === 'promise'
-              ? 'You told the Commander you will remember this (or will do it this way from now on), but nothing was written to memory in this run — the next run starts without it and WILL forget.'
+              ? 'You told the Farmer you will remember this (or will do it this way from now on), but nothing was written to memory in this run — the next run starts without it and WILL forget.'
               : 'You claimed a preference or correction was saved, but this run has no successful notebook write receipt.';
             messages.push({ role: 'system', content: '<memory_receipt>' + premise + ' Use notebook_read and notebook_write to save or update the actual requirement now. For corrections use replaceId and previousBody; for approved reusable requirements pin within the intended scope. If it was already saved, verify it with a read and say it was already present; otherwise explicitly say it has not been saved. Do not repeat an unsupported save claim.' + HOST_CHECK + '</memory_receipt>' });
             continue;
@@ -2537,7 +2537,7 @@
         if (empty && !graceUsed && !emptyRetryUsed && CG_MAX > 0 && !continuationParts.length && limits.emptyRetry !== false) {
           emptyRetryUsed = true;
           turns = turnStart;
-          messages.push({ role: 'system', content: '<empty_reply>Your last reply was empty — no text and no tool call. Respond to the Commander\'s latest message now: make the tool call(s) the task needs, or give your answer.' + HOST_CHECK + '</empty_reply>' });
+          messages.push({ role: 'system', content: '<empty_reply>Your last reply was empty — no text and no tool call. Respond to the Farmer\'s latest message now: make the tool call(s) the task needs, or give your answer.' + HOST_CHECK + '</empty_reply>' });
           continue;
         }
         // CONTINUATION GUARD: an announce-without-acting final turn ("Reading main.js now…" + zero tool calls)
@@ -2567,7 +2567,7 @@
           const search = hasSearch
             ? ' Use tool_search when a deferred capability or alternate tool may exist; do not claim a tool is absent before searching.'
             : '';
-          messages.push({ role: 'system', content: '<failure_recovery>The previous path failed (' + failed + '), but one failed tool is not proof that the Commander\'s task is impossible. Do not end by handing avoidable setup work to the Commander. Inspect the exact error, then make an ACTUAL alternate call now using a different query, arguments, strategy, or tool.' + search + ' Retry only when the failure is plausibly transient; never repeat identical failing arguments blindly. Stay inside the current safety, consent, credential, and scope boundaries. Ask only for irreducible human input. If no authorized route remains after you have genuinely exhausted alternatives, report the exact blocker and the paths you tried.' + HOST_CHECK + '</failure_recovery>' });
+          messages.push({ role: 'system', content: '<failure_recovery>The previous path failed (' + failed + '), but one failed tool is not proof that the Farmer\'s task is impossible. Do not end by handing avoidable setup work to the Farmer. Inspect the exact error, then make an ACTUAL alternate call now using a different query, arguments, strategy, or tool.' + search + ' Retry only when the failure is plausibly transient; never repeat identical failing arguments blindly. Stay inside the current safety, consent, credential, and scope boundaries. Ask only for irreducible human input. If no authorized route remains after you have genuinely exhausted alternatives, report the exact blocker and the paths you tried.' + HOST_CHECK + '</failure_recovery>' });
           continue;
         }
         // VERIFY-ON-STOP: the run CHANGED code and is now trying to finish without having run anything against
@@ -2582,7 +2582,7 @@
           // something — telling it "you ran nothing" would be a false statement from the host.
           const premise = vosFailedCheck
             ? 'and are ending although the last check you ran against it (' + vosFailedCheck + ') did NOT pass, and no passing check has run since. A failing check is evidence the change is not done. Fix the cause and rerun the check until it passes, then report what it actually returned. If it cannot be made to pass here, say so plainly: report the failure and state that the change is NOT verified.'
-            : 'and are ending without running anything against it. Code that compiles is not code that works, and an unverified claim of "done" is the one thing this station never ships. Run the narrowest real check that proves the change — the project\'s own test/build command via verify_run, or shell_exec if that fits better — then report what it actually returned. If you genuinely cannot run a check here, say so plainly and state what you did NOT verify.';
+            : 'and are ending without running anything against it. Code that compiles is not code that works, and an unverified claim of "done" is the one thing this farm never ships. Run the narrowest real check that proves the change — the project\'s own test/build command via verify_run, or shell_exec if that fits better — then report what it actually returned. If you genuinely cannot run a check here, say so plainly and state what you did NOT verify.';
           messages.push({ role: 'system', content: '<verify_before_done>You changed code in this run (' + touched + ') ' + premise + HOST_CHECK + '</verify_before_done>' });
           continue;
         }
@@ -2640,7 +2640,7 @@
           if (failing.length) {
             accUsed++;
             const lines = failing.slice(0, 20).map(c => '- ' + (c.id || c.type) + ' [' + c.type + (c.path ? ' ' + c.path : '') + (c.command ? ' `' + c.command + '`' : '') + (c.connector ? ' ' + c.connector + (c.tool ? '/' + c.tool : '') : '') + ']: ' + (c.code || 'not_proven'));
-            messages.push({ role: 'system', content: '<acceptance_before_done>You are ending this task but the host\'s acceptance checks for it do not all hold yet. These are mechanical postconditions the Commander attached to this procedure; the task is not done until every one passes:\n' + lines.join('\n') + '\nMake each failing check hold now (produce/fix the named artifact in this run, or run the exact named check command so it passes), then finish. If one genuinely cannot be satisfied, say so plainly and name which — never claim it holds.' + HOST_CHECK + '</acceptance_before_done>' });
+            messages.push({ role: 'system', content: '<acceptance_before_done>You are ending this task but the host\'s acceptance checks for it do not all hold yet. These are mechanical postconditions the Farmer attached to this procedure; the task is not done until every one passes:\n' + lines.join('\n') + '\nMake each failing check hold now (produce/fix the named artifact in this run, or run the exact named check command so it passes), then finish. If one genuinely cannot be satisfied, say so plainly and name which — never claim it holds.' + HOST_CHECK + '</acceptance_before_done>' });
             continue;
           }
         }

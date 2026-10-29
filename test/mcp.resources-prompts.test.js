@@ -144,7 +144,7 @@ function fakeServer(opts) {
     const gotPrompt = await prTool.run({ name: 'triage', arguments: { id: '7' } });
     A.ok(/unrestricted mode/.test(gotPrompt.content), 'the template body comes back');
     A.ok(/untrusted DATA/.test(gotPrompt.content), 'fenced — a server must never write directly into the model\'s orders');
-    A.ok(/NOT orders from your Commander/.test(gotPrompt.content), 'and the label says so in as many words');
+    A.ok(/NOT orders from your Farmer/.test(gotPrompt.content), 'and the label says so in as many words');
     A.ok(/triage\(id\*\)/.test((await prTool.run({})).content), 'the listing shows each prompt\'s required arguments');
     await mgr.close();
   }

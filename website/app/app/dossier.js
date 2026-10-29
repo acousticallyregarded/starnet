@@ -222,7 +222,7 @@
     // known dims in compose-PRIORITY order (pitch-critical first) so a trim never silently loses the keystone dims.
     const known = COMPOSE_ORDER.map(k => DIMS.find(d => d.key === k)).filter(d => d && beliefs(dossier, d.key).length);
     if (!known.length) return '';
-    const head = 'WHAT YOU KNOW ABOUT YOUR COMMANDER (the station has learned this — honor it; if anything here is wrong, the Commander will correct it):';
+    const head = 'WHAT YOU KNOW ABOUT YOUR FARMER (the farm has learned this — honor it; if anything here is wrong, the Farmer will correct it):';
     const lineOf = d => '- ' + d.lead + ': ' + beliefs(dossier, d.key).map(b => b.text).join('; ');
     let body = head + '\n' + known.map(lineOf).join('\n');
     if (body.length <= cap) return body;   // fast path: everything fits (the common case)

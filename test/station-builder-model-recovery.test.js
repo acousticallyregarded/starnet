@@ -35,7 +35,7 @@ function walkerStation() {
   return st;
 }
 const snap = st => JSON.stringify(st.serialize());
-const COPY_DRAFT = 'Write a sharp 2-sentence launch post for StarNet 0.13.5 based on the options discussed.';
+const COPY_DRAFT = 'Write a sharp 2-sentence launch post for Homestead 0.13.5 based on the options discussed.';
 const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or send it back with specific cuts.';
 
 /* ---- 1. the walker's FIRST plan: the right line, its steps named for their work — it plans, staffed in order ---- */
@@ -83,16 +83,16 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
   /* the fix round's live run: staffed from that advice with agents only, COPY's Bay kept the Writer's stock "Turn the notes into a
      200-word newsletter blurb" while the reply said "COPY drafts the post". The one re-plan asks for each step's instructions too. */
   A.ok(/^Nothing is built yet\. Steps 1 \(Writer\) and 2 \(Reviewer\) have nobody to work them, so the line will not run; they also have only their roles' stock instructions \(step 1: "Turn the notes into a 200-word newsletter blurb\."\)\. /.test(next || '')
-    && /If the Commander said who works them, or someone on the crew \(NOVA, COPY, STRATEGY\) is right for them, plan again with the same request plus steps: \[ \{ "step": 1, "agent": "…", "instructions": "…" \}, \{ "step": 2, "agent": "…", "instructions": "…" \} \] \(instructions: what that step does in the workflow the Commander described\), so ONE approval builds it ready to run\. Otherwise tell the Commander the summary, call station\.build with this planId, and say which steps still need crew\.$/.test(next || ''), 'an unstaffed plan says how to staff it, and tell it the work, before building: ' + next);
+    && /If the Farmer said who works them, or someone on the crew \(NOVA, COPY, STRATEGY\) is right for them, plan again with the same request plus steps: \[ \{ "step": 1, "agent": "…", "instructions": "…" \}, \{ "step": 2, "agent": "…", "instructions": "…" \} \] \(instructions: what that step does in the workflow the Farmer described\), so ONE approval builds it ready to run\. Otherwise tell the Farmer the summary, call station\.build with this planId, and say which steps still need crew\.$/.test(next || ''), 'an unstaffed plan says how to staff it, and tell it the work, before building: ' + next);
   const half = SB.plan(st.serialize(), { line: 'revision_loop', steps: [{ step: 1, agent: 'COPY' }] }, env);
   A.ok(/^Nothing is built yet\. Step 2 \(Reviewer\) has nobody to work it, so the line will not run\. Steps 1 \(Writer\) and 2 \(Reviewer\) have only their roles' stock instructions/.test(SB.planNext(half.plan, names) || '')
     && /\[ \{ "step": 1, "agent": "COPY", "instructions": "…" \}, \{ "step": 2, "agent": "…", "instructions": "…" \} \]/.test(SB.planNext(half.plan, names) || ''), 'one empty step, in the singular, and the staffed one keeps its crew in the form: ' + SB.planNext(half.plan, names));
   const full = SB.plan(st.serialize(), { line: 'revision_loop', steps: [{ step: 1, agent: 'COPY' }, { step: 2, agent: 'STRATEGY' }] }, env);
-  A.ok(/^Steps 1 \(Writer\) and 2 \(Reviewer\) have only their roles' stock instructions \(step 1: "Turn the notes into a 200-word newsletter blurb\."\)\. If that is not the work the Commander described, plan again with the same request plus steps: \[ \{ "step": 1, "agent": "COPY", "instructions": "…" \}, \{ "step": 2, "agent": "STRATEGY", "instructions": "…" \} \].* Otherwise: Tell the Commander the summary in plain words, then call station\.build with this planId\. Nothing has been built yet\.$/.test(SB.planNext(full.plan, names) || ''),
+  A.ok(/^Steps 1 \(Writer\) and 2 \(Reviewer\) have only their roles' stock instructions \(step 1: "Turn the notes into a 200-word newsletter blurb\."\)\. If that is not the work the Farmer described, plan again with the same request plus steps: \[ \{ "step": 1, "agent": "COPY", "instructions": "…" \}, \{ "step": 2, "agent": "STRATEGY", "instructions": "…" \} \].* Otherwise: Tell the Farmer the summary in plain words, then call station\.build with this planId\. Nothing has been built yet\.$/.test(SB.planNext(full.plan, names) || ''),
     'a staffed plan with only stock instructions names them for the lead to judge (crew kept), then the usual next step: ' + SB.planNext(full.plan, names));
   const told = SB.plan(st.serialize(), { line: 'revision_loop', steps: [{ step: 1, agent: 'COPY', instructions: COPY_DRAFT }, { step: 2, agent: 'STRATEGY', instructions: STRAT_REVIEW }] }, env);
   A.eq(SB.planNext(told.plan, names), null, 'a staffed plan told its work keeps the usual next step');
-  const aimed = SB.plan(st.serialize(), { line: 'revision_loop', purpose: 'launch posts for StarNet', steps: [{ step: 1, agent: 'COPY' }, { step: 2, agent: 'STRATEGY' }] }, env);
+  const aimed = SB.plan(st.serialize(), { line: 'revision_loop', purpose: 'launch posts for Homestead', steps: [{ step: 1, agent: 'COPY' }, { step: 2, agent: 'STRATEGY' }] }, env);
   A.eq(SB.planNext(aimed.plan, names), null, 'a purpose carries the work into the stock instructions, so that plan keeps it too');
   const custom = SB.plan(st.serialize(), { shape: ['WRITER', 'REVIEWER'], steps: [{ step: 1, agent: 'COPY' }, { step: 2, agent: 'STRATEGY' }] }, env);
   A.ok(/^Steps 1 \(Writer\) and 2 \(Reviewer\) have only their roles' stock instructions/.test(SB.planNext(custom.plan, names) || ''), 'a custom line with stock instructions is named the same: ' + SB.planNext(custom.plan, names));
@@ -223,24 +223,24 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
   const tools = makeStationTools({ station: bridge, now: () => 1000, planMemo: new Map(), lineMenu: () => [], styleMenu: () => [], roomMenu: () => [], kitMenu: () => [], presetMenu: () => [] });
   reply = { built: true, summary: 'Draft + review ("LAUNCH POST") in a new room east of HOME: Writer (COPY) → Reviewer (STRATEGY) → Outbox.', line: { name: 'Draft + review' }, ready: true, blocking: [] };
   const done = JSON.parse((await tools.buildTool.run({ planId: 'p1' }, {})).content);
-  A.ok(/^DONE: it is built and ready to run\. Tell the Commander what was built in a sentence or two, and stop: there is nothing left to build or check for this\./.test(done.next || ''), 'a ready build says DONE and to stop: ' + done.next);
+  A.ok(/^DONE: it is built and ready to run\. Tell the Farmer what was built in a sentence or two, and stop: there is nothing left to build or check for this\./.test(done.next || ''), 'a ready build says DONE and to stop: ' + done.next);
   reply = { built: true, summary: 'Build + test …', line: { name: 'Build + test' }, ready: false, blocking: ['the line is not connected'] };
   const todo = JSON.parse((await tools.buildTool.run({ planId: 'p2' }, {})).content);
-  A.ok(/^DONE: it is built\. Still to do before it runs: the line is not connected\. Tell the Commander exactly that, and stop/.test(todo.next || ''), 'a build with work left says DONE and names exactly what is left: ' + todo.next);
+  A.ok(/^DONE: it is built\. Still to do before it runs: the line is not connected\. Tell the Farmer exactly that, and stop/.test(todo.next || ''), 'a build with work left says DONE and names exactly what is left: ' + todo.next);
   /* the third live re-run: the lead built Draft + review with nobody on it, then staffed it with a refit on GUESSED ids ("p12_bay_0",
      refused), a map, a plan and a SECOND approval card. A receipt whose only work left is crew says the one form that staffs it. */
   reply = { built: true, summary: 'Draft + review …', line: { id: 'revision_loop', name: 'Draft + review', label: 'draft_and_review' }, ready: false, blocking: ['BAY 1 (WRITER) needs an agent', 'BAY 2 (REVIEWER) needs an agent'] };
   const crewLeft = JSON.parse((await tools.buildTool.run({ planId: 'p5' }, {})).content);
-  A.ok(/^DONE: it is built\. Still to do before it runs: BAY 1 \(WRITER\) needs an agent; BAY 2 \(REVIEWER\) needs an agent\. If the Commander said who works those steps, staff them in one plan: station\.plan \{ "staff": \{ "line": "draft_and_review", "steps": \[ \{ "step": 1, "agent": "a crew name" \} \] \} \}, then station\.build; otherwise tell the Commander exactly that, and stop\./.test(crewLeft.next || ''), 'a build that only needs crew names the staff form, by the line\'s own name: ' + crewLeft.next);
+  A.ok(/^DONE: it is built\. Still to do before it runs: BAY 1 \(WRITER\) needs an agent; BAY 2 \(REVIEWER\) needs an agent\. If the Farmer said who works those steps, staff them in one plan: station\.plan \{ "staff": \{ "line": "draft_and_review", "steps": \[ \{ "step": 1, "agent": "a crew name" \} \] \} \}, then station\.build; otherwise tell the Farmer exactly that, and stop\./.test(crewLeft.next || ''), 'a build that only needs crew names the staff form, by the line\'s own name: ' + crewLeft.next);
   reply = { built: true, kind: 'restyle', summary: 'Restyle HOME.', where: 'HOME', rooms: [], lines: [] };
   const room = JSON.parse((await tools.buildTool.run({ planId: 'p3' }, {})).content);
-  A.ok(/^DONE: it is built\. Tell the Commander what was built in a sentence or two, and stop: there is nothing left to build or check for this\.$/.test(room.next || ''), 'a restyle says DONE and stop, with no look at a design nobody laid by hand: ' + room.next);
+  A.ok(/^DONE: it is built\. Tell the Farmer what was built in a sentence or two, and stop: there is nothing left to build or check for this\.$/.test(room.next || ''), 'a restyle says DONE and stop, with no look at a design nobody laid by hand: ' + room.next);
   reply = { built: true, kind: 'refit', handLaid: true, summary: 'BUILD MODE, 3 edits…', lines: [] };
   const byHand = JSON.parse((await tools.buildTool.run({ planId: 'p6' }, {})).content);
-  A.ok(/^DONE: it is built\. You laid pieces by hand: look at the room once \(station\.map \{ look: the room \}\) and fix only what is wrong; then tell the Commander what was built in a sentence or two, and stop\.$/.test(byHand.next || ''), 'a hand-laid refit keeps its one look: ' + byHand.next);
+  A.ok(/^DONE: it is built\. You laid pieces by hand: look at the room once \(station\.map \{ look: the room \}\) and fix only what is wrong; then tell the Farmer what was built in a sentence or two, and stop\.$/.test(byHand.next || ''), 'a hand-laid refit keeps its one look: ' + byHand.next);
   reply = { built: true, kind: 'rooms', summary: 'A conveyor hall…', rooms: [{ name: 'WORKS' }], lines: [], blocking: ['routing is not live yet (the router did not confirm the new plan)'] };
   const unrouted = JSON.parse((await tools.buildTool.run({ planId: 'p7' }, {})).content);
-  A.ok(/^DONE: it is built\. Still to do before it runs: routing is not live yet \(the router did not confirm the new plan\)\. Tell the Commander exactly that, and stop/.test(unrouted.next || ''), 'routing that did not publish is still to do, line or no line: ' + unrouted.next);
+  A.ok(/^DONE: it is built\. Still to do before it runs: routing is not live yet \(the router did not confirm the new plan\)\. Tell the Farmer exactly that, and stop/.test(unrouted.next || ''), 'routing that did not publish is still to do, line or no line: ' + unrouted.next);
   reply = { ok: false };
   const refusedBuild = await tools.buildTool.run({ planId: 'p4' }, {});
   A.ok(!/DONE/.test(refusedBuild.content), 'a reply that is no build never says DONE: ' + refusedBuild.content.slice(0, 120));
@@ -272,7 +272,7 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
     const st = walkerStation();
     const bare = SB.plan(st.serialize(), { shape: ['WRITER', 'REVIEWER'], name: 'Launch Post' }, env);
     const b1 = await build(page(st, bare.plan));
-    A.ok(/^DONE: it is built\. Still to do before it runs: BAY 1 \(WRITER\) needs an agent; BAY 2 \(REVIEWER\) needs an agent\. If the Commander said who works those steps, staff them in one plan: station\.plan \{ "staff": \{ "line": "([^"]+)", "steps": \[ \{ "step": 1, "agent": "a crew name" \} \] \} \}, then station\.build; otherwise tell the Commander exactly that, and stop\.$/.test(b1.next), 'an unstaffed custom line is NOT "done, stop": it names what is left and the staff form: ' + b1.next);
+    A.ok(/^DONE: it is built\. Still to do before it runs: BAY 1 \(WRITER\) needs an agent; BAY 2 \(REVIEWER\) needs an agent\. If the Farmer said who works those steps, staff them in one plan: station\.plan \{ "staff": \{ "line": "([^"]+)", "steps": \[ \{ "step": 1, "agent": "a crew name" \} \] \} \}, then station\.build; otherwise tell the Farmer exactly that, and stop\.$/.test(b1.next), 'an unstaffed custom line is NOT "done, stop": it names what is left and the staff form: ' + b1.next);
     A.ok(/· 2 to do$/.test(b1.summary), 'its chip counts what is left: ' + b1.summary);
     // …and the staff form it names is one that plans and builds the line ready
     const lineName = (/"line": "([^"]+)"/.exec(b1.next) || [])[1];
@@ -281,13 +281,13 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
     A.ok(staff.ok, 'the named staff form plans: ' + (staff.error || ''));
     if (staff.ok) {
       const b2 = await build(page(st, staff.plan));
-      A.ok(/^DONE: it is built and ready to run\. Tell the Commander what was built in a sentence or two, and stop: there is nothing left to build or check for this\.$/.test(b2.next) && /· ready to run$/.test(b2.summary), 'a restaff that readies the line says ready to run, by the floor: ' + b2.next + ' | ' + b2.summary);
+      A.ok(/^DONE: it is built and ready to run\. Tell the Farmer what was built in a sentence or two, and stop: there is nothing left to build or check for this\.$/.test(b2.next) && /· ready to run$/.test(b2.summary), 'a restaff that readies the line says ready to run, by the floor: ' + b2.next + ' | ' + b2.summary);
     }
     // a custom line planned staffed is ready to run
     const st2 = walkerStation();
     const full = SB.plan(st2.serialize(), { shape: ['WRITER', 'REVIEWER'], steps: [{ step: 1, agent: 'COPY' }, { step: 2, agent: 'STRATEGY' }] }, env);
     const b3 = await build(page(st2, full.plan));
-    A.ok(/^DONE: it is built and ready to run\. Tell the Commander/.test(b3.next), 'a staffed custom line: ready to run: ' + b3.next);
+    A.ok(/^DONE: it is built and ready to run\. Tell the Farmer/.test(b3.next), 'a staffed custom line: ready to run: ' + b3.next);
     // a hand-laid refit line (the walker's column) reports its line as it stands: staffed and joined, it is ready
     const st3 = walkerStation();
     const col = SB.planEdit(st3.serialize(), { refit: [
@@ -295,18 +295,18 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
       { op: 'connect', from: 'in', to: 'w' }, { op: 'connect', from: 'w', to: 'r' }, { op: 'connect', from: 'r', to: 'out' },
       { op: 'role', prop: 'w', role: 'WRITER' }, { op: 'agent', prop: 'w', agent: 'COPY' }, { op: 'role', prop: 'r', role: 'REVIEWER' }, { op: 'agent', prop: 'r', agent: 'STRATEGY' }] }, env);
     A.ok(col.ok, 'the column refit plans: ' + (col.error || ''));
-    if (col.ok) { const b4 = await build(page(st3, col.plan)); A.ok(/^DONE: it is built and ready to run\. Tell the Commander/.test(b4.next), 'a refit that lays a whole staffed line: ready to run, no look (only machines were laid): ' + b4.next); }
+    if (col.ok) { const b4 = await build(page(st3, col.plan)); A.ok(/^DONE: it is built and ready to run\. Tell the Farmer/.test(b4.next), 'a refit that lays a whole staffed line: ready to run, no look (only machines were laid): ' + b4.next); }
     // the same line laid with nobody on it: the refit's line is still to do, by name
     const st4 = walkerStation();
     const empty = SB.planEdit(st4.serialize(), { refit: [
       { op: 'place', t: 'intake', x: 12, y: 3, as: 'in' }, { op: 'place', t: 'bay', x: 12, y: 5, as: 'w' }, { op: 'place', t: 'outbox', x: 12, y: 7, as: 'out' },
       { op: 'connect', from: 'in', to: 'w' }, { op: 'connect', from: 'w', to: 'out' }, { op: 'role', prop: 'w', role: 'WRITER' }] }, env);
-    if (empty.ok) { const b5 = await build(page(st4, empty.plan)); A.ok(/^DONE: it is built\. Still to do before it runs: BAY 1 \(WRITER\) needs an agent\. If the Commander said who works those steps, staff them in one plan: station\.plan \{ "staff": \{ "line": "LINE [A-Z]+"/.test(b5.next), 'an unstaffed refit line says what is left, by the floor\'s own LINE word: ' + b5.next); }
+    if (empty.ok) { const b5 = await build(page(st4, empty.plan)); A.ok(/^DONE: it is built\. Still to do before it runs: BAY 1 \(WRITER\) needs an agent\. If the Farmer said who works those steps, staff them in one plan: station\.plan \{ "staff": \{ "line": "LINE [A-Z]+"/.test(b5.next), 'an unstaffed refit line says what is left, by the floor\'s own LINE word: ' + b5.next); }
     else A.ok(false, 'the empty column plans: ' + empty.error);
     // a machine laid on no line is still to do, and a refit's left-over work is the refit's to fix
     const st5 = walkerStation();
     const lone = SB.planEdit(st5.serialize(), { refit: [{ op: 'place', t: 'bay', x: 12, y: 5 }] }, env);
-    if (lone.ok) { const b6 = await build(page(st5, lone.plan)); A.ok(/^DONE: it is built\. Still to do before it runs: the bay at \(12, 5\) stands on no line yet\. Fix that with one more refit plan and build it; if you cannot, tell the Commander exactly what is left, and stop\.$/.test(b6.next), 'a lone machine is on no line yet, for the refit to fix: ' + b6.next); }
+    if (lone.ok) { const b6 = await build(page(st5, lone.plan)); A.ok(/^DONE: it is built\. Still to do before it runs: the bay at \(12, 5\) stands on no line yet\. Fix that with one more refit plan and build it; if you cannot, tell the Farmer exactly what is left, and stop\.$/.test(b6.next), 'a lone machine is on no line yet, for the refit to fix: ' + b6.next); }
     else A.ok(false, 'the lone bay plans: ' + lone.error);
     // a refit that sets furniture by hand keeps its one look; one that never touched a line has no line to report
     const st6 = walkerStation();
@@ -322,16 +322,16 @@ const STRAT_REVIEW = 'Review the draft post. Approve if it is ready to ship, or 
   const { makeToolSearchTool } = require('../sidecar/tools/builtin/toolsearch.js');
   const fake = (name, description, schema) => ({ name, description, schema: schema || { type: 'object', properties: {} } });
   const reg = new Map([tools.mapTool, tools.planTool, tools.buildTool, tools.makePropTool, tools.testLineTool, tools.startLineTool].filter(Boolean).map(t => [t.name, t]));
-  for (const t of [fake('app.create', 'Create a new StarNet app: a dashboard or tool that lives INSIDE StarNet, in its own StarNet window, from a name and a one-line description.', { type: 'object', required: ['name'] }),
-    fake('app.edit', 'Rewrite one file of a StarNet app the crew made, by its app id.'), fake('session.create', 'Create a new chat session for an agent, with a title.'),
-    fake('loop.create', 'Create one durable StarNet LOOP when the Commander asks to keep working, iterate, or continue until an objective/convergence/check passes.', { type: 'object', required: ['objective'] }),
-    fake('routine.create', 'Create a StarNet ROUTINE: work an agent runs on a schedule (digests, research, monitoring, reports, drafts, reminders).', { type: 'object', required: ['prompt', 'schedule'] }),
-    fake('task.create', 'Add one durable card to the Commander\'s task board when they say "add this to my board", "make a task", or equivalent.', { type: 'object', required: ['title'] }),
-    fake('station.layout', 'Read the station floor the way the Workflow panel shows it: whether routing is live (confirmed against the router) and whether automation is stopped (E-STOP), every assembly line.')]) reg.set(t.name, t);
+  for (const t of [fake('app.create', 'Create a new Homestead app: a dashboard or tool that lives INSIDE Homestead, in its own Homestead window, from a name and a one-line description.', { type: 'object', required: ['name'] }),
+    fake('app.edit', 'Rewrite one file of a Homestead app the crew made, by its app id.'), fake('session.create', 'Create a new chat session for an agent, with a title.'),
+    fake('loop.create', 'Create one durable Homestead LOOP when the Farmer asks to keep working, iterate, or continue until an objective/convergence/check passes.', { type: 'object', required: ['objective'] }),
+    fake('routine.create', 'Create a Homestead ROUTINE: work an agent runs on a schedule (digests, research, monitoring, reports, drafts, reminders).', { type: 'object', required: ['prompt', 'schedule'] }),
+    fake('task.create', 'Add one durable card to the Farmer\'s task board when they say "add this to my board", "make a task", or equivalent.', { type: 'object', required: ['title'] }),
+    fake('station.layout', 'Read the farm floor the way the Workflow panel shows it: whether routing is live (confirmed against the router) and whether automation is stopped (E-STOP), every assembly line.')]) reg.set(t.name, t);
   const search = makeToolSearchTool({ registry: { get: n => reg.get(n) || null } }).toolSearchTool;
   const ctx = { deferred: ['station.map', 'station.plan', 'station.build', 'station.make_prop', 'station.test_line', 'station.start_line', 'app.create', 'app.edit', 'session.create'].filter(n => reg.has(n)),
     advertised: ['loop.create', 'routine.create', 'task.create', 'station.layout', 'tool.search'] };
-  for (const q of ['station builder - create assembly lines and workflows', 'station builder create assembly line workflow', 'station builder']) {
+  for (const q of ['farm builder - create assembly lines and workflows', 'farm builder create assembly line workflow', 'station builder']) {
     const r = await search.run({ query: q }, ctx), shown = (r.control && r.control.revealTools) || [];
     A.ok(['station.map', 'station.plan', 'station.build'].every(n => shown.indexOf(n) >= 0), '"' + q + '" reveals station.map, station.plan and station.build: ' + JSON.stringify(shown) + ' ' + String(r.content).slice(0, 160));
   }

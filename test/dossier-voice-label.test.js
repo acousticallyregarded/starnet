@@ -17,7 +17,7 @@ vm.runInContext(voiceSrc.slice(from, to) + '\nthis.voiceLabel = voiceLabel; this
 
 // before the sidecar has reported its list, the fallback already gives every shipped catalogue row its picker word
 for (const v of LV.voices()) A.equal(vctx.voiceLabel(v.id), v.label, v.id + ' reads ' + v.label + ' before the voice list loads');
-A.equal(vctx.voiceLabel(''), '', 'no choice → no word (the row says station default)');
+A.equal(vctx.voiceLabel(''), '', 'no choice → no word (the row says farm default)');
 // once the sidecar reports labels, those words win
 vctx.rememberVoiceLabels([{ id: 'af_heart', label: 'HEART (WARM)' }, null, { id: 'x' }]);
 A.equal(vctx.voiceLabel('af_heart'), 'HEART (WARM)', 'a label the sidecar reported is the word shown');
@@ -44,7 +44,7 @@ const html = strip('af_heart');
 const row = html.split('data-goconfig="ag-voice"')[1].split('</button>')[0];
 A.match(row, /ag-setup-val">HEART</, 'MIRA\'s VOICE row reads HEART, the picker\'s word');
 A.doesNotMatch(row, /af_heart/, '…never the engine id');
-A.match(strip('').split('data-goconfig="ag-voice"')[1], /ag-setup-val dim">station default</, 'no choice still reads station default');
+A.match(strip('').split('data-goconfig="ag-voice"')[1], /ag-setup-val dim">farm default</, 'no choice still reads farm default');
 
 // VoiceLive.voices feeds the label memory from the same reply the picker paints
 const live = fs.readFileSync(require.resolve('../frontend/app/voice-live.js'), 'utf8');

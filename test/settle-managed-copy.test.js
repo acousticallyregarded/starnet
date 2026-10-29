@@ -39,12 +39,12 @@ const harness = (status) => {
   assert.doesNotMatch(mTip, /account\.starnetos\.com/, 'no hardcoded account host');
   assert.doesNotMatch(mTip, /provider dashboard/, 'not a provider dashboard the user never had');
   const [, mUsd, mSettle, mCount] = managedRow.children;
-  assert.match(mUsd.attrs['aria-label'], /what StarNet charged/, 'the amount field asks what StarNet charged');
+  assert.match(mUsd.attrs['aria-label'], /what Homestead charged/, 'the amount field asks what Homestead charged');
   assert.match(mCount.attrs['data-tip'], /the STORE’s RECENT ACTIVITY has the exact charge/, 'COUNT AS points at the same activity: ' + mCount.attrs['data-tip']);
   assert.doesNotMatch(mCount.attrs['data-tip'], /provider dashboard/);
   mUsd.value = ''; mSettle.click(); await tick();
   assert.equal(posts.length, 0, 'a blank is not $0');
-  assert.match(node('#budget-msg').textContent, /what StarNet charged/, 'the refusal asks for what StarNet charged: ' + node('#budget-msg').textContent);
+  assert.match(node('#budget-msg').textContent, /what Homestead charged/, 'the refusal asks for what Homestead charged: ' + node('#budget-msg').textContent);
   // a BYOK row keeps the provider dashboard
   const bTip = byokRow.attrs['data-tip'];
   assert.match(bTip, /provider dashboard/, 'a provider-key row still points at the provider dashboard: ' + bTip);
@@ -137,7 +137,7 @@ const harness = (status) => {
   const idx = fs.readFileSync(path.join(__dirname, '..', 'sidecar/index.js'), 'utf8');
   const settle = idx.slice(idx.indexOf('async function handleBudgetSettle('), idx.indexOf('async function warmModelCatalogSet('));
   assert.ok(settle.length > 200 && settle.length < 6000, 'handleBudgetSettle found');
-  assert.match(settle, /open\.managed === true \? 'this run recorded no per-run limit — enter what StarNet charged for it \(SETTINGS → AI & MODELS › STORE › RECENT ACTIVITY lists each charge with its run id\)' : open\.managed === false \? 'this run recorded no per-run limit — enter the charge from your provider dashboard'/,
+  assert.match(settle, /open\.managed === true \? 'this run recorded no per-run limit — enter what Homestead charged for it \(SETTINGS → AI & MODELS › STORE › RECENT ACTIVITY lists each charge with its run id\)' : open\.managed === false \? 'this run recorded no per-run limit — enter the charge from your provider dashboard'/,
     'a limit-less managed receipt is pointed at the STORE’s RECENT ACTIVITY');
   // the door exists: the configured STORE renders a RECENT ACTIVITY list whose rows carry the run id
   assert.match(text, /<h4 class="ms-h">STORE /, 'the STORE heading exists under AI & MODELS');

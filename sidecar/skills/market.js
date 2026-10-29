@@ -101,7 +101,7 @@ function makeSkillMarket(deps) {
     let doc; try { doc = JSON.parse(got.text); } catch (_) { throw new Error('the skill market returned invalid JSON'); }
     const serial = marketFormat.serialOf(doc);
     const least = minSerial(state(), indexUrl);
-    if (serial && serial < least) throw new Error('the skill market ' + what + ' was not trusted: it is older than one this station already saw (' + serial + ' < ' + least + ')');
+    if (serial && serial < least) throw new Error('the skill market ' + what + ' was not trusted: it is older than one this farm already saw (' + serial + ' < ' + least + ')');
     return { url: got.url || url, doc };
   }
 
@@ -136,7 +136,7 @@ function makeSkillMarket(deps) {
   async function fetchCatalog(opts) {
     opts = opts || {};
     const url = str(catalogUrl()).trim();
-    if (!url) throw new Error('the skill market is turned off on this station');
+    if (!url) throw new Error('the skill market is turned off on this farm');
     // a cached catalog older than a pulled list accepted since is stale: never serve it
     const fresh = cached && cached.url === url && now() - cached.fetchedAt < CACHE_MS && cached.serial >= trustOf(state(), url).serial;
     if (!opts.force && fresh) return cached;

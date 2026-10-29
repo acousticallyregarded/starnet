@@ -102,11 +102,11 @@ const ATTENDED = { surface: 'interactive', isTask: true, ownerTrusted: true, rem
 
     // typing into StarNet's own window is always refused, even without expectApp
     const selfDriver = fakeDriver();
-    selfDriver.foreground = async () => ({ title: 'STARNET — station', process: 'msedge' });
+    selfDriver.foreground = async () => ({ title: 'HOMESTEAD — farm', process: 'msedge' });
     const ST = makeComputerTools({ driver: selfDriver, allowPhysicalInput: true }).useTool;
     await ST.run({ action: 'type', text: 'hi' }, ATTENDED);
     await ST.run({ action: 'hotkey', keys: ['Ctrl', 'l'] }, ATTENDED);
-    A.eq(selfDriver.log.length, 2, 'the paired owner may intentionally control the StarNet window too');
+    A.eq(selfDriver.log.length, 2, 'the paired owner may intentionally control the Homestead window too');
 
     // mouse/screenshot are NOT focus-gated (clicking is how you restore focus)
     const clicked = await ST.run({ action: 'click', x: 5, y: 5 }, ATTENDED);
@@ -172,17 +172,17 @@ const ATTENDED = { surface: 'interactive', isTask: true, ownerTrusted: true, rem
     d.windowAt = async () => at;
     d.foreground = async () => fg;
     const GT = makeComputerTools({ driver: d, allowPhysicalInput: true, selfPids: [3184] }).useTool;
-    await rejects(GT.run({ action: 'click', x: 166, y: 998 }, FULL), /StarNet itself.*NOT sent.*station builder/, 'a click on the desktop shell window is refused and points at the station builder');
+    await rejects(GT.run({ action: 'click', x: 166, y: 998 }, FULL), /Homestead itself.*NOT sent.*farm builder/, 'a click on the desktop shell window is refused and points at the farm builder');
     at = { title: 'whatever', process: 'renamed', pid: 3184 };
-    await rejects(GT.run({ action: 'double_click', x: 1, y: 1 }, FULL), /StarNet itself/, 'the shell pid alone identifies StarNet (structural, not a title guess)');
-    at = { title: 'STARNET - Google Chrome', process: 'chrome', pid: 9 };
-    await rejects(GT.run({ action: 'click', x: 1, y: 1 }, FULL), /StarNet itself/, 'StarNet open in a browser tab is StarNet too');
+    await rejects(GT.run({ action: 'double_click', x: 1, y: 1 }, FULL), /Homestead itself/, 'the shell pid alone identifies Homestead (structural, not a title guess)');
+    at = { title: 'HOMESTEAD - Google Chrome', process: 'chrome', pid: 9 };
+    await rejects(GT.run({ action: 'click', x: 1, y: 1 }, FULL), /Homestead itself/, 'Homestead open in a browser tab is Homestead too');
     at = { title: 'Untitled - Notepad', process: 'notepad', pid: 77 };
     const dragged = await GT.run({ action: 'drag', x: 1, y: 1, dx: 0, dy: 0 }, FULL);
     A.ok(/computer.drag ok/.test(dragged.content), 'a drag between two non-StarNet points goes through');
     fg = { title: 'StarNet', process: 'skynet-desktop', pid: 3184 };
-    await rejects(GT.run({ action: 'type', text: 'Approved Prototype Foundry' }, FULL), /focused window is StarNet itself/, 'typing into a focused StarNet window is refused');
-    await rejects(GT.run({ action: 'hotkey', keys: ['ctrl', 'v'] }, FULL), /StarNet itself/, 'a paste hotkey into StarNet is refused');
+    await rejects(GT.run({ action: 'type', text: 'Approved Prototype Foundry' }, FULL), /focused window is Homestead itself/, 'typing into a focused Homestead window is refused');
+    await rejects(GT.run({ action: 'hotkey', keys: ['ctrl', 'v'] }, FULL), /Homestead itself/, 'a paste hotkey into Homestead is refused');
     const sent = d.log.length;
     A.eq(sent, 1, 'only the non-StarNet drag reached the driver');
     const shot = await GT.run({ action: 'screenshot' }, FULL);
@@ -197,8 +197,8 @@ const ATTENDED = { surface: 'interactive', isTask: true, ownerTrusted: true, rem
     // the paired remote owner is the user at the machine: StarNet's window stays theirs to drive
     d.windowAt = async () => ({ title: 'StarNet', process: 'skynet-desktop', pid: 3184 });
     const owner = await GT.run({ action: 'click', x: 4, y: 4 }, ATTENDED);
-    A.ok(/computer.click ok/.test(owner.content), 'the paired remote owner may click StarNet');
-    A.eq(T.isSelfWindow({ title: 'StarNetwork Monitor', process: 'netmon', pid: 5 }, [3184]), false, 'a title that only starts with the letters is not StarNet');
+    A.ok(/computer.click ok/.test(owner.content), 'the paired remote owner may click Homestead');
+    A.eq(T.isSelfWindow({ title: 'StarNetwork Monitor', process: 'netmon', pid: 5 }, [3184]), false, 'a title that only starts with the letters is not Homestead');
   }
 
   A.report('computer.test');

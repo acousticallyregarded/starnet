@@ -31,7 +31,7 @@ const { makeOrchestrationTools } = require('../sidecar/tools/builtin/orchestrati
     { id: 'made', title: 'Marketing plan', agentId: 'agent', parentStreamId: 'home', history: [] },
     { id: 'orphan', title: 'Lost work', agentId: 'writer', parentStreamId: 'gone', worker: true, history: [] }
   ] });
-  A.eq(W.activeId(), 'home', 'a station saved while a worker\'s thread was open boots into its conversation');
+  A.eq(W.activeId(), 'home', 'a farm saved while a worker\'s thread was open boots into its conversation');
   const ids = W.list().map(w => w.id);
   A.ok(!ids.includes('w1') && ids.includes('made') && ids.includes('orphan'), 'session lists hide a worker\'s thread; a session the agent opened, and a worker whose conversation is gone, stay');
   A.ok(W.list({ includeWorkers: true }).some(w => w.id === 'w1'), 'the delegation card asks for workers explicitly');
@@ -136,12 +136,12 @@ const roster = new Map([['researcher', { system: 'R', name: 'MIRA' }], ['writer'
     global.App = { agentName: id => ({ researcher: 'MIRA' })[id] || id };
     const runningRow = { ws: ws({ id: 'ko', agentId: 'researcher', title: 'Scan competitors' }), worker: { status: 'running', startedAt: Date.now() - 5000, canInterrupt: true, id: 'wo', runId: 'ro' } };
     const down = st(runningRow);
-    A.eq([down.cls, down.live, down.t, !!down.stop], ['unknown', 'status unknown — station unreachable', '', false], 'a running worker the station cannot vouch for is neither working nor stopped');
+    A.eq([down.cls, down.live, down.t, !!down.stop], ['unknown', 'status unknown — farm unreachable', '', false], 'a running worker the farm cannot vouch for is neither working nor stopped');
     const card = D._internals.lineHtml({ lead: 'outage1', rows: [runningRow] }, 'home');
-    A.ok(!/data-dg-stop=/.test(card) && /Status unknown — station unreachable/.test(card), 'its row offers no Stop and says why');
+    A.ok(!/data-dg-stop=/.test(card) && /Status unknown — farm unreachable/.test(card), 'its row offers no Stop and says why');
     A.ok(/dg-line-sum[^>]*>1 status unknown</.test(card) && !/working|stopped/.test(card.replace(/Scan competitors/g, '')), 'the card header claims nothing it cannot prove');
     fresh = true;
-    A.eq(st(runningRow).cls, 'working', 'once the station answers again the row is working');
+    A.eq(st(runningRow).cls, 'working', 'once the farm answers again the row is working');
     global.Overseer = ANSWERED; delete global.App;
   }
   const done = st({ ws: ws({ history: [{ role: 'system', sys: true, content: '— delegated —' }, { role: 'assistant', content: '## Found\n**Two** competitors undercut us.' }] }), worker: { status: 'done', startedAt: 1000, completedAt: 13000 } });
@@ -164,8 +164,8 @@ const roster = new Map([['researcher', { system: 'R', name: 'MIRA' }], ['writer'
   A.eq(st({ ws: ws(), worker: { status: 'error', reason: 'x'.repeat(60) } }).live, 'failed', 'a long free-text reason is not pasted into the one-line status');
   A.eq(st({ ws: ws({ runIds: ['r9'], lastRunReason: 'empty' }), worker: null }).live, 'ended · the model sent an empty reply', 'a foreground worker that got nothing back says so');
   A.eq(st({ ws: ws({ runIds: ['r9'], lastRunReason: 'x'.repeat(60) }), worker: null }).live, 'ended · before finishing', 'and an unreadable reason still says it did not finish');
-  A.eq(st({ ws: ws(), worker: { status: 'stale' } }).live, 'stopped when the station restarted', 'a stale worker is honest about it');
-  A.eq(st({ ws: ws(), worker: { status: 'stale', reason: 'sidecar restarted before this worker finished' } }).live, 'stopped when the station restarted', 'a worker a restart cut off says so');
+  A.eq(st({ ws: ws(), worker: { status: 'stale' } }).live, 'stopped when the farm restarted', 'a stale worker is honest about it');
+  A.eq(st({ ws: ws(), worker: { status: 'stale', reason: 'sidecar restarted before this worker finished' } }).live, 'stopped when the farm restarted', 'a worker a restart cut off says so');
   // the liveness check also settles a hung worker as stale (reason "stalled: …") while the station stays up
   const hung = st({ ws: ws(), worker: { status: 'stale', reason: 'stalled: no progress for 450s while a tool call was still running — the liveness check stopped this worker (threshold 420s)' } });
   A.eq(hung.cls + '|' + hung.live, 'stopped|stopped after making no progress', 'a worker the liveness check stopped never blames a restart that did not happen');
@@ -263,7 +263,7 @@ const roster = new Map([['researcher', { system: 'R', name: 'MIRA' }], ['writer'
   const settled = L.lineHtml({ lead: 'b2', rows: [running.rows[1]] }, 'home');
   A.ok(/aria-expanded="false"/.test(settled) && !/dg-line-list/.test(settled), 'once every worker settles it folds to the one line');
   L.closed.add('b1');
-  A.ok(/aria-expanded="false"/.test(L.lineHtml(running, 'home')), 'the Commander folding a running dispatch is respected');
+  A.ok(/aria-expanded="false"/.test(L.lineHtml(running, 'home')), 'the Farmer folding a running dispatch is respected');
   pend.set('home', [{ promptId: 'p5', tool: 'fs.write', agentId: 'agent', workerStreamId: 'k1' }]);
   const asking = L.lineHtml(running, 'home');
   A.ok(/aria-expanded="true"/.test(asking) && /data-dg-consent="once" data-dg-ws="k1"/.test(asking) && /data-dg-consent="deny" data-dg-ws="k1"/.test(asking), 'a worker waiting on you shows even folded, with Approve and Deny on its row');
@@ -396,7 +396,7 @@ const roster = new Map([['researcher', { system: 'R', name: 'MIRA' }], ['writer'
   const ui = src('frontend/app/stationui.js'), world = src('frontend/app/world.js'), auto = src('frontend/app/autosessions.js'), rt = src('frontend/app/windows/routines.js');
   A.ok(/li\.classList\.contains\('asking'\) && typeof App !== 'undefined' && App\.waitingSessionOf \? App\.waitingSessionOf\(li\.dataset\.agentId\)/.test(ui), 'a crew card that needs your OK opens where it is waiting');
   A.ok(/const ses = p\.runId \? \{ ws: 'cron-' \+ p\.runId \}/.test(world), 'a routine notification opens that run\'s own session');
-  A.ok(/lastReadAt: existing \? undefined : 0 \}\);/.test(auto), 'a routine run that finished while the station was closed arrives unread');
+  A.ok(/lastReadAt: existing \? undefined : 0 \}\);/.test(auto), 'a routine run that finished while the farm was closed arrives unread');
   A.ok(/data-act="open-run" data-run="/.test(rt) && /ReturnStore\.openWork\(\{ runId: btn\.dataset\.run/.test(rt), 'every routine HISTORY run opens its conversation');
   A.ok(/if \(runs\.has\(r\.runId\) \|\| transcriptLiveRuns\.has\(r\.runId\)\) return false;/.test(idx.slice(idx.indexOf('function serveRunRecoveries'))), 'live runs are not recoverable');
   const bf = src('frontend/app/briefing.js');

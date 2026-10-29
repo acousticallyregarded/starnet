@@ -45,9 +45,9 @@ function runDashboard(station, opts) {
   const ui = {
     focus: '', input: '', overlay: null, picker: null, streams: {}, history: [], histAt: null, histDraft: '', pasting: false, flash: null, scroll: 0, keyFlash: null, quitArmed: 0, quitNote: '',
     // which station this is, in words: the desktop app's own, a private one this terminal booted, or one at an address
-    stationLabel: station.mode === 'spawned' ? 'private station · port ' + client.base.replace(/^.*:/, '')
-      : station.workspace ? 'desktop station · port ' + client.base.replace(/^.*:/, '')
-        : 'station · ' + client.base.replace(/^http:\/\//, ''),
+    stationLabel: station.mode === 'spawned' ? 'private farm · port ' + client.base.replace(/^.*:/, '')
+      : station.workspace ? 'desktop farm · port ' + client.base.replace(/^.*:/, '')
+        : 'farm · ' + client.base.replace(/^http:\/\//, ''),
     still: !!(env.STARNET_STILL === '1'),
     // the REAL logo: an image where the terminal draws Sixel, else the same logo as braille dots. STARNET_LOGO=dots skips
     // the image, =ascii draws the drawn-letter version, =plain keeps to the one-line mark
@@ -328,7 +328,7 @@ function runDashboard(station, opts) {
     const r = await client.request('POST', '/api/consent', { runId: q.runId, promptId: q.promptId, decision, via: 'terminal' });
     if (r.ok && r.json && r.json.ok) model.apply('permission.response', { promptId: q.promptId, decision: r.json.decision || decision, via: 'terminal' }, now());
     else if (r.ok && r.json && r.json.gone) { model.apply('permission.response', { promptId: q.promptId, decision: 'deny', stopped: true }, now()); flash('that ask is no longer waiting — it was answered elsewhere or its run ended'); }
-    else flash('the station did not take that answer' + (r.error ? ' (' + r.error + ')' : r.status ? ' (HTTP ' + r.status + ')' : ''));
+    else flash('the farm did not take that answer' + (r.error ? ' (' + r.error + ')' : r.status ? ' (HTTP ' + r.status + ')' : ''));
     paint();
   }
   // ---- the folder: work in the trusted project `starnet` was started in, or ask to trust it -------------------------
@@ -370,7 +370,7 @@ function runDashboard(station, opts) {
     const ids = [...a.runs];
     const rs = await Promise.all(ids.map(runId => client.request('POST', '/api/cancel', { runId })));
     const n = rs.filter(r => r.ok && r.json && r.json.ok).length;
-    flash(n ? 'stopping ' + n + ' run(s) of ' + a.name : 'the station did not confirm the stop', n ? 'ok' : 'am');
+    flash(n ? 'stopping ' + n + ' run(s) of ' + a.name : 'the farm did not confirm the stop', n ? 'ok' : 'am');
   }
   // ---- /model: every model of every CONNECTED provider, the one the agent runs on marked ------------------------------
   let modelsCache = null;
@@ -410,7 +410,7 @@ function runDashboard(station, opts) {
       }));
       const ci = tui.pickerView(p).findIndex(i => i.current);
       p.sel = ci >= 0 ? ci : 0;
-    } catch (e) { p.error = 'the station did not list its models: ' + ((e && e.message) || e); }
+    } catch (e) { p.error = 'the farm did not list its models: ' + ((e && e.message) || e); }
     p.loading = false;
     // /model <name> that matches exactly one model switches at once
     if (p.filter && ui.picker === p) { const v = tui.pickerView(p); if (v.length === 1) { ui.picker = null; return setModel(a.id, v[0].provider, v[0].model); } }
@@ -426,12 +426,12 @@ function runDashboard(station, opts) {
       if (u.gone) flash(u.line, 'bad', 9000);
       else {
         a.model = String(u.st.model || ''); a.provider = String(u.st.provider || '');   // what the station holds, as it says it
-        flash(u.lead + ' The station has ' + a.name + (a.model ? ' on ' + a.provider + ' · ' + a.model : ' with no model') + ' right now.', 'am', 12000);
+        flash(u.lead + ' The farm has ' + a.name + (a.model ? ' on ' + a.provider + ' · ' + a.model : ' with no model') + ' right now.', 'am', 12000);
       }
     } else if (r.ok && r.status === 200 && r.json && r.json.ok) {
       a.model = String(r.json.model); a.provider = String(r.json.provider);
       flash(a.name + ' now runs on ' + a.provider + ' · ' + a.model + ' (from its next message)', 'ok', 6000);
-    } else flash('the model did not change: ' + ((r.json && r.json.error) || r.error || (r.status === 404 ? 'this station is older than /model' : 'HTTP ' + r.status)), 'bad', 9000);
+    } else flash('the model did not change: ' + ((r.json && r.json.error) || r.error || (r.status === 404 ? 'this farm is older than /model' : 'HTTP ' + r.status)), 'bad', 9000);
     loadRoster().then(paint, () => {});
   }
   function pickerKey(str, k) {
@@ -468,7 +468,7 @@ function runDashboard(station, opts) {
   // what this terminal runs itself (the rest of the app's commands are the station's, or still the app's: marked so)
   const TERMINAL_COMMANDS = [
     { name: 'flow', aliases: ['flows'], desc: 'list workflows · /flow run <name> <text> sends one job down one', argsHint: '[run <name> <text>]' },
-    { name: 'stat', desc: 'the STAT page: the station\'s level, spend, crew and work' },
+    { name: 'stat', desc: 'the STAT page: the farm\'s level, spend, crew and work' },
     { name: 'crew', desc: 'the CREW page: every agent on one line' },
     { name: 'work', desc: 'the WORK page: workflows, routines, the away shift' },
     { name: 'comms', desc: 'back to the conversation' },
@@ -511,7 +511,7 @@ function runDashboard(station, opts) {
     const d = r.ok && r.status === 200 && r.json && r.json.ok && r.json.directive;
     ui.pageData.usage = d && d.type === 'say'
       ? { title: String(d.title || ''), lines: (Array.isArray(d.lines) && d.lines.length ? d.lines : String(d.text || '').split('\n')).map(String).filter(l => l.trim()) }
-      : { error: 'the station did not say its spend (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ')' };
+      : { error: 'the farm did not say its spend (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ')' };
   }
   async function loadRoutines() {
     const r = await get('/api/cron', 10000);
@@ -599,9 +599,9 @@ function runDashboard(station, opts) {
   // it runs, only a run this terminal started is known for sure)
   async function openFile(act) {
     const a = model.state.agents.get(act.agentId);
-    if (!folderLib.isLocalHost(client.host)) return flash('a file opens only from a station on this computer');
+    if (!folderLib.isLocalHost(client.host)) return flash('a file opens only from a farm on this computer');
     let tickets;
-    try { tickets = require(require('node:path').join(__dirname, '..', '..', 'sidecar', 'apitickets.js')); } catch (_) { return flash('this starnet cannot sign a file link (the station’s ticket module is missing)', 'bad', 8000); }
+    try { tickets = require(require('node:path').join(__dirname, '..', '..', 'sidecar', 'apitickets.js')); } catch (_) { return flash('this starnet cannot sign a file link (the farm’s ticket module is missing)', 'bad', 8000); }
     let project = typeof act.root === 'string' ? act.root : null;
     if (project === null) {
       const r = act.runId ? await get('/api/runs?agent=*&runId=' + encodeURIComponent(act.runId), 8000) : null;
@@ -610,7 +610,7 @@ function runDashboard(station, opts) {
       if (rec) project = String(rec.projectRoot || '');
       else if (run && a && (run.streamId === streamOf(a.id) || run.streamId.indexOf(core.cliStreamId(a.id)) === 0)) project = ui.project ? ui.project.root : '';
     }
-    if (project === null) return flash('that run is still going — its file opens once the station has recorded where it worked', 'am', 7000);
+    if (project === null) return flash('that run is still going — its file opens once the farm has recorded where it worked', 'am', 7000);
     openUrl(mouse.fileUrl(client.base, tickets, client.token(), { agent: act.agentId, path: act.path, project, now: now() }));
     flash('opening ' + act.path + ' (' + (project ? folderLib.shortPath(project, 40) : (a ? a.name : act.agentId) + '’s workspace') + ') in your browser', 'ok', 6000);
   }
@@ -797,7 +797,7 @@ function runDashboard(station, opts) {
       if (!a) return flash('no agent to talk to');
       return send(a.id, body, text);
     }
-    flash(cmd + ' only works in the StarNet desktop app', 'am', 6000);
+    flash(cmd + ' only works in the Homestead desktop app', 'am', 6000);
   }
   // /cron: the routines scheduler, as the app's /cron does it — on / off arms it, alone it says its real state (a read
   // that failed says the state is unknown, never "off, 0 jobs")
@@ -866,7 +866,7 @@ function runDashboard(station, opts) {
     const cat = ui.slashCatalog || [];
     const of = s => cat.filter(c => c.source === s).map(c => c.name);
     const recipes = of('recipe'), skills = of('skill'), yours = of('user');
-    if (!ui.slashCatalog) return sayHere('/bundles', ['The station\'s command catalog has not been read yet — /reload-skills reads it.'], false);
+    if (!ui.slashCatalog) return sayHere('/bundles', ['The farm\'s command catalog has not been read yet — /reload-skills reads it.'], false);
     sayHere('/bundles', ['Bundles: ' + recipes.length + ' recipe blueprint' + (recipes.length === 1 ? '' : 's') + (recipes.length ? ' (' + recipes.slice(0, 6).join(', ') + (recipes.length > 6 ? ', …' : '') + ')' : '')
       + '; ' + skills.length + ' skill' + (skills.length === 1 ? '' : 's') + (skills.length ? ' (' + skills.slice(0, 6).join(', ') + (skills.length > 6 ? ', …' : '') + ')' : '')
       + (yours.length ? '; ' + yours.length + ' of your own (' + yours.slice(0, 6).join(', ') + ')' : '') + '.']);
@@ -880,7 +880,7 @@ function runDashboard(station, opts) {
     if (!c) return sayHere('/blueprint', ['No blueprint matched "' + raw + '".'], false);
     const r = await client.request('POST', '/api/slash/dispatch', { input: '/' + c.name, agentId: ui.focus || 'agent', client: 'terminal' }, { timeoutMs: 20000 });
     const d = r.ok && r.status === 200 && r.json && r.json.ok && r.json.directive;
-    if (!(d && d.type === 'insert' && d.text)) return sayHere('/blueprint', ['The station did not hand back /' + c.name + '\'s text (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ').'], false);
+    if (!(d && d.type === 'insert' && d.text)) return sayHere('/blueprint', ['The farm did not hand back /' + c.name + '\'s text (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ').'], false);
     ui.input = String(d.text).slice(0, 4000);
     slashReset();
     flash('loaded blueprint /' + c.name + ' into the prompt — fill in its blanks, then press enter', 'ok', 8000);
@@ -905,7 +905,7 @@ function runDashboard(station, opts) {
   async function reloadSkillsCommand() {
     await loadCatalog().catch(() => {});
     const cat = ui.slashCatalog || [];
-    if (!cat.length) return sayHere('/reload-skills', ['The station\'s command catalog could not be read.'], false);
+    if (!cat.length) return sayHere('/reload-skills', ['The farm\'s command catalog could not be read.'], false);
     sayHere('/reload-skills', ['Reloaded the command catalog: ' + cat.length + ' commands — ' + cat.filter(c => c.source === 'skill').length + ' skills, ' + cat.filter(c => c.source === 'recipe').length + ' recipes, ' + cat.filter(c => c.source === 'user').length + ' of your own.']);
   }
   // the live run on the conversation shown (its stream), when there is one
@@ -923,7 +923,7 @@ function runDashboard(station, opts) {
     const r = await client.request('POST', '/api/run/steer', { runId, text }, { timeoutMs: 10000 });
     if (r.ok && r.status === 200 && r.json && r.json.ok) return sayHere('/steer', ['Steering the live run — it folds your note in on its next step: ' + text]);
     if (r.status === 404 || r.status === 409) { queueText(ui.focus, 'Steering note for the current task: ' + text); return sayHere('/steer', ['That run already ended — your note is queued to go with the next message.']); }
-    sayHere('/steer', ['The station did not take the steer (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ').'], false);
+    sayHere('/steer', ['The farm did not take the steer (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ').'], false);
   }
   // /copy: the agent's last reply onto the clipboard — the terminal's own (OSC 52) and the system's (clip / pbcopy / wl-copy)
   function copyCommand() {
@@ -970,7 +970,7 @@ function runDashboard(station, opts) {
     if (u) {
       if (u.gone) return sayHere(cmd, [u.line], false);
       a.reasoningEffort = u.st.reasoningEffort || null;
-      return sayHere(cmd, [u.lead + ' The station has ' + a.name + '\'s reasoning effort at ' + (a.reasoningEffort || 'the provider\'s default') + ' right now' + (a.reasoningEffort === want ? '.' : '; if the app applies it, it becomes ' + want + '.')], false);
+      return sayHere(cmd, [u.lead + ' The farm has ' + a.name + '\'s reasoning effort at ' + (a.reasoningEffort || 'the provider\'s default') + ' right now' + (a.reasoningEffort === want ? '.' : '; if the app applies it, it becomes ' + want + '.')], false);
     }
     if (!(r.ok && r.status === 200 && r.json && r.json.ok)) return sayHere(cmd, ['Could not set reasoning effort to ' + want + ' (' + ((r.json && r.json.error) || r.error || 'HTTP ' + r.status) + ') — it is still ' + cur + '.'], false);
     a.reasoningEffort = want;
@@ -1273,20 +1273,20 @@ function runDashboard(station, opts) {
   const viaRoster = (r, name) => {
     const j = r && r.json;
     if (!(j && j.via === 'roster')) return '';
-    if (j.save === 'patched' || j.save === 'agrees') return ' (No StarNet app is open: the station\'s roster and the app\'s save both hold this now.)';
-    if (j.save === 'no-record') return ' (No StarNet app is open: the station\'s roster holds this; the app\'s save has no record of ' + name + '.)';
-    if (j.save === 'not-saved') return ' (No StarNet app is open: the station\'s roster holds this, but the app\'s save did not take it (' + (j.saveError || 'refused') + '), so the app may give ' + name + ' its own saved setting back when it opens — /yolo off again then.)';
-    return ' (No StarNet app is open, so the station\'s roster holds this; the app\'s own setting applies again when it opens.)';
+    if (j.save === 'patched' || j.save === 'agrees') return ' (No Homestead app is open: the farm\'s roster and the app\'s save both hold this now.)';
+    if (j.save === 'no-record') return ' (No Homestead app is open: the farm\'s roster holds this; the app\'s save has no record of ' + name + '.)';
+    if (j.save === 'not-saved') return ' (No Homestead app is open: the farm\'s roster holds this, but the app\'s save did not take it (' + (j.saveError || 'refused') + '), so the app may give ' + name + ' its own saved setting back when it opens — /yolo off again then.)';
+    return ' (No Homestead app is open, so the farm\'s roster holds this; the app\'s own setting applies again when it opens.)';
   };
-  const refused = r => (r.json && r.json.error) || r.error || (r.status === 404 ? 'this station is older than this command' : 'HTTP ' + r.status);
+  const refused = r => (r.json && r.json.error) || r.error || (r.status === 404 ? 'this farm is older than this command' : 'HTTP ' + r.status);
   /* the app was asked and did not confirm in time (the station's 6 s): it applies a change before it proves its save, so
      the change may already be in force or still land. Never "unchanged": the station's roster as it is NOW (read after the
      wait, in the reply) is what the terminal says, and takes. null when this was not that answer. */
   const unconfirmed = (r, a) => {
     const j = r && r.json;
     if (!(r && r.status === 409 && j && j.unanswered)) return null;
-    if (j.gone) return { gone: true, line: 'The StarNet app did not confirm in time, and ' + a.name + ' is no longer on the station\'s roster.' };
-    return { st: j.station || {}, lead: 'The StarNet app did not confirm in time — it may still be applying it.' };
+    if (j.gone) return { gone: true, line: 'The Homestead app did not confirm in time, and ' + a.name + ' is no longer on the farm\'s roster.' };
+    return { st: j.station || {}, lead: 'The Homestead app did not confirm in time — it may still be applying it.' };
   };
   async function yoloCommand(args) {
     const a = model.state.agents.get(ui.focus);
@@ -1302,7 +1302,7 @@ function runDashboard(station, opts) {
       if (u.gone) return sayHere('/yolo', [u.line], false);
       const held = u.st.approvalMode === 'full' ? 'full' : 'ask', words = m => m === 'full' ? 'run without prompts' : 'ask first';
       a.approvalMode = held;
-      return sayHere('/yolo', [u.lead + ' The station\'s roster says ' + a.name + ' will ' + words(held) + ' right now'
+      return sayHere('/yolo', [u.lead + ' The farm\'s roster says ' + a.name + ' will ' + words(held) + ' right now'
         + (held !== mode ? '; if the app applies it, ' + a.name + ' will ' + words(mode) : '') + '.'], false);
     }
     if (!(r.ok && r.status === 200 && r.json && r.json.ok)) return sayHere('/yolo', ['Could not change approval mode (' + refused(r) + ') — ' + a.name + ' still will ' + was + '.'], false);
@@ -1337,7 +1337,7 @@ function runDashboard(station, opts) {
         if (u.gone) return sayHere('/personality', [u.line], false);
         a.personaId = u.st.personaId || null;
         const held = a.personaId && P.get ? P.get(a.personaId) : null;
-        return sayHere('/personality', [u.lead + ' The station\'s roster has ' + a.name + '\'s personality as ' + ((held && held.name) || a.personaId || 'the default') + ' right now' + (a.personaId === id ? '.' : '; if the app applies it, it becomes ' + P.get(id).name + '.')], false);
+        return sayHere('/personality', [u.lead + ' The farm\'s roster has ' + a.name + '\'s personality as ' + ((held && held.name) || a.personaId || 'the default') + ' right now' + (a.personaId === id ? '.' : '; if the app applies it, it becomes ' + P.get(id).name + '.')], false);
       }
       if (!(r.ok && r.status === 200 && r.json && r.json.ok)) return sayHere('/personality', ['Could not set the personality (' + refused(r) + ').'], false);
       a.personaId = id;
@@ -1351,19 +1351,19 @@ function runDashboard(station, opts) {
 
   // what the terminal answers for what only the app (or the station by itself) does
   const APP_ONLY = {
-    '/voice': 'Spoken replies play in the StarNet app — a terminal has no speaker or microphone path.',
-    '/suggestions': 'Recurring-task suggestions are learned in the StarNet app\'s own storage — open the app to review them.',
-    '/save': 'Nothing to save from here: the station records every run, transcript and setting as it happens.',
+    '/voice': 'Spoken replies play in the Homestead app — a terminal has no speaker or microphone path.',
+    '/suggestions': 'Recurring-task suggestions are learned in the Homestead app\'s own storage — open the app to review them.',
+    '/save': 'Nothing to save from here: the farm records every run, transcript and setting as it happens.',
     // the station keeps a conversation's transcript as it happened (append-only, no copy route yet): these stay the app's
-    '/branch': 'Forking a conversation is the StarNet app\'s for now — the station keeps a terminal conversation\'s transcript as it happened and has no copy of one yet. /new starts a fresh conversation; /resume goes back to an earlier one.',
-    '/fork': 'Forking a conversation is the StarNet app\'s for now — the station keeps a terminal conversation\'s transcript as it happened and has no copy of one yet. /new starts a fresh conversation; /resume goes back to an earlier one.',
-    '/undo': 'The station keeps this conversation\'s transcript as it happened, so no turn can be taken back from here yet. /new starts clean; /resume goes back to an earlier conversation.',
-    '/title': 'A terminal conversation is named by its first message (/resume lists them by it); renaming one is the StarNet app\'s for now.'
+    '/branch': 'Forking a conversation is the Homestead app\'s for now — the farm keeps a terminal conversation\'s transcript as it happened and has no copy of one yet. /new starts a fresh conversation; /resume goes back to an earlier one.',
+    '/fork': 'Forking a conversation is the Homestead app\'s for now — the farm keeps a terminal conversation\'s transcript as it happened and has no copy of one yet. /new starts a fresh conversation; /resume goes back to an earlier one.',
+    '/undo': 'The farm keeps this conversation\'s transcript as it happened, so no turn can be taken back from here yet. /new starts clean; /resume goes back to an earlier conversation.',
+    '/title': 'A terminal conversation is named by its first message (/resume lists them by it); renaming one is the Homestead app\'s for now.'
   };
 
   function showStatus() {
     const a = model.state.agents.get(ui.focus);
-    if (!a) return flash('no agent on this station yet');
+    if (!a) return flash('no agent on this farm yet');
     const row = model.rows(now()).find(r => r.id === a.id);
     ui.overlay = {
       title: 'STATUS · ' + a.name,
@@ -1383,13 +1383,13 @@ function runDashboard(station, opts) {
     const cli = require('./version.js').cliVersion(require('node:path').join(__dirname, '..', '..'));
     const r = await get('/api/version');
     const v = (r.ok && r.status === 200 && r.json) || {};
-    ui.overlay = { title: 'VERSION', items: [['starnet', cli], ['station', v.harness ? 'harness ' + v.harness + (v.app ? ' · app ' + v.app : '') : 'did not say (' + (r.error || 'HTTP ' + r.status) + ')'], ['node', (v.node ? v.node + ' (station) · ' : '') + process.version + ' (here)']], foot: 'any key closes this' };
+    ui.overlay = { title: 'VERSION', items: [['starnet', cli], ['station', v.harness ? 'harness ' + v.harness + (v.app ? ' · app ' + v.app : '') : 'did not say (' + (r.error || 'HTTP ' + r.status) + ')'], ['node', (v.node ? v.node + ' (farm) · ' : '') + process.version + ' (here)']], foot: 'any key closes this' };
     paint();
   }
   // /skills: the agent's skills and recipes as the station lists them for it (its saved floor), picked into the prompt
   async function openSkillsPicker(filter) {
     const a = model.state.agents.get(ui.focus);
-    if (!a) return flash('no agent on this station yet');
+    if (!a) return flash('no agent on this farm yet');
     const p = {
       kind: 'skills', title: 'SKILLS · ' + a.name, note: 'run one: /<skill> <task>', filter: String(filter || ''), sel: 0, items: [], loading: true,
       foot: '↑ ↓ pick · enter puts it in the prompt · esc close · type to filter',
@@ -1398,7 +1398,7 @@ function runDashboard(station, opts) {
     ui.picker = p; ui.overlay = null; paint();
     const r = await get('/api/slash/catalog?agent=' + encodeURIComponent(a.id) + '&client=terminal', 15000);
     const cmds = (r.ok && r.status === 200 && r.json && Array.isArray(r.json.commands)) ? r.json.commands : null;
-    if (!cmds) p.error = 'the station did not list its skills (' + (r.error || 'HTTP ' + r.status) + ')';
+    if (!cmds) p.error = 'the farm did not list its skills (' + (r.error || 'HTTP ' + r.status) + ')';
     else {
       // your own commands, then the agent's skills, then the recipes everyone has
       const rank = { user: 0, skill: 1, recipe: 2 };
@@ -1417,7 +1417,7 @@ function runDashboard(station, opts) {
   async function waitOrSkip(ms) { const end = now() + ms; while (now() < end && ui.wake && !ui.wake.ff) await sleep(40); }
   const wakeIO = {
     stage: (title, detail) => { if (ui.wake) { ui.wake.stage = { title: String(title || ''), detail: String(detail || '') }; paint(); } },
-    speaker: name => { if (ui.wake) ui.wake.speaker = String(name || 'STARNET'); },
+    speaker: name => { if (ui.wake) ui.wake.speaker = String(name || 'HOMESTEAD'); },
     note: (text, style) => { if (ui.wake) { ui.wake.note = String(text || ''); ui.wake.noteStyle = style || 'dim'; paint(); } },
     feed: key => { if (ui.wake) { ui.wake.feedKey = key || null; paint(); } },
     roster: list => { model.setRoster({ agents: list }); ui.focus = 'agent'; if (ui.wake) ui.wake.crew = true; loadSkins().then(paint, () => {}); paint(); },
@@ -1479,28 +1479,28 @@ function runDashboard(station, opts) {
     const boot = !!(save && save.agent && save.agent.bootstrappedBy === 'starnet-cli' && save.agent.onboarded !== true);
     const a = boot ? null : save && save.agent;
     if (a && !((a.onboarded === undefined) ? !a.purpose : !a.onboarded)) return false;   // the app's own needsAwakening
-    ui.wake = { log: [], ask: null, stage: { title: 'THE AWAKENING', detail: '' }, speaker: 'STARNET', feedKey: null, note: '', typing: false, ff: false };
+    ui.wake = { log: [], ask: null, stage: { title: 'THE AWAKENING', detail: '' }, speaker: 'HOMESTEAD', feedKey: null, note: '', typing: false, ff: false };
     paint();
     /* one setup at a time: the app runs this station (open, or in the background for a terminal) and its page holds the
        setup it started — a save written from here would leave that page stale. Quitting it never helps now: `starnet`
        starts it again. A prior install's station is the app's to recover. */
     if (station.mode === 'attached' && station.workspace) {
-      await wakeIO.say([{ text: 'StarNet’s setup isn’t finished on this station. open StarNet — it’s already running — and finish creating your Overseer in its window, then come back here.', cps: 60 }], { who: 'STARNET' });
+      await wakeIO.say([{ text: 'Homestead’s setup isn’t finished on this farm. open Homestead — it’s already running — and finish creating your Overseer in its window, then come back here.', cps: 60 }], { who: 'HOMESTEAD' });
       return true;
     }
     if (!a && !boot && r.json.lineage && r.json.lineage.priorInstallEvidence) {
-      await wakeIO.say([{ text: 'this computer has a station from an earlier StarNet install. open the StarNet app to recover it before setting up a new one.', cps: 60 }], { who: 'STARNET' });
+      await wakeIO.say([{ text: 'this computer has a farm from an earlier Homestead install. open the Homestead app to recover it before setting up a new one.', cps: 60 }], { who: 'HOMESTEAD' });
       return true;
     }
     let aw;
     try {
       aw = require('./awaken.js').makeAwakening({ st: require('./station-io.js').makeStationIO(client), io: wakeIO, mods: require('./app-modules.js').load(), env });
     } catch (e) {
-      await wakeIO.say([{ text: 'the setup could not load the StarNet app’s files (' + ((e && e.message) || e) + '). open the StarNet app to set up this station.', cps: 80 }], { who: 'STARNET' });
+      await wakeIO.say([{ text: 'the setup could not load the Homestead app’s files (' + ((e && e.message) || e) + '). open the Homestead app to set up this farm.', cps: 80 }], { who: 'HOMESTEAD' });
       return true;
     }
     aw.run({ save, resume: !!a, privateStation: station.mode === 'spawned' }).then(async res => {
-      const last = ui.wake && [...ui.wake.log].reverse().find(e => e.who !== 'YOU' && e.who !== 'STARNET');
+      const last = ui.wake && [...ui.wake.log].reverse().find(e => e.who !== 'YOU' && e.who !== 'HOMESTEAD');
       ui.wake = null;
       await loadRoster().catch(() => {});
       ui.focus = 'agent';
@@ -1511,7 +1511,7 @@ function runDashboard(station, opts) {
     }, e => {
       if (!ui.wake) return;
       ui.wake.ask = null; ui.wake.typing = false;
-      ui.wake.log.push({ who: 'STARNET', text: 'setup stopped: ' + ((e && e.message) || e) + '. press ctrl+c, then run starnet again to pick up from here.', full: true, bad: true });
+      ui.wake.log.push({ who: 'HOMESTEAD', text: 'setup stopped: ' + ((e && e.message) || e) + '. press ctrl+c, then run starnet again to pick up from here.', full: true, bad: true });
       paint();
     });
     return true;
@@ -1742,7 +1742,7 @@ function runDashboard(station, opts) {
     if (stopped) return;
     if (!(rt.ok && rt.status === 200)) {
       stop(core.EXIT.STATION);
-      process.stderr.write('starnet: could not read the station roster (' + (rt.error || 'HTTP ' + rt.status) + ')\n');
+      process.stderr.write('starnet: could not read the farm roster (' + (rt.error || 'HTTP ' + rt.status) + ')\n');
       return;
     }
     await Promise.all([loadSnapshot(), loadBudget(), loadLines().catch(() => {}), locateFolder().catch(() => {})]);

@@ -41,7 +41,7 @@ async function throwsMsg(fn) { try { await fn(); return ''; } catch (e) { return
     A.eq(tool('plugin.submit').scope, 'execute', 'submit is EXECUTE scope (never carried by a cached Always or an unattended run)');
     A.eq(tool('plugin.submit').freshConsent, true, 'submit asks fresh every time — a cached Always never carries it on any surface (2026-10-10)');
     const granted = CAP_REGISTRY.computer.filter(g => g.capId === 'pluginauthor').map(g => g.tool).sort();
-    A.eq(granted, [], 'no authoring tool is granted: the crew builds APPS for the Commander, never plugins to approve (Andrew 2026-09-30)');
+    A.eq(granted, [], 'no authoring tool is granted: the crew builds APPS for the Farmer, never plugins to approve (Andrew 2026-09-30)');
 
     // ---- start ----
     const s = await run('plugin.draft_start', { id: 'pr-radar', name: 'PR Radar', description: 'Open PRs' });
@@ -91,8 +91,8 @@ async function throwsMsg(fn) { try { await fn(); return ''; } catch (e) { return
     await run('plugin.preview', { id: 'pr-radar', screen: 'settings' });
     A.eq(previews[1].screen, 'settings', 'preview can open a named screen');
     const sub = await run('plugin.submit', { id: 'pr-radar' });
-    A.ok(/Installed the "pr-radar" plugin — it is OFF until the Commander approves it/.test(sub.content), 'submit installs it OFF and says so');
-    A.eq(installs, ['pr-radar'], 'the station re-lists after install (so EXTENSIONS shows it pending)');
+    A.ok(/Installed the "pr-radar" plugin — it is OFF until the Farmer approves it/.test(sub.content), 'submit installs it OFF and says so');
+    A.eq(installs, ['pr-radar'], 'the farm re-lists after install (so EXTENSIONS shows it pending)');
     A.ok(await fsp.stat(path.join(PLUGINS, 'pr-radar', 'ui', 'extra.css')).then(() => true, () => false), 'the whole draft is installed');
     A.ok(!(await fsp.readdir(DRAFTS)).some(n => /^\.staging-/.test(n)), 'no staging folder is left behind');
 

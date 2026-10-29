@@ -36,28 +36,28 @@ const DEFAULT_AGENT_ID = 'agent';
 
 // ---- argv --------------------------------------------------------------------------------------
 const USAGE = [
-  'starnet — run StarNet agents from a terminal (no station UI required)',
+  'starnet — run Homestead agents from a terminal (no farm UI required)',
   '',
   'Usage:',
-  '  starnet                              the live crew dashboard (needs a terminal; keys below). On a station with no agent',
+  '  starnet                              the live crew dashboard (needs a terminal; keys below). On a farm with no agent',
   '                                       yet it sets one up first: your Overseer, a brain to think with (ChatGPT, Claude,',
   '                                       Grok, Kimi, StarNet credits or Ollama), the awakening and its interview',
   '  starnet -p "<prompt>"                run one task and stream the answer to stdout',
   '  starnet run "<prompt>"               same as -p',
   '  starnet -p -                         read the prompt from stdin',
-  '  starnet status                       is a station reachable? version, workspace, providers (names only)',
-  '  starnet doctor                       the station\'s static diagnostics report (no live probes)',
+  '  starnet status                       is a farm reachable? version, workspace, providers (names only)',
+  '  starnet doctor                       the farm\'s static diagnostics report (no live probes)',
   '  starnet init                         create the default workspace + one full-power agent for headless runs (no run;',
   '                                       `starnet` then gives it the awakening the first time you open it)',
   '  starnet ls                           every agent: status, what it is doing now, open asks',
   '  starnet approve [agent] [--session]  allow the oldest open ask (of that agent); deny [agent] refuses it',
-  '  starnet watch                        print the live events of the station, one line each (--json: one object each)',
+  '  starnet watch                        print the live events of the farm, one line each (--json: one object each)',
   '  starnet flow                         list workflows; flow run <name> "<text>" sends one job and waits',
   '',
-  'StarNet app closed? starnet starts its station in the background: the app\'s keys, no window (the tray shows it runs).',
-  '  When the last starnet session ends it closes again, unless routines are armed or StarNet is set to stay in the tray',
-  '  (the same as closing its window). Opening StarNet while it runs shows that same station (on macOS: its',
-  '  menu-bar icon\'s Open StarNet — a Dock click does not bring that window back yet).',
+  'Homestead app closed? starnet starts its farm in the background: the app\'s keys, no window (the tray shows it runs).',
+  '  When the last starnet session ends it closes again, unless routines are armed or Homestead is set to stay in the tray',
+  '  (the same as closing its window). Opening Homestead while it runs shows that same farm (on macOS: its',
+  '  menu-bar icon\'s Open Homestead — a Dock click does not bring that window back yet).',
   '',
   'Folder: starnet works in the trusted project you start it in. Started in one not trusted yet, the dashboard asks',
   '  TRUST THIS FOLDER? (y trusts it, the same as adding it under PROJECTS in the app); your home folder is never asked',
@@ -66,12 +66,12 @@ const USAGE = [
   'Dashboard mouse: click an agent to open its chat, a tab for its page, a card\'s key to answer · right-click an agent',
   '  for its menu · ctrl+click opens a link or a file an agent wrote · STARNET_MOUSE=0 keeps the terminal\'s own selection',
   'Dashboard commands: /model [name] · /new · /resume · /stop · /retry · /status · /flow · /flow run <name> <text> · /help',
-  '  and the station\'s own: /usage · /tools · /routine · /away · your own commands · each skill as /<skill> <task> (/skills)',
-  'Dashboard look: the StarNet logo as an image where the terminal draws Sixel (Windows Terminal, WezTerm, iTerm2), braille',
+  '  and the farm\'s own: /usage · /tools · /routine · /away · your own commands · each skill as /<skill> <task> (/skills)',
+  'Dashboard look: the Homestead logo as an image where the terminal draws Sixel (Windows Terminal, WezTerm, iTerm2), braille',
   '  dots elsewhere · STARNET_LOGO=dots|ascii|plain picks one · NO_COLOR=1 drops color · needs at least 46×16',
   '  /theme picks the colors: red (the default), amber, green, blue, purple, white — the app colors; kept for the next',
   '  starnet (STARNET_THEME=<name> overrides it)',
-  '  where images draw, the foot of CREW is the station camera on the agent you talk to, in ASCII: it wanders, walks to',
+  '  where images draw, the foot of CREW is the farm camera on the agent you talk to, in ASCII: it wanders, walks to',
   '  its desk and types while it works; its rim glows in the theme color working, amber when it needs you, green when done',
   '',
   'Run options:',
@@ -84,21 +84,21 @@ const USAGE = [
   '  --timeout <sec>    cancel the run after N seconds (exit 4)',
   '  --yes              approve consent prompts automatically (non-interactive default is DENY)',
   '',
-  'Station options:',
-  '  --port <n>         attach to a station on this port (env STARNET_PORT)',
-  '  --host <h>         station host (default 127.0.0.1)',
-  '  --token <t>        station API token (env STARNET_TOKEN); otherwise read from the served page',
-  '  --workspace <dir>  workspace to boot when no station is reachable (env STARNET_WORKSPACES)',
+  'Farm options:',
+  '  --port <n>         attach to a farm on this port (env STARNET_PORT)',
+  '  --host <h>         farm host (default 127.0.0.1)',
+  '  --token <t>        farm API token (env STARNET_TOKEN); otherwise read from the served page',
+  '  --workspace <dir>  workspace to boot when no farm is reachable (env STARNET_WORKSPACES)',
   '  --name <NAME>      agent name used by a first-time bootstrap (default OVERSEER)',
-  '  --no-spawn         never boot a station; fail (exit 3) if none is reachable',
-  '  --spawn            always boot a station for this run (never attach to a running one); StarNet\'s own station is',
+  '  --no-spawn         never boot a farm; fail (exit 3) if none is reachable',
+  '  --spawn            always boot a farm for this run (never attach to a running one); Homestead\'s own farm is',
   '                     never booted without its keys: plain starnet starts it, add --workspace <dir> for a separate one',
   '',
-  'Exit codes: 0 done · 1 run failed · 2 usage · 3 no station / not configured · 4 cancelled · 5 stopped early · 6 nothing to answer',
+  'Exit codes: 0 done · 1 run failed · 2 usage · 3 no farm / not configured · 4 cancelled · 5 stopped early · 6 nothing to answer',
   '',
-  'Credentials are never taken on the command line. A spawned station reads them from the environment',
+  'Credentials are never taken on the command line. A spawned farm reads them from the environment',
   '(STARNET_OPENROUTER_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY, …) or from a ChatGPT/Codex sign-in already',
-  'stored in the workspace; an attached station uses whatever it already has.'
+  'stored in the workspace; an attached farm uses whatever it already has.'
 ].join('\n');
 
 const STATION_COMMANDS = ['dash', 'ls', 'approve', 'deny', 'watch', 'flow'];
@@ -211,9 +211,9 @@ function parseArgs(argv, env, ctx) {
         --no-spawn (a question: status, ls, …) → refuse, saying `starnet` starts it. --spawn alone refuses too:
         with no --workspace it boots the default workspace, which IS that station, so the reason names both ways;
      5. --no-spawn → refuse; otherwise → spawn. */
-const DESKTOP_CLOSED = 'StarNet isn\'t running — run `starnet` to start it (in the background: your keys stay in the app, no window opens)';
-const DESKTOP_CLOSED_SPAWN = '--spawn would boot StarNet\'s own station without the keys the app keeps — run plain `starnet` to start it with them (no window opens), or add --workspace <dir> for a separate terminal-only station';
-const DESKTOP_NO_APP = 'StarNet\'s station keeps its keys in the StarNet app, and the app was not found on this computer — reinstall StarNet, set STARNET_APP_EXE to the app, or add --workspace <dir> for a separate terminal-only station';
+const DESKTOP_CLOSED = 'Homestead isn\'t running — run `starnet` to start it (in the background: your keys stay in the app, no window opens)';
+const DESKTOP_CLOSED_SPAWN = '--spawn would boot Homestead\'s own farm without the keys the app keeps — run plain `starnet` to start it with them (no window opens), or add --workspace <dir> for a separate terminal-only farm';
+const DESKTOP_NO_APP = 'Homestead\'s farm keeps its keys in the Homestead app, and the app was not found on this computer — reinstall Homestead, set STARNET_APP_EXE to the app, or add --workspace <dir> for a separate terminal-only farm';
 function chooseStation(input) {
   const o = input || {};
   const d = o.desktop || {};
@@ -226,16 +226,16 @@ function chooseStation(input) {
   const hit = cands.find(c => c && c.reachable);
   if (hit) return { mode: 'attach', port: hit.port, source: hit.source };
   const named = cands.find(c => c && (c.source === 'flag' || c.source === 'env'));
-  if (named) return { mode: 'refuse', reason: 'no station is answering on port ' + named.port + ' (from ' + (named.source === 'flag' ? '--port' : 'STARNET_PORT') + ')' };
+  if (named) return { mode: 'refuse', reason: 'no farm is answering on port ' + named.port + ' (from ' + (named.source === 'flag' ? '--port' : 'STARNET_PORT') + ')' };
   if (d.ownerAlive && !d.port && !o.workspaceOverride) {
-    return { mode: 'refuse', reason: 'the desktop app owns the default workspace (pid ' + d.ownerPid + ') but its port could not be discovered — pass --port <n> to attach, or --workspace <dir> to boot a separate station' };
+    return { mode: 'refuse', reason: 'the desktop app owns the default workspace (pid ' + d.ownerPid + ') but its port could not be discovered — pass --port <n> to attach, or --workspace <dir> to boot a separate farm' };
   }
   if (desktopClosed) {
     if (o.noSpawn) return { mode: 'refuse', reason: DESKTOP_CLOSED };
     if (!d.appExe) return { mode: 'refuse', reason: DESKTOP_NO_APP };
     return { mode: 'launch-app', exe: d.appExe };
   }
-  if (o.noSpawn) return { mode: 'refuse', reason: 'no station reachable and --no-spawn was given' };
+  if (o.noSpawn) return { mode: 'refuse', reason: 'no farm reachable and --no-spawn was given' };
   return { mode: 'spawn' };
 }
 
@@ -326,7 +326,7 @@ function pickAgent(runtime, want) {
   const agentId = rec ? rec.agentId : DEFAULT_AGENT_ID;
   const model = String(w.model || (rec && rec.model) || rt.model || '').trim();
   const provider = String(w.provider || (rec && rec.provider) || rt.provider || 'openrouter').trim();
-  if (!model) return { ok: false, error: 'no model to run: agent ' + JSON.stringify(agentId) + ' has none configured — pass --model <slug> (or set STARNET_DEFAULT_MODEL for a spawned station)' };
+  if (!model) return { ok: false, error: 'no model to run: agent ' + JSON.stringify(agentId) + ' has none configured — pass --model <slug> (or set STARNET_DEFAULT_MODEL for a spawned farm)' };
   return { ok: true, agentId, name: rec ? rec.name : agentId, model, provider };
 }
 
@@ -414,7 +414,7 @@ function makeRunTracker() {
         actions.push({ kind: 'consent', ev: p });
         break;
       case 'crew.summon.request':
-        actions.push({ kind: 'note', line: '! the agent asked to summon a crew member (' + String(p.name || p.specId || 'unnamed') + ') — not available headless; the station will time the request out' });
+        actions.push({ kind: 'note', line: '! the agent asked to summon a crew member (' + String(p.name || p.specId || 'unnamed') + ') — not available headless; the farm will time the request out' });
         break;
       case 'provider.fallback':
         actions.push({ kind: 'note', line: '· provider fallback: ' + JSON.stringify(p).slice(0, 200) });
@@ -478,8 +478,8 @@ function bootstrapDocs(input) {
   const name = String(o.name || 'OVERSEER').slice(0, 40);
   const model = String(o.model || '');
   const provider = String(o.provider || 'openrouter');
-  const identity = 'You are ' + name + ', the resident agent of a StarNet station driven from the command line. Sharp, concise, a little dry. Use your real tools (web, files, shell, memory) when a task needs them and report what they actually returned — never what you assume they would.';
-  const purpose = 'Be the always-ready general agent for this station: take a task from the terminal, do the real work with real tools, and answer plainly.';
+  const identity = 'You are ' + name + ', the resident agent of a Homestead farm driven from the command line. Sharp, concise, a little dry. Use your real tools (web, files, shell, memory) when a task needs them and report what they actually returned — never what you assume they would.';
+  const purpose = 'Be the always-ready general agent for this farm: take a task from the terminal, do the real work with real tools, and answer plainly.';
   const roster = {
     version: 1,
     updatedAt: now,
@@ -500,7 +500,7 @@ function bootstrapDocs(input) {
         docs: {
           identity, purpose,
           manual: 'Keep replies brief. Use your real tools when a task needs them and report what they actually returned. Say plainly when something is broken or out of reach.',
-          context: 'This station was bootstrapped headlessly by the starnet CLI. The desktop app can open it at any time; the layout and crew grow from there.'
+          context: 'This farm was bootstrapped headlessly by the starnet CLI. The desktop app can open it at any time; the layout and crew grow from there.'
         },
         stats: { xp: 0, level: 1, lifetimeXp: 0, confidence: 50, samples: 0, counters: {}, milestones: [] }
       },

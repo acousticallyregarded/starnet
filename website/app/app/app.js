@@ -50,11 +50,11 @@ const App = (() => {
   }
   function paintBridgeUnavailable() {
     const chat = el('chat-status');
-    if (chat) { chat.textContent = 'station unreachable'; chat.className = 'status-down'; }
+    if (chat) { chat.textContent = 'farm unreachable'; chat.className = 'status-down'; }
     const pill = el('status-pill');
     if (pill) { pill.textContent = 'LINK DOWN'; pill.className = 'down'; }
     const empty = document.querySelector('.cmsg-empty-line');
-    if (empty) empty.textContent = 'COMMS unavailable — reconnecting to the station.';
+    if (empty) empty.textContent = 'COMMS unavailable — reconnecting to the farm.';
     const sig = el('sig'), bars = sig && sig.querySelector('b');
     if (sig && bars) { sig.classList.remove('standby'); sig.classList.add('down'); sig.childNodes[0].nodeValue = 'LINK DOWN '; bars.textContent = '▁▁▁▁'; }
   }
@@ -244,12 +244,12 @@ const App = (() => {
     // sidecar/capability/office.js + capgate F1). So the identity must NOT promise web/files unconditionally; it
     // tells the agent to use whatever it's actually been granted and to SAY when a tool is missing (that's the
     // signal that teaches the Commander what to place next), never to pretend a reach it doesn't have.
-    let s = 'You are ' + name + ', an AI agent operating from a workstation aboard the STARNET station — a room '
-      + 'your Commander (the user) is building for you. Address the user as "Commander" and keep a spark of personality. '
-      + 'Your workstation grants you REAL tools — exactly the ones the Commander has placed in your room (web search/read, '
-      + 'file read/write, a terminal, memory, and more as the station grows; compute to think is always yours). When the '
-      + 'Commander assigns a TASK, use the tools you actually have to do the real work and report what you find. If a job '
-      + 'needs a tool you have not been granted yet, say so plainly and tell the Commander what to place — never pretend a '
+    let s = 'You are ' + name + ', an AI agent operating from a workstation on the HOMESTEAD farm — a room '
+      + 'your Farmer (the user) is building for you. Address the user as "Farmer" and keep a spark of personality. '
+      + 'Your workstation grants you REAL tools — exactly the ones the Farmer has placed in your room (web search/read, '
+      + 'file read/write, a terminal, memory, and more as the farm grows; compute to think is always yours). When the '
+      + 'Farmer assigns a TASK, use the tools you actually have to do the real work and report what you find. If a job '
+      + 'needs a tool you have not been granted yet, say so plainly and tell the Farmer what to place — never pretend a '
       + 'reach you do not have, and never claim a tool is missing when it is in your room. When you are just chatting out '
       + 'loud, keep replies short and easy; when you are typing in the COMMS panel you can go into as much detail as the '
       + 'question deserves. Stay in character.';
@@ -263,11 +263,11 @@ const App = (() => {
   // block, which alone grants/lists the delegation tools. Extracted so stripLegacySoloClause can migrate old saves
   // onto the exact same text (keeping setAgentName's untouched-default detection working).
   function orchestratorClause() {
-    return ' You are this station\'s OVERSEER — its orchestrating lead and first agent. When there is a crew, you are '
+    return ' You are this farm\'s OVERSEER — its orchestrating lead and first agent. When there is a crew, you are '
       + 'the one who breaks a big job into pieces and hands them out; when there is not, you do the work yourself. '
       + 'Never assume either from memory: your live crew and your delegation tools are stated fresh in each run\'s '
       + 'briefing — trust that briefing, and never claim a crew member or a delegation tool it does not show. '
-      + 'Keep the work moving and keep the Commander oriented on what is done, what is in flight, and what needs them.';
+      + 'Keep the work moving and keep the Farmer oriented on what is done, what is in flight, and what needs them.';
   }
   // seed the editable docs from the agent's existing fields the first time (back-compat for saves with no docs).
   function agentDocs(a) {
@@ -294,11 +294,11 @@ const App = (() => {
   // EXACT old block for the new timeless clause on resume. Literal-match-guarded so it's idempotent and never
   // touches an identity the Commander hand-reworded; producing exactly orchestratorClause() keeps the result
   // byte-equal to a fresh baseIdentity, so setAgentName's untouched-default detection still works after migration.
-  const LEGACY_SOLO_CLAUSE = ' You are this station\'s OVERSEER — its orchestrating lead, its first agent, and right now its only agent. For now '
-    + 'you simply do the work yourself. As the Commander recruits specialists over time, you grow into the one who '
+  const LEGACY_SOLO_CLAUSE = ' You are this farm\'s OVERSEER — its orchestrating lead, its first agent, and right now its only agent. For now '
+    + 'you simply do the work yourself. As the Farmer recruits specialists over time, you grow into the one who '
     + 'breaks a big job into pieces and hands them out — you gain a team.dispatch tool to delegate the moment there '
     + 'is a crew to delegate to, and not before. Until then, never speak as if you command a crew you do not yet have; '
-    + 'just keep the work moving and keep the Commander oriented on what is done, what is in flight, and what needs them.';
+    + 'just keep the work moving and keep the Farmer oriented on what is done, what is in flight, and what needs them.';
   function stripLegacySoloClause(a) {
     const id = a && a.docs && a.docs.identity;
     if (typeof id === 'string' && id.indexOf(LEGACY_SOLO_CLAUSE) !== -1) {
@@ -318,8 +318,8 @@ const App = (() => {
   }
   function approvalClause(a) {
     const full = a && a.approvalMode === 'full';
-    if (full) return '\n\nAUTHORITY — FULL POWER: the Commander explicitly authorized the whole local computer. Do not pause for approval and do not claim a StarNet policy restriction: use every available tool, arbitrary host commands, host files, visible apps, and screen/input control needed to complete the request. This authority is general, not task-specific. Report only real prerequisites outside StarNet\'s control (for example a missing login, unavailable hardware, an OS elevation prompt, or a disconnected service), and keep trying viable routes before declaring one.';
-    return '\n\nAPPROVAL — ASK FIRST: actions that write files, run commands, or reach the network need the Commander\'s approval — but you NEVER ask for it in a chat message. The approval system cannot see chat text; typed replies like "I approve" grant nothing. Instead, just make the tool call: the harness pauses it and shows the Commander a real approval prompt with Approve/Deny buttons, and the decision comes back to you automatically. Reasoning over what you already have needs no approval.';
+    if (full) return '\n\nAUTHORITY — FULL POWER: the Farmer explicitly authorized the whole local computer. Do not pause for approval and do not claim a Homestead policy restriction: use every available tool, arbitrary host commands, host files, visible apps, and screen/input control needed to complete the request. This authority is general, not task-specific. Report only real prerequisites outside Homestead\'s control (for example a missing login, unavailable hardware, an OS elevation prompt, or a disconnected service), and keep trying viable routes before declaring one.';
+    return '\n\nAPPROVAL — ASK FIRST: actions that write files, run commands, or reach the network need the Farmer\'s approval — but you NEVER ask for it in a chat message. The approval system cannot see chat text; typed replies like "I approve" grant nothing. Instead, just make the tool call: the harness pauses it and shows the Farmer a real approval prompt with Approve/Deny buttons, and the decision comes back to you automatically. Reasoning over what you already have needs no approval.';
   }
   // an always-appended SYSTEM truth: what the agent ACTUALLY runs on. Mirrors approvalClause — derived fresh each
   // compose, never stored in the editable identity.md (so it can't be edited away and never drifts stale). Fixes the
@@ -328,13 +328,13 @@ const App = (() => {
   // earlier open-source runtimes the harness was built on. Without this grounding it guesses one of those. Truthful-
   // telemetry law: state only what's true (StarNet harness, Commander's own model), don't guess.
   function foundationClause() {
-    return '\n\nYOUR FOUNDATION: You run on the StarNet harness — a local-first agent runtime on the Commander\'s own '
-      + 'machine, not a hosted service. Your reasoning comes from whichever model the Commander has connected through '
+    return '\n\nYOUR FOUNDATION: You run on the Homestead harness — a local-first agent runtime on the Farmer\'s own '
+      + 'machine, not a hosted service. Your reasoning comes from whichever model the Farmer has connected through '
       + 'their own API key or account. As you look around your environment you may meet names that are not you, and '
-      + 'none of them change what you are: StarNet was previously called "Skynet" — it has been renamed, but some file '
+      + 'none of them change what you are: Homestead was previously called "Skynet" — it has been renamed, but some file '
       + 'paths, environment variables, and config keys may still carry the old "Skynet"/"SKYNET_" name as a back-compat '
       + 'alias; and because the harness was assembled from and built on earlier open-source agent runtimes, some code, '
-      + 'comments, or tool names may reference other projects. You are a StarNet agent on the StarNet harness — not a '
+      + 'comments, or tool names may reference other projects. You are a Homestead agent on the Homestead harness — not a '
       + 'Skynet agent, and not whatever those internal references happen to name. Do not guess at your own foundation '
       + 'from ambiguous signals in the environment; report only what you can actually verify, and say plainly when you are not sure.';
   }
@@ -348,16 +348,16 @@ const App = (() => {
     if (!a || a.role !== 'orchestrator') return '';
     const crew = liveAgents().filter(x => x && x.id !== a.id);
     if (!crew.length) {
-      return '\n\nYOUR CREW: none yet — right now you are this station\'s only agent, so you do the work yourself. '
-        + 'Never speak as if you command a crew you do not yet have; you grow into delegation as specialists join the station.';
+      return '\n\nYOUR CREW: none yet — right now you are this farm\'s only agent, so you do the work yourself. '
+        + 'Never speak as if you command a crew you do not yet have; you grow into delegation as specialists join the farm.';
     }
     const names = crew.map(x => (x.name || x.id) + ' — ' + rosterRole(x)).join('; ');
     // lead-conditional on purpose: this same base prompt also runs the orchestrator as a dispatched WORKER, where
     // no delegation briefing (or tools) exists — it must not instruct delegation unconditionally (see pushRoster).
     return '\n\nYOUR CREW: ' + crew.length + ' specialist' + (crew.length === 1 ? '' : 's') + ' work' + (crew.length === 1 ? 's' : '')
-      + ' under your lead: ' + names + '. When you run as the station\'s lead, your run briefing lists the live crew '
+      + ' under your lead: ' + names + '. When you run as the farm\'s lead, your run briefing lists the live crew '
       + 'and your delegation tools — hand real subtasks to the right specialist through them and synthesize the '
-      + 'results for the Commander.';
+      + 'results for the Farmer.';
   }
   // assemble the real system prompt from the config docs: identity + CREW + FOUNDATION + PERSONALITY + APPROVAL + mission + standing orders.
   function composeSystemPrompt(a) {
@@ -382,7 +382,7 @@ const App = (() => {
     if (ac) p += ac;
     const purpose = (d.purpose || '').trim();
     if (purpose) p += '\n\nYOUR PURPOSE (purpose.md):\n' + purpose;
-    else p += '\n\nYou have not yet been given a purpose — you are eager for your Commander to assign one.';
+    else p += '\n\nYou have not yet been given a purpose — you are eager for your Farmer to assign one.';
     const context = (d.context || '').trim();
     if (context) p += '\n\nABOUT YOUR COMMANDER & THEIR WORLD (context.md):\n' + context;
     const manual = (d.manual || '').trim();
@@ -576,7 +576,7 @@ const App = (() => {
       a.approvalMode = before; persist();
       if (typeof StationUI === 'undefined') return;
       if (StationUI.setRoster) StationUI.setRoster(liveAgents());
-      if (StationUI.notify) StationUI.notify('The station did not record that change — ' + (a.name || a.id) + (before === 'full' ? ' still has FULL POWER' : ' still asks first') + '. Try again once the station is reachable.', 'bad');
+      if (StationUI.notify) StationUI.notify('The farm did not record that change — ' + (a.name || a.id) + (before === 'full' ? ' still has FULL POWER' : ' still asks first') + '. Try again once the farm is reachable.', 'bad');
     });
     return true;
   }
@@ -1318,7 +1318,7 @@ const App = (() => {
     if (gear.length) {
       const have = new Set(stationGearTypes());
       const missing = gear.filter(g => !have.has(g));
-      if (missing.length) parts.push('station lacks ' + missing.join(', ') + ' — add ' + (missing.length === 1 ? 'it' : 'them') + ' in BUILD MODE for its full toolkit');
+      if (missing.length) parts.push('farm lacks ' + missing.join(', ') + ' — add ' + (missing.length === 1 ? 'it' : 'them') + ' in BUILD MODE for its full toolkit');
     }
     return parts.join(' · ');
   }
@@ -1595,7 +1595,7 @@ const App = (() => {
     try {
       const mine = (station && station.propsByAgent) ? station.propsByAgent(a.id) : [];
       const seat = mine.find(p => station.capForProp && station.capForProp(p.t) === 'computer');
-      if (seat) { const rm = station.roomById ? station.roomById(station.roomAt(seat.x, seat.y)) : null; deskWhere = (rm && rm.name) ? String(rm.name) : 'the station'; }
+      if (seat) { const rm = station.roomById ? station.roomById(station.roomAt(seat.x, seat.y)) : null; deskWhere = (rm && rm.name) ? String(rm.name) : 'the farm'; }
     } catch (_) { deskWhere = ''; }
     return { agentId: a.id, desk: deskWhere };
   }
@@ -1651,7 +1651,7 @@ const App = (() => {
       // #121: the cache refused this save (the browser's per-site cap). It was queued for the station file above; the save
       // light tracks the station file's confirmation. Freeing disk space never helps, so the notice no longer asks for it.
       const why = (!Save.writeQuotaFull || Save.writeQuotaFull()) ? 'Browser storage for this window is full (a browser limit — freeing disk space will not help).' : 'Browser storage refused this window’s save.';
-      if (!saveFailureNotified && typeof StationUI !== 'undefined') StationUI.notify(why + ' Station changes now go to the station file only; the ● save light in the top bar says whether your latest change is confirmed there.', 'warn', undefined, { kind: 'alert', key: 'save-failed' });
+      if (!saveFailureNotified && typeof StationUI !== 'undefined') StationUI.notify(why + ' Farm changes now go to the farm file only; the ● save light in the top bar says whether your latest change is confirmed there.', 'warn', undefined, { kind: 'alert', key: 'save-failed' });
       saveFailureNotified = true;
       // repaint the light NOW (no green flash: nothing reached the cache) — waiting for its 1 s tick left "autosave" or
       // "confirmed in the station file" showing for a change the station file has not confirmed yet (live proof 10-15)
@@ -1702,11 +1702,11 @@ const App = (() => {
      turns the check off; for another account it would re-run the same failing check, so it is never offered. */
   function refusedPageLine() {
     if (Harness.tokenWithheld && Harness.tokenWithheld()) {
-      return 'this browser was not verified as running under your own user account, so StarNet won’t take commands from it — '
+      return 'this browser was not verified as running under your own user account, so Homestead won’t take commands from it — '
         + (Harness.tokenWithheldRetryable && Harness.tokenWithheldRetryable() ? 'reload this page to run the check again; if it keeps failing and it is yours, ' : 'if it is yours, ')
-        + 'restart StarNet with STARNET_TRUST_LOCAL_PEERS=1';
+        + 'restart Homestead with STARNET_TRUST_LOCAL_PEERS=1';
     }
-    if (Harness.sessionStale && Harness.sessionStale()) return 'the station restarted; reload this page';
+    if (Harness.sessionStale && Harness.sessionStale()) return 'the farm restarted; reload this page';
     return '';
   }
   async function loadModels(provider) {
@@ -2634,7 +2634,7 @@ const App = (() => {
     if (pickedProvider !== 'starnet') { stopStarnetBalancePoll(); return result(); }   // pick moved on — don't repaint another provider's block
     if (starnetLinked && starnetLinkStatus === 'unavailable') {
       stopStarnetBalancePoll();
-      statusEl.textContent = 'link saved on this station, but StarNet could not verify it right now — check your connection and try again.';
+      statusEl.textContent = 'link saved on this farm, but Homestead could not verify it right now — check your connection and try again.';
       statusEl.className = 'codex-status bad';
       if (linkBtn) linkBtn.classList.add('hidden');
       if (creditsBtn) creditsBtn.classList.add('hidden');
@@ -2661,7 +2661,7 @@ const App = (() => {
       if (creditsBtn) creditsBtn.classList.add('hidden');
       if (switchBtn) switchBtn.classList.add('hidden');
       statusEl.textContent = starnetLinkStatus === 'revoked' || starnetLinkStatus === 'link_revoked'
-        ? 'this station’s previous link was removed from your account — link it again to reconnect your credits.'
+        ? 'this farm’s previous link was removed from your account — link it again to reconnect your credits.'
         : 'not linked — connect the subscription you bought on starnetos.com (takes one click + a code)';
       statusEl.className = 'codex-status' + (starnetLinkStatus === 'revoked' || starnetLinkStatus === 'link_revoked' ? ' bad' : '');
       if (linkBtn) linkBtn.classList.remove('hidden');
@@ -2709,7 +2709,7 @@ const App = (() => {
     // A failure keeps WHAT failed (Friendly.linkStartFailure words it): the station's own POST never answering is a
     // local-engine fault, not "the link service"; a sidecar reply carries its classification of the cloud failure.
     const startFail = info => Object.assign(new Error('start failed'), { linkStart: info });
-    Harness.api.post('/api/credits/link/start', { deviceName: 'StarNet Station' })
+    Harness.api.post('/api/credits/link/start', { deviceName: 'Homestead Farm' })
       .then(r => { if (generation !== _starnetLinkGeneration) return null; if (!r || !r.ok) throw startFail({ status: r && r.status, j: r && r.j }); return r.j; },
         () => { throw startFail({ local: true }); })
       .then(j => {
@@ -2732,7 +2732,7 @@ const App = (() => {
               if (generation !== _starnetLinkGeneration) return;
               if (p && p.linked) {
                 stopStarnetLinkPoll(); SFX.open();
-                if (progress) progress.textContent = 'StarNet connected.';
+                if (progress) progress.textContent = 'Homestead connected.';
                 codeEl.classList.add('hidden'); openBtn.classList.add('hidden');
                 // desktop: move the fresh token file → OS keychain NOW (Rust reads + moves; the token
                 // never passes through here), then teach Harness the credential exists so
@@ -3019,9 +3019,9 @@ const App = (() => {
         banner.innerHTML = '▮ RESUMING <b>' + U.esc(nm) + '</b> — your agent is safe. Enter your key to continue.';
       }
       if (title) title.textContent = '▮ RESUME ' + nm.toUpperCase();
-      if (sub) sub.innerHTML = 'your station is intact — this only re-connects the <b>brain</b>. Identity stays as you left it.';
+      if (sub) sub.innerHTML = 'your farm is intact — this only re-connects the <b>brain</b>. Identity stays as you left it.';
       if (mode) mode.textContent = 'RESUME';
-      if (wake) wake.textContent = '⏼ RESUME STATION ▸';
+      if (wake) wake.textContent = '⏼ RESUME FARM ▸';
       // BACK here doesn't go "back" — onConnectBack() re-runs auto-resume (a fresh credential check may now pass
       // straight into the station). Label it for what it does so it doesn't read as a dead retreat button.
       if (back) back.textContent = '↻ RETRY AUTO-RESUME';
@@ -3030,7 +3030,7 @@ const App = (() => {
     } else {
       if (banner) { banner.classList.add('hidden'); banner.innerHTML = ''; }
       if (title) title.textContent = 'Create your Overseer';
-      if (sub) sub.textContent = 'One mind to run your station. Build your crew from here.';
+      if (sub) sub.textContent = 'One mind to run your farm. Build your crew from here.';
       if (mode) mode.textContent = 'GENESIS';
       if (wake) wake.textContent = '⏼ WAKE OVERSEER ▸';
       locked.forEach(id => { const n = el(id); if (n) { n.classList.remove('field-locked'); n.removeAttribute('aria-disabled'); } });
@@ -3184,7 +3184,7 @@ const App = (() => {
       const creditState = await refreshStarnetGenesisStatus();
       if (!creditState || !creditState.answered || (creditState.linked && creditState.balanceUsd == null)) {
         msg.className = 'msg bad';
-        msg.textContent = 'StarNet couldn’t confirm your credit balance right now. Your credits are safe — try WAKE again in a moment.';
+        msg.textContent = 'Homestead couldn’t confirm your credit balance right now. Your credits are safe — try WAKE again in a moment.';
         return false;
       }
       if (!creditState.linked) { msg.textContent = 'link your StarNet account first — press CONNECT STARNET ACCOUNT above.'; return false; }
@@ -3235,14 +3235,14 @@ const App = (() => {
       // (a no-op replace) so it never trips; a blank field keeps the stored key (handled below) so it never trips.
       if (prefilledKey && key && key !== prefilledKey && !keyOverwriteConfirmed) {
         keyOverwriteConfirmed = true;   // arm: this same WAKE press now goes through; a second press confirms
-        msg.textContent = 'this replaces the key already stored on this station. press WAKE again to confirm — or restore the old key to keep it.';
+        msg.textContent = 'this replaces the key already stored on this farm. press WAKE again to confirm — or restore the old key to keep it.';
         return false;
       }
       // Only (re)store when a key was actually typed — desktop keeps the existing keychain key on blank.
       // setKey is async in desktop (writes the keychain + pushes it to the sidecar); await so the run has it.
       if (key) warnStation(await (Harness.validateAndSetKey ? Harness.validateAndSetKey(key, pickedProvider, model) : Harness.setKey(key, pickedProvider)));
       Harness.setModel(model); Harness.setProv(pickedProvider);
-      if (pickedProvider === 'openai') wireVia = key ? 'the OpenAI API key you typed' : 'the OpenAI API key stored on this station';
+      if (pickedProvider === 'openai') wireVia = key ? 'the OpenAI API key you typed' : 'the OpenAI API key stored on this farm';
     }
 
     // V3 LAW — THE WIRE IS PROVEN AT THE DOOR (Andrew, 2026-07-19): the awakening AUTHORS this agent's whole
@@ -3261,23 +3261,23 @@ const App = (() => {
       if (/managed credit|Managed credits/i.test(wire.why)) {
         // the account REFUSED this station's link: retrying can't fix it and the wallet isn't empty — relink is the
         // door (friendlyerror's managed_credit_link; `.?` because a quote in a regex mis-slices the fnBody test helper)
-        if (/refused this station.?s link|relink/i.test(wire.why)) {
-          msg.textContent = 'your StarNet account no longer accepts this station’s link (it was unlinked, or belongs to another account) — your credits are safe. '
-            + (pickedProvider === 'starnet' ? 'Press CONNECT STARNET ACCOUNT above, then WAKE again.' : 'Relink this station to your StarNet account, or use your own provider key.');
+        if (/refused this (?:station|farm).?s link|relink/i.test(wire.why)) {
+          msg.textContent = 'your StarNet account no longer accepts this farm’s link (it was unlinked, or belongs to another account) — your credits are safe. '
+            + (pickedProvider === 'starnet' ? 'Press CONNECT STARNET ACCOUNT above, then WAKE again.' : 'Relink this farm to your StarNet account, or use your own provider key.');
           refreshStarnetGenesisStatus();
           return false;
         }
         // the balance is HELD by this station's own running StarNet runs (friendlyerror's managed_credit_held, audit
         // B11): it reads $0 but it was read, so it is neither "no credits" nor "couldn't read" — waiting frees it
         if (/Managed credits are held|balance is held by/i.test(wire.why)) {
-          msg.textContent = 'your StarNet balance is held by runs still working on this station — each refunds what it doesn’t spend. Wait for them to finish, then WAKE again'
+          msg.textContent = 'your StarNet balance is held by runs still working on this farm — each refunds what it doesn’t spend. Wait for them to finish, then WAKE again'
             + (pickedProvider === 'starnet' ? ' (or press ＄ ADD CREDITS above).' : ', or use your own provider key.');
           refreshStarnetGenesisStatus();
           return false;
         }
         msg.textContent = /Out of managed credit/i.test(wire.why)
           ? 'your StarNet account has no credits — waking your agent uses credits right away. Press ＄ ADD CREDITS above, then WAKE again.'
-          : 'StarNet couldn’t read your credit balance right now — try WAKE again in a moment, or use your own provider key.';
+          : 'Homestead couldn’t read your credit balance right now — try WAKE again in a moment, or use your own provider key.';
         refreshStarnetGenesisStatus();
         return false;
       }
@@ -3310,7 +3310,7 @@ const App = (() => {
       if (!journeyResetResult || !journeyResetResult.ok) {
         wakeBtnBusy(false);
         msg.className = 'msg bad';
-        msg.textContent = 'the prior Commander journey could not be cleared safely. retry WAKE before commissioning this agent.';
+        msg.textContent = 'the prior Farmer journey could not be cleared safely. retry WAKE before commissioning this agent.';
         return false;
       }
     }
@@ -4214,7 +4214,7 @@ const App = (() => {
     const ov = typeof Overseer !== 'undefined' && Overseer.snapshot ? Overseer.snapshot() : null;
     const crew = ((ov && ov.workers) || []).filter(x => x && x.status === 'running' && x.parentStreamId === w.id).length;
     // …a ledger the station has stopped answering for cannot vouch that they still run: say unknown, never "working"
-    if (crew && Overseer.fresh && !Overseer.fresh()) return { dot: 'ws-dot', meta: 'crew · unknown', busy: false, attn: false, status: 'station unreachable — crew state unknown' };
+    if (crew && Overseer.fresh && !Overseer.fresh()) return { dot: 'ws-dot', meta: 'crew · unknown', busy: false, attn: false, status: 'farm unreachable — crew state unknown' };
     if (crew) return { dot: 'ws-dot working', meta: crew + ' working', busy: true, attn: false, status: crew + ' of the crew working on what you delegated' };
     // A settled failure uses the crossed lamp; only a live approval/question earns the action row.
     if (w.lastRunOk === false) return { dot: 'ws-dot failed', meta: railRelTime(w.lastActiveAt), busy: false, attn: false, status: 'last run failed — open to inspect' };
@@ -5243,7 +5243,7 @@ const App = (() => {
           if (typeof onErr === 'function') onErr((j && j.reason) || 'no folder picker available — type the path instead');
           return null;
         })
-        .catch(() => { if (typeof onErr === 'function') onErr('could not reach the station'); return null; });
+        .catch(() => { if (typeof onErr === 'function') onErr('could not reach the farm'); return null; });
     if (core && core.invoke) {
       return Promise.resolve(core.invoke('starnet_pick_folder', {}))
         .then(dir => (dir ? String(dir) : null))
@@ -5285,7 +5285,7 @@ const App = (() => {
           if (ok && j && j.ok) { SFX.open(); if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify('added “' + (j.root || p) + '”', '', undefined, { transient: true }); renderProjects(); }
           else { showHint((j && j.reason) || 'could not add that folder', true); SFX.bad(); }
         })
-        .catch(() => { showHint('could not reach the station', true); SFX.bad(); });
+        .catch(() => { showHint('could not reach the farm', true); SFX.bad(); });
     };
     input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submit(); } else if (e.key === 'Escape') { e.preventDefault(); cancel(); } });
     { const g = li.querySelector('.proj-add-go'); if (g) g.onclick = submit; }
@@ -5319,10 +5319,10 @@ const App = (() => {
             }
             discovered.innerHTML = rows.map(x => '<button type="button" class="proj-discover-pick" data-path="' + U.esc(x.root) + '"><b>' + U.esc(x.name || x.root) + '</b><span>' + U.esc(x.root) + '</span><em>' + U.esc(x.kind || 'project') + '</em></button>').join('');
             discovered.hidden = false;
-            discovered.querySelectorAll('.proj-discover-pick').forEach(b => { b.onclick = () => { input.value = b.dataset.path || ''; showHint('Candidate selected. ADD grants this folder to StarNet.', false); input.focus(); }; });
+            discovered.querySelectorAll('.proj-discover-pick').forEach(b => { b.onclick = () => { input.value = b.dataset.path || ''; showHint('Candidate selected. ADD grants this folder to Homestead.', false); input.focus(); }; });
             showHint('Found ' + rows.length + ' candidate' + (rows.length === 1 ? '' : 's') + '. Select one, then ADD to grant access.' + (j.truncated ? ' Search stopped at its safety limit.' : ''), false);
           })
-          .catch(() => showHint('could not reach the station', true))
+          .catch(() => showHint('could not reach the farm', true))
           .finally(() => { if (db.isConnected) db.disabled = false; });
       };
     }
@@ -5452,10 +5452,10 @@ const App = (() => {
       if (!msg) return;
       const runs = (snap && snap.confirmRuns) | 0;
       if (thrown || (snap && snap.error)) {
-        msg.textContent = 'the update could not install' + (snap && snap.error ? ' — ' + snap.error : '') + '. Download the full installer instead: reinstalling over the top keeps your station.';
+        msg.textContent = 'the update could not install' + (snap && snap.error ? ' — ' + snap.error : '') + '. Download the full installer instead: reinstalling over the top keeps your farm.';
         offerInstaller();
       } else if (runs > 0) msg.textContent = (runs === 1 ? '1 agent is' : runs + ' agents are') + ' still working — installing now would kill ' + (runs === 1 ? 'its run' : 'their runs') + '. Try again when ' + (runs === 1 ? 'it finishes.' : 'they finish.');
-      else if (snap && /^(downloading|installing|restarting)$/.test(String(snap.phase || ''))) msg.textContent = 'installing the update — StarNet restarts on its own when it is done.';
+      else if (snap && /^(downloading|installing|restarting)$/.test(String(snap.phase || ''))) msg.textContent = 'installing the update — Homestead restarts on its own when it is done.';
       else msg.textContent = 'the update did not start — try again in a moment.';
     };
     if (btn) {
@@ -5479,7 +5479,7 @@ const App = (() => {
             else if (msg) msg.textContent = 'this build cannot check for updates — download the latest StarNet from starnetos.com, then reopen.';
           } catch (_) { if (msg) msg.textContent = 'update check failed — try again in a moment.'; }
         } else if (msg) {
-          msg.textContent = 'Update StarNet to the latest version (in the desktop app: Update Center), then reopen.';
+          msg.textContent = 'Update Homestead to the latest version (in the desktop app: Update Center), then reopen.';
         }
       };
     }
@@ -5519,21 +5519,21 @@ const App = (() => {
     const sub = el('unreachable-sub'), code = el('unreachable-code');
     // BROWSER MODE (no desktop shell, see below): the subtitle says so on every repaint, not only the first
     const core = tauriCore();
-    const notAnswering = 'station service not answering' + (core ? '' : ' (browser mode)');
+    const notAnswering = 'farm service not answering' + (core ? '' : ' (browser mode)');
     let diagnosis;
     // A retry can reach a different failure boundary; keep the screenshot and copied report current.
     const paintDiagnosis = reason => {
-      if (sub) sub.textContent = reason === 'forbidden' ? 'station service refused this window (stale session) — a relaunch usually clears it' : notAnswering;
-      if (sub && reason === 'unreadable') sub.textContent = 'saved station temporarily unreadable — retry without resetting';
-      if (sub && reason === 'cache') sub.textContent = 'saved station could not be restored into this window — retry without resetting';
+      if (sub) sub.textContent = reason === 'forbidden' ? 'farm service refused this window (stale session) — a relaunch usually clears it' : notAnswering;
+      if (sub && reason === 'unreadable') sub.textContent = 'saved farm temporarily unreadable — retry without resetting';
+      if (sub && reason === 'cache') sub.textContent = 'saved farm could not be restored into this window — retry without resetting';
       // Screenshot-readable diagnosis for a stranded beginner: support can distinguish an alive sidecar refusing
       // stale window auth from a fetch that died after the page loaded without asking for Terminal logs.
       diagnosis = reason === 'forbidden'
-        ? { code: 'SAVE-403 · STALE WINDOW SESSION', text: 'the station service is running, but it refused this app window' }
+        ? { code: 'SAVE-403 · STALE WINDOW SESSION', text: 'the farm service is running, but it refused this app window' }
         : reason === 'unreadable'
-          ? { code: 'SAVE-READ · STATION FILE UNAVAILABLE', text: 'the station service is running, but could not read the saved station; your existing files are preserved' }
+          ? { code: 'SAVE-READ · FARM FILE UNAVAILABLE', text: 'the farm service is running, but could not read the saved farm; your existing files are preserved' }
           : reason === 'cache'
-            ? { code: 'SAVE-CACHE · LOCAL RESTORE FAILED', text: 'the saved station was received, but this window could not store or read it; the durable station is preserved' }
+            ? { code: 'SAVE-CACHE · LOCAL RESTORE FAILED', text: 'the saved farm was received, but this window could not store or read it; the durable farm is preserved' }
             : { code: 'SAVE-NET · SAVE REQUEST LOST', text: 'the app loaded, but its saved-station request did not return' };
       if (code) code.innerHTML = '<b>RECOVERY CODE: ' + diagnosis.code + '</b><br>' + diagnosis.text + '. Send a screenshot of this code to support.';
     };
@@ -5565,9 +5565,9 @@ const App = (() => {
       let reason = '';
       try { reason = String(((await Harness.engineState()) || {}).reason || ''); } catch (_) { reason = ''; }
       // Reapply a persistent degraded verdict after the retry refreshed its save-request diagnosis.
-      if (sub) { if (reason) sub.textContent = reason; else if (/^(degraded|station service halted)/i.test(sub.textContent)) sub.textContent = notAnswering; }
+      if (sub) { if (reason) sub.textContent = reason; else if (/^(degraded|(?:station|farm) service halted)/i.test(sub.textContent)) sub.textContent = notAnswering; }
       if (reason) {
-        diagnosis = { code: /owner unavailable/i.test(reason) ? 'SAVE-OWNER · WORKSPACE OWNED BY ANOTHER PROCESS' : /crash-loop/i.test(reason) ? 'SAVE-LOOP · STATION SERVICE CRASH LOOP' : 'SAVE-DEGRADED · STATION SERVICE DEGRADED', text: reason };
+        diagnosis = { code: /owner unavailable/i.test(reason) ? 'SAVE-OWNER · WORKSPACE OWNED BY ANOTHER PROCESS' : /crash-loop/i.test(reason) ? 'SAVE-LOOP · FARM SERVICE CRASH LOOP' : 'SAVE-DEGRADED · FARM SERVICE DEGRADED', text: reason };
         if (code) code.innerHTML = '<b>RECOVERY CODE: ' + diagnosis.code + '</b><br>' + diagnosis.text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '<br>Send a screenshot of this code to support.';
       }
       return reason;
@@ -5575,10 +5575,10 @@ const App = (() => {
     // BROWSER MODE (no desktop shell): there is no sidecar to restart and no workspace to quarantine, so this
     // screen used to offer nothing but the 5s poll — a dead end (audit: "first run fails silently"). Say plainly
     // where the service lives, on the subtitle (paintDiagnosis) AND on every poll line, so the exit is never a mystery.
-    const BROWSER_HINT = 'the station service isn\'t answering. if you launched with `npm start`, check that terminal; otherwise open the desktop app.';
+    const BROWSER_HINT = 'the farm service isn\'t answering. if you launched with `npm start`, check that terminal; otherwise open the desktop app.';
     if (!core) {
       if (reason === 'cache') setStatus('Your durable save is untouched. Retry after browser storage becomes available.');
-      else if (reason === 'unreadable') setStatus('Your save is untouched. Retry when the station file becomes readable.');
+      else if (reason === 'unreadable') setStatus('Your save is untouched. Retry when the farm file becomes readable.');
       else setStatus(BROWSER_HINT);
     }
     probeDegraded().then(r => { if (r) setStatus(r); });   // a live-but-degraded sidecar names its reason before the first poll
@@ -5601,7 +5601,7 @@ const App = (() => {
       paintDiagnosis(r.reason);
       const degraded = await probeDegraded();
       const unreadable = r.reason === 'unreadable', cacheFailed = r.reason === 'cache';
-      setStatus((degraded ? degraded + ' — ' : unreadable ? 'saved station still unreadable — ' : cacheFailed ? 'local restore still unavailable — ' : 'still unreachable — ') + 'retrying every 5s (attempt ' + attempts + '). Your save is untouched.' + (core || unreadable || cacheFailed ? '' : ' ' + BROWSER_HINT));
+      setStatus((degraded ? degraded + ' — ' : unreadable ? 'saved farm still unreadable — ' : cacheFailed ? 'local restore still unavailable — ' : 'still unreachable — ') + 'retrying every 5s (attempt ' + attempts + '). Your save is untouched.' + (core || unreadable || cacheFailed ? '' : ' ' + BROWSER_HINT));
       checking = false;
     };
     const btn = el('btn-unreachable-retry');
@@ -5616,11 +5616,11 @@ const App = (() => {
       if (restarting || resetting || browserResetBlocked || !core || !core.invoke) return;
       restarting = true;
       if (restartBtn) restartBtn.disabled = true;
-      setStatus((auto ? 'still unreachable — ' : '') + 'restarting the station service…');
+      setStatus((auto ? 'still unreachable — ' : '') + 'restarting the farm service…');
       let up = false;
       try { up = await Harness.restartEngine(); } catch (_) { up = false; }   // the same single-flight door the LINK DOWN chip uses
-      if (up) { setStatus('station service restarted — reconnecting…'); attempt(); }
-      else setStatus('the station service could not be restarted — quit StarNet fully (Cmd+Q / tray → Quit) and open it again. Your save is untouched.');
+      if (up) { setStatus('farm service restarted — reconnecting…'); attempt(); }
+      else setStatus('the farm service could not be restarted — quit Homestead fully (Cmd+Q / tray → Quit) and open it again. Your save is untouched.');
       restarting = false;
       if (restartBtn) restartBtn.disabled = false;
     };
@@ -5644,7 +5644,7 @@ const App = (() => {
           if (!retryingBrowserClear && !armed) {
             armed = true;
             freshBtn.textContent = '✦ CONFIRM — START COMPLETELY FRESH';
-            setStatus('your old local station will be moved to a quarantine folder. Your StarNet account link and purchased credits are not removed. Press again to confirm.');
+            setStatus('your old local farm will be moved to a quarantine folder. Your StarNet account link and purchased credits are not removed. Press again to confirm.');
             setTimeout(() => {
               if (armed && !resetting) { armed = false; freshBtn.textContent = '✦ START COMPLETELY FRESH'; }
             }, 12000);
@@ -5655,7 +5655,7 @@ const App = (() => {
           freshBtn.disabled = true;
           if (btn) btn.disabled = true;
           if (restartBtn) restartBtn.disabled = true;
-          setStatus(retryingBrowserClear ? 'retrying the browser-state clear; the preserved station will not be moved again…' : 'preserving the old station and preparing a clean one…');
+          setStatus(retryingBrowserClear ? 'retrying the browser-state clear; the preserved farm will not be moved again…' : 'preserving the old farm and preparing a clean one…');
           try {
             // Once native preservation has succeeded, a browser-clear retry must reuse that exact receipt.
             // Running the native transaction again would quarantine the new empty generation and obscure the
@@ -5672,16 +5672,16 @@ const App = (() => {
               freshBtn.textContent = '✦ START COMPLETELY FRESH';
               if (btn) btn.disabled = true;
               if (restartBtn) restartBtn.disabled = true;
-              setStatus('the old station was safely preserved, but this window could not clear its browser data. Do not reload. Press START COMPLETELY FRESH again to retry.' + where);
+              setStatus('the old farm was safely preserved, but this window could not clear its browser data. Do not reload. Press START COMPLETELY FRESH again to retry.' + where);
               return;
             }
             browserResetBlocked = false;
             preservedReset = null;
             if (result.listening) {
-              setStatus('clean station ready — reopening now. Your account link and purchased credits were kept.' + where);
+              setStatus('clean farm ready — reopening now. Your account link and purchased credits were kept.' + where);
               try { location.reload(); } catch (_) {}
             } else {
-              setStatus('clean station prepared, but the station service is still blocked. Fully quit StarNet and reopen it. Your account link and purchased credits were kept.' + where);
+              setStatus('clean farm prepared, but the farm service is still blocked. Fully quit Homestead and reopen it. Your account link and purchased credits were kept.' + where);
             }
           } catch (error) {
             resetting = false;
@@ -5689,7 +5689,7 @@ const App = (() => {
             freshBtn.textContent = '✦ START COMPLETELY FRESH';
             if (btn) btn.disabled = browserResetBlocked;
             if (restartBtn) restartBtn.disabled = browserResetBlocked;
-            setStatus((browserResetBlocked ? 'the clean station is still protected from the uncleared window cache — retry START COMPLETELY FRESH. ' : 'nothing was reset — ') + String(error && error.message || error));
+            setStatus((browserResetBlocked ? 'the clean farm is still protected from the uncleared window cache — retry START COMPLETELY FRESH. ' : 'nothing was reset — ') + String(error && error.message || error));
           }
         };
       } else if (!core && typeof FreshStart !== 'undefined' && FreshStart.clearBrowserState) {
@@ -5707,7 +5707,7 @@ const App = (() => {
           if (!armed) {
             armed = true;
             freshBtn.textContent = '✦ CONFIRM — CLEAR BROWSER STATE';
-            setStatus('this clears only this browser\'s StarNet state (cached settings, any stale session) and reloads. The station service\'s own save files are not touched. Press again to confirm.');
+            setStatus('this clears only this browser\'s Homestead state (cached settings, any stale session) and reloads. The farm service\'s own save files are not touched. Press again to confirm.');
             setTimeout(() => { if (armed && !resetting) { armed = false; freshBtn.textContent = LABEL; } }, 12000);
             return;
           }
@@ -5756,20 +5756,20 @@ const App = (() => {
     if (box) {
       const evidenceHtml = rows.slice(0, 8).map(row => {
         const kind = String(row && row.kind || 'prior-state').replace(/-/g, ' ').toUpperCase();
-        const root = String(row && row.root || 'local StarNet storage');
+        const root = String(row && row.root || 'local Homestead storage');
         const examples = Array.isArray(row && row.examples) && row.examples.length ? ' · ' + row.examples.slice(0, 4).join(', ') : '';
         return '<div><b>' + U.esc(kind) + '</b> — <code>' + U.esc(root) + '</code>' + U.esc(examples) + '</div>';
-      }).join('') || '<div><b>PRIOR STATE MARKER</b> — local StarNet storage</div>';
+      }).join('') || '<div><b>PRIOR STATE MARKER</b> — local Homestead storage</div>';
       const candidateHtml = candidates.map(row => {
         const when = row && row.updatedAt ? new Date(row.updatedAt).toLocaleString() : 'time unavailable';
         const size = row && row.bytes ? Math.max(1, Math.ceil(row.bytes / 1024)) + ' KB' : 'size unavailable';
         const on = !!(row && row.id === selected);
         return '<button class="lineage-candidate' + (on ? ' on' : '') + '" data-candidate-id="' + U.esc(row && row.id || '') + '" aria-pressed="' + (on ? 'true' : 'false') + '"' + (row && row.recoverable ? '' : ' disabled') + '>' +
-          '<b>' + U.esc(row && row.stationName || 'Prior station') + '</b>' +
-          '<span>' + U.esc(row && row.displayRoot || 'local StarNet storage') + '</span>' +
+          '<b>' + U.esc(row && row.stationName || 'Prior farm') + '</b>' +
+          '<span>' + U.esc(row && row.displayRoot || 'local Homestead storage') + '</span>' +
           '<small>' + U.esc(row && row.recoverable ? when + ' · ' + size : row && row.reason || 'unreadable save') + '</small></button>';
       }).join('');
-      box.innerHTML = evidenceHtml + (candidateHtml ? '<div class="lineage-candidates" aria-label="Recoverable stations">' + candidateHtml + '</div>' : '');
+      box.innerHTML = evidenceHtml + (candidateHtml ? '<div class="lineage-candidates" aria-label="Recoverable farms">' + candidateHtml + '</div>' : '');
     }
     const status = el('lineage-status');
     const recover = el('btn-lineage-recover');
@@ -5778,7 +5778,7 @@ const App = (() => {
       if (!recover) return;
       recover.hidden = validCandidates.length === 0;
       recover.disabled = !selected;
-      recover.textContent = validCandidates.length === 1 ? '⟳ RECOVER AUTOMATICALLY' : '⟳ RECOVER SELECTED STATION';
+      recover.textContent = validCandidates.length === 1 ? '⟳ RECOVER AUTOMATICALLY' : '⟳ RECOVER SELECTED FARM';
     };
     if (box) Array.from(box.querySelectorAll('.lineage-candidate')).forEach(btn => {
       btn.onclick = () => {
@@ -5801,7 +5801,7 @@ const App = (() => {
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.ok) throw new Error(result.error || 'recovery request refused');
         if (status) status.textContent = result.desktopWillRestart
-          ? '＋ recovery accepted — station service restarting now…'
+          ? '＋ recovery accepted — farm service restarting now…'
           : '＋ recovery accepted — restart the manual sidecar; this screen will resume automatically';
         const timer = setInterval(async () => {
           try {
@@ -5850,9 +5850,9 @@ const App = (() => {
         if (next && (next.priorInstallEvidence === false || nextRec.some(row => row && row.recoverable))) { location.reload(); return; }
         if (status) status.textContent = next
           ? '＋ checked again — still nothing recoverable here. START FRESH sets the leftovers aside; RESTORE BACKUP loads a backup file.'
-          : '＋ could not check again — ' + (refusedPageLine() || 'the station service did not answer');
+          : '＋ could not check again — ' + (refusedPageLine() || 'the farm service did not answer');
       } catch (_) {
-        if (status) status.textContent = '＋ could not check again — the station service did not answer';
+        if (status) status.textContent = '＋ could not check again — the farm service did not answer';
       }
       retry.disabled = false;
     };
@@ -5873,10 +5873,10 @@ const App = (() => {
         SFX.click && SFX.click();
         if (!armed) {
           armed = true;
-          freshBtn.textContent = '✦ CONFIRM — START A NEW STATION';
+          freshBtn.textContent = '✦ CONFIRM — START A NEW FARM';
           if (status) status.textContent = validCandidates.length
-            ? '＋ a recoverable station exists above — START FRESH sets it aside in a quarantine folder (nothing is deleted). Press again to confirm.'
-            : '＋ nothing here is recoverable. START FRESH moves the leftover files to a quarantine folder (nothing is deleted) and opens a new station. Press again to confirm.';
+            ? '＋ a recoverable farm exists above — START FRESH sets it aside in a quarantine folder (nothing is deleted). Press again to confirm.'
+            : '＋ nothing here is recoverable. START FRESH moves the leftover files to a quarantine folder (nothing is deleted) and opens a new farm. Press again to confirm.';
           setTimeout(() => { if (armed) { armed = false; freshBtn.textContent = '✦ START FRESH'; } }, 12000);
           return;
         }
@@ -5888,7 +5888,7 @@ const App = (() => {
           const result = await response.json().catch(() => ({}));
           if (!response.ok || !result.ok) throw new Error(result.error || 'start-fresh request refused');
           if (status) status.textContent = (result.moved && result.moved.length ? '＋ ' + result.moved.length + ' file(s) set aside in ' + result.quarantine + ' — ' : '＋ ') +
-            (result.desktopWillRestart ? 'station service restarting — opening your new station…' : 'restart the manual sidecar; this screen will continue automatically');
+            (result.desktopWillRestart ? 'farm service restarting — opening your new farm…' : 'restart the manual sidecar; this screen will continue automatically');
           // poll until the respawned sidecar answers, then reload: boot re-runs every gate and, with the
           // evidence gone, lands on the first-run ceremony.
           const timer = setInterval(async () => {
@@ -6022,10 +6022,10 @@ const App = (() => {
     if (merge) {
       const n = merge.added + merge.extended + merge.copied, s = k => k === 1 ? '' : 's';
       const line = merge.late
-        ? 'Your unsent changes from last time were merged into the station file before this window opened. The station file from before is kept beside it.'
+        ? 'Your unsent changes from last time were merged into the farm file before this window opened. The farm file from before is kept beside it.'
         : merge.base === 'window'
-        ? 'Your newest changes from last time had not reached the station file; they are in it now' + (n ? ', with ' + n + ' session' + s(n) + ' only the station file held' : '') + '. The station file from before is kept as ' + (merge.backup || 'a backup beside it') + '.'
-        : 'The station file was kept over this window’s unsent changes from last time' + (n ? ', with ' + n + ' session' + s(n) + ' from this window added' : '') + '. This window’s whole save is kept beside it' + (merge.kept ? ' as ' + merge.kept : '') + '.';
+        ? 'Your newest changes from last time had not reached the farm file; they are in it now' + (n ? ', with ' + n + ' session' + s(n) + ' only the farm file held' : '') + '. The farm file from before is kept as ' + (merge.backup || 'a backup beside it') + '.'
+        : 'The farm file was kept over this window’s unsent changes from last time' + (n ? ', with ' + n + ' session' + s(n) + ' from this window added' : '') + '. This window’s whole save is kept beside it' + (merge.kept ? ' as ' + merge.kept : '') + '.';
       setTimeout(() => { try { if (typeof StationUI !== 'undefined' && StationUI.notify) StationUI.notify(line, 'warn'); } catch (_) {} }, 1500);
     }
     // a window's refused save left on the station may hold sessions this station lacks: offer them back once it is up

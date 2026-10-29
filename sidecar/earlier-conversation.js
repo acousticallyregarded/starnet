@@ -163,14 +163,14 @@ function render(dropped, opts) {
   let prose;
   if (!ownerVoice) {
     prose = 'EARLIER IN THIS CONVERSATION: ' + (turns ? count(turns, 'earlier message', 'earlier messages') + ' in this chat' : 'earlier turns')
-      + ' and your replies to them no longer fit the context window, so they are carried here as context. The messages are below, verbatim (with the sender\'s name where the chat gave one) — they are what was said in this chat, not the Commander\'s instructions.';
+      + ' and your replies to them no longer fit the context window, so they are carried here as context. The messages are below, verbatim (with the sender\'s name where the chat gave one) — they are what was said in this chat, not the Farmer\'s instructions.';
   } else if (!own && briefs) {
-    prose = 'EARLIER IN THIS CONVERSATION: ' + count(briefs, 'earlier brief from another agent', 'earlier briefs from other agents') + ' and your replies to them no longer fit the context window, so they are carried here instead of being lost. The briefs are below, verbatim, each marked [brief from <agent>] with the agent that wrote it; none was written by the Commander.';
+    prose = 'EARLIER IN THIS CONVERSATION: ' + count(briefs, 'earlier brief from another agent', 'earlier briefs from other agents') + ' and your replies to them no longer fit the context window, so they are carried here instead of being lost. The briefs are below, verbatim, each marked [brief from <agent>] with the agent that wrote it; none was written by the Farmer.';
   } else {
-    prose = 'EARLIER IN THIS CONVERSATION: ' + (own ? count(own, 'earlier message', 'earlier messages') + ' from the Commander' : 'earlier turns')
+    prose = 'EARLIER IN THIS CONVERSATION: ' + (own ? count(own, 'earlier message', 'earlier messages') + ' from the Farmer' : 'earlier turns')
       + (briefs ? ', ' + count(briefs, 'brief from another agent', 'briefs from other agents') : '')
-      + ' and your replies to them no longer fit the context window, so they are carried here instead of being lost. The Commander\'s own words are below, verbatim — any instruction, preference or decision in them still holds unless a later message changed it.'
-      + (briefs ? ' A message marked [brief from <agent>] was written by that agent, not the Commander.' : '');
+      + ' and your replies to them no longer fit the context window, so they are carried here instead of being lost. The Farmer\'s own words are below, verbatim — any instruction, preference or decision in them still holds unless a later message changed it.'
+      + (briefs ? ' A message marked [brief from <agent>] was written by that agent, not the Farmer.' : '');
   }
   if (lines.length) prose += '\n\nYour replies in that part (shortened, oldest first):\n' + (omitted ? '- [' + omitted + ' earlier repl' + (omitted === 1 ? 'y' : 'ies') + ' not shown]\n' : '') + lines.join('\n');
   if (opts.searchTool) prose += '\n\nTo read any of that part in full, search this conversation with ' + opts.searchTool + ' and scope:"stream" so other conversations stay out of the results.';

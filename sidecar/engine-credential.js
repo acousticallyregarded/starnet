@@ -47,7 +47,7 @@
 'use strict';
 
 const WHERE = 'SETTINGS → AI & MODELS';
-const ENV_HOME = 'the environment that starts StarNet';
+const ENV_HOME = 'the environment that starts Homestead';
 const UNATTENDED_REMEDY = 'connect or re-save a provider key under ' + WHERE + ' (or set its API key variable in ' + ENV_HOME + ') and pick a model';
 const FILE_VERSION = 1;
 const MAX_KEY = 4096, MAX_POOL = 8, MAX_URL = 2048;
@@ -183,14 +183,14 @@ function credentialError(o) {
   const label = String(o.label || o.id || 'this provider');
   const what = String(o.what || 'this routine');
   switch (o.kind) {
-    case 'codex': return 'ChatGPT is not signed in on this station, so ' + what + ' can\'t run — sign in under ' + WHERE;
-    case 'oauth': return label + ' is not signed in on this station, so ' + what + ' can\'t run — sign in under ' + WHERE;
-    case 'starnet': return 'this station is not linked to a StarNet account, so ' + what + ' can\'t run on credits — link it under ' + WHERE + ' → STARNET MANAGED';
-    case 'baseUrl': return 'no ' + label + ' base URL is saved on this station for ' + what + ' — set it under ' + WHERE +
+    case 'codex': return 'ChatGPT is not signed in on this farm, so ' + what + ' can\'t run — sign in under ' + WHERE;
+    case 'oauth': return label + ' is not signed in on this farm, so ' + what + ' can\'t run — sign in under ' + WHERE;
+    case 'starnet': return 'this farm is not linked to a StarNet account, so ' + what + ' can\'t run on credits — link it under ' + WHERE + ' → STARNET MANAGED';
+    case 'baseUrl': return 'no ' + label + ' base URL is saved on this farm for ' + what + ' — set it under ' + WHERE +
       (o.baseUrlEnv ? ', or set ' + o.baseUrlEnv + ' in ' + ENV_HOME : '');
-    case 'key': return 'no ' + label + ' API key is saved on this station for ' + what + ' — connect or re-save it under ' + WHERE +
+    case 'key': return 'no ' + label + ' API key is saved on this farm for ' + what + ' — connect or re-save it under ' + WHERE +
       (o.env ? ', or set ' + o.env + ' in ' + ENV_HOME : '');
-    default: return label + ' is not set up on this station for ' + what + ' — set it up under ' + WHERE;
+    default: return label + ' is not set up on this farm for ' + what + ' — set it up under ' + WHERE;
   }
 }
 

@@ -23,7 +23,7 @@
 
   function mount(el, arrange) {
     el.innerHTML =
-      '<h4 class="ms-h">PHONE ACCESS <span class="dim">— your station, from your phone</span></h4>' +
+      '<h4 class="ms-h">PHONE ACCESS <span class="dim">— your farm, from your phone</span></h4>' +
       '<p class="set-about">Pair a phone and it can see your crew, send tasks, answer approvals and open what your agents made, from anywhere. ' +
       'Everything between the phone and this computer is encrypted end to end: the StarNet relay in the middle passes sealed messages it cannot read. ' +
       'A phone works with the same permissions as this desk: an agent on full access acts without asking from your phone too, so you can work on the go. Tick ALWAYS ASK on a phone to have it ask before every step that needs an OK. Standing grants and full access are only ever set here, at the desk.</p>' +
@@ -45,7 +45,7 @@
       if (!snap) return;
       $('rmt-on').checked = !!snap.enabled;
       const relay = snap.relay || null;
-      let note = snap.enabled ? '— paired phones can reach this station' : '— off: no phone can reach this station';
+      let note = snap.enabled ? '— paired phones can reach this farm' : '— off: no phone can reach this farm';
       $('rmt-on-note').textContent = note;
       let link;
       if (!snap.enabled) link = '';
@@ -53,7 +53,7 @@
       else if (relay.state === 'online') link = '● Relay: <b>online</b> at ' + esc(relay.url) + (relay.since ? ' since ' + esc(ago(Date.now() - relay.since)) : '') + '.';
       else if (relay.state === 'connecting') link = '○ Relay: connecting to ' + esc(relay.url) + '…';
       else link = '✕ Relay: <b>offline</b>' + (relay.lastError ? ' — ' + esc(relay.lastError) : '') + '. Retrying on its own.';
-      if (snap.station && snap.enabled) link += (link ? '<br>' : '') + 'This station’s code: <b>' + esc(snap.station.fingerprint) + '</b> (a phone shows the same code when it pairs).';
+      if (snap.station && snap.enabled) link += (link ? '<br>' : '') + 'This farm’s code: <b>' + esc(snap.station.fingerprint) + '</b> (a phone shows the same code when it pairs).';
       $('rmt-link').innerHTML = link;
       $('rmt-link').hidden = !link;
       $('rmt-pair').disabled = !snap.enabled || !(relay ? relay.state === 'online' : snap.listening);
@@ -90,7 +90,7 @@
     }
 
     async function remove(id) {
-      try { snap = await api('/api/remote/revoke', { deviceId: id }); say('Removed. That phone is disconnected and can no longer reach this station.'); paint(); }
+      try { snap = await api('/api/remote/revoke', { deviceId: id }); say('Removed. That phone is disconnected and can no longer reach this farm.'); paint(); }
       catch (e) { say(e.message, true); }
     }
 
@@ -117,8 +117,8 @@
         '<div class="rmt-pair">' +
           (qr ? '<div class="rmt-qr" role="img" aria-label="Pairing code for your phone">' + qr + '</div>' : '') +
           '<div class="rmt-pair-text">' +
-            '<p class="set-about">Scan this with your phone’s camera. It opens StarNet Remote and pairs this one phone. On an iPhone it first shows you how to put StarNet on your Home Screen, so it works like an app.</p>' +
-            '<p class="set-about">Station code: <b>' + esc(p.fingerprint) + '</b> — your phone will show the same.</p>' +
+            '<p class="set-about">Scan this with your phone’s camera. It opens StarNet Remote and pairs this one phone. On an iPhone it first shows you how to put Homestead on your Home Screen, so it works like an app.</p>' +
+            '<p class="set-about">Farm code: <b>' + esc(p.fingerprint) + '</b> — your phone will show the same.</p>' +
             '<p class="set-about dim" id="rmt-exp"></p>' +
             '<div class="set-save"><button class="bb xs" type="button" id="rmt-copy">COPY LINK</button><button class="bb xs" type="button" id="rmt-cancel">CANCEL</button></div>' +
           '</div>' +

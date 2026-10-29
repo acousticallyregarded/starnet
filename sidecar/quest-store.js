@@ -381,7 +381,7 @@ function makeQuestStore(deps) {
       const q = rec.quests.find(x => x.id === String(id));
       if (!q || q.status !== 'open') { out = { ok: false, error: 'no such open quest' }; return undefined; }
       if (!q.contract || q.contract.type !== 'attest') { out = { ok: false, error: 'this quest completes mechanically, not by attestation' }; return undefined; }
-      if (q.attest && q.attest.confirmed == null) { out = { ok: false, error: 'this quest is already awaiting the Commander\'s confirmation' }; return undefined; }
+      if (q.attest && q.attest.confirmed == null) { out = { ok: false, error: 'this quest is already awaiting the Farmer\'s confirmation' }; return undefined; }
       if (evidence.length < MIN_EVIDENCE) { out = { ok: false, error: 'attesting completion needs real evidence of what was done' }; return undefined; }
       q.attest = {
         agentId: agentIdOrNull(d.agentId),

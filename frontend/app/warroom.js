@@ -73,7 +73,7 @@
     const hud = $('#stage-wrap .cam-hud');
     if (hud && !hud.querySelector('.cam-cine')) {
       const b = document.createElement('button');
-      b.className = 'cam-cine'; b.textContent = '▣ CINEMA'; b.title = 'fill the frame with the station';
+      b.className = 'cam-cine'; b.textContent = '▣ CINEMA'; b.title = 'fill the frame with the farm';
       b.addEventListener('click', toggleCinema); hud.appendChild(b);
     }
     if (!$('#wr-cine-hint')) {

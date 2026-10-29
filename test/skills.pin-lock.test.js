@@ -25,10 +25,10 @@ for (const staged of [undefined, false]) {
   // ---- A. the model tool ----
   {
     const r = rig(staged);
-    A.ok(r.store.manage({ agentId: 'a', action: 'create', name: 'Deploy', body: '1. build\n2. ship', createdBy: 'user' }).ok, 'A: precondition: the Commander writes a skill' + label);
-    A.ok(r.store.manage({ agentId: 'a', action: 'pin', target: 'Deploy', createdBy: 'user' }).ok && pinned(r), 'A: precondition: the Commander pins it' + label);
+    A.ok(r.store.manage({ agentId: 'a', action: 'create', name: 'Deploy', body: '1. build\n2. ship', createdBy: 'user' }).ok, 'A: precondition: the Farmer writes a skill' + label);
+    A.ok(r.store.manage({ agentId: 'a', action: 'pin', target: 'Deploy', createdBy: 'user' }).ok && pinned(r), 'A: precondition: the Farmer pins it' + label);
     const out = r.tools.manageTool.run({ action: 'unpin', target: 'Deploy' }, { agentId: 'a', runId: 'run-1' });
-    A.ok(/Commander/.test(out.content) && out.summary === 'not saved', 'A: a run\'s unpin is refused and says only the Commander can: ' + out.content + label);
+    A.ok(/Farmer/.test(out.content) && out.summary === 'not saved', 'A: a run\'s unpin is refused and says only the Farmer can: ' + out.content + label);
     A.ok(pinned(r), 'A: the skill is still pinned' + label);
     const patch = r.tools.manageTool.run({ action: 'patch', target: 'Deploy', find: 'ship', replace: 'ship to prod' }, { agentId: 'a', runId: 'run-1' });
     A.ok(/pinned/.test(patch.content), 'A: the model\'s next patch is still refused by the pin: ' + patch.content + label);
@@ -57,7 +57,7 @@ for (const staged of [undefined, false]) {
     const p = r.tools.manageTool.run({ action: 'pin', target: 'Deploy' }, { agentId: 'a', runId: 'run-1' });
     A.ok(p.summary === 'pin' && pinned(r), 'C: a model may still pin a skill (it only adds the lock)' + label);
     const u = r.store.manage({ agentId: 'a', action: 'unpin', target: 'Deploy', createdBy: 'user' });   // POST /api/agent-skills/manage
-    A.ok(u.ok && !pinned(r), 'C: the Commander unpins it from ABILITIES > SKILLS' + label);
+    A.ok(u.ok && !pinned(r), 'C: the Farmer unpins it from ABILITIES > SKILLS' + label);
   }
 }
 A.report('skills.pin-lock');

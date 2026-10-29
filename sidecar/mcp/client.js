@@ -129,7 +129,7 @@
           const onAbort = () => {
             if (!pending.has(id)) return;
             settle(id, p => p.reject(Object.assign(new Error('mcp request cancelled: ' + method), { cancelled: true, sent: true, effectUnknown: true })));
-            notify('notifications/cancelled', { requestId: id, reason: 'cancelled by the StarNet host (run stopped)' })
+            notify('notifications/cancelled', { requestId: id, reason: 'cancelled by the Homestead host (run stopped)' })
               .catch(err => { failNote('mcp.client.cancelNotify', err); onError(err); });
           };
           signal.addEventListener('abort', onAbort, { once: true });
