@@ -87,11 +87,12 @@ Linux packages are internal build artifacts only and are not a supported public 
 Requirements: Node.js 18+ (Node.js 22 matches CI), Git. Rust and the
 [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) only for the desktop shell.
 
-The sidecar uses Node core modules only, so it runs without installing anything:
+Install the runtime packages once (`--omit=dev` skips the test browser and desktop build tools), then start the sidecar:
 
 ```bash
 git clone https://github.com/androoAGI/starnet.git
 cd starnet
+npm ci --omit=dev
 node sidecar/index.js
 ```
 
